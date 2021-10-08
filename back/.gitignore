@@ -41,6 +41,5 @@ temp/
 
 # nest etc
 /test
-tsconfig.build.json
 nest-cli.json
 .eslintrc.js
