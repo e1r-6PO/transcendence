@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  database:
+    image: mariadb:latest
+    expose:
+      - 3306
+    environment:
+      MARIADB_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: transcendence
+
+  back:
+    build: ./back
+    ports:
+      - 3000:3000
+    volumes:
+      - ./back:/back
+    links:
+      - database:transcendence-database
+
+  front:
+    build: ./front
+    ports:
+      - 8000:8000
+    volumes:
+      - ./front:/front
+    links:
+      - back:transcendence-back

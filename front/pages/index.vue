@@ -9,7 +9,7 @@
 export default {
   async asyncData() {
     const users = await fetch(
-      'http://localhost:8000/api/users'
+      'api/users'
     ).then((res) => res.json())
 
     console.log(users)
