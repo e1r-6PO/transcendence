@@ -8,7 +8,7 @@ export default {
   },
 
   proxy: {
-    '/api': { target: 'http://transcendence-back:3000/api', pathRewrite:{'^/api': ''} }
+    '/api': { target: 'http://localhost:3000/api', pathRewrite:{'^/api': ''} }
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
