@@ -6,7 +6,7 @@ import { User } from 'src/entity/user.entity'
   imports: [
     TypeOrmModule.forRoot({
         type: 'mariadb',
-        host: 'transcendence-database',
+        host: 'localhost',
         port: 3306,
         username: 'root',
         password: 'my-secret-pw',
