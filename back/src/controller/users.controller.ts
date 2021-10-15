@@ -1,19 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UserService } from 'src/service/user.service';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { UserService } from 'src/service/users.service';
 import { User } from 'src/entity/user.entity'
+import { Request } from 'express'
 
-@Controller('api/user')
+@Controller('api/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: User) {
-    return this.userService.create(createUserDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Get('me')
+  me(@Req() request: Request) {
+    console.log(request.headers.cookie.split(";")) // or "request.cookies['cookieKey']"
+    // or console.log(request.signedCookies);
   }
 
   @Get(':id')
