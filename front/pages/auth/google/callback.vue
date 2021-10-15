@@ -1,13 +1,10 @@
 <template>
-    <div>
-        <h1>{{ ouaish.msg }}</h1>
-    </div>
 </template>
 <script>
 import axios from "axios";
 
 export default {
-    async asyncData() {
+    async mounted() {
 
     var url
 
@@ -15,11 +12,11 @@ export default {
     url += '/api/auth/google/callback'
     url += window.location.search
 
-    const ouaish = await axios.get(url).then(response => response.data)
+    const ret = await axios.get(url).then(response => response.data)
 
-    console.log(ouaish)
+    console.log(ret)
 
-    return { ouaish }
+    window.location.href = '/'
   }
 }
 </script>

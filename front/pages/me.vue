@@ -11,7 +11,7 @@
 export default {
   async mounted() {
     const me = await fetch(
-      '/api/user/me'
+      '/api/users/me'
     ).then((res) => res.json())
   }
 }
