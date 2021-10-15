@@ -9,7 +9,7 @@
           
         />
       </a>
-      <a href='api/auth/google'>
+      <a href='/api/auth/google'>
         <img
           src="../assets/Google_Button.png" 
           width="150"

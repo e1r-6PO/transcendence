@@ -5,6 +5,9 @@
         <li>
           <NuxtLink to="/">Home page</NuxtLink>
         </li>
+        <li>
+          <NuxtLink to="/me">Profile</NuxtLink>
+        </li>
       </ul>
     </nav>
     <main>
