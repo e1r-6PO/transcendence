@@ -10,28 +10,29 @@ export class AuthService {
     private usersRepository: Repository<User>
   ) {}
 
-  googleLogin(req) {
+  async googleLogin(req) {
     if (!req.user) {
       return { msg: 'No user from google' }
     }
 
-    // this.usersRepository.find( { where: { email: req.user.email } } ).then(test => test)
+    const user = await this.usersRepository.findOne(
+      { where:
+          { email: req.user.email }
+      }
+  );
+    if (user)
+      return {
+        msg: 'User already register ' + user.firstName
+      }
+    var fill_user : User;
+    fill_user = req.user
 
-    // console.log(test)
+    fill_user.nickName = fill_user.firstName
 
-    // if (this.usersRepository.find( { where: { email: req.user.email } } ))
-    //   return { msg: 'already registered: ' + req.user.firstName }
-
-    var user : User;
-
-    user = req.user
-
-    user.logName = user.firstName
-
-    this.usersRepository.save(user);
+    await this.usersRepository.save(fill_user);
 
     return {
-      msg: 'nouveau user: ' + user.firstName
+      msg: 'nouveau user: ' + fill_user.firstName
     }
   }
 }
