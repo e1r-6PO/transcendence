@@ -48,7 +48,9 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios', '@nuxtjs/proxy'
+    '@nuxtjs/axios', '@nuxtjs/proxy',
+    //https://www.npmjs.com/package/nuxt-responsive-loader
+    'nuxt-responsive-loader'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -56,5 +58,11 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+  },
+
+  responsiveLoader: {
+    name: 'img/[hash:7]-[width].[ext]',
+    format: 'png'
   }
+
 }
