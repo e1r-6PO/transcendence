@@ -2,16 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm'
+import * as cookieParser from 'cookie';
+import { JwtService } from '@nestjs/jwt';
+
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>
+    private usersRepository: Repository<User>,
+    private jwtService : JwtService
   ) {}
 
-  me(request) {
-    
+  async me(request) {
+    var user = await this.usersRepository.findOne(
+      { where:
+          { id: this.jwtService.decode(cookieParser.parse(request.headers.cookie)['jwt'])['id'] }
+      }
+    );
+    return user;
   }
 
   findAll() {

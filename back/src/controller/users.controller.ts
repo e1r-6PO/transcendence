@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { UserService } from 'src/service/users.service';
-import { User } from 'src/entity/user.entity'
 import { Request } from 'express'
 
 @Controller('api/users')
@@ -9,8 +8,7 @@ export class UserController {
 
   @Get('me')
   me(@Req() request: Request) {
-    console.log(request.headers.cookie.split(";")) // or "request.cookies['cookieKey']"
-    // or console.log(request.signedCookies);
+    return this.userService.me(request)
   }
 
   @Get(':id')
