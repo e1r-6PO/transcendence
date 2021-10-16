@@ -29,7 +29,7 @@ export class AuthService {
       var fill_user : User;
       fill_user = req.user
       fill_user.nickName = fill_user.firstName
-      await this.usersRepository.save(fill_user);
+      user = await this.usersRepository.save(fill_user);
     }
 
     //create the token
