@@ -5,7 +5,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column( { unique: true } )
   email: string;
   @Column()
   firstName: string;
@@ -13,15 +13,12 @@ export class User {
   lastName: string;
   @Column()
   picture: string;
-  @Column()
-  accessToken: string;
 
   @Column({
-     unique: true
+    //  unique: true
   })
   nickName: string;
 
   @Column({ default: true })
   isActive: boolean;
-
 }
