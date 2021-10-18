@@ -5,7 +5,6 @@ import { Repository } from 'typeorm'
 import * as cookieParser from 'cookie';
 import { JwtService } from '@nestjs/jwt';
 
-
 @Injectable()
 export class UserService {
   constructor(
@@ -15,6 +14,7 @@ export class UserService {
   ) {}
 
   async me(request) {
+    // console.log(request.cookies['jwt'])
     var user = await this.usersRepository.findOne(
       { where:
           { id: this.jwtService.decode(cookieParser.parse(request.headers.cookie)['jwt'])['id'] }

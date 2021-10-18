@@ -1,6 +1,5 @@
-
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { Strategy, VerifyCallback } from 'passport-42';
 import { config } from 'dotenv';
 
 import { Injectable } from '@nestjs/common';
@@ -8,14 +7,14 @@ import { Injectable } from '@nestjs/common';
 config();
 
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+export class qdStrategy extends PassportStrategy(Strategy, '42') {
 
   constructor() {
     super({
-      clientID: "38728080319-e0qe7ihiv0e304um9giep5bgc3aglj07.apps.googleusercontent.com",
-      clientSecret: "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",
-      callbackURL: 'http://localhost:8000/auth/google/callback',
-      scope: ['email', 'profile'],
+      clientID: process.env.QD_USER_ID,
+      clientSecret: process.env.QD_SECRET,
+      callbackURL: 'http://localhost:8000/auth/42/callback',
+      scope: ['public'],
     });
   }
 
