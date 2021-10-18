@@ -1,6 +1,6 @@
 <template>
   <div>
-      <a href='https://api.intra.42.fr/oauth/authorize?client_id=740cf1518fafc4f3e8ee35aa2d800ed16a3ab341405c531f7bb5d6b7b719aac1&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fcallback&response_type=code'>
+      <a href='/api/auth/42'>
         <img
           src="../assets/42_Logo.png" 
           width="100"
