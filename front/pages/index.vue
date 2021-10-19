@@ -47,8 +47,6 @@
           <hr class="my-3">
           <a
             href="/api/auth/42"
-            target="_blank"
-            rel="noopener noreferrer"
           >
             <img
             src="../assets/42_Logo.png" 
@@ -60,8 +58,6 @@
           <br>
           <a
             href="/api/auth/google"
-            target="_blank"
-            rel="noopener noreferrer"
           >
             <img
               src="../assets/Google_Button.png" 
@@ -76,7 +72,7 @@
           <v-btn
             color="primary"
             nuxt
-            to="/inspire"
+            to="/me"
           >
             Continue
           </v-btn>
