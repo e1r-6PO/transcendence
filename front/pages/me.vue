@@ -27,6 +27,9 @@
 
 <script>
 export default {
+
+  layout: 'home',
+
   async asyncData() {
     const me = await fetch(
       '/api/users/me'

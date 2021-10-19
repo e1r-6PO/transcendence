@@ -16,7 +16,7 @@ export default {
 
     console.log(ret)
 
-    window.location.href = '/'
+    window.location.href = '/me'
   }
 }
 </script>
