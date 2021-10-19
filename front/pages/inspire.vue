@@ -10,8 +10,8 @@
         <v-card-title class="justify-center">
           Signed in
         </v-card-title>
-        <p>You are connected as: {{ me.email }}</p>
-        <p>Nickname: {{ me.nickName }}</p>
+        <p>You are connected as: </p>
+        <p>Nickname: </p>
       </v-card>
       <!-- <blockquote class="blockquote">
         &#8220;First, solve the problem. Then, write the code.&#8221;
@@ -24,7 +24,7 @@
     </v-col>
   </v-row>
 </template>
-
+<!--
 <script>
 export default {
   async asyncData() {
@@ -36,3 +36,4 @@ export default {
   }
 }
 </script>
+-->
