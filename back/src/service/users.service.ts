@@ -17,7 +17,7 @@ export class UserService {
     // console.log(request.cookies['jwt'])
     var user = await this.usersRepository.findOne(
       { where:
-          { id: this.jwtService.decode(cookieParser.parse(request.headers.cookie)['jwt'])['id'] }
+          { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
       }
     );
     return user;
