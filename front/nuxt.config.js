@@ -8,6 +8,10 @@ export default {
     port: 8000
   },
 
+  proxy: {
+    '/api': { target: 'http://localhost:3000/api', pathRewrite:{'^/api': ''} }
+  },
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - front',
@@ -50,6 +54,8 @@ export default {
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
+
+    '@nuxtjs/proxy',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
