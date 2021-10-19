@@ -1,36 +1,87 @@
 <template>
-  <div>
-    <main>
-        <a href='https://api.intra.42.fr/oauth/authorize?client_id=740cf1518fafc4f3e8ee35aa2d800ed16a3ab341405c531f7bb5d6b7b719aac1&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fcallback&response_type=code'>
-          <img
+  <v-row justify="center" align="center">
+    <v-col cols="12" sm="8" md="6">
+      <v-card class="logo py-4 d-flex justify-center">
+        <NuxtLogo />
+        <VuetifyLogo />
+      </v-card>
+      <v-card>
+        <v-card-title class="headline">
+          Welcome to the Vuetify + Nuxt.js template
+        </v-card-title>
+        <v-card-text>
+          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
+          <p>
+            For more information on Vuetify, check out the <a
+              href="https://vuetifyjs.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              documentation
+            </a>.
+          </p>
+          <p>
+            If you have questions, please join the official <a
+              href="https://chat.vuetifyjs.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="chat"
+            >
+              discord
+            </a>.
+          </p>
+          <p>
+            Find a bug? Report it on the github <a
+              href="https://github.com/vuetifyjs/vuetify/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="contribute"
+            >
+              issue board
+            </a>.
+          </p>
+          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
+          <div class="text-xs-right">
+            <em><small>&mdash; John Leider</small></em>
+          </div>
+          <hr class="my-3">
+          <a
+            href="/api/auth/42"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
             src="../assets/42_Logo.png" 
             width="100"
             height="100"
-            style="float: left; margin-left: 350px; margin-top: 200px"
-            
-          />
-        </a>
-        <a href='/api/auth/google'>
-          <img
-            src="../assets/Google_Button.png" 
-            width="150"
-            height="100"
-            style="float: right; margin-right: 350px; margin-top: 200px;"
-          />
-        </a>
-    </main>
-  </div>
+            />
+            <!-- Nuxt Documentation -->
+          </a>
+          <br>
+          <a
+            href="/api/auth/google"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="../assets/Google_Button.png" 
+              width="150"
+              height="100"
+            />
+            <!-- Nuxt GitHub -->
+          </a>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            nuxt
+            to="/inspire"
+          >
+            Continue
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
-
-<!-- <script>
-// export default {
-//   async asyncData() {
-//     const users = await fetch(
-//       'api/user'
-//     ).then((res) => res.json())
-
-//     return { users }
-//   }
-// }
-</script> --->
-
