@@ -105,6 +105,11 @@ export default {
           icon: 'mdi-chart-bubble',
           title: 'Profile',
           to: '/me'
+        },
+        {
+          icon: 'mdi-clipboard-account',
+          title: 'Scoreboard',
+          to: '/scoreboard'
         }
       ],
       miniVariant: false,
