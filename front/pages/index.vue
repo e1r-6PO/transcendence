@@ -24,8 +24,8 @@
             />
           </v-btn>
           <v-btn
-            :loading="loading"
-            :disabled="loading"
+            :loading="loading2"
+            :disabled="loading2"
             color="white"
             rounded
             elevation="12"
@@ -33,7 +33,7 @@
             height="110"
             href="/api/auth/google"
             style="float: right;"
-            @click="loader = 'loading'"
+            @click="loader = 'loading2'"
           >
             <v-icon
               color="primary"
@@ -47,6 +47,28 @@
     </v-row>
   </v-app>
 </template>
+
+<script>
+  export default {
+    data () {
+      return {
+        loader: null,
+        loading: false,
+        loading2: false,
+      }
+    },
+    watch: {
+      loader () {
+        const l = this.loader
+        this[l] = !this[l]
+
+        setTimeout(() => (this[l] = false), 3000)
+
+        this.loader = null
+      },
+    },
+  }
+</script>
 
 <style>
   @import '../assets/main_page.scss';
