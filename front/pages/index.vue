@@ -7,8 +7,8 @@
         </v-card-text>
         <v-main>
           <v-btn
-            :loading="loading3"
-            :disabled="loading3"
+            :loading="loading"
+            :disabled="loading"
             color="white"
             rounded
             elevation="12"
@@ -16,7 +16,7 @@
             height="110"
             href="/api/auth/42"
             style="float: left; backgroundColor:'white' !important"
-            @click="loader = 'loading3'"
+            @click="loader = 'loading'"
           >
             <icon-42 
               width="75"
@@ -24,8 +24,8 @@
             />
           </v-btn>
           <v-btn
-            :loading="loading3"
-            :disabled="loading3"
+            :loading="loading"
+            :disabled="loading"
             color="white"
             rounded
             elevation="12"
@@ -33,7 +33,7 @@
             height="110"
             href="/api/auth/google"
             style="float: right;"
-            @click="loader = 'loading3'"
+            @click="loader = 'loading'"
           >
             <v-icon
               color="primary"
