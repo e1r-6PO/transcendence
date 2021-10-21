@@ -15,6 +15,6 @@
 
 <script>
 export default {
-  name: "42-icon"
+  name: "icon-42"
 }
 </script>
