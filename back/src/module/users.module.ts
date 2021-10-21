@@ -8,7 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [TypeOrmModule.forFeature([User]),
   JwtModule.register({
-    secret: process.env.JWT_SECRET, // bon faut le store secure et il faut le meme secret partout sah ptet faire un middleware
+    secret: process.env.JWT_SECRET,
     signOptions: { expiresIn: '1w' },
   }),
   ],

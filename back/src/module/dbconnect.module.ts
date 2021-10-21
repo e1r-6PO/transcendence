@@ -9,7 +9,7 @@ import { User } from 'src/entity/user.entity'
         host: 'localhost',
         port: 3306,
         username: 'root',
-        password: 'my-secret-pw',
+        password: 'my-secret-pw', // dans le .env aussi
         database: 'transcendence',
         entities: [User],
         synchronize: true,
