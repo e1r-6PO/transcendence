@@ -19,19 +19,31 @@ export class AuthController {
     @Get('google/callback')
     @UseGuards(AuthGuard('google'))
     async googleAuthRedirect(@Req() req, @Res({ passthrough: true}) response : Response) {
-      return await this.authService.googleLogin(req, response)
+      return await this.authService.login(req, response)
     }
 
     // 42 call
     @Get('42')
     @UseGuards(AuthGuard('42'))
     async qdauth(@Req() req) {}
-  
+
     // 42 callback
     @Get('42/callback')
     @UseGuards(AuthGuard('42'))
     async qdAuthRedirect(@Req() req, @Res({ passthrough: true}) response : Response) {
-      return await this.authService.qdLogin(req, response)
+      return await this.authService.login(req, response)
+    }
+
+    // github call
+    @Get('github')
+    @UseGuards(AuthGuard('github'))
+    async githubauth(@Req() req) {}
+
+    // github callback
+    @Get('github/callback')
+    @UseGuards(AuthGuard('github'))
+    async githubAuthRedirect(@Req() req, @Res({ passthrough: true}) response : Response) {
+      return await this.authService.login(req, response)
     }
 
     // logout the user

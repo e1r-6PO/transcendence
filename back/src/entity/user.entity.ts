@@ -8,9 +8,7 @@ export class User {
   @Column( { unique: true } )
   email: string;
   @Column()
-  firstName: string;
-  @Column()
-  lastName: string;
+  displayName: string;
   @Column()
   picture: string;
 
@@ -18,6 +16,11 @@ export class User {
     //  unique: true
   })
   nickName: string;
+
+  @Column()
+  provider: string;
+  @Column()
+  provider_id: number;
 
   @Column({ default: true })
   isActive: boolean;
