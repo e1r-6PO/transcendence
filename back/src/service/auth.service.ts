@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
@@ -13,53 +13,23 @@ export class AuthService {
     private jwtService : JwtService
   ) {}
 
-  // google login
-  async googleLogin(req, response) {
+  // login function
+  async login(req, response) {
     if (!req.user) {
-      return { msg: 'No user from google' }
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
     }
 
     // if the user exists already create it
     var user = await this.usersRepository.findOne(
       { where:
-          { email: req.user.email }
+          { provider: req.user.provider, provider_id: req.user.provider_id  }
       }
     );
     if (!user)
     {
       var fill_user : User;
       fill_user = req.user
-      fill_user.nickName = fill_user.firstName
-      user = await this.usersRepository.save(fill_user);
-    }
-
-    //create the token
-    const jwt = await this.jwtService.signAsync({
-      id: user.id
-    })
-
-    response.cookie('jwt', jwt, { httpOnly: true })
-
-    return { message: "success" };
-  }
-
-  // 42 login function
-  async qdLogin(req, response) {
-    if (!req.user) {
-      return { msg: 'No user from 42' }
-    }
-
-    // if the user exists already create it
-    var user = await this.usersRepository.findOne(
-      { where:
-          { email: req.user.email }
-      }
-    );
-    if (!user)
-    {
-      var fill_user : User;
-      fill_user = req.user
-      fill_user.nickName = fill_user.firstName
+      fill_user.nickName = fill_user.displayName // REMOVE AFTER USER MUST CHOOSE HIS NICKNAME
       user = await this.usersRepository.save(fill_user);
     }
 
