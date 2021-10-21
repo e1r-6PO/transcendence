@@ -22,9 +22,10 @@ export class qdStrategy extends PassportStrategy(Strategy, '42') {
     const { name, emails, photos } = profile
     const user = {
       email: emails[0].value,
-      firstName: name.givenName,
-      lastName: name.familyName,
+      displayName: profile.displayName,
       picture: photos[0].value,
+      provider: profile.provider,
+      provider_id: profile.id,
       accessToken
     }
     done(null, user);

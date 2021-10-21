@@ -1,5 +1,5 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { Strategy, VerifyCallback } from 'passport-github2';
 import { config } from 'dotenv';
 
 import { Injectable } from '@nestjs/common';
@@ -7,14 +7,14 @@ import { Injectable } from '@nestjs/common';
 config();
 
 @Injectable()
-export class googleStrategy extends PassportStrategy(Strategy, 'google') {
+export class githubStrategy extends PassportStrategy(Strategy, 'github') {
 
   constructor() {
     super({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-      callbackURL: 'http://localhost:8000/auth/google/callback',
-      scope: ['email', 'profile'],
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+      callbackURL: 'http://localhost:8000/auth/github/callback',
+      scope: ['user:email'],
     });
   }
 
