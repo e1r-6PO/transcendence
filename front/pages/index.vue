@@ -7,6 +7,8 @@
         </v-card-text>
         <v-main>
           <v-btn
+            :loading="loading3"
+            :disabled="loading3"
             color="white"
             rounded
             elevation="12"
@@ -22,6 +24,8 @@
             />
           </v-btn>
           <v-btn
+            :loading="loading3"
+            :disabled="loading3"
             color="white"
             rounded
             elevation="12"
