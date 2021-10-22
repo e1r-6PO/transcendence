@@ -20,6 +20,7 @@
     :clickMode="clickMode"
   ></div>
 </template>
+
 <script>
 /* eslint-disable */
 export default {
@@ -70,7 +71,7 @@ export default {
     },
     movementDirection: {
       type: String,
-      default: 'bottom-left'
+      default: 'none'
     },
     hoverEffect: {
       type: Boolean,

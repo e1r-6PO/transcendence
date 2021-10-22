@@ -52,9 +52,13 @@
       <v-spacer />
       <v-btn
         icon
-        @click.stop="rightDrawer = !rightDrawer"
+        href="/api/auth/logout"
       >
-        <v-icon>mdi-menu</v-icon>
+        <v-icon
+          large
+        >
+          mdi-exit-to-app
+        </v-icon>
       </v-btn>
     </v-app-bar>
     <v-main>
