@@ -5,7 +5,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column( { unique: true } )
+  @Column()
   email: string;
   @Column()
   displayName: string;
@@ -20,7 +20,7 @@ export class User {
   @Column()
   provider: string;
   @Column()
-  provider_id: number;
+  provider_id: string;
 
   @Column({ default: true })
   isActive: boolean;
