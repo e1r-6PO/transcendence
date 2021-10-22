@@ -5,11 +5,12 @@ export default {
   ssr: false,
 
   server: {
-    port: 8000
+    port: 8000,
+    host: 0
   },
 
   proxy: {
-    '/api': { target: 'http://localhost:3000/api', pathRewrite:{'^/api': ''} }
+    '/api': { target: 'http://transcendence-back:3000/api', pathRewrite:{'^/api': ''} }
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head

@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+
+  back:
+    volumes:
+      - back_sync:/back
+
+  front:
+    volumes:
+      - front_sync:/front
+
+volumes:
+  back_sync:
+    external: true
+  front_sync:
+    external: true
