@@ -57,6 +57,9 @@
 import Particles from '~/components/Particles.vue'
 
 export default {
+  
+  layout: 'empty',
+
   components: {
     Particles
   }
