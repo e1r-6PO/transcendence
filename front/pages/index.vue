@@ -1,7 +1,8 @@
 <template>
   <v-app>
     <client-only class="background_effect">
-      <Particles/>
+      <Particles
+      />
     </client-only>
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8" md="6">
