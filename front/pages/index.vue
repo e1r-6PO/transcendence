@@ -2,6 +2,8 @@
   <v-app>
     <client-only class="background_effect">
       <Particles
+        :move-straight="false"
+        :move-speed="4"
       />
     </client-only>
     <v-row justify="center" align="center">
