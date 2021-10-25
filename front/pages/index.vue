@@ -9,44 +9,68 @@
           Welcome to Transcendence
         </v-card-text>
         <v-main>
-          <v-btn
-            :loading="loading"
-            :disabled="loading"
-            color="white"
-            rounded
-            elevation="12"
-            width="110"
-            height="110"
-            href="/api/auth/42"
-            style="float: left; backgroundColor:'white' !important"
-            @click="loader = 'loading'"
-            class="foreground_element"
-          >
-            <icon-42 
-              width="75"
-              height="75"
-            />
-          </v-btn>
-          <v-btn
-            :loading="loading"
-            :disabled="loading"
-            color="white"
-            rounded
-            elevation="12"
-            width="110"
-            height="110"
-            href="/api/auth/google"
-            style="float: right;"
-            @click="loader = 'loading'"
-            class="foreground_element"
-          >
-            <v-icon
-              color="primary"
-              x-large
+          <v-row justify="center" align="center">
+            <v-col align="center">
+              <v-btn  
+              :loading="loading"
+              :disabled="loading"
+              color="white"
+              rounded
+              elevation="12"
+              width="110"
+              height="110"
+              href="/api/auth/42"
+              style="backgroundColor:'white' !important"
+              @click="loader = 'loading'"
+              class="foreground_element button_auth"
             >
-            mdi-google
-            </v-icon>
-          </v-btn>
+              <icon-42 
+                width="75"
+                height="75"
+              />
+              </v-btn>
+            </v-col>
+            <v-col align="center">
+              <v-btn
+                :loading="loading"
+                :disabled="loading"
+                color="white"
+                rounded
+                elevation="12"
+                width="110"
+                height="110"
+                href="/api/auth/google"
+                @click="loader = 'loading'"
+                class="foreground_element"
+              >
+                <v-icon
+                  color="primary"
+                  x-large
+                >
+                mdi-google
+                </v-icon>
+              </v-btn>
+            </v-col>
+            <v-col align="center">
+              <v-btn
+                :loading="loading3"
+                :disabled="loading3"
+                color="white"
+                rounded
+                elevation="12"
+                width="110"
+                height="110"
+                href="/api/auth/github"
+                @click="loader = 'loading3'"
+                class="foreground_element"
+              >
+                <icon-github 
+                  width="75"
+                  height="75"
+                />
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-main>
       </v-col>
     </v-row>
