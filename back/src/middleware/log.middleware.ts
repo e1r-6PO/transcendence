@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NestMiddleware } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NestMiddleware, Redirect } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Response, Request, NextFunction } from "express";
 
@@ -9,9 +9,20 @@ export class LogMiddleware implements NestMiddleware {
     ) {}
     async use(req: Request, res: Response, next: NextFunction) {
         
-        if (req.cookies['jwt'] == null || await this.jwtService.verifyAsync(req.cookies['jwt']) == null)
+        try {
+            await this.jwtService.verifyAsync(req.cookies['jwt'])
+        } catch (e) 
+        {
             throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+        }
+        if (req.cookies['jwt'] == null)
+        {
+            throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
+        }
         else
+        {
+            console.log(req)
             next()
+        }
     }
 }
