@@ -124,3 +124,12 @@ export default {
   }
 }
 </script>
+
+<style>
+
+  .v-application{
+    background-color: darkolivegreen !important;
+  }
+
+
+</style>

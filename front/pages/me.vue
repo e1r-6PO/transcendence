@@ -3,6 +3,8 @@
     <client-only class="background_effect">
       <Particles
         :move-straight="true"
+        :hover-effect="false"
+        :click-effect="false"
       />
     </client-only>
     <v-col class="text-center">

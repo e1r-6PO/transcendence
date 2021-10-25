@@ -14,6 +14,7 @@
     :linesDistance="linesDistance"
     :moveSpeed="moveSpeed"
     :movementDirection="movementDirection"
+    :moveStraight="moveStraight"
     :hoverEffect="hoverEffect"
     :hoverMode="hoverMode"
     :clickEffect="clickEffect"
@@ -73,6 +74,10 @@ export default {
       type: String,
       default: 'none'
     },
+    moveStraight: {
+      type: Boolean,
+      default: false,
+    },
     hoverEffect: {
       type: Boolean,
       default: true
@@ -111,6 +116,7 @@ export default {
         this.linesDistance,
         this.moveSpeed,
         this.movementDirection,
+        this.moveStraight,
         this.hoverEffect,
         this.hoverMode,
         this.clickEffect,
@@ -132,6 +138,7 @@ export default {
       linesDistance,
       moveSpeed,
       movementDirection,
+      moveStraight,
       hoverEffect,
       hoverMode,
       clickEffect,
@@ -192,7 +199,7 @@ export default {
               "speed": moveSpeed,
               "direction": movementDirection,
               "random": false,
-              "straight": false,
+              "straight": moveStraight,
               "out_mode": "out",
               "bounce": false,
               "attract": {
