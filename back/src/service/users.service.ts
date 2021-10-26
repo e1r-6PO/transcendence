@@ -31,6 +31,19 @@ export class UserService {
     return this.usersRepository.findOne(id);
   }
 
+  async set_nickname(request, nick) {
+    if (nick != null)
+    {
+      var user = await this.usersRepository.findOne(
+        { where:
+            { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
+        }
+      );
+      user.nickName = nick
+      await this.usersRepository.save(user)
+    }
+  }
+
   // update(id: number, updateUserDto: User) {
   //   return `This action updates a #${id} user`;
   // }
