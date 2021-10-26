@@ -21,7 +21,6 @@ export class LogMiddleware implements NestMiddleware {
         }
         else
         {
-            console.log(req)
             next()
         }
     }
