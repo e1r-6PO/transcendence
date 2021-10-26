@@ -128,7 +128,7 @@ export default {
 <style>
 
   .v-application{
-    background-color: darkolivegreen !important;
+    background-color: #5C6BC0 !important;
   }
 
 
