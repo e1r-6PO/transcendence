@@ -16,9 +16,9 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  @Post('me/set_nickname')
+  @Post('me/nickname')
   set_nickname(@Req() request : Request, @Query('nickname') nick) {
-    return this,this.userService.set_nickname(request, nick);
+    return this.userService.set_nickname(request, nick);
   }
 
   // @Patch(':id')

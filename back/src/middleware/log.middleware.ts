@@ -8,20 +8,14 @@ export class LogMiddleware implements NestMiddleware {
         private jwtService: JwtService
     ) {}
     async use(req: Request, res: Response, next: NextFunction) {
-        
         try {
             await this.jwtService.verifyAsync(req.cookies['jwt'])
         } catch (e) 
         {
             throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
         }
-        if (req.cookies['jwt'] == null)
-        {
+        if (await this.jwtService.decode(req.cookies['jwt'])['nick'] === "")
             throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
-        }
-        else
-        {
-            next()
-        }
+        next()
     }
 }
