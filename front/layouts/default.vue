@@ -1,5 +1,13 @@
 <template>
   <v-app dark>
+    <client-only class="background_effect">
+      <Particles
+        :move-straight="false"
+        :hover-effect="false"
+        :click-effect="false"
+        :move-speed=0.666
+      />
+    </client-only>
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -93,7 +101,14 @@
 </template>
 
 <script>
+import Particles from '~/components/Particles.vue'
+
 export default {
+
+  components: {
+    Particles
+  },
+
   data () {
     return {
       clipped: false,
@@ -125,11 +140,24 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 
   .v-application{
-    background-color: #5C6BC0 !important;
+    background-color: #202b58 !important;
+  }
+  @import '../assets/main_page.scss';
+
+  div[id^="particles-instance-"] {
+    height: 100vh !important;
+    width: 100vw !important;
+    position: fixed !important;
+    top: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    // background: rgba($color: #05114e, $alpha: 0.4);
+    z-index: 2 !important;
   }
 
-
 </style>
+
