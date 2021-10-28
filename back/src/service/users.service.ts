@@ -31,6 +31,16 @@ export class UserService {
     return this.usersRepository.findOne(id);
   }
 
+  async get_nickname(request)
+  {
+    var user = await this.usersRepository.findOne(
+      { where:
+          { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
+      }
+    );
+    return { "nickname": user.nickName }
+  }
+
   async set_nickname(request, nick) {
     if (nick == null || nick.len == 0 || nick.len > 20)
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
@@ -49,6 +59,8 @@ export class UserService {
     );
     user.nickName = nick
     await this.usersRepository.save(user)
+
+    return { "nickname" : user.nickName }
   }
 
   // update(id: number, updateUserDto: User) {

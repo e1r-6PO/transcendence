@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode } from '@nestjs/common';
 import { UserService } from 'src/service/users.service';
-import { Request } from 'express'
+import { Request, Response } from 'express'
 
 @Controller('api/users')
 export class UserController {
@@ -14,6 +14,11 @@ export class UserController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
+  }
+
+  @Get('me/nickname')
+  get_nickname(@Req() request: Request) {
+    return this.userService.get_nickname(request);
   }
 
   @Post('me/nickname')
