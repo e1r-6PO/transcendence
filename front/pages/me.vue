@@ -1,18 +1,10 @@
 <template>
 <v-main>
   <v-row>
-    <client-only class="background_effect">
-      <Particles
-        :move-straight="true"
-        :hover-effect="false"
-        :click-effect="false"
-      />
-    </client-only>
     <v-col justify="center" align="center">
       <img
-        src="/v.png"
-        alt="Vuetify.js"
-        class="mb-5"
+        src="~/assets/lune.png"
+        width="100"
       >
       <v-card class="foreground_element" color="indigo darken-3" height="150" width="450" elevation="12" shaped>
         <v-card-title class="justify-center">
@@ -51,12 +43,6 @@ import Particles from '~/components/Particles.vue'
 
 export default {
 
-  layout: 'home',
-
-  components: {
-    Particles
-  },
-
   async asyncData() {
     const me = await fetch(
       '/api/users/me'
@@ -68,20 +54,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-  @import '../assets/main_page.scss';
-
-  div[id^="particles-instance-"] {
-    height: 100vh !important;
-    width: 100vw !important;
-    position: fixed !important;
-    top: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    // background: rgba($color: #05114e, $alpha: 0.4);
-    z-index: 2 !important;
-  }
-
-</style>
