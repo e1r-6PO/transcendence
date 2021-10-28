@@ -17,15 +17,10 @@
               <v-btn  
               :loading="loading"
               :disabled="loading"
-              color="white"
-              rounded
-              elevation="12"
-              width="110"
-              height="110"
               href="/api/auth/42"
               style="backgroundColor:'white' !important"
               @click="loader = 'loading'"
-              class="foreground_element button_auth"
+              class="foreground_element button_auth white"
             >
               <icon-42 
                 width="75"
@@ -37,14 +32,9 @@
               <v-btn
                 :loading="loading"
                 :disabled="loading"
-                color="white"
-                rounded
-                elevation="12"
-                width="110"
-                height="110"
                 href="/api/auth/google"
                 @click="loader = 'loading'"
-                class="foreground_element"
+                class="foreground_element button_auth white"
               >
                 <v-icon
                   color="primary"
@@ -58,14 +48,9 @@
               <v-btn
                 :loading="loading3"
                 :disabled="loading3"
-                color="white"
-                rounded
-                elevation="12"
-                width="110"
-                height="110"
                 href="/api/auth/github"
                 @click="loader = 'loading3'"
-                class="foreground_element"
+                class="foreground_element button_auth white"
               >
                 <icon-github 
                   width="75"
@@ -115,5 +100,14 @@ export default {
 
   .v-button{
     color: whitesmoke !important;
+  }
+
+  .button_auth{
+    min-width: 36px;
+    width: 110px;
+    height: 110px;
+    min-height: 110px;
+    border-radius:30px!important;
+    box-shadow: 0px 0px 20px 0px rgba(36,31,219,0.89);
   }
 </style>
