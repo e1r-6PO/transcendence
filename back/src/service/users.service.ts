@@ -32,23 +32,23 @@ export class UserService {
   }
 
   async set_nickname(request, nick) {
-    if (nick != null)
-    {
-      var user = await this.usersRepository.findOne(
-        { where:
-            { nickName: this.jwtService.decode(request.cookies['jwt'])['nick'] }
-        }
-      );
-      if (user)
-        throw new HttpException('Nick already exist', HttpStatus.CONFLICT)
-      user = await this.usersRepository.findOne(
-        { where:
-            { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
-        }
-      );
-      user.nickName = nick
-      await this.usersRepository.save(user)
-    }
+    if (nick == null || nick.len == 0 || nick.len > 20)
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+
+    var user = await this.usersRepository.findOne(
+      { where:
+        { nickName: nick }
+      }
+    );
+    if (user)
+      throw new HttpException('Nick already exist', HttpStatus.CONFLICT)
+    user = await this.usersRepository.findOne(
+      { where:
+          { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
+      }
+    );
+    user.nickName = nick
+    await this.usersRepository.save(user)
   }
 
   // update(id: number, updateUserDto: User) {
