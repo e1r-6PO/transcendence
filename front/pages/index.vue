@@ -15,11 +15,8 @@
           <v-row justify="center" align="center">
             <v-col align="center">
               <v-btn  
-              :loading="loading"
-              :disabled="loading"
               href="/api/auth/42"
               style="backgroundColor:'white' !important"
-              @click="loader = 'loading'"
               class="foreground_element button_auth white"
             >
               <icon-42 
@@ -30,10 +27,7 @@
             </v-col>
             <v-col align="center">
               <v-btn
-                :loading="loading"
-                :disabled="loading"
                 href="/api/auth/google"
-                @click="loader = 'loading'"
                 class="foreground_element button_auth white"
               >
                 <v-icon
@@ -46,10 +40,7 @@
             </v-col>
             <v-col align="center">
               <v-btn
-                :loading="loading3"
-                :disabled="loading3"
                 href="/api/auth/github"
-                @click="loader = 'loading3'"
                 class="foreground_element button_auth white"
               >
                 <icon-github 
@@ -74,7 +65,7 @@ export default {
 
   components: {
     Particles
-  }
+  },
 }
 </script>
 
