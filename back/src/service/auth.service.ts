@@ -35,7 +35,6 @@ export class AuthService {
 
     //create the token
     const jwt = await this.jwtService.signAsync({
-      nick: user.nickName,
       id: user.id
     })
 
