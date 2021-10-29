@@ -30,7 +30,7 @@ export default {
     const ret = await $axios.$get('api/users/me/nickname')
 
     if (ret.nickname != "")
-      window.location.href = '/me'
+      window.location.href = '/home'
   },
   data() {
 
@@ -60,7 +60,7 @@ export default {
             return error.response
         });
         if (ret.status == 201)
-          window.location.href = '/me'        
+          window.location.href = '/home'
       },
   }
 }
