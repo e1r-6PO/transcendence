@@ -1,4 +1,7 @@
 <template>
+  <v-card-text class="text-center main_title_test foreground_element">
+    Logging you in...
+  </v-card-text>
 </template>
 
 <script>
@@ -25,7 +28,7 @@ export default {
         
       if (ret.nickname == "")
         return '/profile/set_nickname'
-      return '/me'
+      return '/home'
     }
   },
 }
