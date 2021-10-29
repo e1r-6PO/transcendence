@@ -91,7 +91,7 @@ export default {
         {
           icon: 'mdi-chart-bubble',
           title: 'Profile',
-          to: '/me'
+          to: '/profile'
         },
         {
           icon: 'mdi-clipboard-account',
