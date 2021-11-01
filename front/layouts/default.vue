@@ -72,8 +72,8 @@ export default {
       items: [
         {
           icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
+          title: 'Home',
+          to: '/home'
         },
         {
           icon: 'mdi-chart-bubble',
