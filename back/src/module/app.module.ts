@@ -4,10 +4,10 @@ import { AppService } from 'src/service/app.service';
 import { DbconnectModule } from './dbconnect.module'
 import { UserModule } from './users.module'
 import { AuthModule } from './auth.module'
-import { LogModule } from './log.module';
+import { HasNickModule, ValidTokenModule } from './account.middleware.module';
 
 @Module({
-  imports: [ DbconnectModule, UserModule, AuthModule, LogModule ],
+  imports: [ DbconnectModule, UserModule, AuthModule, HasNickModule, ValidTokenModule ],
   controllers: [ AppController ],
   providers: [ AppService ],
 })

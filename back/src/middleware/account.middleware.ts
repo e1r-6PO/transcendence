@@ -6,11 +6,9 @@ import { User } from "src/entity/user.entity";
 import { Repository } from "typeorm";
 
 @Injectable()
-export class LogMiddleware implements NestMiddleware {
+export class ValidTokenMiddleware implements NestMiddleware {
     constructor(
         private jwtService: JwtService,
-        @InjectRepository(User)
-        private usersRepository: Repository<User>,
     ) {}
     async use(req: Request, res: Response, next: NextFunction) {
         try {
@@ -19,11 +17,18 @@ export class LogMiddleware implements NestMiddleware {
         {
             throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
         }
-        var user = await this.usersRepository.findOne(
-            { where:
-                { id: this.jwtService.decode(req.cookies['jwt'])['id'] }
-            }
-        )
+        next()
+    }
+}
+
+@Injectable()
+export class HasNickMiddleware implements NestMiddleware {
+    constructor(
+        private jwtService: JwtService,
+        @InjectRepository(User)
+        private usersRepository: Repository<User>,
+    ) {}
+    async use(req: Request, res: Response, next: NextFunction) {
         ///si le boug dans la bdd na pas de pseudo alors throw error
         if ((await this.usersRepository.findOne(
             { where:
@@ -34,3 +39,4 @@ export class LogMiddleware implements NestMiddleware {
         next()
     }
 }
+
