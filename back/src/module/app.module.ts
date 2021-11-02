@@ -3,11 +3,11 @@ import { AppController } from 'src/controller/app.controller';
 import { AppService } from 'src/service/app.service';
 import { UserModule } from './users.module'
 import { AuthModule } from './auth.module'
-import { HasNickModule, ValidTokenModule } from './middleware.module';
+import { AllMiddleware } from './middleware.module';
 import { DbConnectModule } from './db.connect.module';
 
 @Module({
-  imports: [ DbConnectModule, UserModule, AuthModule, ValidTokenModule, HasNickModule ],
+  imports: [ DbConnectModule, UserModule, AuthModule, AllMiddleware ],
   controllers: [ AppController ],
   providers: [ AppService ],
 })

@@ -4,17 +4,6 @@ import { User } from "src/entity/user.entity";
 import { HasNickMiddleware, ValidTokenMiddleware }  from "src/middleware/account.middleware";
 import { CustomJwtModule } from "./custom.jwt.module";
 
-const allmiddleware = [
-  ValidTokenMiddleware,
-  HasNickMiddleware
-]
-
-@Module({
-  imports: allmiddleware,
-  exports: allmiddleware
-})
-export class AllMiddleware {}
-
 @Module({
   imports: [ CustomJwtModule ]
 })
@@ -38,3 +27,14 @@ export class HasNickModule implements NestModule {
       .forRoutes({ path: '*', method: RequestMethod.ALL })
   }
 }
+
+const allmiddleware = [
+  ValidTokenModule,
+  HasNickModule
+]
+
+@Module({
+  imports: allmiddleware,
+  exports: allmiddleware
+})
+export class AllMiddleware {}
