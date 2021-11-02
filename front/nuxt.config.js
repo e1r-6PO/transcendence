@@ -8,6 +8,10 @@ export default {
     port: 8000
   },
 
+  router: {
+    middleware: 'login'
+  },
+
   proxy: {
     '/api': { target: 'http://localhost:3000/api', pathRewrite:{'^/api': ''} }
   },

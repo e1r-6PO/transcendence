@@ -61,6 +61,8 @@ import Particles from '~/components/Particles.vue'
 
 export default {
   
+  middleware: 'no2login',
+
   layout: 'empty',
 
   components: {
