@@ -55,8 +55,10 @@ export default {
 
   methods: {
     async setNick() {
-        const ret = await this.$axios.post('api/users/me/nickname?nickname=' + this.login.nickname)
+        const nick = this.login.nickname
+        const ret = await this.$axios.post('api/users/me/nickname?nickname=' + nick)
           .catch(function (error) {
+            alert("nick " + nick + " is already taken")
             return error.response
         });
         if (ret.status == 201)
