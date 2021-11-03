@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm'
@@ -27,8 +27,21 @@ export class UserService {
     return this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return this.usersRepository.findOne(id);
+  async findOne(nick: string) {
+    // await new Promise(r => setTimeout(r, 2000));
+    var user = await this.usersRepository.findOne(
+      { where:
+        { nickName: nick }
+      }
+    );
+    if (!user)
+      throw new NotFoundException
+    var filtered = {
+      id: user.id,
+      nickName: user.nickName,
+      picture: user.picture
+    }
+    return [filtered]
   }
 
   async get_nickname(request)
