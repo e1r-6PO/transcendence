@@ -5,10 +5,11 @@ import { UserModule } from './users.module'
 import { AuthModule } from './auth.module'
 import { AllMiddleware } from './middleware.module';
 import { DbConnectModule } from './db.connect.module';
+import { AppGateway } from 'src/webSocket/app.gateway';
 
 @Module({
   imports: [ DbConnectModule, UserModule, AuthModule, AllMiddleware ],
   controllers: [ AppController ],
-  providers: [ AppService ],
+  providers: [ AppService, AppGateway],
 })
 export class AppModule {}
