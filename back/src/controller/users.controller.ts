@@ -6,6 +6,11 @@ import { Request, Response } from 'express'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get('search')
+  find(@Query('nick') nick: string) {
+    return this.userService.search(nick)
+  }
+
   @Get(':nick')
   findOne(@Param('nick') nick: string) {
     return this.userService.findOne(nick);
