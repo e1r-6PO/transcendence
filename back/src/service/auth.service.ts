@@ -48,18 +48,20 @@ export class AuthService {
     response.clearCookie('jwt')
   }
 
-  async is_logged(req) {
+  async is_logged(req, res) {
     try {
       await this.jwtService.verifyAsync(req.cookies['jwt'])
     } catch (e) 
     {
       return { status: false, nickname: "" }
     }
-    var nick = (await this.usersRepository.findOne(
+    var user = await this.usersRepository.findOne(
       { where:
           { id: this.jwtService.decode(req.cookies['jwt'])['id'] }
       }
-    )).nickName
-    return { status: true, nickname: nick }
+    )
+    if (!user)
+      return { status: false, nickname: "" }
+    return { status: true, nickname: user.nickName }
   }
 }

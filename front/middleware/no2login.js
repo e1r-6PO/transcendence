@@ -1,7 +1,5 @@
 export default async function (context) {
 
-  console.log("HEYYYYY")
-
   const ret = await context.$axios.get('api/auth/is_logged')
   .catch(function (error) {
     return error.response
