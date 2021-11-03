@@ -27,7 +27,7 @@
 export default {
 
   async asyncData({ $axios }) {
-    const ret = await $axios.$get('api/users/me/nickname')
+    const ret = await $axios.$get('api/profile/me/nickname')
 
     if (ret.nickname != "")
       window.location.href = '/home'
@@ -56,7 +56,7 @@ export default {
   methods: {
     async setNick() {
         const nick = this.login.nickname
-        const ret = await this.$axios.post('api/users/me/nickname?nickname=' + nick)
+        const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + nick)
           .catch(function (error) {
             alert("nick " + nick + " is already taken")
             return error.response
