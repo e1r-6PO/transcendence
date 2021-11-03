@@ -36,6 +36,17 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
+      <div>
+        <v-text-field
+          class="foreground_element"
+          label="Search"
+          v-model="search"
+          shaped
+          filled
+          @keydown.enter="searchbar"
+        >
+        </v-text-field>
+      </div>
       <v-spacer />
       <v-btn
         icon
@@ -67,6 +78,7 @@ export default {
 
   data () {
     return {
+      search: "",
       drawer: false,
       fixed: false,
       items: [
@@ -89,6 +101,12 @@ export default {
       right: true,
       rightDrawer: false,
       title: 'TranscendanceGod'
+    }
+  },
+
+  methods: {
+    searchbar() {
+      window.location.href = "users/" + this.search
     }
   }
 }
