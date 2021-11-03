@@ -23,7 +23,7 @@ export class HasNickModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(HasNickMiddleware)
-      .exclude('api/auth/(.*)', 'api/users/me/nickname')
+      .exclude('api/auth/(.*)', 'api/profile/me/nickname')
       .forRoutes({ path: '*', method: RequestMethod.ALL })
   }
 }
