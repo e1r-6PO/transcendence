@@ -54,7 +54,7 @@ export class AuthController {
     }
 
     @Get('is_logged')
-    async is_logged(@Req() req) {
-      return await this.authService.is_logged(req)
+    async is_logged(@Req() req, @Res({ passthrough: true}) response : Response) {
+      return await this.authService.is_logged(req, response)
     }
 }

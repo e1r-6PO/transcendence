@@ -53,6 +53,7 @@ export class AuthService {
       await this.jwtService.verifyAsync(req.cookies['jwt'])
     } catch (e) 
     {
+      this.logout(req, res)
       return { status: false, nickname: "" }
     }
     var user = await this.usersRepository.findOne(
@@ -61,7 +62,10 @@ export class AuthService {
       }
     )
     if (!user)
+    {
+      this.logout(req, res)
       return { status: false, nickname: "" }
+    }
     return { status: true, nickname: user.nickName }
   }
 }
