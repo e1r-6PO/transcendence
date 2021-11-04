@@ -26,11 +26,10 @@
           <v-btn v-else
             color="black-grey"
             class="text-none foreground_element"
-            round
+            rounded
             depressed
             width="200"
             height="200"
-            rounded
             :disabled="isEditing ? false: true"
             :loading="isSelecting"
             @click="onButtonClick"
@@ -102,7 +101,7 @@
               <h3 class="color_text" align="center">{{ me.gameWin }} </h3>
             </v-card>
           </v-col>
-          <v-col cols="12" sm="2" align="left">
+          <v-col cols="12" sm="2" align="left" justify="center">
             <v-card
               color="indigo darken-4"
               class="foreground_element round_card"
@@ -145,7 +144,7 @@ export default {
 
   data() {
     return { selectedFile: null,
-    isSelecting: false
+    isSelecting: false,
     }
   },
 
@@ -177,8 +176,19 @@ export default {
       this.$refs.uploader.click()
     },
     onFileChanged(e) {
-      this.selectedFile = e.target.files[0]
+
+      if (!e.target.files[0]) {
+        e.preventDefault();
+        alert('No file chosen');
+        return;
+      }
       
+      if (e.target.files[0].size > 1024 * 1024) {
+        e.preventDefault();
+        alert('File too big (> 1MB)');
+        return;
+      }
+      this.selectedFile = e.target.files[0]
       console.log(this.selectedFile)
       // do something
     }
