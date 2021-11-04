@@ -24,4 +24,10 @@ export class User {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column()
+  gameWin: number;
+
+  @Column()
+  gameLose: number;
 }
