@@ -7,7 +7,7 @@
     elevation="12"
   >
     <v-icon color="blue-grey lighten-2" size="30" >mdi-account</v-icon>
-      <v-toolbar-title class="font-weight-light font-size">
+      <v-toolbar-title class="font-weight-light font_size">
         <b class="color_text">User Profile</b>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -42,34 +42,32 @@
             >
             </v-text-field>
             <v-card class="justify-center foreground_element" color="indigo darken-4 round_card"
-              :width="(nick.length + 20) * 10"
-              min-width=300
-              max-width=450
-              v-if="!isEditing"
-              elevation="12"
-              r
-            > 
-              <h2 class="color_text" align="center">{{ nick }}</h2>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col justify="center" align="center">
-            <v-text-field v-if="isEditing"
-              class="foreground_element text-field-dimension"
-              v-model="me.email"
-              label="Email"
-              filled
-            >
-            </v-text-field>
-            <v-card class="justify-center foreground_element round_card" color="indigo darken-4"
-              :width="(me.email.length + 30) * 10"
-              min-width=400
-              max-width=1000
+              width=550
+              heigth=250
               v-if="!isEditing"
               elevation="12"
             > 
-              <h2 class="color_text" align="center">{{ me.email }} </h2>
+            <v-card-text>
+              <p class="color_text text-h4 font-weight-medium" align="center">{{ nick }}</p>
+              <p class="color_text text-h5" align="center">{{ me.email }}</p>
+              <p v-if="me.provider === 'github'" class="color_text text-h6" align="center"> Connected via :</p>
+              <icon-github v-if="me.provider === 'github'"
+                  width="50"
+                  height="50"
+              />
+              <p v-if="me.provider === '42'" class="color_text text-h6" align="center"> Connected via : 42</p>
+              <icon-42 v-if="me.provider === '42'"
+                width="50"
+                height="50"
+              />
+              <p v-if="me.provider === 'google'" class="color_text text-h6" align="center"> Connected via : google</p>
+              <v-icon v-if="me.provider === 'google'"
+                  color="primary"
+                  x-large
+              >
+                mdi-google
+              </v-icon>
+            </v-card-text>
             </v-card>
           </v-col>
         </v-row>
@@ -120,14 +118,6 @@ export default {
 
 .font_size {
   font-size: 30px;
-}
-
-.font-size-icon {
-  font-size: 5px;
-}
-
-.margin_right {
-  margin-right: 10%;
 }
 
 .color_lose {
