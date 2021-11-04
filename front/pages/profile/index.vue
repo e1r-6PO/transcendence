@@ -189,8 +189,14 @@ export default {
         return;
       }
       this.selectedFile = e.target.files[0]
-      console.log(this.selectedFile)
-      // do something
+      // console.log(this.selectedFile)
+      var formData = new FormData();
+      formData.append("image", this.selectedFile);
+      this.$axios.$post('api/profile/me/picture', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
     }
   }
 }
