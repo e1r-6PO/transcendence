@@ -1,35 +1,27 @@
 <template>
 <v-main>
-  <v-toolbar
-    flat
-    color="indigo darken-4"
-    class="foreground_element round_card"
-    elevation="12"
-  >
-    <v-icon color="blue-grey lighten-2" size="30" >mdi-account</v-icon>
-      <v-toolbar-title class="font-weight-light font_size">
-        <b class="color_text">User Profile</b>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
+  <v-row>
+    <v-spacer></v-spacer>
       <v-btn
         color="blue darken-3"
         fab
         small
         @click="isEditing = !isEditing"
+        class="foreground_element"
       >
-        <v-icon color="blue-grey lighten-2" v-if="isEditing" >
+        <v-icon color="red lighten-2" v-if="isEditing" >
           mdi-close
         </v-icon>
         <v-icon color="blue-grey lighten-2" v-else>
           mdi-pencil
         </v-icon>
       </v-btn>
-    </v-toolbar>
+    </v-row>
         <v-row style="margin-top: 1%" justify="center" align="center">
             <img
-              class="foreground_element"
-              src="~/assets/lune.png"
-              width="200"
+              class="foreground_element round_card"
+              :src=me.picture
+              width="300"
             >
         </v-row>
         <v-row>
@@ -56,12 +48,12 @@
                   width="50"
                   height="50"
               />
-              <p v-if="me.provider === '42'" class="color_text text-h6" align="center"> Connected via : 42</p>
+              <p v-if="me.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
               <icon-42 v-if="me.provider === '42'"
                 width="50"
                 height="50"
               />
-              <p v-if="me.provider === 'google'" class="color_text text-h6" align="center"> Connected via : google</p>
+              <p v-if="me.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
               <v-icon v-if="me.provider === 'google'"
                   color="primary"
                   x-large
@@ -74,12 +66,28 @@
         </v-row>
         <v-row align="center" justify="center">
           <v-col cols="12" sm="2" align="center" justify="center">
-            <h1 class="color_win" align="center"> Game Win </h1>
-            <h3 class="color_text" align="center">{{ me.gameWin }} </h3>
+            <v-card
+              color="indigo darken-4"
+              class="foreground_element round_card"
+              elevation="12"
+              min-width=260
+              width=275
+            >
+              <h1 class="color_win" align="center"> Game Win </h1>
+              <h3 class="color_text" align="center">{{ me.gameWin }} </h3>
+            </v-card>
           </v-col>
-          <v-col cols="12" sm="2" align="left" justify="center">
-            <h1 class="color_lose" align="center"> Game Lose </h1>
-            <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
+          <v-col cols="12" sm="2" align="left">
+            <v-card
+              color="indigo darken-4"
+              class="foreground_element round_card"
+              elevation="12"
+              min-width=260
+              width=275
+            >
+              <h1 class="color_lose" align="center"> Game Lose </h1>
+              <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
+            </v-card>
           </v-col>
         </v-row>
       <v-row>
@@ -112,7 +120,6 @@ export default {
 
   methods: {
     async save() {
-      console.log(this.nick)
       const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
         .catch(function (error) {
           alert("nick " + this.nick + " is already taken")
@@ -123,6 +130,12 @@ export default {
     },
     emailSize() {
       return me.email.lenght
+    },
+    colorEditing() {
+      if (isEditing)
+        return "red lighten-1"
+      else
+        return "blue darken-3"
     }
   }
 }
