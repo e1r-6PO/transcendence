@@ -30,6 +30,8 @@ export class AuthService {
       var fill_user : User;
       fill_user = req.user
       fill_user.nickName = "" // REMOVE AFTER USER MUST CHOOSE HIS NICKNAME
+      fill_user.gameWin = 0;
+      fill_user.gameLose = 0;
       user = await this.usersRepository.save(fill_user);
     }
 
