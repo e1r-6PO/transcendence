@@ -241,3 +241,6 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/nuxt,nuxtjs,vuejs,node,macos,windows,linux,yarn
 
 package-lock.json
+
+data/users/*
+!data/users/.leave_me_here
