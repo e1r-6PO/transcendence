@@ -49,4 +49,25 @@ export class AuthService {
   async logout(req, response) {
     response.clearCookie('jwt')
   }
+
+  async is_logged(req, res) {
+    try {
+      await this.jwtService.verifyAsync(req.cookies['jwt'])
+    } catch (e) 
+    {
+      this.logout(req, res)
+      return { status: false, nickname: "" }
+    }
+    var user = await this.usersRepository.findOne(
+      { where:
+          { id: this.jwtService.decode(req.cookies['jwt'])['id'] }
+      }
+    )
+    if (!user)
+    {
+      this.logout(req, res)
+      return { status: false, nickname: "" }
+    }
+    return { status: true, nickname: user.nickName }
+  }
 }

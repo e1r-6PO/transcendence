@@ -6,24 +6,14 @@ import { Request, Response } from 'express'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('me')
-  me(@Req() request: Request) {
-    return this.userService.me(request)
+  @Get('search')
+  find(@Query('nick') nick: string) {
+    return this.userService.search(nick)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Get('me/nickname')
-  get_nickname(@Req() request: Request) {
-    return this.userService.get_nickname(request);
-  }
-
-  @Post('me/nickname')
-  set_nickname(@Req() request : Request, @Query('nickname') nick) {
-    return this.userService.set_nickname(request, nick);
+  @Get(':nick')
+  findOne(@Param('nick') nick: string) {
+    return this.userService.findOne(nick);
   }
 
   // @Patch(':id')

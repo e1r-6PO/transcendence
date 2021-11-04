@@ -45,7 +45,7 @@ export default {
 
   async asyncData() {
     const me = await fetch(
-      '/api/users/me'
+      '/api/profile/me'
     ).then((res) => res.json())
 
     return { me,

@@ -1,15 +1,8 @@
 <template>
   <v-app dark>
-    <client-only class="background_effect">
-      <Particles
-        :move-straight="false"
-        :hover-effect="false"
-        :click-effect="false"
-        :move-speed=0.666
-      />
-    </client-only>
     <v-navigation-drawer
       v-model="drawer"
+      :mini-variant="miniVariant"
       fixed
       app
     >
@@ -35,18 +28,13 @@
       app
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-btn
+        icon
+        @click.stop="miniVariant = !miniVariant"
+      >
+        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
+      </v-btn>
       <v-toolbar-title v-text="title" />
-      <div>
-        <v-text-field
-          class="foreground_element"
-          label="Search"
-          v-model="search"
-          shaped
-          filled
-          @keydown.enter="searchbar"
-        >
-        </v-text-field>
-      </div>
       <v-spacer />
       <v-btn
         icon
@@ -64,6 +52,12 @@
         <Nuxt />
       </v-container>
     </v-main>
+    <v-footer
+      :absolute="!fixed"
+      app
+    >
+      <span>&copy; {{ new Date().getFullYear() }}</span>
+    </v-footer>
   </v-app>
 </template>
 
@@ -78,14 +72,13 @@ export default {
 
   data () {
     return {
-      search: "",
       drawer: false,
       fixed: false,
       items: [
         {
           icon: 'mdi-apps',
-          title: 'Home',
-          to: '/home'
+          title: 'Welcome',
+          to: '/'
         },
         {
           icon: 'mdi-chart-bubble',
@@ -98,15 +91,10 @@ export default {
           to: '/scoreboard'
         }
       ],
+      miniVariant: false,
       right: true,
       rightDrawer: false,
       title: 'TranscendanceGod'
-    }
-  },
-
-  methods: {
-    searchbar() {
-      window.location.href = "/search?nick=" + this.search
     }
   }
 }
@@ -118,18 +106,6 @@ export default {
     background-color: #202b58 !important;
   }
   @import '../assets/main_page.scss';
-
-  div[id^="particles-instance-"] {
-    height: 100vh !important;
-    width: 100vw !important;
-    position: fixed !important;
-    top: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    // background: rgba($color: #05114e, $alpha: 0.4);
-    z-index: 2 !important;
-  }
 
 </style>
 

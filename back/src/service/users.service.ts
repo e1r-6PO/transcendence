@@ -1,8 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
-import { Repository } from 'typeorm'
-import * as cookieParser from 'cookie';
+import { Like, Repository } from 'typeorm'
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -13,59 +12,36 @@ export class UserService {
     private jwtService : JwtService
   ) {}
 
-  async me(request) {
-    // console.log(request.cookies['jwt'])
-    var user = await this.usersRepository.findOne(
-      { where:
-          { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
-      }
-    );
-    return user;
-  }
-
-  findAll() {
-    return this.usersRepository.find();
-  }
-
-  findOne(id: number) {
-    return this.usersRepository.findOne(id);
-  }
-
-  async get_nickname(request)
-  {
-    var user = await this.usersRepository.findOne(
-      { where:
-          { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
-      }
-    );
-    return { "nickname": user.nickName }
-  }
-
-  async set_nickname(request, nick) {
-    if (nick == null || nick.len == 0 || nick.len > 20)
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-
+  async findOne(nick: string) {
+    // await new Promise(r => setTimeout(r, 2000));
     var user = await this.usersRepository.findOne(
       { where:
         { nickName: nick }
       }
     );
-    if (user)
-      throw new HttpException('Nick already exist', HttpStatus.CONFLICT)
-    user = await this.usersRepository.findOne(
-      { where:
-          { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
-      }
-    );
-    user.nickName = nick
-    await this.usersRepository.save(user)
-
-    return { "nickname" : user.nickName }
+    if (!user)
+      throw new NotFoundException
+    var filtered = {
+      id: user.id,
+      nickName: user.nickName,
+      picture: user.picture
+    }
+    return filtered
   }
 
-  // update(id: number, updateUserDto: User) {
-  //   return `This action updates a #${id} user`;
-  // }
+  async search(nick: string) {
+    var matches = []
+
+    const userResult = await this.usersRepository.find(
+      {
+        where: { nickName: Like(nick + "%") }
+      }
+    )
+    for (let result of userResult) {
+      matches.push(result.nickName)
+    }
+    return matches
+  }
 
   async remove(id: number) {
     await this.usersRepository.delete(id);

@@ -24,7 +24,7 @@ export default {
 
   methods: {
     async getRedirectUrl({ $axios }) {
-      const ret = await this.$axios.$get('api/users/me/nickname')
+      const ret = await this.$axios.$get('api/profile/me/nickname')
         
       if (ret.nickname == "")
         return '/profile/set_nickname'

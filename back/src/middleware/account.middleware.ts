@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NestMiddleware, Redirect } from "@nestjs/common";
+import { ForbiddenException, HttpException, HttpStatus, Injectable, NestMiddleware, Redirect, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Response, Request, NextFunction } from "express";
@@ -7,36 +7,39 @@ import { Repository } from "typeorm";
 
 @Injectable()
 export class ValidTokenMiddleware implements NestMiddleware {
-    constructor(
-        private jwtService: JwtService,
-    ) {}
-    async use(req: Request, res: Response, next: NextFunction) {
-        try {
-            await this.jwtService.verifyAsync(req.cookies['jwt'])
-        } catch (e) 
-        {
-            throw new HttpException('Forbidden', HttpStatus.FORBIDDEN)
-        }
-        next()
+  constructor(
+    private jwtService: JwtService,
+  ) {}
+  async use(req: Request, res: Response, next: NextFunction) {
+    try {
+      await this.jwtService.verifyAsync(req.cookies['jwt'])
     }
+    catch (e) 
+    {
+      throw new UnauthorizedException
+    }
+    next()
+  }
 }
 
 @Injectable()
 export class HasNickMiddleware implements NestMiddleware {
-    constructor(
-        private jwtService: JwtService,
-        @InjectRepository(User)
-        private usersRepository: Repository<User>,
-    ) {}
-    async use(req: Request, res: Response, next: NextFunction) {
-        ///si le boug dans la bdd na pas de pseudo alors throw error
-        if ((await this.usersRepository.findOne(
-            { where:
-                { id: this.jwtService.decode(req.cookies['jwt'])['id'] }
-            }
-        )).nickName == "")
-            throw new HttpException('Forbidden', HttpStatus.FAILED_DEPENDENCY)
-        next()
-    }
+  constructor(
+    private jwtService: JwtService,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
+  async use(req: Request, res: Response, next: NextFunction) {
+    ///si le boug dans la bdd na pas de pseudo alors throw error
+    if ((await this.usersRepository.findOne(
+      { where:
+        {
+          id: this.jwtService.decode(req.cookies['jwt'])['id']
+        }
+      }
+    )).nickName == "")
+      throw new ForbiddenException
+    next()
+  }
 }
 

@@ -16,7 +16,6 @@
             <v-col align="center">
               <v-btn  
               href="/api/auth/42"
-              style="backgroundColor:'white' !important"
               class="foreground_element button_auth white"
             >
               <icon-42 
@@ -61,6 +60,8 @@ import Particles from '~/components/Particles.vue'
 
 export default {
   
+  middleware: 'no2login',
+
   layout: 'empty',
 
   components: {
