@@ -18,11 +18,36 @@
       </v-btn>
     </v-row>
         <v-row style="margin-top: 1%" justify="center" align="center">
-            <img
-              class="foreground_element round_card"
-              :src=me.picture
-              width="300"
+          <img v-if="!isEditing && me.picture != ''"
+            class="foreground_element round_card"
+            :src=me.picture
+            width="300"
+          >
+          <v-btn v-else
+            color="black-grey"
+            class="text-none foreground_element"
+            round
+            depressed
+            width="200"
+            height="200"
+            rounded
+            :disabled="isEditing ? false: true"
+            :loading="isSelecting"
+            @click="onButtonClick"
+          >
+            <v-icon
+              x-large
             >
+              mdi-camera-enhance
+            </v-icon>
+            <input
+              ref="uploader"
+              class="d-none"
+              type="file"
+              accept="image/*"
+              @change="onFileChanged"
+            >
+          </v-btn>
         </v-row>
         <v-row>
           <v-col justify="center" align="center">
@@ -115,7 +140,13 @@ export default {
     ).then((res) => res.json())
     var mail = me.email
 
-    return { me, nick: me.nickName, isEditing: null, eSize: me.email.length * 10}
+    return { me, nick: me.nickName, isEditing: null, eSize: me.email.length * 10, isSelecting: false}
+  },
+
+  data() {
+    return { selectedFile: null,
+    isSelecting: false
+    }
   },
 
   methods: {
@@ -136,6 +167,20 @@ export default {
         return "red lighten-1"
       else
         return "blue darken-3"
+    },
+    onButtonClick() {
+      this.isSelecting = true
+      window.addEventListener('focus', () => {
+        this.isSelecting = false
+      }, { once: true })
+
+      this.$refs.uploader.click()
+    },
+    onFileChanged(e) {
+      this.selectedFile = e.target.files[0]
+      
+      console.log(this.selectedFile)
+      // do something
     }
   }
 }
