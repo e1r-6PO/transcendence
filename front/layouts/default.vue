@@ -106,7 +106,7 @@ export default {
 
   methods: {
     searchbar() {
-      window.location.href = "/users/" + this.search
+      window.location.href = "/search?nick=" + this.search
     }
   }
 }

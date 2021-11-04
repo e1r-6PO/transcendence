@@ -26,7 +26,7 @@ export class UserService {
       nickName: user.nickName,
       picture: user.picture
     }
-    return [filtered]
+    return filtered
   }
 
   async search(nick: string) {
