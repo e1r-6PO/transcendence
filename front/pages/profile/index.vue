@@ -38,6 +38,7 @@
               class="foreground_element text-field-dimension round_card"
               v-model="nick"
               label="Nickname"
+              counter="20"
               filled
             >
             </v-text-field>
@@ -81,6 +82,17 @@
             <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
           </v-col>
         </v-row>
+      <v-row>
+        <v-spacer></v-spacer>
+        <v-btn
+        class="foreground_element"
+        :disabled="!isEditing || nick == me.nickName || nick.length > 20"
+        color="success"
+        @click="save"
+        >
+        Save
+        </v-btn>
+    </v-row>
   </v-main>
 </template>
 
@@ -89,7 +101,7 @@ import Particles from '~/components/Particles.vue'
 
 export default {
 
-  async asyncData() {
+  async asyncData({ $axios }) {
     const me = await fetch(
       '/api/profile/me'
     ).then((res) => res.json())
@@ -98,9 +110,16 @@ export default {
     return { me, nick: me.nickName, isEditing: null, eSize: me.email.length * 10}
   },
 
-  methids: {
-    save() {
-      isEditing = !isEditing
+  methods: {
+    async save() {
+      console.log(this.nick)
+      const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
+        .catch(function (error) {
+          alert("nick " + this.nick + " is already taken")
+            return error.response
+        });
+      if (ret.status == 201)
+        this.isEditing = !this.isEditing
     },
     emailSize() {
       return me.email.lenght
