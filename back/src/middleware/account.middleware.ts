@@ -18,6 +18,7 @@ export class ValidTokenMiddleware implements NestMiddleware {
     {
       throw new UnauthorizedException
     }
+    req.cookies['user_id'] = this.jwtService.decode(req.cookies['jwt'])['id']
     next()
   }
 }
