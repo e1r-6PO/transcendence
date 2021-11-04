@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm'
 import { JwtService } from '@nestjs/jwt';
+import { existsSync } from 'fs'
 
 @Injectable()
 export class ProfileService {
@@ -16,9 +17,11 @@ export class ProfileService {
     // console.log(request.cookies['jwt'])
     var user = await this.usersRepository.findOne(
       { where:
-          { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
+          { id: request.cookies['user_id'] }
       }
     );
+    if (existsSync('../data/users/' + request.cookies['user_id'] + '.png'))
+      user.picture = 'http://localhost:8000/api/profile/me/picture'
     return user;
   }
 
