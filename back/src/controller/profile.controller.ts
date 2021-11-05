@@ -2,11 +2,12 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, Htt
 import { JwtService } from '@nestjs/jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express'
+import { fstat } from 'fs';
 import multer, { diskStorage, memoryStorage } from 'multer';
 import { extname } from 'path/posix';
 import { ImageUpload } from 'src/middleware/image.upload.middleware';
 import { ProfileService } from 'src/service/profile.service';
-import {  } from 'sharp'
+
 
 @Controller('api/profile')
 export class ProfileController {
@@ -32,17 +33,22 @@ export class ProfileController {
   @Post('me/picture')
   @UseInterceptors(FileInterceptor('image', {
     storage: diskStorage({
-      destination: '../data/tmp',
+      destination: '../data/image_tmp',
       filename: new ImageUpload().editFileName
     }),
     fileFilter: new ImageUpload().imageFileFilter
   }))
-  async uploadedFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadedFile(@UploadedFile() file: Express.Multer.File, @Req() request: Request) {
     const sharp = require('sharp')
-    sharp(file.path)
-      .resize(500)
-      .toFile('../data/users' + file.filename)
-    console.log('yeay')
+    const fs = require('fs')
+
+    sharp.cache(false)
+    await sharp(file.path)
+      .resize({width: 750, height: 750})
+      .png()
+      .toFile('../data/users/' + request.cookies['user_id'] + '.png')
+    fs.unlinkSync(file.path)
+    return true
   }
 
   @Get('me/picture')
