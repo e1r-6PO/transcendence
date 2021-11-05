@@ -24,12 +24,7 @@
             width="300"
           >
           <v-btn v-else
-            color="black-grey"
-            class="text-none foreground_element"
-            rounded
-            depressed
-            width="200"
-            height="200"
+            class="text-none foreground_element btn_camera"
             :disabled="isEditing ? false: true"
             :loading="isSelecting"
             @click="onButtonClick"
@@ -59,11 +54,8 @@
               @keydown.enter="save"
             >
             </v-text-field>
-            <v-card class="justify-center foreground_element" color="indigo darken-4 round_card"
-              width=550
-              heigth=250
+            <v-card class="foreground_element card_profile"
               v-if="!isEditing"
-              elevation="12"
             > 
             <v-card-text>
               <p class="color_text text-h4 font-weight-medium" align="center">{{ nick }}</p>
@@ -91,25 +83,13 @@
         </v-row>
         <v-row align="center" justify="center">
           <v-col cols="12" sm="2" align="center" justify="center">
-            <v-card
-              color="indigo darken-4"
-              class="foreground_element round_card"
-              elevation="12"
-              min-width=260
-              width=275
-            >
+            <v-card class="foreground_element card_game">
               <h1 class="color_win" align="center"> Game Win </h1>
               <h3 class="color_text" align="center">{{ me.gameWin }} </h3>
             </v-card>
           </v-col>
           <v-col cols="12" sm="2" align="left" justify="center">
-            <v-card
-              color="indigo darken-4"
-              class="foreground_element round_card"
-              elevation="12"
-              min-width=260
-              width=275
-            >
+            <v-card class="foreground_element card_game">
               <h1 class="color_lose" align="center"> Game Lose </h1>
               <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
             </v-card>
@@ -157,7 +137,10 @@ export default {
             return error.response
         });
       if (ret.status == 201)
+      {
         this.isEditing = !this.isEditing
+        this.me.nickName = this.nick
+      }
     },
     emailSize() {
       return me.email.lenght
@@ -210,10 +193,6 @@ export default {
   margin-top: 10px;
 }
 
-.font_size {
-  font-size: 30px;
-}
-
 .color_lose {
   z-index: 6;
   color: #E57373;
@@ -231,6 +210,33 @@ export default {
 
 .round_card {
   border-radius:30px!important;
+}
+
+.btn_camera {
+  border-radius: 30px!important;
+  box-shadow: 0px 0px 20px 0px rgba(31, 31, 50, 0.89);
+  color: #38393b;
+  min-width: 200px;
+  width: 200px;
+  min-height: 200px;
+  height: 200px;
+}
+
+.card_game {
+  border-radius:17px!important;
+  background-color: #1a237e !important;
+  min-width: 260px;
+  width: 275px;
+  box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important;
+}
+
+.card_profile {
+  border-radius: 30px !important;
+  background-color: #1a237e !important;
+  box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important;
+  min-width: 400px;
+  width: 550px;
+  height: 250px;
 }
 
 </style>
