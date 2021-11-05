@@ -56,6 +56,7 @@
               label="Nickname"
               counter="20"
               filled
+              @keydown.enter="save"
             >
             </v-text-field>
             <v-card class="justify-center foreground_element" color="indigo darken-4 round_card"
@@ -116,7 +117,7 @@
         </v-row>
       <v-row>
         <v-spacer></v-spacer>
-        <v-btn
+        <v-btn v-if="isEditing"
         class="foreground_element"
         :disabled="!isEditing || nick == me.nickName || nick.length > 20"
         color="success"

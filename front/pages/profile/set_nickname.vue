@@ -1,23 +1,29 @@
 <template>
   <v-main>
-    <v-text-field
-      class="foreground_element"
-      v-model="login.nickname"
-      label="Nickname"
-      counter="20"
-      shaped
-      filled
-      :rules="rules.nickname"
-    >
-    </v-text-field>
-    <v-btn 
-      class="foreground_element"
-      text
-      :disabled="!nickIsValid"
-      @click="setNick"
-    >
-      Complet Registration
-    </v-btn>
+    <v-row justify="center" align="center">
+      <v-col justify="center" align="center">
+        <v-text-field
+          class="foreground_element text-field_size"
+          v-model="login.nickname"
+          label="Nickname"
+          @keydown.enter="setNick"
+          width="200"
+          counter="20"
+          shaped
+          filled
+          :rules="rules.nickname"
+        >
+        </v-text-field>
+        <v-btn 
+          class="foreground_element"
+          text
+          :disabled="!nickIsValid"
+          @click="setNick"
+        >
+          Complet Registration
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-main>
 </template>
 
@@ -67,3 +73,12 @@ export default {
   }
 }
 </script>
+
+<style>
+
+.text-field_size{
+  min-width: 250px;
+  width: 500px;
+}
+
+</style>
