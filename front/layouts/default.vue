@@ -33,21 +33,28 @@
     <v-app-bar
       fixed
       app
+      height="80"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
-      <div>
-        <v-text-field
-          class="foreground_element"
-          label="Search"
-          v-model="search"
-          shaped
-          filled
-          @keydown.enter="searchbar"
-        >
-        </v-text-field>
-      </div>
       <v-spacer />
+      <v-container fill-height>
+        <v-row align="center" justify="center">
+          <v-col align="right" justify="right">
+            <v-text-field
+              class="foreground_element"
+              label="Search"
+              v-model="search"
+              dense
+              filled
+              rounded
+              prepend-inner-icon="mdi-magnify"
+              @keydown.enter="searchbar"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
       <v-btn
         icon
         href="/api/auth/logout"
@@ -130,6 +137,10 @@ export default {
     // background: rgba($color: #05114e, $alpha: 0.4);
     z-index: 2 !important;
   }
+
+.v-text-field{
+      max-width: 250px;
+}
 
 </style>
 
