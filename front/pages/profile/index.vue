@@ -167,7 +167,7 @@ export default {
         return;
       }
       
-      if (e.target.files[0].size > 1024 * 1024) {
+      if (e.target.files[0].size > 1000000) {
         e.preventDefault();
         alert('File too big (> 1MB)');
         return;
