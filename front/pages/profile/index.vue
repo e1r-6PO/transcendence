@@ -138,6 +138,7 @@ export default {
         });
       if (ret.status == 201)
       {
+        this.selectedFile = null
         this.isEditing = !this.isEditing
         this.me.nickName = this.nick
       }
