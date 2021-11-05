@@ -42,7 +42,7 @@
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
             <v-text-field
-              class="foreground_element"
+              class="foreground_element text-field_size"
               label="Search"
               v-model="search"
               dense
@@ -138,8 +138,9 @@ export default {
     z-index: 2 !important;
   }
 
-.v-text-field{
-      max-width: 250px;
+.text-field_size{
+  min-width: 250px;
+  width: 250px;
 }
 
 </style>
