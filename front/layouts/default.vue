@@ -45,6 +45,7 @@
               class="foreground_element text-field_size"
               label="Search"
               v-model="search"
+              solo
               dense
               filled
               rounded
