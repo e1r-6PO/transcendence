@@ -2,7 +2,6 @@ import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { NextFunction } from "express";
 import { extname } from "path-posix";
-import {sharp} from 'sharp'
 
 export class ImageUpload {
 

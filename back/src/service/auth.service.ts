@@ -29,10 +29,23 @@ export class AuthService {
     {
       var fill_user : User;
       fill_user = req.user
-      fill_user.nickName = "" // REMOVE AFTER USER MUST CHOOSE HIS NICKNAME
+      fill_user.nickName = ""
       fill_user.gameWin = 0;
       fill_user.gameLose = 0;
       user = await this.usersRepository.save(fill_user);
+
+      const sharp = require('sharp')
+      sharp.cache(false)
+      await sharp({
+        create: {
+          width: 750,
+          height: 750,
+          channels: 4,
+          background: { r: Math.floor(Math.random() * 255), g: Math.floor(Math.random() * 255), b: Math.floor(Math.random() * 255), alpha: 1 }
+        }
+      })
+      .png()
+      .toFile('../data/users/' + user.id + '.png')
     }
 
     //create the token

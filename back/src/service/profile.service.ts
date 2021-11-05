@@ -48,7 +48,7 @@ export class ProfileService {
       throw new HttpException('Nick already exist', HttpStatus.CONFLICT)
     user = await this.usersRepository.findOne(
       { where:
-          { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
+          { id: request.cookies['id'] }
       }
     );
     user.nickName = nick
