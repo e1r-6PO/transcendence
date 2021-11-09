@@ -22,6 +22,9 @@ export class User {
   @Column()
   provider_id: string;
 
+  @Column({ nullable: true })
+  public twoFactorAuthenticationSecret?: string;
+
   @Column({ default: true })
   isActive: boolean;
 

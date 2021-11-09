@@ -43,6 +43,12 @@ export class UsersService {
     return matches
   }
 
+  async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
+    return this.usersRepository.update(userId, {
+      twoFactorAuthenticationSecret: secret
+    })
+  }
+
   async remove(id: number) {
     await this.usersRepository.delete(id);
   }
