@@ -7,10 +7,10 @@ import { DbConnectModule } from './db.connect.module';
 import { SocketModule } from './socket.module';
 import { ProfileModule } from './profile.module';
 import { CustomJwtModule } from './custom.jwt.module';
-import { UserModule } from './users.module';
+import { UsersModule } from './users.module';
 
 @Module({
-  imports: [ DbConnectModule, UserModule, ProfileModule, AuthModule, AllMiddleware, SocketModule ],
+  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, SocketModule ],
   controllers: [ AppController ],
   providers: [ AppService ],
 })

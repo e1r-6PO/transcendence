@@ -1,13 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode } from '@nestjs/common';
-import { UserService } from 'src/service/users.service';
+import { UsersService } from 'src/service/users.service';
 import { Request, Response } from 'express'
 
 @Controller('api/users')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class UsersController {
+  constructor(private readonly userService: UsersService) {}
 
   @Get('search')
   find(@Query('nick') nick: string) {
+    console.log('hey')
     return this.userService.search(nick)
   }
 
