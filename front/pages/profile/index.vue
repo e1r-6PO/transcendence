@@ -138,6 +138,7 @@ export default {
         });
       if (ret.status == 201)
       {
+        this.selectedFile = null
         this.isEditing = !this.isEditing
         this.me.nickName = this.nick
 
@@ -175,8 +176,7 @@ export default {
         return;
       }
       
-      console.log(e.target.files[0])
-      if (e.target.files[0].size > 1024 * 1024) {
+      if (e.target.files[0].size > 1000000) {
         e.preventDefault();
         alert('File too big (> 1MB)');
         return;

@@ -244,3 +244,5 @@ package-lock.json
 
 data/users/*
 !data/users/.leave_me_here
+data/image_tmp/*
+!data/image_tmp/.leave_me_here

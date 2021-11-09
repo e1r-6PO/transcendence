@@ -38,7 +38,6 @@ export class ProfileService {
   async set_nickname(request, nick) {
     if (nick == null || nick.len == 0 || nick.len > 20)
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-
     var user = await this.usersRepository.findOne(
       { where:
         { nickName: nick }
@@ -48,7 +47,7 @@ export class ProfileService {
       throw new HttpException('Nick already exist', HttpStatus.CONFLICT)
     user = await this.usersRepository.findOne(
       { where:
-          { id: this.jwtService.decode(request.cookies['jwt'])['id'] }
+          { id: request.cookies['user_id'] }
       }
     );
     user.nickName = nick

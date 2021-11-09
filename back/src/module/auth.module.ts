@@ -8,14 +8,10 @@ import { googleStrategy } from 'src/strategy/google.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { qdStrategy } from 'src/strategy/42.strategy';
 import { githubStrategy } from 'src/strategy/github.strategy';
+import { CustomJwtModule } from './custom.jwt.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1w' },
-    }),
-  ],
+  imports: [TypeOrmModule.forFeature([User]), PassportModule, CustomJwtModule ],
   controllers: [ AuthController ],
   providers: [ AuthService, googleStrategy, qdStrategy, githubStrategy ]
 })
