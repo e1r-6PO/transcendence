@@ -8,7 +8,6 @@ export class UsersController {
 
   @Get('search')
   find(@Query('nick') nick: string) {
-    console.log('hey')
     return this.userService.search(nick)
   }
 
