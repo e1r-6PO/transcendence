@@ -1,7 +1,7 @@
 import { ForbiddenException, HttpException, HttpStatus, Injectable, NestMiddleware, Redirect, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Response, Request, NextFunction } from "express";
+import { Response, Request, NextFunction, response } from "express";
 import { User } from "src/entity/user.entity";
 import { Repository } from "typeorm";
 
@@ -18,7 +18,19 @@ export class ValidTokenMiddleware implements NestMiddleware {
     {
       throw new UnauthorizedException
     }
-    req.cookies['user_id'] = this.jwtService.decode(req.cookies['jwt'])['id']
+    next()
+  }
+}
+
+@Injectable()
+export class AddUserIdMiddleware implements NestMiddleware {
+  constructor(
+    private jwtService: JwtService,
+  ) {}
+  async use(req: Request, res: Response, next: NextFunction) {
+    
+    if (req.cookies['jwt'] != null)
+      req.cookies['user_id'] = this.jwtService.decode(req.cookies['jwt'])['id']
     next()
   }
 }
@@ -32,13 +44,13 @@ export class HasNickMiddleware implements NestMiddleware {
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     ///si le boug dans la bdd na pas de pseudo alors throw error
-    if ((await this.usersRepository.findOne(
+    var user : User = await this.usersRepository.findOne(    //ptet moyen de mettre ca ailleur nan ?
       { where:
-        {
-          id: this.jwtService.decode(req.cookies['jwt'])['id']
-        }
+          { id: req.cookies['user_id'] }
       }
-    )).nickName == "")
+    );
+
+    if (!user || user.nickName == "")
       throw new ForbiddenException
     next()
   }
