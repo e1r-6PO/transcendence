@@ -99,7 +99,7 @@
         <v-spacer></v-spacer>
         <v-btn v-if="isEditing"
         class="foreground_element"
-        :disabled="!isEditing || nick == me.nickName || nick.length > 20"
+        :disabled="(!isEditing || nick == me.nickName || nick.length > 20) && selectedFile == null"
         color="success"
         @click="save"
         >
@@ -120,12 +120,12 @@ export default {
     ).then((res) => res.json())
     var mail = me.email
 
-    return { me, nick: me.nickName, isEditing: null, eSize: me.email.length * 10, isSelecting: false}
+    return { me, nick: me.nickName, isEditing: null, eSize: me.email.length * 10}
   },
 
   data() {
     return { selectedFile: null,
-    isSelecting: false,
+      isSelecting: false,
     }
   },
 
@@ -140,6 +140,14 @@ export default {
       {
         this.isEditing = !this.isEditing
         this.me.nickName = this.nick
+
+        var formData = new FormData();
+        formData.append("image", this.selectedFile);
+        this.$axios.$post('api/profile/me/picture', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
       }
     },
     emailSize() {
@@ -167,6 +175,7 @@ export default {
         return;
       }
       
+      console.log(e.target.files[0])
       if (e.target.files[0].size > 1024 * 1024) {
         e.preventDefault();
         alert('File too big (> 1MB)');
@@ -174,14 +183,14 @@ export default {
       }
       this.selectedFile = e.target.files[0]
       // console.log(this.selectedFile)
-      var formData = new FormData();
+    /*  var formData = new FormData();
       formData.append("image", this.selectedFile);
       this.$axios.$post('api/profile/me/picture', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
-    }
+    */}
   }
 }
 </script>
