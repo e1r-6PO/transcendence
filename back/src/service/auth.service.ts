@@ -50,7 +50,9 @@ export class AuthService {
 
     //create the token
     const jwt = await this.jwtService.signAsync({
-      id: user.id
+      id: user.id,
+      has2fa: user.isTwoFactorAuthenticationEnabled,
+      is2factorauthenticated: false
     })
 
     response.cookie('jwt', jwt, { httpOnly: true })
