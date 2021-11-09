@@ -5,7 +5,7 @@ import { Like, Repository } from 'typeorm'
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
