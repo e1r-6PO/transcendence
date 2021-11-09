@@ -24,9 +24,15 @@ export default {
 
   methods: {
     async getRedirectUrl({ $axios }) {
-      const ret = await this.$axios.$get('api/profile/me/nickname')
-        
-      if (ret.nickname == "")
+
+      const tfa = await this.$axios.$get('api/auth/2fa/is_enabled')
+
+      if (tfa.isTwoFactorAuthenticationEnabled == true)
+        return '/2fa'
+
+      const nick = await this.$axios.$get('api/profile/me/nickname')
+
+      if (nick.nickname == "")
         return '/profile/set_nickname'
       return '/home'
     }
