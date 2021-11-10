@@ -66,7 +66,7 @@ export class TwoFactorAuthenticationController {
     return { message: "success" }
   }
 
-  @Get('authenticate')
+  @Post('authenticate')
   @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
   async authenticate(@Req() req : Request, @Res({ passthrough: true}) response : Response, @Query('2fa') tfa : string) {
 
