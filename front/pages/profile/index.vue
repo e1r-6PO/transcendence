@@ -130,20 +130,20 @@ export default {
       isSelecting: false,
     }
   },
-
+  
   methods: {
     async save() {
-      const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
-        .catch(function (error) {
-          alert("nick " + this.nick + " is already taken")
-            return error.response
-        });
-      if (ret.status == 201)
-      {
-        this.selectedFile = null
-        this.isEditing = !this.isEditing
+      if (this.me.nickName != this.nick) {
+        const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
+          .catch(function (error) {
+            alert("nick " + this.nick + " is already taken")
+              return error.response
+          });
+        console.log(ret.status)
         this.me.nickName = this.nick
-
+      }
+      if (this.selectedFile != null)
+      {
         var formData = new FormData();
         formData.append("image", this.selectedFile);
         this.$axios.$post('api/profile/me/picture', formData, {
@@ -151,7 +151,9 @@ export default {
             'Content-Type': 'multipart/form-data'
           }
         })
+        this.selectedFile = null
       }
+      window.location.href = "/profile"
     },
     emailSize() {
       return me.email.lenght
@@ -185,13 +187,6 @@ export default {
       }
       this.selectedFile = e.target.files[0]
       // console.log(this.selectedFile)
-      var formData = new FormData();
-      formData.append("image", this.selectedFile);
-      this.$axios.$post('api/profile/me/picture', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
     },
 
     async goto2fapage() {
