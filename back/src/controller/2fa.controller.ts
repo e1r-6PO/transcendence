@@ -1,4 +1,4 @@
-import { ClassSerializerInterceptor, Controller, Get, Injectable, Post, Query, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from "@nestjs/common";
+import { ClassSerializerInterceptor, Controller, Get, Injectable, Post, Query, Req, Res, SetMetadata, UnauthorizedException, UseGuards, UseInterceptors } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ALPN_ENABLED } from "constants";
@@ -22,7 +22,6 @@ export class TwoFactorAuthenticationController {
   ) {}
 
   @Get('is_enabled')
-  @UseGuards(TwoFaGuard)
   async is_enabled(@Req() req : Request) {
 
     var user : User = await this.usersService.getUser(req)
@@ -31,7 +30,8 @@ export class TwoFactorAuthenticationController {
   }
 
   @Get('generate')
-  async register(@Res() response: Response, @Req() req : Request) {
+  @UseGuards(TwoFaGuard)
+  async generate(@Res() response: Response, @Req() req : Request) {
 
     var user : User = await this.usersService.getUser(req)
 
@@ -41,6 +41,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Get('turn-on')
+  @UseGuards(TwoFaGuard)
   async turnOnTwoFactorAuthentication(@Req() req : Request, @Query('2fa') tfa : string) {
 
     var user : User = await this.usersService.getUser(req)
@@ -56,6 +57,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Get('turn-off')
+  @UseGuards(TwoFaGuard)
   async turnOffTwoFactorAuthentication(@Req() req : Request) {
 
     var user : User = await this.usersService.getUser(req)
@@ -66,6 +68,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Get('authenticate')
+  @UseGuards(TwoFaGuard)
   async authenticate(@Req() req : Request, @Res({ passthrough: true}) response : Response, @Query('2fa') tfa : string) {
 
     var user : User = await this.usersService.getUser(req)

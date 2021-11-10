@@ -1,4 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Observable } from 'rxjs';
@@ -8,15 +9,46 @@ import { UsersService } from 'src/service/users.service';
 @Injectable()
 export class TwoFaGuard implements CanActivate {
   constructor(
-    private usersService : UsersService  
+    private usersService : UsersService,
+    private reflector: Reflector
   ) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    
-    var user : User = await this.usersService.getUser(request)
 
-    return true;
+    const user = await this.usersService.getUser(request)
+
+    switch(context.getHandler().name) {
+
+      case "is_enabled": { return true }
+      
+      case "generate": {
+        if (!(user.isTwoFactorAuthenticationEnabled))
+          return true
+        return false
+      }
+
+      // turn-on endpoint
+      case "turnOnTwoFactorAuthentication": {
+        if (!(user.isTwoFactorAuthenticationEnabled) && user.twoFactorAuthenticationSecret != null)
+          return true
+        return false
+      }
+
+      // turn-off endpoint
+      case "turnOffTwoFactorAuthentication": {
+        if (user.isTwoFactorAuthenticationEnabled && user.twoFactorAuthenticationSecret != null)
+          return true
+        return false
+      }
+    
+      case "authenticate": {
+        if (user.isTwoFactorAuthenticationEnabled && user.twoFactorAuthenticationSecret != null)
+          return true
+        return false
+      }
+      default: { return false }
+    }
   }
 }
 
