@@ -81,20 +81,16 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row align="center" justify="center">
-          <v-col cols="12" sm="2" align="center" justify="center">
-            <v-card class="foreground_element card_game">
-              <h1 class="color_win" align="center"> Game Win </h1>
-              <h3 class="color_text" align="center">{{ me.gameWin }} </h3>
-            </v-card>
-          </v-col>
-          <v-col cols="12" sm="2" align="left" justify="center">
-            <v-card class="foreground_element card_game">
-              <h1 class="color_lose" align="center"> Game Lose </h1>
-              <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
-            </v-card>
-          </v-col>
-        </v-row>
+        <v-container class="flex-container">
+          <v-card class="foreground_element card_game flex-item" justify="center" margin-top="5%">
+            <h1 class="color_win" align="center"> Game Win </h1>
+            <h3 class="color_text" align="center">{{ me.gameWin }} </h3>
+          </v-card>
+          <v-card class="foreground_element card_game flex-item" margin-top="5%">
+            <h1 class="color_lose" align="center"> Game Lose </h1>
+            <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
+          </v-card>
+      </v-container>
       <v-row>
         <v-spacer></v-spacer>
         <v-btn v-if="isEditing"
@@ -238,6 +234,33 @@ export default {
   min-width: 400px;
   width: 550px;
   height: 250px;
+}
+
+.flex-container {
+  /* We first create a flex layout context */
+  display: flex;
+  
+  /* Then we define the flow direction 
+     and if we allow the items to wrap 
+   * Remember this is the same as:
+   * flex-direction: row;
+   * flex-wrap: wrap;
+   */
+  flex-flow: row wrap;
+  
+  /* Then we define how is distributed the remaining space */
+  justify-content: space-around;
+  align-content: center;
+  margin: 0;
+  list-style: none;
+}
+
+.flex-item {
+  background: tomato;
+  margin-top: 5%;
+  color: white;
+  font-weight: bold;
+  text-align: center;
 }
 
 </style>
