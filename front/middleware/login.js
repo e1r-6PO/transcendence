@@ -4,10 +4,11 @@ export default async function (context) {
   .catch(function (error) {
     return error.response
   });
-  var login = new RegExp("/api/(.*)|^/$|/auth/(.*)")
-  var nick = new RegExp("/api/(.*)|/profile/set_nickname")
-  if (!login.test(context.route.fullPath) && ret.data['status'] == false)
+  if (ret.data['status'] == false)
     window.location.href = '/'
-  if (!nick.test(context.route.fullPath) && ret.data['status'] == true && ret.data['nickname'] == "")
+  else if (ret.data['status'] == true && ret.data['nickname'] == "")
     window.location.href = '/profile/set_nickname'
+  else if (ret.data['status'] == true && ret.data['has2fa'] == true && ret.data['is2factorauthenticated'] == false)
+    window.location.href = "/2fa"
+
 }
