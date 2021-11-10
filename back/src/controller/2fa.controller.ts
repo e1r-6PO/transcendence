@@ -4,12 +4,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ALPN_ENABLED } from "constants";
 import { Request, response, Response } from "express";
 import { User } from "src/entity/user.entity";
-import { TwoFaGuard } from "src/guards/2fa.guards";
+import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from "src/guards/account.guards";
 import { TwoFactorAuthenticationService } from "src/service/2fa.service";
 import { UsersService } from "src/service/users.service";
 import { Repository } from "typeorm";
 
 @Controller('api/auth/2fa')
+@UseGuards(ValidTokenGuard, HasNickGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class TwoFactorAuthenticationController {
   constructor(
