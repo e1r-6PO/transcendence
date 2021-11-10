@@ -25,6 +25,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         this.logger.log('Init');
     }
 
+    
     handleDisconnect(client: Socket){
         this.logger.log(`Client disconnected: ${client.id}`)
     }
