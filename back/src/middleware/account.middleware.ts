@@ -38,7 +38,6 @@ export class AddUserIdMiddleware implements NestMiddleware {
 @Injectable()
 export class HasNickMiddleware implements NestMiddleware {
   constructor(
-    private jwtService: JwtService,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
@@ -55,4 +54,3 @@ export class HasNickMiddleware implements NestMiddleware {
     next()
   }
 }
-
