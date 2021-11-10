@@ -50,7 +50,9 @@ export class AuthService {
 
     //create the token
     const jwt = await this.jwtService.signAsync({
-      id: user.id
+      id: user.id,
+      has2fa: user.isTwoFactorAuthenticationEnabled,
+      is2factorauthenticated: false
     })
 
     response.cookie('jwt', jwt, { httpOnly: true })
@@ -71,16 +73,23 @@ export class AuthService {
       this.logout(req, res)
       return { status: false, nickname: "" }
     }
-    var user = await this.usersRepository.findOne(
+    var jwtdecoded = this.jwtService.decode(req.cookies['jwt'])
+
+    var user : User = await this.usersRepository.findOne(
       { where:
-          { id: this.jwtService.decode(req.cookies['jwt'])['id'] }
+          { id: jwtdecoded['id'] }
       }
     )
     if (!user)
     {
       this.logout(req, res)
-      return { status: false, nickname: "" }
+      return { status: false, nickname: "", has2fa: false, is2factorauthenticated: false }
     }
-    return { status: true, nickname: user.nickName }
+    return {
+      status: true,
+      nickname: user.id,
+      has2fa: jwtdecoded['has2fa'],
+      is2factorauthenticated: jwtdecoded['is2factorauthenticated']
+    }
   }
 }
