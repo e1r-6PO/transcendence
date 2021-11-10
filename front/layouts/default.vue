@@ -35,14 +35,14 @@
       app
       height="80"
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <!-- <v-app-bar-nav-icon/> -->
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <v-container fill-height>
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
             <v-text-field
-              class="foreground_element text-field_size"
+              class="foreground_element text-field_search"
               label="Search"
               v-model="search"
               solo
@@ -87,7 +87,7 @@ export default {
   data () {
     return {
       search: "",
-      drawer: false,
+      drawer: true,
       fixed: false,
       items: [
         {
@@ -139,9 +139,10 @@ export default {
     z-index: 2 !important;
   }
 
-.text-field_size{
+.text-field_search {
   min-width: 250px;
   width: 250px;
+  padding-top: 4px !important;
 }
 
 </style>
