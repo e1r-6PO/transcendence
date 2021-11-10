@@ -10,7 +10,6 @@ import { UsersService } from "src/service/users.service";
 import { Repository } from "typeorm";
 
 @Controller('api/auth/2fa')
-@UseGuards(ValidTokenGuard, HasNickGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 export class TwoFactorAuthenticationController {
   constructor(
@@ -30,7 +29,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Get('generate')
-  @UseGuards(TwoFaGuard)
+  @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
   async generate(@Res() response: Response, @Req() req : Request) {
 
     var user : User = await this.usersService.getUser(req)
@@ -41,7 +40,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Get('turn-on')
-  @UseGuards(TwoFaGuard)
+  @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
   async turnOnTwoFactorAuthentication(@Req() req : Request, @Query('2fa') tfa : string) {
 
     var user : User = await this.usersService.getUser(req)
@@ -57,7 +56,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Get('turn-off')
-  @UseGuards(TwoFaGuard)
+  @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
   async turnOffTwoFactorAuthentication(@Req() req : Request) {
 
     var user : User = await this.usersService.getUser(req)
@@ -68,7 +67,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Get('authenticate')
-  @UseGuards(TwoFaGuard)
+  @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
   async authenticate(@Req() req : Request, @Res({ passthrough: true}) response : Response, @Query('2fa') tfa : string) {
 
     var user : User = await this.usersService.getUser(req)
