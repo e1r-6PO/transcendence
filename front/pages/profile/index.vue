@@ -16,6 +16,12 @@
           mdi-pencil
         </v-icon>
       </v-btn>
+      <v-btn
+        @click="goto2fapage()"
+        class="foreground_element"
+      >
+        2fa
+      </v-btn>
     </v-row>
         <v-row style="margin-top: 1%" justify="center" align="center">
           <img v-if="!isEditing && me.picture != ''"
@@ -178,6 +184,10 @@ export default {
           'Content-Type': 'multipart/form-data'
         }
       })
+    },
+
+    async goto2fapage() {
+      window.location.href = "/profile/2fa"
     }
   }
 }
