@@ -28,7 +28,7 @@ export class TwoFactorAuthenticationController {
     return { isTwoFactorAuthenticationEnabled: user.isTwoFactorAuthenticationEnabled };
   }
 
-  @Get('generate')
+  @Post('generate')
   @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
   async generate(@Res() response: Response, @Req() req : Request) {
 
@@ -36,10 +36,10 @@ export class TwoFactorAuthenticationController {
 
     const { otpauthurl } = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(user)
 
-    return this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthurl)
+    this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthurl)
   }
 
-  @Get('turn-on')
+  @Post('turn-on')
   @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
   async turnOnTwoFactorAuthentication(@Req() req : Request, @Query('2fa') tfa : string) {
 
@@ -55,7 +55,7 @@ export class TwoFactorAuthenticationController {
     return { message: "success" }
   }
 
-  @Get('turn-off')
+  @Post('turn-off')
   @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
   async turnOffTwoFactorAuthentication(@Req() req : Request) {
 
