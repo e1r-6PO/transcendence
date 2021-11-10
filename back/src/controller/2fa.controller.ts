@@ -1,9 +1,10 @@
-import { ClassSerializerInterceptor, Controller, Get, Injectable, Post, Query, Req, Res, UnauthorizedException, UseInterceptors } from "@nestjs/common";
+import { ClassSerializerInterceptor, Controller, Get, Injectable, Post, Query, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ALPN_ENABLED } from "constants";
 import { Request, response, Response } from "express";
 import { User } from "src/entity/user.entity";
+import { TwoFaGuard } from "src/guards/2fa.guards";
 import { TwoFactorAuthenticationService } from "src/service/2fa.service";
 import { UsersService } from "src/service/users.service";
 import { Repository } from "typeorm";
@@ -20,13 +21,10 @@ export class TwoFactorAuthenticationController {
   ) {}
 
   @Get('is_enabled')
+  @UseGuards(TwoFaGuard)
   async is_enabled(@Req() req : Request) {
 
-    var user = await this.usersRepository.findOne(    //ptet moyen de mettre ca ailleur nan ?
-      { where:
-          { id: req.cookies['user_id'] }
-      }
-    );
+    var user : User = await this.usersService.getUser(req)
 
     return { isTwoFactorAuthenticationEnabled: user.isTwoFactorAuthenticationEnabled };
   }
@@ -34,13 +32,7 @@ export class TwoFactorAuthenticationController {
   @Get('generate')
   async register(@Res() response: Response, @Req() req : Request) {
 
-    var user = await this.usersRepository.findOne(    //ptet moyen de mettre ca ailleur nan ?
-      { where:
-          { id: req.cookies['user_id'] }
-      }
-    );
-
-    console.log(req.cookies['user_id'])
+    var user : User = await this.usersService.getUser(req)
 
     const { otpauthurl } = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(user)
 
@@ -50,11 +42,7 @@ export class TwoFactorAuthenticationController {
   @Get('turn-on')
   async turnOnTwoFactorAuthentication(@Req() req : Request, @Query('2fa') tfa : string) {
 
-    var user = await this.usersRepository.findOne(    //ptet moyen de mettre ca ailleur nan ?
-      { where:
-          { id: req.cookies['user_id'] }
-      }
-    );
+    var user : User = await this.usersService.getUser(req)
 
     const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(tfa, user)
 
@@ -67,11 +55,7 @@ export class TwoFactorAuthenticationController {
   @Get('authenticate')
   async authenticate(@Req() req : Request, @Res({ passthrough: true}) response : Response, @Query('2fa') tfa : string) {
 
-    var user = await this.usersRepository.findOne(    //ptet moyen de mettre ca ailleur nan ?
-      { where:
-          { id: req.cookies['user_id'] }
-      }
-    );
+    var user : User = await this.usersService.getUser(req)
 
     const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(tfa, user)
 

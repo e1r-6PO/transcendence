@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { Like, Repository } from 'typeorm'
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -41,6 +42,15 @@ export class UsersService {
       matches.push(result.nickName)
     }
     return matches
+  }
+
+  async getUser(request: Request) {
+    var user = await this.usersRepository.findOne(    //ptet moyen de mettre ca ailleur nan ?
+      { where:
+          { id: request.cookies['user_id'] }
+      }
+    );
+    return user;
   }
 
   async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
