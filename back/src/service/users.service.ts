@@ -65,6 +65,13 @@ export class UsersService {
     })
   }
 
+  async turnOffTwoFactorAuthentication(userId: number) {
+    return this.usersRepository.update(userId, {
+      isTwoFactorAuthenticationEnabled: false,
+      twoFactorAuthenticationSecret: null
+    })
+  }
+
   async remove(id: number) {
     await this.usersRepository.delete(id);
   }

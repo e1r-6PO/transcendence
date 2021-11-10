@@ -51,6 +51,18 @@ export class TwoFactorAuthenticationController {
       throw new UnauthorizedException('Wrong auth code')
 
     await this.usersService.turnOnTwoFactorAuthentication(user.id)
+
+    return { message: "success" }
+  }
+
+  @Get('turn-off')
+  async turnOffTwoFactorAuthentication(@Req() req : Request) {
+
+    var user : User = await this.usersService.getUser(req)
+
+    await this.usersService.turnOffTwoFactorAuthentication(user.id)
+
+    return { message: "success" }
   }
 
   @Get('authenticate')
