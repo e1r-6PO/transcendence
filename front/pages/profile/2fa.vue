@@ -1,6 +1,6 @@
 <template>
 <v-main>
-  <div v-if="tfa_status == false">
+  <div v-if="tfa_status == false" class="foreground_element">
     <v-row>
       <v-col justify="center" align="center">
         <v-btn
@@ -13,7 +13,12 @@
     </v-row>
     <v-col justify="center" align="center">
       <!-- mettre le qr code au bon endroit  -->
-      <img v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
+      <v-img class="foreground_element"
+        width="35%"
+        height="35%"
+        max-width="250"
+        max-height="250"
+        v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
     </v-col>
     <v-col justify="center" align="center">
       <v-text-field
@@ -118,5 +123,6 @@ export default {
 </script>
 
 <style>
+  @import '../../assets/main_page.scss';
 
 </style>
