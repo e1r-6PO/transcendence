@@ -1,6 +1,6 @@
 <template>
 <v-main>
-  <v-row>
+  <div class="flex-container" style="padding-top: 5%">
     <v-spacer></v-spacer>
       <v-btn
         color="blue darken-3"
@@ -22,98 +22,93 @@
       >
         2fa
       </v-btn>
-    </v-row>
-        <v-row style="margin-top: 1%" justify="center" align="center">
-          <img v-if="!isEditing && me.picture != ''"
-            class="foreground_element round_card"
-            :src=me.picture
-            width="300"
-          >
-          <v-btn v-else
-            class="text-none foreground_element btn_camera"
-            :disabled="isEditing ? false: true"
-            :loading="isSelecting"
-            @click="onButtonClick"
-          >
-            <v-icon
-              x-large
-            >
-              mdi-camera-enhance
-            </v-icon>
-            <input
-              ref="uploader"
-              class="d-none"
-              type="file"
-              accept="image/*"
-              @change="onFileChanged"
-            >
-          </v-btn>
-        </v-row>
-        <v-row>
-          <v-col justify="center" align="center">
-            <v-text-field v-if="isEditing"
-              class="foreground_element text-field-dimension round_card"
-              v-model="nick"
-              label="Nickname"
-              counter="20"
-              filled
-              @keydown.enter="save"
-            >
-            </v-text-field>
-            <v-card class="foreground_element card_profile"
-              v-if="!isEditing"
-            > 
-            <v-card-text>
-              <p class="color_text text-h4 font-weight-medium" align="center">{{ nick }}</p>
-              <p class="color_text text-h5" align="center">{{ me.email }}</p>
-              <p v-if="me.provider === 'github'" class="color_text text-h6" align="center"> Connected via :</p>
-              <icon-github v-if="me.provider === 'github'"
-                  width="50"
-                  height="50"
-              />
-              <p v-if="me.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
-              <icon-42 v-if="me.provider === '42'"
-                width="50"
-                height="50"
-              />
-              <p v-if="me.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
-              <v-icon v-if="me.provider === 'google'"
-                  color="primary"
-                  x-large
-              >
-                mdi-google
-              </v-icon>
-            </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-container class="flex-container">
-          <v-card class="foreground_element card_game flex-item" justify="center" margin-top="5%">
-            <h1 class="color_win" align="center"> Game Win </h1>
-            <h3 class="color_text" align="center">{{ me.gameWin }} </h3>
-          </v-card>
-          <v-card class="foreground_element card_game flex-item" margin-top="5%">
-            <h1 class="color_lose" align="center"> Game Lose </h1>
-            <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
-          </v-card>
-      </v-container>
-      <v-row>
-        <v-spacer></v-spacer>
-        <v-btn v-if="isEditing"
-        class="foreground_element"
-        :disabled="(!isEditing || nick == me.nickName || nick.length > 20) && selectedFile == null"
-        color="success"
-        @click="save"
+  </div>
+  <div class="flex-container" >
+    <img v-if="!isEditing && me.picture != ''"
+      class="foreground_element round_card item"
+      :src=me.picture
+      width="300"
+    />
+    <v-btn v-else
+      class="text-none foreground_element btn_camera"
+      :disabled="isEditing ? false: true"
+      :loading="isSelecting"
+      @click="onButtonClick"
+    >
+      <v-icon
+        x-large
+      >
+        mdi-camera-enhance
+      </v-icon>
+      <input
+        ref="uploader"
+        class="d-none"
+        type="file"
+        accept="image/*"
+        @change="onFileChanged"
+      >
+    </v-btn>
+  </div>
+  <div class="flex-container" style="padding-top: 3%">
+      <v-text-field v-if="isEditing"
+        class="foreground_element text-field-dimension round_card"
+        v-model="nick"
+        label="Nickname"
+        counter="20"
+        filled
+      >
+      </v-text-field>
+      <v-card class="foreground_element card_profile"
+        v-if="!isEditing"
+      > 
+      <v-card-text align="center">
+        <p class="color_text text-h4 font-weight-medium" align="center">{{ nick }}</p>
+        <p class="color_text text-h5" align="center">{{ me.email }}</p>
+        <p v-if="me.provider === 'github'" class="color_text text-h6" align="center"> Connected via :</p>
+        <icon-github v-if="me.provider === 'github'"
+            width="50"
+            height="50"
+        />
+        <p v-if="me.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
+        <icon-42 v-if="me.provider === '42'"
+          width="50"
+          height="50"
+        />
+        <p v-if="me.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
+        <v-icon v-if="me.provider === 'google'"
+            color="primary"
+            x-large
         >
-        Save
-        </v-btn>
-    </v-row>
-  </v-main>
+          mdi-google
+        </v-icon>
+      </v-card-text>
+      </v-card>
+    </div>
+    <div class="flex-container">
+      <v-card class="foreground_element card_game flex-item" justify="center" margin-top="5%">
+        <h1 class="color_win" align="center"> Game Win </h1>
+        <h3 class="color_text" align="center">{{ me.gameWin }} </h3>
+      </v-card>
+      <v-card class="foreground_element card_game flex-item" margin-top="5%">
+        <h1 class="color_lose" align="center"> Game Lose </h1>
+        <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
+      </v-card>
+  </div>
+  <v-row>
+    <v-spacer></v-spacer>
+    <v-btn v-if="isEditing"
+    class="foreground_element"
+    :disabled="(!isEditing || nick == me.nickName || nick.length > 20) && selectedFile == null"
+    color="success"
+    @click="save"
+    >
+      Save
+    </v-btn>
+  </v-row>
+</v-main>
 </template>
 
 <script>
-import Particles from '~/components/Particles.vue'
-
 export default {
 
   async asyncData({ $axios }) {
@@ -215,7 +210,7 @@ export default {
 }
 
 .round_card {
-  border-radius:30px!important;
+  border-radius:100%!important;
 }
 
 .btn_camera {
@@ -230,16 +225,16 @@ export default {
 
 .card_game {
   border-radius:17px!important;
-  background-color: #1a237e !important;
+  background-color: #00A3A3 !important;
   min-width: 260px;
   width: 275px;
-  box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important;
+  /* box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important; */
 }
 
 .card_profile {
   border-radius: 30px !important;
-  background-color: #1a237e !important;
-  box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important;
+  background-color: #00A3A3 !important;
+  /* box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important; */
   min-width: 400px;
   width: 550px;
   height: 250px;
@@ -258,10 +253,14 @@ export default {
   flex-flow: row wrap;
   
   /* Then we define how is distributed the remaining space */
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-content: center;
-  margin: 0;
+  /* padding-top: 5%; */
   list-style: none;
+}
+
+.item {
+  align-self: flex-end;
 }
 
 .flex-item {
