@@ -17,8 +17,8 @@
         </v-icon>
       </v-btn>
       <v-btn
-        @click="goto2fapage()"
         class="foreground_element"
+        to="/profile/2fa" nuxt
       >
         2fa
       </v-btn>
@@ -188,10 +188,6 @@ export default {
       this.selectedFile = e.target.files[0]
       // console.log(this.selectedFile)
     },
-
-    async goto2fapage() {
-      window.location.href = "/profile/2fa"
-    }
   }
 }
 </script>
