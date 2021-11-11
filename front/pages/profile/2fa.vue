@@ -1,65 +1,105 @@
 <template>
 <v-main>
-  <v-row>
+  <div v-if="tfa_status == false">
+    <v-row>
+      <v-col justify="center" align="center">
+        <v-btn
+          class="foreground_element"
+          @click="generate_qr_code()"
+        >
+          Re-Generate 2fa
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-col justify="center" align="center">
+      <!-- mettre le qr code au bon endroit  -->
+      <img v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
+    </v-col>
+    <v-col justify="center" align="center">
+      <v-text-field
+        class="foreground_element"
+        label="6-digit code"
+        v-model="tfa_code"
+        placeholder="6-digit code"
+        solo
+        filled
+        rounded
+        prepend-inner-icon=""
+        @keydown.enter="turn_on"
+      >
+      </v-text-field>
+    </v-col>
     <v-col justify="center" align="center">
       <v-btn
         class="foreground_element"
-        @click="generate_qr_code()"
+        :disabled="qr_code == null || tfa_code.length != 6"
+        color="success"
+        @click="turn_on"
       >
-        Generate QR code
+        enable 2fa
       </v-btn>
+    </v-col>
+  </div>
+  <div v-else>
+    <v-col justify="center" align="center">
       <v-btn
         class="foreground_element"
         @click="disable()"
+        color="error"
+        to="/profile" nuxt
       >
-        disable
+        disable 2fa
       </v-btn>
     </v-col>
-  </v-row>
-  <v-col justify="center" align="center">
-    <img v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
-  </v-col>
-  <v-col justify="center" align="center">
-    <v-text-field
-      class="foreground_element"
-      label="6-digit code"
-      v-model="tfa_code"
-      placeholder="6-digit code"
-      solo
-      filled
-      rounded
-      prepend-inner-icon=""
-      @keydown.enter="turn_on"
-    >
-    </v-text-field>
-  </v-col>
+  </div>
 </v-main>
 </template>
 
 <script>
 export default {
 
-    data() {
-      return {
-        qr_code: null,
-        tfa_code: null
+  data() {
+    return {
+      qr_code: null,
+      tfa_status: false,
+      tfa_code: ""
+    }
+  },
+
+  async mounted() {
+    const ret = await this.$axios.get('/api/auth/2fa/is_enabled')
+    .catch(function (error) {
+      alert("error in mounted")
+      return error.response
+    });
+    if (ret.status == 200) {
+      this.tfa_status = ret.data['isTwoFactorAuthenticationEnabled']
+      if (this.tfa_status == false) {
+        this.generate_qr_code()
       }
-    },
+    }
+  },
 
   methods: {
     async generate_qr_code() {
       const ret = await this.$axios.post('/api/auth/2fa/generate')
-
-      this.qr_code = ret.data
+      .catch(function (error) {
+        alert("2fa is already enabled")
+        return error.response
+      });
+      if (ret.status == 201)
+        this.qr_code = ret.data
     },
     async disable() {
-      const ret = await this.$axios.post('/api/auth/2fa/turn-off')
+      const qr = await this.$axios.post('/api/auth/2fa/turn-off')
       .catch(function (error) {
         alert("Cant turn off 2fa")
         return error.response
       });
-      if (ret.status == 201)
+      if (qr.status == 201) {
+        this.tfa_status = false
         alert("2fa disabled")
+      }
     },
     async turn_on() {
       const ret = await this.$axios.post('/api/auth/2fa/turn-on?2fa=' + this.tfa_code)
@@ -67,8 +107,11 @@ export default {
         alert("Wrong code")
         return error.response
       });
-      if (ret.status == 201)
+      if (ret.status == 201) {
+        this.tfa_status = true
+        this.tfa_code = ""
         alert("2fa successfully enable")
+      }
     }
   }
 }
