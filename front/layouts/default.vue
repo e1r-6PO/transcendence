@@ -5,6 +5,7 @@
       fixed
       app
       color="#bababa"
+      style="z-index: 7"
     >
       <v-list>
         <v-list-item
