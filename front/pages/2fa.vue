@@ -31,37 +31,41 @@
   </v-app>
 </template>
 
-<script>
-import Particles from '~/components/Particles.vue'
+<script lang='ts'>
+import Particles from '../components/Particles.vue';
 
-export default {
-  
-  middleware: 'no22fa',
+import Vue, {ComponentOptions} from 'vue';
 
-  layout: 'empty',
+import Component from 'vue-class-component'
 
-  components: {
-    Particles
-  },
+import no22fa from '../middleware/no22fa'
 
-  data () {
-    return {
-      tfa_code: "",
-    }
-  },
+import axios from '@nuxtjs/axios'
 
-  methods: {
-    async validatetfa() {
-      const ret = await this.$axios.post('/api/auth/2fa/authenticate?2fa=' + this.tfa_code)
-      .catch(function (error) {
-        return error.response;
-      });
-      if (ret.status == 201)
-        window.location.href = "/home"
-    }
+@Component({
+  middleware: no22fa,
+  layout: 'empty'
+})
+export default class extends Vue {
+
+  // data () {
+  //   return {
+  //     tfa_code: "",
+  //   }
+  // }
+
+  tfa_code =  ""
+
+  async validatetfa() {
+    const ret = await this.$axios.post('/api/auth/2fa/authenticate?2fa=' + this.tfa_code)
+    .catch(function (error) {
+      return error.response;
+    });
+    if (ret.status == 201)
+      this.$router.push("/home")
   }
 
-}
+};
 </script>
 
 <style lang="scss">
