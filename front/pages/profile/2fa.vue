@@ -63,6 +63,8 @@
 <script>
 export default {
 
+  middleware: 'login',
+
   data() {
     return {
       qr_code: null,

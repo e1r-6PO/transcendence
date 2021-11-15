@@ -22,6 +22,8 @@
 <script>
 export default {
 
+  middleware: 'login',
+
   data() {
     return {
       users: []
