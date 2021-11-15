@@ -31,8 +31,8 @@
   </v-app>
 </template>
 
-<script>
-import Particles from '~/components/Particles.vue'
+<script lang="ts">
+import Particles from '../components/Particles.vue'
 
 export default {
   

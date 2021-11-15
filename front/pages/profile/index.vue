@@ -108,7 +108,7 @@
 </v-main>
 </template>
 
-<script>
+<script lang="ts">
 export default {
 
   async asyncData({ $axios }) {
@@ -151,10 +151,10 @@ export default {
       window.location.href = "/profile"
     },
     emailSize() {
-      return me.email.lenght
+      return this.me.email.lenght
     },
     colorEditing() {
-      if (isEditing)
+      if (this.isEditing)
         return "red lighten-1"
       else
         return "blue darken-3"

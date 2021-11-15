@@ -4,7 +4,7 @@
   </v-card-text>
 </template>
 
-<script>
+<script lang="ts">
 export default {
     async mounted() {
       const { params: { provider } } = this.$route

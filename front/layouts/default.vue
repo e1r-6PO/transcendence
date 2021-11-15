@@ -75,7 +75,7 @@ export default {
   data () {
     return {
       search: "",
-      drawer: true,
+      drawer: false,
       fixed: false,
       items: [
         {

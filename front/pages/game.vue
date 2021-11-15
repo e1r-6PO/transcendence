@@ -12,7 +12,7 @@
     </v-main>
 </template>
 
-<script>
+<script lang="ts">
     export default{
         layout: 'game_layout',
     }
