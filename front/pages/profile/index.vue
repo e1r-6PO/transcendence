@@ -111,6 +111,8 @@
 <script lang="ts">
 export default {
 
+  middleware: 'login',
+
   async asyncData({ $axios }) {
     const me = await fetch(
       '/api/profile/me'

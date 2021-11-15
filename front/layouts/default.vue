@@ -102,7 +102,7 @@ export default {
 
   methods: {
     searchbar() {
-      window.location.href = "/search?nick=" + this.search
+      this.$router.push({path: '/search', query: { nick: this.search }})
     }
   }
 }

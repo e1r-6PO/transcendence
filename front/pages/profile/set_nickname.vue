@@ -34,6 +34,8 @@
 
 export default {
 
+  middleware: 'login',
+
   async asyncData({ $axios }) {
     const ret = await $axios.$get('api/profile/me/nickname')
 

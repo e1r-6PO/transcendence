@@ -22,6 +22,8 @@
 <script lang="ts">
 export default {
 
+  middleware: 'login',
+
   data() {
     return {
       users: []
@@ -34,9 +36,16 @@ export default {
     }
   },
 
+  watch: {
+    async $route(to, from) {
+      const urlParams = new URLSearchParams(window.location.search);
+      this.users = await this.$axios.$get('/api/users/search?nick=' + urlParams.get('nick'))
+    }
+  },
+
   async fetch() {
     const urlParams = new URLSearchParams(window.location.search);
-    
+
     this.users = await this.$axios.$get('/api/users/search?nick=' + urlParams.get('nick'))
   }
 }
