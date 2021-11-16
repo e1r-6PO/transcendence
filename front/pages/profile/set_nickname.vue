@@ -5,14 +5,13 @@
         <v-col justify="center" align="center">
           <v-text-field
             class="foreground_element text-field_size"
-            v-model="login.nickname"
+            v-model="nickname"
             label="Nickname"
             @keydown.enter="setNick"
             width="200"
             counter="20"
             shaped
             filled
-            :rules="rules.nickname"
           >
           </v-text-field>
           <v-btn 
@@ -31,49 +30,40 @@
 
 <script lang="ts">
 
+import Vue from 'vue'
 
-export default {
+import login from '../../middleware/login'
 
-  middleware: 'login',
+import Component from 'vue-class-component'
 
-  async asyncData({ $axios }) {
-    const ret = await $axios.$get('api/profile/me/nickname')
+@Component({
+  middleware: login
+})
+export default class extends Vue {
+
+  async mounted() {
+    const ret = await this.$axios.$get('api/profile/me/nickname')
 
     if (ret.nickname != "")
       window.location.href = '/home'
-  },
-  data() {
+  }
 
-    const defaultLogin = Object.freeze({
-        nickname: ''
-    })
+  nickname = "";
 
-    return {
-      login: Object.assign({}, defaultLogin),
-      rules: {
-        nickname: [val => (val || '').length > 0 || 'This field is required'],
-      }
-    }
-  },
+  nickIsValid() {
+    return this.nickname != "" &&
+    this.nickname.length <= 20
+  }
 
-  computed: {
-    nickIsValid() {
-      return this.login.nickname &&
-      this.login.nickname.length <= 20
-    },
-  },
-
-  methods: {
-    async setNick() {
-        const nick = this.login.nickname
-        const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + nick)
-          .catch(function (error) {
-            alert("nick " + nick + " is already taken")
-            return error.response
-        });
-        if (ret.status == 201)
-          window.location.href = '/home'
-      },
+  async setNick() {
+    const nick = this.nickname
+    const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + nick)
+      .catch(function (error) {
+        alert("nick " + nick + " is already taken")
+        return error.response
+    });
+    if (ret.status == 201)
+      window.location.href = '/home'
   }
 }
 </script>
