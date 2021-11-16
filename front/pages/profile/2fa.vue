@@ -60,65 +60,67 @@
 </v-main>
 </template>
 
-<script lang="ts">
-export default {
+<script lang='ts'>
+import login from '../../middleware/login';
 
-  middleware: 'login',
+import Component from 'vue-class-component'
 
-  data() {
-    return {
-      qr_code: null,
-      tfa_status: false,
-      tfa_code: ""
-    }
-  },
+import Vue from 'vue'
+
+@Component({
+  middleware: login
+})
+export default class extends Vue {
+
+  qr_code = null
+  tfa_status = false
+  tfa_code = ""
 
   async mounted() {
     const ret = await this.$axios.get('/api/auth/2fa/is_enabled')
     .catch(function (error) {
       alert("error in mounted")
       return error.response
-    });
+    })
+
     if (ret.status == 200) {
       this.tfa_status = ret.data['isTwoFactorAuthenticationEnabled']
       if (this.tfa_status == false) {
         this.generate_qr_code()
       }
     }
-  },
+  }
 
-  methods: {
-    async generate_qr_code() {
-      const ret = await this.$axios.post('/api/auth/2fa/generate')
-      .catch(function (error) {
-        alert("2fa is already enabled")
-        return error.response
-      });
-      if (ret.status == 201)
-        this.qr_code = ret.data
-    },
-    async disable() {
-      const qr = await this.$axios.post('/api/auth/2fa/turn-off')
-      .catch(function (error) {
-        alert("Cant turn off 2fa")
-        return error.response
-      });
-      if (qr.status == 201) {
-        this.tfa_status = false
-        alert("2fa disabled")
-      }
-    },
-    async turn_on() {
-      const ret = await this.$axios.post('/api/auth/2fa/turn-on?2fa=' + this.tfa_code)
-      .catch(function (error) {
-        alert("Wrong code")
-        return error.response
-      });
-      if (ret.status == 201) {
-        this.tfa_status = true
-        this.tfa_code = ""
-        alert("2fa successfully enable")
-      }
+  async generate_qr_code() {
+    const ret = await this.$axios.post('/api/auth/2fa/generate')
+    .catch(function (error) {
+      alert("2fa is already enabled")
+      return error.response
+    });
+    if (ret.status == 201)
+      this.qr_code = ret.data
+  }
+  async disable() {
+    const qr = await this.$axios.post('/api/auth/2fa/turn-off')
+    .catch(function (error) {
+      alert("Cant turn off 2fa")
+      return error.response
+    });
+    if (qr.status == 201) {
+      this.tfa_status = false
+      alert("2fa disabled")
+    }
+  }
+  async turn_on() {
+    const ret = await this.$axios.post('/api/auth/2fa/turn-on?2fa=' + this.tfa_code)
+    .catch(function (error) {
+      alert("Wrong code")
+      return error.response
+    });
+    if (ret.status == 201) {
+      this.tfa_status = true
+      this.tfa_code = ""
+      alert("2fa successfully enable")
     }
   }
 }
@@ -126,5 +128,4 @@ export default {
 
 <style>
   @import '../../assets/main_page.scss';
-
 </style>

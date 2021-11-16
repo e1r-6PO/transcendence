@@ -67,10 +67,12 @@
   </v-app>
 </template>
 
-<script>
+<script lang='ts'>
 // import Particles from '~/components/Particles.vue'
 
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
 
   data () {
     return {
@@ -105,7 +107,7 @@ export default {
       this.$router.push({path: '/search', query: { nick: this.search }})
     }
   }
-}
+});
 </script>
 
 <style scoped lang="scss">
