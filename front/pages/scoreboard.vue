@@ -33,7 +33,7 @@
   </v-card>
 </template>
 
-<script lang="ts">
+<script>
   export default {
 
   layout: 'home',
