@@ -207,6 +207,12 @@ export default class extends Vue {
       this.tfa_code = ""
       alert("2fa successfully enable")
     }
+    else {
+      this.tfa_digit = []
+    }
+  }
+
+  resetCode() {
   }
 
     $refs!: {
