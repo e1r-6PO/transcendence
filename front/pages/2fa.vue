@@ -63,7 +63,6 @@ export default class extends Vue {
     });
     if (ret.status == 201)
       this.$router.push("/home")
->>>>>>> b626793efe51169a4649d82b8cc0695253848bc5
   }
 
 };
