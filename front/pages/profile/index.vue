@@ -109,29 +109,35 @@
 </template>
 
 <script lang="ts">
-export default {
+import Vue from 'vue'
 
-  middleware: 'login',
+import Component from 'vue-class-component'
 
-  async asyncData({ $axios }) {
-    const me = await fetch(
-      '/api/profile/me'
-    ).then((res) => res.json())
-    var mail = me.email
+import login from '../../middleware/login'
 
-    return { me, nick: me.nickName, isEditing: null, eSize: me.email.length * 10}
-  },
+@Component({
+  middleware: login
+})
+export default class extends Vue {
 
-  data() {
-    return { selectedFile: null,
-      isSelecting: false,
-    }
-  },
-  
-  methods: {
+  async mounted() {
+    const me = await this.$axios.get('/api/profile/me')
+    .catch(function (error) {
+      alert("error in mounted")
+      return error.response
+    })
+  }
+}
+/*
+  mail = me.email
+  nick = me.nickName
+  isEditing = null
+  selectedFile = null
+  isSelecting = false
+
     async save() {
-      if (this.me.nickName != this.nick) {
-        const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
+      if (me.nickName != nick) {
+        const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + nick)
           .catch(function (error) {
             alert("nick " + this.nick + " is already taken")
               return error.response
@@ -151,16 +157,19 @@ export default {
         this.selectedFile = null
       }
       window.location.href = "/profile"
-    },
+    }
+
     emailSize() {
       return this.me.email.lenght
-    },
+    }
+
     colorEditing() {
       if (this.isEditing)
         return "red lighten-1"
       else
         return "blue darken-3"
-    },
+    }
+
     onButtonClick() {
       this.isSelecting = true
       window.addEventListener('focus', () => {
@@ -168,7 +177,8 @@ export default {
       }, { once: true })
 
       this.$refs.uploader.click()
-    },
+    }
+
     onFileChanged(e) {
 
       if (!e.target.files[0]) {
@@ -184,9 +194,8 @@ export default {
       }
       this.selectedFile = e.target.files[0]
       // console.log(this.selectedFile)
-    },
-  }
-}
+    }
+*/
 </script>
 
 <style>
