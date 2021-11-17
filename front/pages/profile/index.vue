@@ -3,16 +3,16 @@
   <div class="flex-container" style="padding-top: 5%">
     <v-spacer></v-spacer>
       <v-btn
-        color="blue darken-3"
+        color="#f27719"
         fab
         small
         @click="switchEditing"
-        class="foreground_element"
+        class="foreground_element btn_style"
       >
-        <v-icon color="red lighten-2" v-if="isEditing" >
+        <v-icon color="#7DFDFE" v-if="isEditing" >
           mdi-close
         </v-icon>
-        <v-icon color="blue-grey lighten-2" v-else>
+        <v-icon color="#7DFDFE" v-else>
           mdi-pencil
         </v-icon>
       </v-btn>
@@ -207,7 +207,11 @@ export default class extends Vue {
 
 .color_text { 
   z-index: 6;
-  color: #90A4AE;
+  color: #ffffff;
+}
+
+.btn_style {
+  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
 }
 
 .round_card {
@@ -226,16 +230,16 @@ export default class extends Vue {
 
 .card_game {
   border-radius:17px!important;
-  background-color: #00A3A3 !important;
+  background-color: #35b4b2 !important;
   min-width: 260px;
   width: 275px;
-  /* box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important; */
+  box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important; 
 }
 
 .card_profile {
-  border-radius: 30px !important;
-  background-color: #00A3A3 !important;
-  /* box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important; */
+  border-radius: 10% 10% 10% 10% !important;
+  background-color: #35b4b2 !important;
+  box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important; 
   min-width: 400px;
   width: 550px;
   height: 250px;
