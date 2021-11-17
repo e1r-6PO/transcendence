@@ -1,55 +1,72 @@
 <template>
 <v-main>
-  <div class="flex-container" style="padding-top: 5%">
-    <v-spacer></v-spacer>
-      <v-btn
-        color="blue darken-3"
-        fab
-        small
-        @click="isEditing = !isEditing"
-        class="foreground_element"
-      >
-        <v-icon color="red lighten-2" v-if="isEditing" >
-          mdi-close
-        </v-icon>
-        <v-icon color="blue-grey lighten-2" v-else>
-          mdi-pencil
-        </v-icon>
-      </v-btn>
+  <div style="padding-top: 3%" justify="center" align="center">
       <v-btn
         class="foreground_element"
         to="/profile/2fa" nuxt
+        rounded
+        elevation="2"
       >
         2fa
       </v-btn>
   </div>
-  <div class="flex-container" >
-    <img v-if="!isEditing && me.picture != ''"
-      class="foreground_element round_card item"
-      :src=me.picture
-      width="300"
-    />
-    <v-btn v-else
-      class="text-none foreground_element btn_camera"
-      :disabled="isEditing ? false: true"
-      :loading="isSelecting"
-      @click="onButtonClick"
-    >
-      <v-icon
-        x-large
+  <div justify="center" align="center" v-if="!isEditing">
+    <v-avatar class="overflow-visible" size="128">
+      <img v-if="me.picture != ''"
+        class="round_card item"
+        :src=me.picture
+      />
+        <v-btn
+          color="blue darken-3"
+          fab
+          small
+          elevation="2"
+          @click="isEditing = !isEditing"
+          style="z-index: 6"
+          absolute
+          bottom
+          right
+        >
+          <v-icon color="blue-grey lighten-2">
+            mdi-pencil
+          </v-icon>
+        </v-btn>
+    </v-avatar>
+    </div>
+    <div class="flex-container-editing" justify="center" align="center" v-else>
+      <v-btn
+        color="blue darken-3"
+        fab
+        small
+        elevation="2"
+        @click="isEditing = !isEditing"
+        v-if="isEditing"
       >
-        mdi-camera-enhance
-      </v-icon>
-      <input
-        ref="uploader"
-        class="d-none"
-        type="file"
-        accept="image/*"
-        @change="onFileChanged"
+        <v-icon color="red lighten-2">
+          mdi-close
+        </v-icon>
+      </v-btn>
+      <v-btn v-if="isEditing"
+        class="text-none foreground_element btn_camera"
+        :disabled="isEditing ? false: true"
+        :loading="isSelecting"
+        @click="onButtonClick"
       >
-    </v-btn>
+        <v-icon
+          x-large
+        >
+          mdi-camera-enhance
+        </v-icon>
+        <input
+          ref="uploader"
+          class="d-none"
+          type="file"
+          accept="image/*"
+          @change="onFileChanged"
+        >
+      </v-btn>
   </div>
-  <div class="flex-container" style="padding-top: 3%">
+  <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"
         class="foreground_element text-field-dimension round_card"
         v-model="nick"
@@ -59,38 +76,39 @@
       >
       </v-text-field>
       <v-card class="foreground_element card_profile"
+        elevation="4"
         v-if="!isEditing"
       > 
-      <v-card-text align="center">
-        <p class="color_text text-h4 font-weight-medium" align="center">{{ nick }}</p>
-        <p class="color_text text-h5" align="center">{{ me.email }}</p>
-        <p v-if="me.provider === 'github'" class="color_text text-h6" align="center"> Connected via :</p>
-        <icon-github v-if="me.provider === 'github'"
+        <v-card-text align="center">
+          <p class="color_text text-h4 font-weight-medium" align="center">{{ nick }}</p>
+          <p class="color_text text-h5" align="center">{{ me.email }}</p>
+          <p v-if="me.provider === 'github'" class="color_text text-h6" align="center"> Connected via :</p>
+          <icon-github v-if="me.provider === 'github'"
+              width="50"
+              height="50"
+          />
+          <p v-if="me.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
+          <icon-42 v-if="me.provider === '42'"
             width="50"
             height="50"
-        />
-        <p v-if="me.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
-        <icon-42 v-if="me.provider === '42'"
-          width="50"
-          height="50"
-        />
-        <p v-if="me.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
-        <v-icon v-if="me.provider === 'google'"
-            color="primary"
-            x-large
-        >
-          mdi-google
-        </v-icon>
-      </v-card-text>
+          />
+          <p v-if="me.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
+          <v-icon v-if="me.provider === 'google'"
+              color="primary"
+              x-large
+          >
+            mdi-google
+          </v-icon>
+        </v-card-text>
       </v-card>
     </div>
-    <div class="flex-container">
-      <v-card class="foreground_element card_game flex-item" justify="center" margin-top="5%">
-        <h1 class="color_win" align="center"> Game Win </h1>
+    <div class="flex-container" v-if="!isEditing">
+      <v-card class="foreground_element card_game flex-item" margin-top="5%" elevation="4">
+        <h1 class="color_win" align="center"> Games Won </h1>
         <h3 class="color_text" align="center">{{ me.gameWin }} </h3>
       </v-card>
-      <v-card class="foreground_element card_game flex-item" margin-top="5%">
-        <h1 class="color_lose" align="center"> Game Lose </h1>
+      <v-card class="foreground_element card_game flex-item" margin-top="5%" elevation="4">
+        <h1 class="color_lose" align="center"> Games Lost </h1>
         <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
       </v-card>
   </div>
@@ -224,20 +242,19 @@ export default {
 }
 
 .card_game {
-  border-radius:17px!important;
-  background-color: #00A3A3 !important;
+  border-radius:15px!important;
+  background-color: #3C6E71 !important;
   min-width: 260px;
   width: 275px;
   /* box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important; */
 }
 
 .card_profile {
-  border-radius: 30px !important;
-  background-color: #00A3A3 !important;
+  border-radius: 15px !important;
+  background-color: #3C6E71 !important;
   /* box-shadow: 0px 0px 20px 0px rgba(29, 29, 48, 0.89) !important; */
-  min-width: 400px;
-  width: 550px;
-  height: 250px;
+  /* min-width: 400px; */
+  width: 30%;
 }
 
 .flex-container {
@@ -255,7 +272,24 @@ export default {
   /* Then we define how is distributed the remaining space */
   justify-content: space-evenly;
   align-content: center;
-  /* padding-top: 5%; */
+  list-style: none;
+}
+
+.flex-container-editing {
+  /* We first create a flex layout context */
+  display: flex;
+  
+  /* Then we define the flow direction 
+     and if we allow the items to wrap 
+   * Remember this is the same as:
+   * flex-direction: row;
+   * flex-wrap: wrap;
+   */
+  flex-flow: column wrap;
+  
+  /* Then we define how is distributed the remaining space */
+  justify-content: space-evenly;
+  align-content: center;
   list-style: none;
 }
 
@@ -264,7 +298,6 @@ export default {
 }
 
 .flex-item {
-  background: tomato;
   margin-top: 5%;
   color: white;
   font-weight: bold;
