@@ -197,6 +197,10 @@ export default class extends Vue {
   }
 
   async turn_on() {
+
+    this.tfa_code = "";
+    for (let i = 0; i < 6; i++)
+      this.tfa_code += this.tfa_digit[i];
     const ret = await this.$axios.post('/api/auth/2fa/turn-on?2fa=' + this.tfa_code)
     .catch(function (error) {
       alert("Wrong code")
@@ -206,6 +210,7 @@ export default class extends Vue {
       this.tfa_status = true
       this.tfa_code = ""
       alert("2fa successfully enable")
+      this.$router.push("/profile")
     }
     else {
       this.tfa_digit = []
