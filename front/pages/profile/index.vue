@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
 <v-main>
   <div style="padding-top: 3%" justify="center" align="center">
       <v-btn
@@ -35,23 +34,13 @@
     </v-avatar>
     </div>
     <div class="flex-container-editing" justify="center" align="center" v-else>
-=======
-<v-main v-if="user != null">
-  <div class="flex-container" style="padding-top: 5%">
-    <v-spacer></v-spacer>
->>>>>>> 917faf8b73eb17f9f76c0319d74d0fb2609e4960
       <v-btn
         color="blue darken-3"
         fab
         small
-<<<<<<< HEAD
         elevation="2"
         @click="isEditing = !isEditing"
         v-if="isEditing"
-=======
-        @click="switchEditing"
-        class="foreground_element"
->>>>>>> 917faf8b73eb17f9f76c0319d74d0fb2609e4960
       >
         <v-icon color="red lighten-2">
           mdi-close
@@ -77,37 +66,7 @@
         >
       </v-btn>
   </div>
-<<<<<<< HEAD
   <div class="flex-container-editing" style="padding-top: 3%">
-=======
-  <div class="flex-container" >
-    <img v-if="!isEditing"
-      class="foreground_element round_card item"
-      width="300"
-      :src=user.picture
-    />
-    <v-btn v-else
-      class="text-none foreground_element btn_camera"
-      :disabled="isEditing ? false: true"
-      :loading="isSelecting"
-      @click="onButtonClick"
-    >
-      <v-icon
-        x-large
-      >
-        mdi-camera-enhance
-      </v-icon>
-      <input
-        ref="uploader"
-        class="d-none"
-        type="file"
-        accept="image/*"
-        @change="onFileChanged"
-      >
-    </v-btn>
-  </div>
-  <div class="flex-container" style="padding-top: 3%">
->>>>>>> 917faf8b73eb17f9f76c0319d74d0fb2609e4960
       <v-text-field v-if="isEditing"
         class="foreground_element text-field-dimension"
         v-model="nick"
@@ -122,7 +81,6 @@
         elevation="4"
         v-if="!isEditing"
       > 
-<<<<<<< HEAD
         <v-card-text align="center">
           <p class="color_text text-h4 font-weight-medium" align="center">{{ nick }}</p>
           <p class="color_text text-h5" align="center">{{ me.email }}</p>
@@ -154,39 +112,6 @@
       <v-card class="foreground_element card_game flex-item" margin-top="5%" elevation="4">
         <h1 class="color_lose" align="center"> Games Lost </h1>
         <h3 class="color_text" align="center" justify="center"> {{ me.gameLose }} </h3>
-=======
-      <v-card-text align="center">
-        <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
-        <p class="color_text text-h5" align="center">{{ user.email }}</p>
-        <p v-if="user.provider === 'github'" class="color_text text-h6" align="center"> Connected via :</p> 
-        <icon-github v-if="user.provider === 'github'"
-            width="50"
-            height="50"
-        />
-        <p v-if="user.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
-        <icon-42 v-if="user.provider === '42'"
-          width="50"
-          height="50"
-        />
-        <p v-if="user.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
-        <v-icon v-if="user.provider === 'google'"
-            color="primary"
-            x-large
-        >
-          mdi-google
-        </v-icon>
-      </v-card-text>
-      </v-card>
-    </div>
-    <div class="flex-container" v-if="!isEditing">
-      <v-card class="foreground_element card_game flex-item" justify="center" margin-top="5%">
-        <h1 class="color_win" align="center"> Game Win </h1>
-        <h3 class="color_text" align="center">{{ user.Win }} </h3>
-      </v-card>
-      <v-card class="foreground_element card_game flex-item" margin-top="5%">
-        <h1 class="color_lose" align="center"> Game Lose </h1>
-        <h3 class="color_text" align="center" justify="center"> {{ user.Lose }} </h3>
->>>>>>> 917faf8b73eb17f9f76c0319d74d0fb2609e4960
       </v-card>
   </div>
   <v-row>
