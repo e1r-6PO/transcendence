@@ -24,6 +24,17 @@
 <script>
 
 export default {
+  
+    mounted() {
+    this.socket = this.$nuxtSocket({
+      channel: '/index'
+    })
+    /* Listen for events: */
+    this.socket
+    .on('someEvent', (msg, cb) => {
+      /* Handle event */
+    })
+  },
     data: () => ({
       message: '',
     }),

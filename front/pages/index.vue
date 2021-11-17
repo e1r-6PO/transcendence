@@ -55,18 +55,20 @@
   </v-app>
 </template>
 
-<script>
-import Particles from '~/components/Particles.vue'
+<script lang='ts'>
 
-export default {
-  
-  middleware: 'no2login',
+import Vue from 'vue'
 
-  layout: 'empty',
+import Component from 'vue-class-component'
 
-  components: {
-    Particles
-  },
+import no2login from '../middleware/no2login'
+
+@Component({
+  middleware: no2login,
+  layout: 'empty'
+})
+export default class extends Vue {
+
 }
 </script>
 

@@ -1,5 +1,6 @@
-export default async function (context) {
+import { Middleware } from '@nuxt/types'
 
+const no22fa: Middleware = async (context) => {
   const ret = await context.$axios.get('api/auth/is_logged')
   .catch(function (error) {
     return error.response
@@ -10,4 +11,5 @@ export default async function (context) {
       || ret.data['status'] == true && ret.data['has2fa'] == false)
     window.location.href = '/home'
 }
-  
+
+export default no22fa

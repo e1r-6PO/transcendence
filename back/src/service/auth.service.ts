@@ -87,7 +87,7 @@ export class AuthService {
     }
     return {
       status: true,
-      nickname: user.id,
+      nickname: user.nickName,
       has2fa: jwtdecoded['has2fa'],
       is2factorauthenticated: jwtdecoded['is2factorauthenticated']
     }

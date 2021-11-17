@@ -5,6 +5,7 @@
       fixed
       app
       color="#bababa"
+      style="z-index: 7"
     >
       <v-list>
         <v-list-item
@@ -66,15 +67,17 @@
   </v-app>
 </template>
 
-<script>
+<script lang='ts'>
 // import Particles from '~/components/Particles.vue'
 
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
 
   data () {
     return {
       search: "",
-      drawer: true,
+      drawer: false,
       fixed: false,
       items: [
         {
@@ -101,10 +104,10 @@ export default {
 
   methods: {
     searchbar() {
-      window.location.href = "/search?nick=" + this.search
+      this.$router.push({path: '/search', query: { nick: this.search }})
     }
   }
-}
+});
 </script>
 
 <style scoped lang="scss">
