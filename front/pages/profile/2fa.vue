@@ -24,43 +24,43 @@
       <v-text-field class="foreground_element text-field_size"
         ref="digit_0"
         v-model="tfa_digit[0]"
-        solo
         filled
+        background-color="white"
         @input="focusDigit1"
       ></v-text-field>
       <v-text-field class="foreground_element text-field_size"
         ref="digit_1"
         v-model="tfa_digit[1]"
-        solo
         filled
+        background-color="white"
         @input="focusDigit2"
       ></v-text-field>
       <v-text-field class="foreground_element text-field_size"
         ref="digit_2"
         v-model="tfa_digit[2]"
-        solo
         filled
+        background-color="white"
         @input="focusDigit3"
       ></v-text-field>
       <v-text-field class="foreground_element text-field_size"
         ref="digit_3"
         v-model="tfa_digit[3]"
-        solo
         filled
+        background-color="white"
         @input="focusDigit4"
       ></v-text-field>
       <v-text-field class="foreground_element text-field_size"
         ref="digit_4"
         v-model="tfa_digit[4]"
-        solo
         filled
+        background-color="white"
         @input="focusDigit5"
       ></v-text-field>
       <v-text-field class="foreground_element text-field_size"
         ref="digit_5"
         v-model="tfa_digit[5]"
-        solo
         filled
+        background-color="white"
         @input="turn_on"
       ></v-text-field>
     <!--  <li v-for="i in 6" :key="i">
@@ -246,7 +246,7 @@ export default class extends Vue {
 
 
 .text-field_size{
-  min-width: 2%;
+  min-width: 35px;
   width: 2%;
   max-width: 2%;
 }
