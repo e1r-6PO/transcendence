@@ -84,12 +84,12 @@ export default class extends Vue {
   min-width: 250px;
   width: 500px;
   z-index: 10;
-  background: #f27719 !important;
+  background: #f27719 !important; /* orange tron color */
   box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
 }
 
 .text-color input {
-  color: #7DFDFE !important;
+  color: #7DFDFE !important; /* blue tron color */
 }
 
 .flex-container {
