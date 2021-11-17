@@ -1,9 +1,40 @@
 <template>
-<v-main v-if="user != null">
-  <div class="flex-container" style="padding-top: 5%">
-    <v-spacer></v-spacer>
+<v-main>
+  <div style="padding-top: 3%" justify="center" align="center">
       <v-btn
-        color="#f27719"
+        class="foreground_element"
+        to="/profile/2fa" nuxt
+        rounded
+        elevation="2"
+      >
+        2fa
+      </v-btn>
+  </div>
+  <div justify="center" align="center" v-if="!isEditing">
+    <v-avatar class="overflow-visible" size="128">
+      <img v-if="user.picture != ''"
+        class="round_card item"
+        :src=user.picture
+      />
+        <v-btn
+          color="#f27719"
+          fab
+          small
+          @click="isEditing = !isEditing"
+          style="z-index: 6"
+          absolute
+          bottom
+          right
+        >
+          <v-icon color="#7DFDFE">
+            mdi-pencil
+          </v-icon>
+        </v-btn>
+    </v-avatar>
+    </div>
+    <div class="flex-container-editing" justify="center" align="center" v-else>
+      <v-btn
+        color="#7DFDFE"
         fab
         small
         @click="switchEditing"
@@ -16,40 +47,27 @@
           mdi-pencil
         </v-icon>
       </v-btn>
-      <v-btn
-        class="foreground_element"
-        to="/profile/2fa" nuxt
+      <v-btn v-if="isEditing"
+        class="text-none foreground_element btn_camera"
+        :disabled="isEditing ? false: true"
+        :loading="isSelecting"
+        @click="onButtonClick"
       >
-        2fa
+        <v-icon
+          x-large
+        >
+          mdi-camera-enhance
+        </v-icon>
+        <input
+          ref="uploader"
+          class="d-none"
+          type="file"
+          accept="image/*"
+          @change="onFileChanged"
+        >
       </v-btn>
   </div>
-  <div class="flex-container" >
-    <img v-if="!isEditing"
-      class="foreground_element round_card item"
-      width="300"
-      :src=user.picture
-    />
-    <v-btn v-else
-      class="text-none foreground_element btn_camera"
-      :disabled="isEditing ? false: true"
-      :loading="isSelecting"
-      @click="onButtonClick"
-    >
-      <v-icon
-        x-large
-      >
-        mdi-camera-enhance
-      </v-icon>
-      <input
-        ref="uploader"
-        class="d-none"
-        type="file"
-        accept="image/*"
-        @change="onFileChanged"
-      >
-    </v-btn>
-  </div>
-  <div class="flex-container" style="padding-top: 3%">
+  <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"
         class="foreground_element text-field-dimension"
         v-model="nick"
@@ -63,37 +81,37 @@
       <v-card class="foreground_element card_profile"
         v-if="!isEditing"
       > 
-      <v-card-text align="center">
-        <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
-        <p class="color_text text-h5" align="center">{{ user.email }}</p>
-        <p v-if="user.provider === 'github'" class="color_text text-h6" align="center"> Connected via :</p> 
-        <icon-github v-if="user.provider === 'github'"
+        <v-card-text align="center">
+          <p class="color_text text-h4 font-weight-medium" align="center">{{ nick }}</p>
+          <p class="color_text text-h5" align="center">{{ user.email }}</p>
+          <p v-if="user.provider === 'github'" class="color_text text-h6" align="center"> Connected via :</p>
+          <icon-github v-if="user.provider === 'github'"
+              width="50"
+              height="50"
+          />
+          <p v-if="user.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
+          <icon-42 v-if="user.provider === '42'"
             width="50"
             height="50"
-        />
-        <p v-if="user.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
-        <icon-42 v-if="user.provider === '42'"
-          width="50"
-          height="50"
-        />
-        <p v-if="user.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
-        <v-icon v-if="user.provider === 'google'"
-            color="primary"
-            x-large
-        >
-          mdi-google
-        </v-icon>
-      </v-card-text>
+          />
+          <p v-if="user.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
+          <v-icon v-if="user.provider === 'google'"
+              color="primary"
+              x-large
+          >
+            mdi-google
+          </v-icon>
+        </v-card-text>
       </v-card>
     </div>
     <div class="flex-container" v-if="!isEditing">
-      <v-card class="foreground_element card_game flex-item" justify="center" margin-top="5%">
-        <h1 class="color_win" align="center"> Game Win </h1>
-        <h3 class="color_text" align="center">{{ user.Win }} </h3>
+      <v-card class="foreground_element card_game flex-item" margin-top="5%">
+        <h1 class="color_win" align="center"> Games Won </h1>
+        <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
       </v-card>
       <v-card class="foreground_element card_game flex-item" margin-top="5%">
-        <h1 class="color_lose" align="center"> Game Lose </h1>
-        <h3 class="color_text" align="center" justify="center"> {{ user.Lose }} </h3>
+        <h1 class="color_lose" align="center"> Games Lost </h1>
+        <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
       </v-card>
   </div>
   <v-row>
@@ -237,12 +255,12 @@ export default class extends Vue {
 }
 
 .card_profile {
-  border-radius: 10% 10% 10% 10% !important;
+  border-radius: 15px !important;
   background-color: #35b4b2 !important;
   box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important; 
   min-width: 400px;
-  width: 550px;
   height: 250px;
+  width: 30%;
 }
 
 .flex-container {
@@ -260,7 +278,24 @@ export default class extends Vue {
   /* Then we define how is distributed the remaining space */
   justify-content: space-evenly;
   align-content: center;
-  /* padding-top: 5%; */
+  list-style: none;
+}
+
+.flex-container-editing {
+  /* We first create a flex layout context */
+  display: flex;
+  
+  /* Then we define the flow direction 
+     and if we allow the items to wrap 
+   * Remember this is the same as:
+   * flex-direction: row;
+   * flex-wrap: wrap;
+   */
+  flex-flow: column wrap;
+  
+  /* Then we define how is distributed the remaining space */
+  justify-content: space-evenly;
+  align-content: center;
   list-style: none;
 }
 
@@ -269,7 +304,6 @@ export default class extends Vue {
 }
 
 .flex-item {
-  background: tomato;
   margin-top: 5%;
   color: white;
   font-weight: bold;

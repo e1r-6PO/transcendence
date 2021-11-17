@@ -4,20 +4,22 @@
       <v-row justify="center" align="center">
         <v-col justify="center" align="center">
           <v-text-field
-            class="foreground_element text-field_size"
+            class="foreground_element text-field_size text-color"
             v-model="nickname"
             label="Nickname"
             @keydown.enter="setNick"
             width="200"
             counter="20"
-            shaped
             filled
+            shaped
+            ref="nickname_field"
           >
           </v-text-field>
           <v-btn 
             class="foreground_element"
             text
-            :disabled="!nickIsValid"
+            color="#f27719"
+            :disabled="nickname.length == 0 || nickname.length > 20"
             @click="setNick"
           >
             Complet Registration
@@ -42,6 +44,7 @@ import Component from 'vue-class-component'
 export default class extends Vue {
 
   async mounted() {
+    this.$refs.nickname_field.focus()
     const ret = await this.$axios.$get('api/profile/me/nickname')
 
     if (ret.nickname != "")
@@ -51,6 +54,9 @@ export default class extends Vue {
   nickname = "";
 
   nickIsValid() {
+    var valid = this.nickname != "" && this.nickname.length <= 20
+
+    console.log(valid)
     return this.nickname != "" &&
     this.nickname.length <= 20
   }
@@ -65,14 +71,25 @@ export default class extends Vue {
     if (ret.status == 201)
       window.location.href = '/home'
   }
+  
+  $refs!: {
+    nickname_field: HTMLFormElement
+  }
 }
 </script>
 
 <style>
 
-.text-field_size{
+.text-field_size {
   min-width: 250px;
   width: 500px;
+  z-index: 10;
+  background: #f27719 !important;
+  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
+}
+
+.text-color input {
+  color: #7DFDFE !important;
 }
 
 .flex-container {
