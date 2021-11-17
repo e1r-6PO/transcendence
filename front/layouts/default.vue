@@ -4,7 +4,7 @@
       v-model="drawer"
       fixed
       app
-      color="#bababa"
+      color="#000000"
       style="z-index: 7"
     >
       <v-list>
@@ -16,10 +16,10 @@
           exact
         >
           <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon class="icon_color">{{ item.icon }}</v-icon>
           </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
+          <v-list-item-content >
+            <v-list-item-title class="title_color" v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -28,11 +28,12 @@
       fixed
       app
       height="80"
-      color="#ececec"
+      color="#000000"
+      class="top_bar_style"
     >
       <!-- <v-app-bar-nav-icon/> -->
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="title" />
+      <v-app-bar-nav-icon class="icon_color" @click.stop="drawer = !drawer" />
+      <v-toolbar-title color="green" v-text="title" />
       <v-spacer />
       <v-container fill-height>
         <v-row align="center" justify="center">
@@ -41,12 +42,12 @@
               class="foreground_element text-field_search"
               label="Search"
               v-model="search"
-              solo
               dense
               filled
-              rounded
+              shaped
               prepend-inner-icon="mdi-magnify"
               @keydown.enter="searchbar"
+              background-color="#f27719"
             >
             </v-text-field>
           </v-col>
@@ -114,13 +115,28 @@ export default Vue.extend({
   @import '../assets/main_page.scss';
 
   .v-application{
-    background: #ececec !important;
+    background: #181818 !important;
   }
 
 .text-field_search {
-  min-width: 250px;
-  width: 250px;
-  padding-top: 4px !important;
+  min-width: 15%;
+  max-width: 15%;
+  width: 15%;
+  padding-top: 0% !important;
+}
+
+.title_color {
+  color: #7DFDFE !important;
+}
+
+.icon_color {
+  color: #f27719 !important;
+  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89);
+  border-radius:35%!important;
+}
+
+.top_bar_style {
+  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
 }
 
 </style>
