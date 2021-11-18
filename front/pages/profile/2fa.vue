@@ -27,6 +27,8 @@
           filled
           background-color="white"
           type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
           @input="focusDigit2"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
@@ -34,6 +36,9 @@
           v-model="tfa_digit[1]"
           filled
           background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
           @input="focusDigit3"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
@@ -41,6 +46,9 @@
           v-model="tfa_digit[2]"
           filled
           background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
           @input="focusDigit4"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
@@ -48,6 +56,9 @@
           v-model="tfa_digit[3]"
           filled
           background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
           @input="focusDigit5"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
@@ -55,6 +66,9 @@
           v-model="tfa_digit[4]"
           filled
           background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
           @input="focusDigit6"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
@@ -62,6 +76,9 @@
           v-model="tfa_digit[5]"
           filled
           background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
           @input="turn_on"
         ></v-text-field> 
       </v-row>
@@ -161,7 +178,7 @@ export default class extends Vue {
       this.$refs.digit_1.focus()
     }
   }
-  
+
     $refs!: {
       digit_1: HTMLFormElement
       digit_2: HTMLFormElement

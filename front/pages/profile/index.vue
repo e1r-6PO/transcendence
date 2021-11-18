@@ -115,7 +115,7 @@
       </v-btn> -->
         <v-switch
         class="v-input--reverse"
-        :input-value="is2fa"
+        :input-value="tfa_status"
         @change="change2fa"
         >
           <template #label>
@@ -166,7 +166,7 @@ export default class extends Vue {
     
     if (ret2fa.status == 200) {
       this.tfa_status = ret2fa.data['isTwoFactorAuthenticationEnabled']
-      console.log(this.tfa_status)
+    console.log(this.tfa_status)
     this.nick = this.user.nickName
     }
   }
@@ -213,7 +213,6 @@ export default class extends Vue {
     }
     var formData = new FormData();
     formData.append("image", this.selectedFile);
-    console.log(formData)
     await this.$axios.$post('api/profile/me/picture', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -223,8 +222,6 @@ export default class extends Vue {
   }
 
   async change2fa() {
-    console.log("enable")
-    console.log(this.tfa_status)
     if (this.tfa_status == false)
       this.$router.push("/profile/2fa")
     else
@@ -242,6 +239,8 @@ export default class extends Vue {
   }
 
   is2fa() {
+    console.log("is2fa")
+    console.log(this.tfa_status)
     return this.tfa_status
   }
 
