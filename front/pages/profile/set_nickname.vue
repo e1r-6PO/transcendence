@@ -1,30 +1,34 @@
 <template>
   <v-main>
     <div class="flex-container" style="padding-top: 5%">
+      <p align="center" class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</p>
       <v-row justify="center" align="center">
-        <v-col justify="center" align="center">
-          <v-text-field
-            class="foreground_element text-field_size text-color"
-            v-model="nickname"
-            label="Nickname"
-            @keydown.enter="setNick"
-            width="200"
-            counter="20"
-            filled
-            shaped
-            ref="nickname_field"
-          >
-          </v-text-field>
-          <v-btn 
-            class="foreground_element"
-            text
-            color="#f27719"
-            :disabled="nickname.length == 0 || nickname.length > 20"
-            @click="setNick"
-          >
-            Complet Registration
-          </v-btn>
-        </v-col>
+        <v-text-field
+          class="foreground_element text-field_size custom-placeholer-color neonText"
+          v-model="nickname"
+          placeholder="Nickname"
+          color="#e6ffff"
+          @keydown.enter="setNick"
+          hide-details
+          filled
+          rounded
+          dense
+          counter="20"
+          ref="nickname_field"
+        >
+        </v-text-field>
+      </v-row>
+      <v-row justify="center" align="center" style="padding-top: 1%">
+        <v-btn 
+          class="foreground_element"
+          :class = '[{"neonText": nickIsValid()}]'
+          text
+          color="#e6ffff"
+          :disabled="nickname.length == 0 || nickname.length > 20"
+          @click="setNick"
+        >
+          Complete Registration
+        </v-btn>
       </v-row>
     </div>
   </v-main>
@@ -57,8 +61,7 @@ export default class extends Vue {
     var valid = this.nickname != "" && this.nickname.length <= 20
 
     console.log(valid)
-    return this.nickname != "" &&
-    this.nickname.length <= 20
+    return valid
   }
 
   async setNick() {
@@ -80,16 +83,40 @@ export default class extends Vue {
 
 <style>
 
-.text-field_size {
-  min-width: 250px;
-  width: 500px;
-  z-index: 10;
-  background: #f27719 !important; /* orange tron color */
-  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
+.custom-placeholer-color input::placeholder {
+  color: #e6ffff!important;
+  opacity: 1;
 }
 
-.text-color input {
-  color: #7DFDFE !important; /* blue tron color */
+.custom-label-color .v-label {
+  color: #e6ffff;
+  opacity: 1;
+}
+
+.custom-placeholer-color input,
+.custom-label-color input{
+  color: #e6ffff!important;
+}
+
+.text-field_size {
+  color: #e6ffff;
+  text-shadow:
+    0 0 7px #69acb8,
+    0 0 10px #49A2B2,
+    0 0 21px #49A2B2,
+    0 0 31px #225560,;
+  min-width: 250px;
+  width: 500px;
+  border: 3px solid #ffffff !important;
+  box-shadow: inset 0px 0px 20px 0px #63f3f3, 0px 0px 20px 0px #63f3f3 !important;
+}
+
+.neonText {
+  color: #e6ffff;
+  text-shadow:
+    0 0 7px #63f3f3,
+    0 0 8px #63f3f3,
+    0 0 50px #63f3f3;
 }
 
 .flex-container {
@@ -102,13 +129,19 @@ export default class extends Vue {
    * flex-direction: row;
    * flex-wrap: wrap;
    */
-  flex-flow: row wrap;
+  flex-flow: column wrap;
   
   /* Then we define how is distributed the remaining space */
   justify-content: space-evenly;
   align-content: center;
   /* padding-top: 5%; */
   list-style: none;
+}
+
+.text-field_size{
+  min-width: 35px;
+  width: 500px;
+  max-width: 1000px;
 }
 
 </style>
