@@ -1,70 +1,70 @@
 <template>
-<v-main>
-  <div v-if="tfa_status == false" class="foreground_element" style="padding-top: 3%;">
-    <v-row>
-      <v-col justify="center" align="center">
-        <v-btn
-          class="foreground_element"
-          @click="generate_qr_code()"
-        >
-          Re-Generate 2fa
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row justify="center" align="center">
-      <!-- mettre le qr code au bon endroit  -->
-      <v-img class="foreground_element"
-        width="35%"
-        height="35%"
-        max-width="250"
-        max-height="250"
-        v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
-    </v-row>
-    <v-row align="center" justify="center" style="padding-top: 2%; column-gap: 15px">
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_1"
-        v-model="tfa_digit[0]"
-        filled
-        background-color="white"
-        type="number"
-        @input="focusDigit2"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_2"
-        v-model="tfa_digit[1]"
-        filled
-        background-color="white"
-        @input="focusDigit3"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_3"
-        v-model="tfa_digit[2]"
-        filled
-        background-color="white"
-        @input="focusDigit4"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_4"
-        v-model="tfa_digit[3]"
-        filled
-        background-color="white"
-        @input="focusDigit5"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_5"
-        v-model="tfa_digit[4]"
-        filled
-        background-color="white"
-        @input="focusDigit6"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_6"
-        v-model="tfa_digit[5]"
-        filled
-        background-color="white"
-        @input="turn_on"
-      ></v-text-field> 
-    </v-row>
+  <v-main>
+    <div class="foreground_element" style="padding-top: 3%;">
+      <v-row>
+        <v-col justify="center" align="center">
+          <v-btn
+            class="foreground_element"
+            @click="generate_qr_code()"
+          >
+            Re-Generate 2fa
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row justify="center" align="center">
+        <!-- mettre le qr code au bon endroit  -->
+        <v-img class="foreground_element"
+          width="35%"
+          height="35%"
+          max-width="250"
+          max-height="250"
+          v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
+      </v-row>
+      <v-row align="center" justify="center" style="padding-top: 2%; column-gap: 15px">
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_1"
+          v-model="tfa_digit[0]"
+          filled
+          background-color="white"
+          type="number"
+          @input="focusDigit2"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_2"
+          v-model="tfa_digit[1]"
+          filled
+          background-color="white"
+          @input="focusDigit3"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_3"
+          v-model="tfa_digit[2]"
+          filled
+          background-color="white"
+          @input="focusDigit4"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_4"
+          v-model="tfa_digit[3]"
+          filled
+          background-color="white"
+          @input="focusDigit5"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_5"
+          v-model="tfa_digit[4]"
+          filled
+          background-color="white"
+          @input="focusDigit6"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_6"
+          v-model="tfa_digit[5]"
+          filled
+          background-color="white"
+          @input="turn_on"
+        ></v-text-field> 
+      </v-row>
 <!--
     <div class="flex-container">
       <li v-for="i in 6" :key="i">
@@ -78,30 +78,18 @@
       </li>
     </div>
 -->
-    <v-row justify="center" align="center">
-      <v-btn
-        class="foreground_element"
-        :disabled="qr_code == null || tfa_code.length != 6"
-        color="success"
-        @click="turn_on"
-      >
-        enable 2fa
-      </v-btn>
-    </v-row>
-  </div>
-  <div v-else>
-    <v-row justify="center" align="center">
-      <v-btn
-        class="foreground_element"
-        @click="disable()"
-        color="error"
-        to="/profile" nuxt
-      >
-        disable 2fa
-      </v-btn>
-    </v-row>
-  </div>
-</v-main>
+      <v-row justify="center" align="center">
+        <v-btn
+          class="foreground_element"
+          :disabled="qr_code == null || tfa_code.length != 6"
+          color="success"
+          @click="turn_on"
+        >
+          enable 2fa
+        </v-btn>
+      </v-row>
+    </div>
+  </v-main>
 </template>
 
 <script lang='ts'>
@@ -149,18 +137,6 @@ export default class extends Vue {
       this.qr_code = ret.data
   }
 
-  async disable() {
-    const qr = await this.$axios.post('/api/auth/2fa/turn-off')
-    .catch(function (error) {
-      alert("Cant turn off 2fa")
-      return error.response
-    });
-    if (qr.status == 201) {
-      this.tfa_status = false
-      alert("2fa disabled")
-    }
-  }
-
   async turn_on() {
 
     this.tfa_code = "";
@@ -185,10 +161,7 @@ export default class extends Vue {
       this.$refs.digit_1.focus()
     }
   }
-
-  resetCode() {
-  }
-
+  
     $refs!: {
       digit_1: HTMLFormElement
       digit_2: HTMLFormElement
