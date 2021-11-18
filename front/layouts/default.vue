@@ -39,6 +39,7 @@
             <v-text-field
               class="foreground_element text-field_search custom-placeholer-color neonText"
               placeholder="Search"
+              color="#e6ffff"
               v-model="search"
               hide-details
               dense
@@ -46,7 +47,6 @@
               rounded
               prepend-inner-icon="mdi-magnify"
               @keydown.enter="searchbar"
-              color="#e6ffff"
             >
             </v-text-field>
           </v-col>
@@ -122,8 +122,7 @@ export default Vue.extend({
   max-width: 100%;
   width: 100%;
   box-shadow: inset 0px 0px 20px 0px #f27719, 0px 0px 20px 0px #f27719 !important;
-  border: 3px solid #ffffff !important;
-
+  border: 3px solid #ffc79c !important;
 }
 
 .title {
@@ -141,14 +140,13 @@ export default Vue.extend({
 
 .icon_color {
   color: #f27719 !important;
-  box-shadow: 0px 0px 20px 0px #f27719;
-  border: 0.2rem solid #fff;
+  box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 10px 1px #f27719;
+  border: 0.2rem solid #ffc79c;
   border-radius: 2rem;
 }
 
 .top_bar_style {
-  color: #ffffff;
-  border-bottom: 3px solid #ffffff !important;
+  border-bottom: 3px solid #ffc79c !important;
   height: 6% !important;
   max-height: 10%;
   min-height: 2%;
@@ -170,6 +168,5 @@ export default Vue.extend({
 .custom-label-color input{
   color: #e6ffff!important;
 }
-
 
 </style>
