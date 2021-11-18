@@ -1,16 +1,6 @@
 <template>
 <v-main>
-  <div style="padding-top: 3%" justify="center" align="center">
-      <v-btn
-        class="foreground_element"
-        to="/profile/2fa" nuxt
-        rounded
-        elevation="2"
-      >
-        2fa
-      </v-btn>
-  </div>
-  <div justify="center" align="center" v-if="!isEditing">
+  <div justify="center" align="center" style="padding-top: 3%" v-if="!isEditing">
     <v-avatar class="overflow-visible" size="128">
       <img v-if="user.picture != ''"
         class="round_card item"
@@ -32,9 +22,9 @@
         </v-btn>
     </v-avatar>
     </div>
-    <div class="flex-container-editing" justify="center" align="center" v-else>
+    <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%" v-else>
       <v-btn
-        color="#7DFDFE"
+        color="#f27719"
         fab
         small
         @click="switchEditing"
@@ -43,15 +33,13 @@
         <v-icon color="#7DFDFE" v-if="isEditing" >
           mdi-close
         </v-icon>
-        <v-icon color="#7DFDFE" v-else>
-          mdi-pencil
-        </v-icon>
       </v-btn>
       <v-btn v-if="isEditing"
         class="text-none foreground_element btn_camera"
         :disabled="isEditing ? false: true"
         :loading="isSelecting"
         @click="onButtonClick"
+        color="#333333"
       >
         <v-icon
           x-large
@@ -69,13 +57,13 @@
   </div>
   <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"
-        class="foreground_element text-field-dimension"
+        class="foreground_element text-field_style"
         v-model="nick"
         label="Nickname"
         counter="20"
-        elevation="10"
-        rounded
         filled
+        shaped
+        color="#f27719"
       >
       </v-text-field>
       <v-card class="foreground_element card_profile"
@@ -125,6 +113,26 @@
       Save
     </v-btn>
   </v-row>
+  <div class="flex-container" style="padding-top: 3%" justify="center" align="center" v-if="isEditing">
+    <v-card class="foreground_element editing_card" width="500"><!--  <v-btn
+        class="foreground_element"
+        to="/profile/2fa" nuxt
+        rounded
+        elevation="2"
+      >
+        2fa
+      </v-btn> -->
+        <v-switch
+        class="v-input--reverse"
+        v-model="switch1"
+        @change="goAt2fa"
+        >
+          <template #label>
+            <h2 style="margin-left: 3%">Do you want active 2fa ?</h2>
+          </template>
+        </v-switch>
+    </v-card>
+  </div>
 </v-main>
 </template>
 
@@ -201,16 +209,26 @@ export default class extends Vue {
     this.isEditing = !this.isEditing
   }
 
+  goAt2fa() {
+      window.location.href = '/profile/2fa'
+  }
+
 }
 </script>
 
 <style>
 
-.text-field-dimension {
+.text-field_style {
   width: 15%;
   min-width: 15%;
   max-width: 15%;
   margin-top: 3%;
+  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
+  background: #f27719 !important; /* orange tron color */
+}
+
+.text-field_style input {
+  color: #7DFDFE !important; /* blue tron color */
 }
 
 .color_lose {
@@ -263,6 +281,15 @@ export default class extends Vue {
   width: 30%;
 }
 
+.editing_card {
+  height: 10%;
+  width: 25% !important;
+  min-width: 20%;
+  border-radius: 15px !important;
+  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
+  background-color: #f27719 !important;
+}
+
 .flex-container {
   /* We first create a flex layout context */
   display: flex;
@@ -279,6 +306,7 @@ export default class extends Vue {
   justify-content: space-evenly;
   align-content: center;
   list-style: none;
+
 }
 
 .flex-container-editing {
@@ -294,9 +322,11 @@ export default class extends Vue {
   flex-flow: column wrap;
   
   /* Then we define how is distributed the remaining space */
-  justify-content: space-evenly;
+  justify-content: center;
   align-content: center;
   list-style: none;
+  padding-top: 1%;
+  column-gap: 100px !important;
 }
 
 .item {
@@ -308,6 +338,12 @@ export default class extends Vue {
   color: white;
   font-weight: bold;
   text-align: center;
+}
+
+.v-input--reverse .v-input__slot {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  margin-right: 2px;
 }
 
 </style>
