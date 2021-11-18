@@ -37,7 +37,7 @@
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
             <v-text-field
-              class="foreground_element text-field_search custom-placeholer-color neonText"
+              class="foreground_element text-field_search custom-placeholder-color custom-input-color neonText"
               placeholder="Search"
               color="#e6ffff"
               v-model="search"
@@ -110,7 +110,7 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped>
   @import '../assets/main_page.scss';
 
   .v-application{
@@ -152,21 +152,6 @@ export default Vue.extend({
   min-height: 2%;
   padding-top: 0.2%;
   box-shadow: inset 0px -14px 20px -10px #f27719, 0px 0px 20px 0px #f27719 !important;
-}
-
-.custom-placeholer-color input::placeholder {
-  color: #e6ffff!important;
-  opacity: 1;
-}
-
-.custom-label-color .v-label {
-  color: #e6ffff;
-  opacity: 1;
-}
-
-.custom-placeholer-color input,
-.custom-label-color input{
-  color: #e6ffff!important;
 }
 
 </style>
