@@ -52,7 +52,7 @@ export default class extends Vue {
     const ret = await this.$axios.$get('api/profile/me/nickname')
 
     if (ret.nickname != "")
-      window.location.href = '/home'
+      this.$router.push('/home')
   }
 
   nickname = "";
@@ -72,7 +72,7 @@ export default class extends Vue {
         return error.response
     });
     if (ret.status == 201)
-      window.location.href = '/home'
+      this.$router.push('/home')
   }
   
   $refs!: {
