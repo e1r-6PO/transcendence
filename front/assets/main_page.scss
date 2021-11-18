@@ -1,14 +1,40 @@
 .main_title_test{
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 200%;
-    color: black;
-    margin-bottom: 8%;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 200%;
+  color: black;
+  margin-bottom: 8%;
 }
 
 .background_effect{
-    z-index: 2;
+  z-index: 2;
 }
 
 .foreground_element{
-    z-index: 6;
+  z-index: 6;
+}
+
+.custom-input-color >>> .v-text-field__slot input {
+  color: #e6ffff
+}
+
+.custom-placeholder-color >>> .v-text-field__slot ::placeholder {
+  color: #e6ffff
+}
+
+.neon-blue-button {
+  border: 3px solid #ffffff !important;
+  box-shadow: inset 0px 0px 20px 0px #63f3f3, 0px 0px 20px 0px #63f3f3 !important;
+}
+
+.text-field-nick-neon-blue {
+  color: #e6ffff;
+  text-shadow:
+    0 0 7px #69acb8,
+    0 0 10px #49A2B2,
+    0 0 21px #49A2B2,
+    0 0 31px #225560,;
+  min-width: 250px;
+  width: 500px;
+  border: 3px solid #ffffff !important;
+  box-shadow: inset 0px 0px 20px 0px #63f3f3, 0px 0px 20px 0px #63f3f3 !important;
 }
