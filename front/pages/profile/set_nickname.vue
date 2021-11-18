@@ -1,28 +1,31 @@
 <template>
   <v-main>
-    <div class="flex-container" style="padding-top: 5%">
+    <div class="flex-container" style="padding-top: 5%; row-gap:40px">
       <v-row justify="center" align="center">
         <v-col justify="center" align="center">
+          <div class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</div>
           <v-text-field
-            class="foreground_element text-field_size text-color"
+            class="foreground_element text-field_size custom-placeholer-color neonText"
             v-model="nickname"
-            label="Nickname"
+            placeholder="Nickname"
+            color="#e6ffff"
             @keydown.enter="setNick"
-            width="200"
-            counter="20"
+            hide-details
             filled
-            shaped
+            rounded
+            dense
+            counter="20"
             ref="nickname_field"
           >
           </v-text-field>
           <v-btn 
             class="foreground_element"
             text
-            color="#f27719"
+            color="#e6ffff"
             :disabled="nickname.length == 0 || nickname.length > 20"
             @click="setNick"
           >
-            Complet Registration
+            Complete Registration
           </v-btn>
         </v-col>
       </v-row>
@@ -80,16 +83,40 @@ export default class extends Vue {
 
 <style>
 
-.text-field_size {
-  min-width: 250px;
-  width: 500px;
-  z-index: 10;
-  background: #f27719 !important; /* orange tron color */
-  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
+.custom-placeholer-color input::placeholder {
+  color: #e6ffff!important;
+  opacity: 1;
 }
 
-.text-color input {
-  color: #7DFDFE !important; /* blue tron color */
+.custom-label-color .v-label {
+  color: #e6ffff;
+  opacity: 1;
+}
+
+.custom-placeholer-color input,
+.custom-label-color input{
+  color: #e6ffff!important;
+}
+
+.text-field_size {
+  color: #e6ffff;
+  text-shadow:
+    0 0 7px #69acb8,
+    0 0 10px #49A2B2,
+    0 0 21px #49A2B2,
+    0 0 31px #225560,;
+  min-width: 250px;
+  width: 500px;
+  border: 3px solid #ffffff !important;
+  box-shadow: inset 0px 0px 20px 0px #63f3f3, 0px 0px 20px 0px #63f3f3 !important;
+}
+
+.neonText {
+  color: #e6ffff;
+  text-shadow:
+    0 0 7px #63f3f3,
+    0 0 8px #63f3f3,
+    0 0 50px #63f3f3;
 }
 
 .flex-container {

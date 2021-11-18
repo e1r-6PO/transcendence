@@ -19,7 +19,7 @@
             <v-icon class="icon_color">{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content >
-            <v-list-item-title class="title_color" v-text="item.title" />
+            <v-list-item-title class="title_color neonText" v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -33,7 +33,7 @@
     >
       <!-- <v-app-bar-nav-icon/> -->
       <v-app-bar-nav-icon class="icon_color" @click.stop="drawer = !drawer" />
-      <v-toolbar-title color="green" v-text="title" />
+      <v-toolbar-title class="title neonText" v-text="title" />
       <v-spacer />
       <v-container fill-height>
         <v-row align="center" justify="center">
@@ -125,18 +125,31 @@ export default Vue.extend({
   padding-top: 0% !important;
 }
 
-.title_color {
-  color: #7DFDFE !important;
+.title {
+  text-overflow: clip;
+  overflow: visible;
+}
+
+.neonText {
+  color: #e6ffff;
+  text-shadow:
+    0 0 7px #69acb8,
+    0 0 10px #49A2B2,
+    0 0 21px #49A2B2,
+    0 0 31px #225560,
 }
 
 .icon_color {
   color: #f27719 !important;
-  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89);
-  border-radius:35%!important;
+  box-shadow: 0px 0px 20px 0px #f27719;
+  border: 0.2rem solid #fff;
+  border-radius: 2rem;
 }
 
 .top_bar_style {
-  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
+  color: #ffffff;
+  border-bottom: 3px solid #ffffff !important;
+  box-shadow: inset 0px -14px 20px -10px #63f3f3, 0px 0px 20px 0px #63f3f3 !important;
 }
 
 </style>
