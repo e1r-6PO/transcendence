@@ -10,7 +10,11 @@ import { Socket, Server } from 'socket.io';
 import { Logger } from "@nestjs/common";
 import { AdvancedConsoleLogger } from "typeorm";
 
-@WebSocketGateway()
+@WebSocketGateway({
+    cors: {
+        origin: "http://localhost:8000"
+    }
+})
 
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
     @WebSocketServer() server: Server;

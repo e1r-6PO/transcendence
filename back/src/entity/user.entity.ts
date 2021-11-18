@@ -7,7 +7,7 @@ export class User {
 
   @Column()
   email: string;
-  @Column()
+  @Column({ nullable: true })
   displayName: string;
   @Column()
   picture: string;
