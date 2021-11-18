@@ -24,38 +24,40 @@
     </div>
     <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%" v-else>
       <v-btn
-        color="#f27719"
-        fab
-        small
-        @click="switchEditing"
-        class="foreground_element btn_style"
-      >
-        <v-icon color="#7DFDFE" v-if="isEditing" >
-          mdi-close
-        </v-icon>
-      </v-btn>
-      <v-btn v-if="isEditing"
-        class="text-none foreground_element btn_camera"
-        :disabled="isEditing ? false: true"
-        :loading="isSelecting"
-        @click="onButtonClick"
-        color="#333333"
-      >
-        <v-icon
-          x-large
+          color="#f27719"
+          fab
+          small
+          @click="switchEditing"
+          class="foreground_element cross-item"
         >
-          mdi-camera-enhance
-        </v-icon>
-        <input
-          ref="uploader"
-          class="d-none"
-          type="file"
-          accept="image/*"
-          @change="onFileChanged"
+          <v-icon color="#7DFDFE" v-if="isEditing" >
+            mdi-close
+          </v-icon>
+        </v-btn>
+      <v-row align="center" justify="center">
+        <v-btn v-if="isEditing"
+          class="text-none foreground_element btn_camera"
+          :disabled="isEditing ? false: true"
+          :loading="isSelecting"
+          @click="onButtonClick"
+          color="#333333"
         >
-      </v-btn>
-  </div>
-  <div class="flex-container-editing" style="padding-top: 3%">
+          <v-icon
+            x-large
+          >
+            mdi-camera-enhance
+          </v-icon>
+          <input
+            ref="uploader"
+            class="d-none"
+            type="file"
+            accept="image/*"
+            @change="onFileChanged"
+          >
+        </v-btn>
+      </v-row>
+    </div>
+    <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"
         class="foreground_element text-field_style"
         v-model="nick"
@@ -102,17 +104,6 @@
         <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
       </v-card>
   </div>
-  <v-row>
-    <v-spacer></v-spacer>
-    <v-btn v-if="isEditing"
-    class="foreground_element"
-    :disabled="(!isEditing || user.nickName.length > 20) && selectedFile == null"
-    color="success"
-    @click="saveChange"
-    >
-      Save
-    </v-btn>
-  </v-row>
   <div class="flex-container" style="padding-top: 3%" justify="center" align="center" v-if="isEditing">
     <v-card class="foreground_element editing_card" width="500"><!--  <v-btn
         class="foreground_element"
@@ -124,14 +115,24 @@
       </v-btn> -->
         <v-switch
         class="v-input--reverse"
-        v-model="switch1"
-        @change="goAt2fa"
+        :input-value="is2fa"
+        @change="change2fa"
         >
           <template #label>
             <h2 style="margin-left: 3%">Do you want active 2fa ?</h2>
           </template>
         </v-switch>
     </v-card>
+  </div>
+  <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%">
+    <v-btn v-if="isEditing"
+    class="foreground_element save-item"
+    :disabled="(!isEditing || user.nickName.length > 20) && selectedFile == null"
+    color="#0ADAA8"
+    @click="saveChange"
+    >
+      Save
+    </v-btn>
   </div>
 </v-main>
 </template>
@@ -152,10 +153,22 @@ export default class extends Vue {
   isSelecting = false
   selectedFile: Blob | string = new Blob
   nick = ""
+  tfa_status = false
 
   async mounted() {
     this.user = await this.$axios.$get('/api/profile/me')
+    
+    const ret2fa = await this.$axios.get('/api/auth/2fa/is_enabled')
+    .catch(function (error) {
+      alert("error in mounted")
+      return error.response
+    })
+    
+    if (ret2fa.status == 200) {
+      this.tfa_status = ret2fa.data['isTwoFactorAuthenticationEnabled']
+      console.log(this.tfa_status)
     this.nick = this.user.nickName
+    }
   }
 
   switchEditing() {
@@ -209,8 +222,27 @@ export default class extends Vue {
     this.isEditing = !this.isEditing
   }
 
-  goAt2fa() {
-      window.location.href = '/profile/2fa'
+  async change2fa() {
+    console.log("enable")
+    console.log(this.tfa_status)
+    if (this.tfa_status == false)
+      this.$router.push("/profile/2fa")
+    else
+    {
+      const qr = await this.$axios.post('/api/auth/2fa/turn-off')
+      .catch(function (error) {
+        alert("Cant turn off 2fa")
+        return error.response
+      });
+      if (qr.status == 201) {
+        this.tfa_status = false
+        alert("2fa disabled")
+      }
+    }
+  }
+
+  is2fa() {
+    return this.tfa_status
   }
 
 }
@@ -244,10 +276,6 @@ export default class extends Vue {
 .color_text { 
   z-index: 6;
   color: #ffffff;
-}
-
-.btn_style {
-  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
 }
 
 .round_card {
@@ -338,6 +366,16 @@ export default class extends Vue {
   color: white;
   font-weight: bold;
   text-align: center;
+}
+
+.cross-item {
+  margin-left: 90%;
+  margin-bottom: 2%;
+  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
+}
+
+.save-item {
+  margin-left: 90%;
 }
 
 .v-input--reverse .v-input__slot {
