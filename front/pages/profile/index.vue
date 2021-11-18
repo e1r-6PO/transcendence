@@ -59,13 +59,15 @@
     </div>
     <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"
-        class="foreground_element text-field_style"
+        class="foreground_element text-field-nick-neon-blue custom-placeholder-color custom-input-color"
         v-model="nick"
-        label="Nickname"
-        counter="20"
+        placeholder="Nickname"
+        color="#e6ffff"
+        hide-details
         filled
-        shaped
-        color="#f27719"
+        rounded
+        dense
+        counter="20"
       >
       </v-text-field>
       <v-card class="foreground_element card_profile"
@@ -149,7 +151,7 @@ import { User } from '../../assets/User';
 export default class extends Vue {
 
   user : User = new User;
-  isEditing = false
+  isEditing = true
   isSelecting = false
   selectedFile: Blob | string = new Blob
   nick = ""
@@ -247,7 +249,8 @@ export default class extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
+@import '../../assets/main_page.scss';
 
 .text-field_style {
   width: 15%;
