@@ -1,33 +1,34 @@
 <template>
   <v-main>
-    <div class="flex-container" style="padding-top: 5%; row-gap:40px">
+    <div class="flex-container" style="padding-top: 5%">
+      <p align="center" class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</p>
       <v-row justify="center" align="center">
-        <v-col justify="center" align="center">
-          <div class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</div>
-          <v-text-field
-            class="foreground_element text-field_size custom-placeholer-color neonText"
-            v-model="nickname"
-            placeholder="Nickname"
-            color="#e6ffff"
-            @keydown.enter="setNick"
-            hide-details
-            filled
-            rounded
-            dense
-            counter="20"
-            ref="nickname_field"
-          >
-          </v-text-field>
-          <v-btn 
-            class="foreground_element"
-            text
-            color="#e6ffff"
-            :disabled="nickname.length == 0 || nickname.length > 20"
-            @click="setNick"
-          >
-            Complete Registration
-          </v-btn>
-        </v-col>
+        <v-text-field
+          class="foreground_element text-field_size custom-placeholer-color neonText"
+          v-model="nickname"
+          placeholder="Nickname"
+          color="#e6ffff"
+          @keydown.enter="setNick"
+          hide-details
+          filled
+          rounded
+          dense
+          counter="20"
+          ref="nickname_field"
+        >
+        </v-text-field>
+      </v-row>
+      <v-row justify="center" align="center" style="padding-top: 1%">
+        <v-btn 
+          class="foreground_element"
+          :class = '[{"neonText": nickIsValid()}]'
+          text
+          color="#e6ffff"
+          :disabled="nickname.length == 0 || nickname.length > 20"
+          @click="setNick"
+        >
+          Complete Registration
+        </v-btn>
       </v-row>
     </div>
   </v-main>
@@ -60,8 +61,7 @@ export default class extends Vue {
     var valid = this.nickname != "" && this.nickname.length <= 20
 
     console.log(valid)
-    return this.nickname != "" &&
-    this.nickname.length <= 20
+    return valid
   }
 
   async setNick() {
@@ -129,13 +129,19 @@ export default class extends Vue {
    * flex-direction: row;
    * flex-wrap: wrap;
    */
-  flex-flow: row wrap;
+  flex-flow: column wrap;
   
   /* Then we define how is distributed the remaining space */
   justify-content: space-evenly;
   align-content: center;
   /* padding-top: 5%; */
   list-style: none;
+}
+
+.text-field_size{
+  min-width: 35px;
+  width: 500px;
+  max-width: 1000px;
 }
 
 </style>

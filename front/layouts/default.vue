@@ -27,32 +27,31 @@
     <v-app-bar
       fixed
       app
-      height="80"
       color="#000000"
       class="top_bar_style"
     >
-      <!-- <v-app-bar-nav-icon/> -->
       <v-app-bar-nav-icon class="icon_color" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="title neonText" v-text="title" />
       <v-spacer />
-      <v-container fill-height>
+      <div>
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
             <v-text-field
-              class="foreground_element text-field_search"
-              label="Search"
+              class="foreground_element text-field_search custom-placeholer-color neonText"
+              placeholder="Search"
               v-model="search"
+              hide-details
               dense
               filled
-              shaped
+              rounded
               prepend-inner-icon="mdi-magnify"
               @keydown.enter="searchbar"
-              background-color="#f27719"
+              color="#e6ffff"
             >
             </v-text-field>
           </v-col>
         </v-row>
-      </v-container>
+      </div>
       <v-btn
         icon
         href="/api/auth/logout"
@@ -119,10 +118,12 @@ export default Vue.extend({
   }
 
 .text-field_search {
-  min-width: 15%;
-  max-width: 15%;
-  width: 15%;
-  padding-top: 0% !important;
+  min-width: 100%;
+  max-width: 100%;
+  width: 100%;
+  box-shadow: inset 0px 0px 20px 0px #f27719, 0px 0px 20px 0px #f27719 !important;
+  border: 3px solid #ffffff !important;
+
 }
 
 .title {
@@ -133,10 +134,9 @@ export default Vue.extend({
 .neonText {
   color: #e6ffff;
   text-shadow:
-    0 0 7px #69acb8,
-    0 0 10px #49A2B2,
-    0 0 21px #49A2B2,
-    0 0 31px #225560,
+    0 0 7px #f27719,
+    0 0 8px #f27719,
+    0 0 9px #f27719,
 }
 
 .icon_color {
@@ -149,8 +149,27 @@ export default Vue.extend({
 .top_bar_style {
   color: #ffffff;
   border-bottom: 3px solid #ffffff !important;
-  box-shadow: inset 0px -14px 20px -10px #63f3f3, 0px 0px 20px 0px #63f3f3 !important;
+  height: 6% !important;
+  max-height: 10%;
+  min-height: 2%;
+  padding-top: 0.2%;
+  box-shadow: inset 0px -14px 20px -10px #f27719, 0px 0px 20px 0px #f27719 !important;
 }
 
-</style>
+.custom-placeholer-color input::placeholder {
+  color: #e6ffff!important;
+  opacity: 1;
+}
 
+.custom-label-color .v-label {
+  color: #e6ffff;
+  opacity: 1;
+}
+
+.custom-placeholer-color input,
+.custom-label-color input{
+  color: #e6ffff!important;
+}
+
+
+</style>
