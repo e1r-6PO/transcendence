@@ -4,7 +4,7 @@
       <p align="center" class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</p>
       <v-row justify="center" align="center">
         <v-text-field
-          class="foreground_element text-field_size custom-placeholer-color neonText"
+          class="foreground_element text-field-nick-neon-blue custom-placeholder-color custom-input-color"
           v-model="nickname"
           placeholder="Nickname"
           color="#e6ffff"
@@ -81,35 +81,9 @@ export default class extends Vue {
 }
 </script>
 
-<style>
+<style scoped>
 
-.custom-placeholer-color input::placeholder {
-  color: #e6ffff!important;
-  opacity: 1;
-}
-
-.custom-label-color .v-label {
-  color: #e6ffff;
-  opacity: 1;
-}
-
-.custom-placeholer-color input,
-.custom-label-color input{
-  color: #e6ffff!important;
-}
-
-.text-field_size {
-  color: #e6ffff;
-  text-shadow:
-    0 0 7px #69acb8,
-    0 0 10px #49A2B2,
-    0 0 21px #49A2B2,
-    0 0 31px #225560,;
-  min-width: 250px;
-  width: 500px;
-  border: 3px solid #ffffff !important;
-  box-shadow: inset 0px 0px 20px 0px #63f3f3, 0px 0px 20px 0px #63f3f3 !important;
-}
+@import '../../assets/main_page.scss';
 
 .neonText {
   color: #e6ffff;
