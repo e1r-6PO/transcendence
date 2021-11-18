@@ -7,10 +7,11 @@ import { DbConnectModule } from './db.connect.module';
 import { ProfileModule } from './profile.module';
 import { CustomJwtModule } from './custom.jwt.module';
 import { UsersModule } from './users.module';
+import { AppGateway } from 'src/webSocket/app.gateway';
 
 @Module({
   imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware],
   controllers: [ AppController ],
-  providers: [ AppService ],
+  providers: [ AppService, AppGateway ],
 })
 export class AppModule {}
