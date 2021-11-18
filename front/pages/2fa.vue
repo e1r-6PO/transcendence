@@ -10,19 +10,72 @@
 
         <!-- <v-main> -->
           <!-- <v-row justify="center" align="center"> -->
-    <v-container >
-      <v-text-field
-        class="foreground_element"
-        label="6-digit code"
-        v-model="tfa_code"
-        placeholder="6-digit code"
-        solo
-        filled
-        rounded
-        prepend-inner-icon=""
-        @keydown.enter="validatetfa"
-      >
-      </v-text-field>
+    <v-container style="padding-top: 5%">
+      <v-row justify="center" align="center">
+      <p class="foreground_element" align="center" style="font-size:30px"> Please enter 2fa code </p>
+      </v-row>
+      <v-row align="center" justify="center" style="padding-top: 2%; column-gap: 15px">
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_1"
+          v-model="tfa_digit[0]"
+          filled
+          background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @input="focusDigit2"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_2"
+          v-model="tfa_digit[1]"
+          filled
+          background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @input="focusDigit3"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_3"
+          v-model="tfa_digit[2]"
+          filled
+          background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @input="focusDigit4"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_4"
+          v-model="tfa_digit[3]"
+          filled
+          background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @input="focusDigit5"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_5"
+          v-model="tfa_digit[4]"
+          filled
+          background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @input="focusDigit6"
+        ></v-text-field>
+        <v-text-field class="foreground_element text-field_size"
+          ref="digit_6"
+          v-model="tfa_digit[5]"
+          filled
+          background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @input="validatetfa"
+        ></v-text-field> 
+      </v-row>
     </v-container>
           <!-- </v-row> -->
         <!-- </v-main> -->
@@ -55,14 +108,84 @@ export default class extends Vue {
   // }
 
   tfa_code =  ""
+  tfa_digit = ["", "", "", "", "", ""];
+
+  mounted() {
+    this.$refs.digit_1.focus()
+  }
 
   async validatetfa() {
+    
+    this.tfa_code = "";
+    for (let i = 0; i < 6; i++)
+    {
+      if (this.tfa_digit[i] == '')
+        this.focusdigit(i);
+      this.tfa_code += this.tfa_digit[i];
+    }
     const ret = await this.$axios.post('/api/auth/2fa/authenticate?2fa=' + this.tfa_code)
     .catch(function (error) {
       return error.response;
     });
     if (ret.status == 201)
       this.$router.push("/home")
+    else
+      {
+      this.tfa_digit = []
+      this.tfa_code = ""
+      this.$refs.digit_1.focus()
+    }
+  }
+
+  $refs!: {
+      digit_1: HTMLFormElement
+      digit_2: HTMLFormElement
+      digit_3: HTMLFormElement
+      digit_4: HTMLFormElement
+      digit_5: HTMLFormElement
+      digit_6: HTMLFormElement
+  }
+
+  focusdigit(i : number)
+  {
+    if (i == 1)
+        this.$refs.digit_1.focus()
+    if (i == 2)
+        this.$refs.digit_2.focus()
+    if (i == 3)
+        this.$refs.digit_3.focus()
+    if (i == 4)
+        this.$refs.digit_4.focus()
+    if (i == 5)
+        this.$refs.digit_5.focus()
+    if (i == 6)
+        this.$refs.digit_6.focus()
+
+  }
+
+   focusDigit2() {
+    if (this.tfa_digit[0] != '')
+      this.$refs.digit_2.focus()
+  }
+
+  focusDigit3() {
+    if (this.tfa_digit[1] != '')
+      this.$refs.digit_3.focus()
+  }
+
+  focusDigit4() {
+    if (this.tfa_digit[2] != '')
+      this.$refs.digit_4.focus()
+  }
+
+  focusDigit5() {
+    if (this.tfa_digit[3] != '')
+      this.$refs.digit_5.focus()
+  }
+
+  focusDigit6() {
+    if (this.tfa_digit[4] != '')
+      this.$refs.digit_6.focus()
   }
 
 };
@@ -99,4 +222,23 @@ export default class extends Vue {
   .item {
     align-self: center;
   }
+
+.text-field_size{
+  min-width: 35px;
+  width: 1.8%;
+  max-width: 35px;
+  border-radius: 10%;
+}
+
+.text-field_size input::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* disable arrows in input text-field */ 
+}
+
+.text-field_size > .v-input__control > .v-input__slot:after {
+  border-style: none !important;
+}
+
+.text-field_size > .v-input__control > .v-input__slot:before {
+  border-bottom-style: none !important;
+}
 </style>
