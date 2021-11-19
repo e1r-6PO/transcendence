@@ -151,7 +151,7 @@ import { User } from '../../assets/User';
 export default class extends Vue {
 
   user : User = new User;
-  isEditing = true
+  isEditing = false
   isSelecting = false
   selectedFile: Blob | string = new Blob
   nick = ""
