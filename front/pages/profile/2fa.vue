@@ -1,6 +1,7 @@
 <template>
   <v-main>
-    <div class="foreground_element" style="padding-top: 3%;">
+    <!-- <container style="align-item: center; align-content: center"> -->
+    <div class="foreground_elemen flex-contianer" style="padding-top: 12%;">
       <v-row>
         <v-col justify="center" align="center">
           <v-btn
@@ -29,7 +30,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit2"
+          @input="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_2"
@@ -39,7 +40,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit3"
+          @input="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_3"
@@ -49,7 +50,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit4"
+          @input="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_4"
@@ -59,7 +60,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit5"
+          @input="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_5"
@@ -69,7 +70,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit6"
+          @input="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_6"
@@ -79,7 +80,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="turn_on"
+          @input="tfaIsComplete"
         ></v-text-field> 
       </v-row>
 <!--
@@ -95,17 +96,8 @@
       </li>
     </div>
 -->
-      <v-row justify="center" align="center">
-        <v-btn
-          class="foreground_element"
-          :disabled="qr_code == null || tfa_code.length != 6"
-          color="success"
-          @click="turn_on"
-        >
-          enable 2fa
-        </v-btn>
-      </v-row>
     </div>
+    <!-- </container> -->
   </v-main>
 </template>
 
@@ -171,12 +163,11 @@ export default class extends Vue {
       this.tfa_code = ""
       alert("2fa successfully enable")
       this.$router.push("/profile")
+      return;
     }
-    else {
-      this.tfa_digit = []
-      this.tfa_code = ""
-      this.$refs.digit_1.focus()
-    }
+    this.tfa_code = ""
+    this.tfa_digit = []
+    this.$refs.digit_1.focus()
   }
 
     $refs!: {
@@ -190,14 +181,29 @@ export default class extends Vue {
 
   createRef(i: number)
   {
-      console.log("digit_" + i.toString())
     return ("digit_" + i.toString())
   }
-/*
-  focusDigit(i: number) {
 
-    console.log("i: " + i)
+  tfaIsComplete() {
+    for (var i = 0; i < 6; i++)
+    {
+      console.log("digit " + this.tfa_digit[i])
+      console.log(this.tfa_digit[i] == '')
+      if (this.tfa_digit[i] == undefined || this.tfa_digit[i] == '')
+      {
+        console.log(i)
+        this.focusDigit(i);
+        return;
+      }
+    }
+    this.turn_on()
+  }
+
+  focusDigit(i: number) {
       switch (i) {
+        case 0:
+          this.$refs.digit_1.focus()
+          break;
         case 1:
           this.$refs.digit_2.focus()
           break;
@@ -217,38 +223,9 @@ export default class extends Vue {
           this.$refs.digit_6.focus()
           break;
         default:
-          console.log("default: " + i)
           break;
       }
   }
-  */ 
-
-  
-  focusDigit2() {
-    if (this.tfa_digit[0] != '')
-      this.$refs.digit_2.focus()
-  }
-
-  focusDigit3() {
-    if (this.tfa_digit[1] != '')
-      this.$refs.digit_3.focus()
-  }
-
-  focusDigit4() {
-    if (this.tfa_digit[2] != '')
-      this.$refs.digit_4.focus()
-  }
-
-  focusDigit5() {
-    if (this.tfa_digit[3] != '')
-      this.$refs.digit_5.focus()
-  }
-
-  focusDigit6() {
-    if (this.tfa_digit[4] != '')
-    this.$refs.digit_6.focus()
-  }
-
 }
 </script>
 
