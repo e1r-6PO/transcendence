@@ -33,7 +33,7 @@
       <v-app-bar-nav-icon class="icon_color" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="title neonText" v-text="title" />
       <v-spacer />
-      <div>
+      <div style="padding-right: 15px">
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
             <v-text-field
@@ -55,6 +55,7 @@
       <v-btn
         icon
         href="/api/auth/logout"
+        class="logout-btn"
       >
         <v-icon
           large
@@ -118,8 +119,8 @@ export default Vue.extend({
   }
 
 .text-field_search {
-  min-width: 100%;
-  max-width: 100%;
+  /* min-width: 100%;
+  max-width: 100%; */
   width: 100%;
   box-shadow: inset 0px 0px 20px 0px #f27719, 0px 0px 20px 0px #f27719 !important;
   border: 3px solid #ffc79c !important;
@@ -147,11 +148,16 @@ export default Vue.extend({
 
 .top_bar_style {
   border-bottom: 3px solid #ffa768 !important;
-  height: 6% !important;
-  max-height: 10%;
+  height: 69px !important;
+  /* max-height: 10%;
   min-height: 2%;
-  padding-top: 0.2%;
+  padding-top: 0.2%; */
   box-shadow: inset 0px -14px 30px -10px #fc6500, 0px 0px 30px 0px #fc6500 !important;
+}
+
+.logout-btn {
+  border: 3px solid #ffc79c !important;
+  box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 26px 1px #f27719;
 }
 
 </style>
