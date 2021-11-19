@@ -41,8 +41,8 @@ import { Route } from 'vue-router'
 })
 export default class extends Vue {
 
-  users = []
-  query : string = ""
+  users = null
+  query : string | null = null
 
   toToProfile(nick : String) {
     this.$router.push("/users/" + nick)
