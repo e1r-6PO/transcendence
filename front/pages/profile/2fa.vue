@@ -225,22 +225,27 @@ export default class extends Vue {
 
   
   focusDigit2() {
-    this.$refs.digit_2.focus()
+    if (this.tfa_digit[0] != '')
+      this.$refs.digit_2.focus()
   }
 
   focusDigit3() {
+    if (this.tfa_digit[1] != '')
       this.$refs.digit_3.focus()
   }
 
   focusDigit4() {
+    if (this.tfa_digit[2] != '')
       this.$refs.digit_4.focus()
   }
 
   focusDigit5() {
+    if (this.tfa_digit[3] != '')
       this.$refs.digit_5.focus()
   }
 
   focusDigit6() {
+    if (this.tfa_digit[4] != '')
     this.$refs.digit_6.focus()
   }
 
