@@ -25,13 +25,13 @@
     </div>
     <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%" v-else>
       <v-btn
-          color="#f27719"
+          color="#8124be"
+          class="foreground_element cross-item edit-button"
           fab
           small
           @click="switchEditing"
-          class="foreground_element cross-item"
         >
-          <v-icon color="#7DFDFE" v-if="isEditing" >
+          <v-icon color="#ffffff" v-if="isEditing" >
             mdi-close
           </v-icon>
         </v-btn>
@@ -311,7 +311,7 @@ export default class extends Vue {
 .card_game {
   border: 3px solid #a5fafa !important;
   /* border-radius:17px!important; */
-  box-shadow: inset 0px 0px 150px 0px #3d9c9c, 0px 0px 40px 0px #3d9c9c !important;
+  box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
   border-radius: 15px !important;
   background-color: #181818 !important;
   min-width: 260px;
@@ -322,7 +322,7 @@ export default class extends Vue {
 .card_profile {
   border: 3px solid #a5fafa !important;
   /* border: 3px solid #e7b3ff !important; */
-  box-shadow: inset 0px 0px 1000px 0px #3d9c9c, 0px 0px 40px 0px #3d9c9c !important;
+  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
   /* box-shadow: inset 0px 0px 1000px 0px #cb5cff, 0px 0px 40px 0px #cb5cff !important; */
   border-radius: 15px !important;
   background-color: #181818 !important;
@@ -395,7 +395,8 @@ export default class extends Vue {
 .cross-item {
   margin-left: 90%;
   margin-bottom: 2%;
-  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
+  border: 3px solid #e9c8ff !important;
+  box-shadow: 0px 0px 25px 0px #9141c7 !important;
 }
 
 .save-item {

@@ -146,12 +146,12 @@ export default Vue.extend({
 }
 
 .top_bar_style {
-  border-bottom: 3px solid #ffc79c !important;
+  border-bottom: 3px solid #ffa768 !important;
   height: 6% !important;
   max-height: 10%;
   min-height: 2%;
   padding-top: 0.2%;
-  box-shadow: inset 0px -14px 20px -10px #f27719, 0px 0px 20px 0px #f27719 !important;
+  box-shadow: inset 0px -14px 30px -10px #fc6500, 0px 0px 30px 0px #fc6500 !important;
 }
 
 </style>
