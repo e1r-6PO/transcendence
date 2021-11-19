@@ -4,7 +4,7 @@
       <p align="center" class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</p>
       <v-row justify="center" align="center">
         <v-text-field
-          class="foreground_element text-field-nick-neon-blue custom-placeholder-color custom-input-color"
+          class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
           v-model="nickname"
           placeholder="Nickname"
           color="#e6ffff"
