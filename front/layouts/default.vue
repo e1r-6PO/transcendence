@@ -135,7 +135,7 @@ export default Vue.extend({
   text-shadow:
     0 0 7px #f27719,
     0 0 8px #f27719,
-    0 0 9px #f27719,
+    0 0 9px #f27719 !important;
 }
 
 .icon_color {
