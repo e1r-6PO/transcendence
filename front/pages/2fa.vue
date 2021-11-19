@@ -6,10 +6,6 @@
         :move-speed="4"
       />
     </client-only>
-    <!-- <v-row justify="center" align="center"> -->
-
-        <!-- <v-main> -->
-          <!-- <v-row justify="center" align="center"> -->
     <v-container style="padding-top: 5%">
       <v-row justify="center" align="center">
       <p class="foreground_element" align="center" style="font-size:30px"> Please enter 2fa code </p>
@@ -23,7 +19,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit2"
+          @keyup="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_2"
@@ -33,7 +29,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit3"
+          @input="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_3"
@@ -43,7 +39,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit4"
+          @input="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_4"
@@ -53,7 +49,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit5"
+          @input="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_5"
@@ -63,7 +59,7 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="focusDigit6"
+          @input="tfaIsComplete"
         ></v-text-field>
         <v-text-field class="foreground_element text-field_size"
           ref="digit_6"
@@ -73,14 +69,10 @@
           type="number"
           maxlength="1"
           oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="validatetfa"
+          @input="tfaIsComplete"
         ></v-text-field> 
       </v-row>
     </v-container>
-          <!-- </v-row> -->
-        <!-- </v-main> -->
-
-    <!-- </v-row> -->
   </v-app>
 </template>
 
@@ -101,12 +93,6 @@ import axios from '@nuxtjs/axios'
 })
 export default class extends Vue {
 
-  // data () {
-  //   return {
-  //     tfa_code: "",
-  //   }
-  // }
-
   tfa_code =  ""
   tfa_digit = ["", "", "", "", "", ""];
 
@@ -120,7 +106,7 @@ export default class extends Vue {
     for (let i = 0; i < 6; i++)
     {
       if (this.tfa_digit[i] == '')
-        this.focusdigit(i);
+        this.focusDigit(i);
       this.tfa_code += this.tfa_digit[i];
     }
     const ret = await this.$axios.post('/api/auth/2fa/authenticate?2fa=' + this.tfa_code)
@@ -130,7 +116,7 @@ export default class extends Vue {
     if (ret.status == 201)
       this.$router.push("/home")
     else
-      {
+    {
       this.tfa_digit = []
       this.tfa_code = ""
       this.$refs.digit_1.focus()
@@ -146,48 +132,45 @@ export default class extends Vue {
       digit_6: HTMLFormElement
   }
 
-  focusdigit(i : number)
-  {
-    if (i == 1)
-        this.$refs.digit_1.focus()
-    if (i == 2)
-        this.$refs.digit_2.focus()
-    if (i == 3)
-        this.$refs.digit_3.focus()
-    if (i == 4)
-        this.$refs.digit_4.focus()
-    if (i == 5)
-        this.$refs.digit_5.focus()
-    if (i == 6)
-        this.$refs.digit_6.focus()
-
+  tfaIsComplete() {
+    for (var i = 0; i < 6; i++)
+    {
+      if (this.tfa_digit[i] == undefined ||  this.tfa_digit[i] == '')
+      {
+        this.focusDigit(i);
+        return;
+      }
+    }
+    this.validatetfa()
   }
 
-   focusDigit2() {
-    if (this.tfa_digit[0] != '')
-      this.$refs.digit_2.focus()
+  focusDigit(i: number) {
+      switch (i) {
+        case 0:
+          this.$refs.digit_1.focus()
+          break;
+        case 1:
+          this.$refs.digit_2.focus()
+          break;
+        case 2:
+          this.$refs.digit_3.focus()
+          break;
+        case 3:
+          this.$refs.digit_4.focus()
+          break;
+        case 4:
+          this.$refs.digit_5.focus()
+          break;
+        case 5:
+          this.$refs.digit_6.focus()
+          break;
+        case 6:
+          this.$refs.digit_6.focus()
+          break;
+        default:
+          break;
+      }
   }
-
-  focusDigit3() {
-    if (this.tfa_digit[1] != '')
-      this.$refs.digit_3.focus()
-  }
-
-  focusDigit4() {
-    if (this.tfa_digit[2] != '')
-      this.$refs.digit_4.focus()
-  }
-
-  focusDigit5() {
-    if (this.tfa_digit[3] != '')
-      this.$refs.digit_5.focus()
-  }
-
-  focusDigit6() {
-    if (this.tfa_digit[4] != '')
-      this.$refs.digit_6.focus()
-  }
-
 };
 </script>
 
