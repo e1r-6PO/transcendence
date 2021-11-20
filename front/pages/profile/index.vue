@@ -31,7 +31,7 @@
           small
           @click="switchEditing"
         >
-          <v-icon color="#ffffff" v-if="isEditing" >
+          <v-icon color="error" v-if="isEditing" >
             mdi-close
           </v-icon>
         </v-btn>
@@ -129,8 +129,10 @@
   </div>
   <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%">
     <v-btn v-if="isEditing"
-    class="foreground_element save-item"
-    :disabled="(!isEditing || user.nickName.length > 20) && selectedFile == null"
+    class="foreground_element save-item neon-button"
+    :disabled="nick == user.nickName && selectedFile == null"
+    rounded
+    text
     color="#0ADAA8"
     @click="saveChange"
     >
@@ -154,7 +156,7 @@ export default class extends Vue {
   user : User = new User;
   isEditing = false
   isSelecting = false
-  selectedFile: Blob | string = new Blob
+  selectedFile: null | Blob = null
   nick = ""
   tfa_status = false
 
@@ -213,15 +215,21 @@ export default class extends Vue {
             return error.response
         });
       this.user.nickName = this.nick
+      if (this.isEditing == true)
+        this.isEditing = false
     }
-    var formData = new FormData();
-    formData.append("image", this.selectedFile);
-    await this.$axios.$post('api/profile/me/picture', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    this.isEditing = !this.isEditing
+    if (this.selectedFile != null) {
+      var formData = new FormData();
+      formData.append("image", this.selectedFile);
+      await this.$axios.$post('api/profile/me/picture', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      if (this.isEditing == true)
+        this.isEditing = false
+      this.selectedFile = null
+    }
   }
 
   async change2fa() {
@@ -395,8 +403,8 @@ export default class extends Vue {
 .cross-item {
   margin-left: 90%;
   margin-bottom: 2%;
-  border: 3px solid #e9c8ff !important;
-  box-shadow: 0px 0px 25px 0px #9141c7 !important;
+  border: 3px solid #cd78ff !important;
+  box-shadow: 0px 0px 25px 0px #a200ff !important;
 }
 
 .save-item {
