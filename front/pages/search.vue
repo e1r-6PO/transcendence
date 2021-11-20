@@ -7,7 +7,7 @@
       <p class="resultMatch" style="padding-bottom: 1%; font-size:30px">{{ users.length }} result matched "{{ query }}"</p>
         <div>
           <v-btn
-            class="foreground_element neon-blue-button"
+            class="foreground_element neon-button"
             rounded
             text
             color="#ffffff"
