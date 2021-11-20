@@ -8,7 +8,7 @@
     </client-only>
     <v-row justify="center" align="center">
       <v-col cols="12" sm="8" md="6">
-        <v-card-text class="text-center main_title_test foreground_element">
+        <v-card-text class="text-center main_title_test foreground_element" style="color: #e6ffff">
           Welcome to Transcendence
         </v-card-text>
         <v-main>
@@ -77,7 +77,7 @@ export default class extends Vue {
 
 
   .v-application{
-    background-color: darkgrey !important;
+    background-color: #181818 !important;
   }
 
   div[id^="particles-instance-"] {
@@ -88,7 +88,7 @@ export default class extends Vue {
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    background: rgba($color: #05114e, $alpha: 0.4);
+    // background: rgba($color: #05114e, $alpha: 0.4);
     z-index: 2 !important;
   }
 
