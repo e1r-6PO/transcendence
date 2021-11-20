@@ -4,7 +4,8 @@
       v-model="drawer"
       fixed
       app
-      color="#000000"
+      class="side-bar"
+      color="#0f0f0f"
       style="z-index: 7"
     >
       <v-list>
@@ -16,7 +17,7 @@
           exact
         >
           <v-list-item-action>
-            <v-icon class="icon_color">{{ item.icon }}</v-icon>
+            <v-icon class="menu-icon">{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content >
             <v-list-item-title class="title_color neonText" v-text="item.title" />
@@ -27,10 +28,10 @@
     <v-app-bar
       fixed
       app
-      color="#000000"
+      color="#0f0f0f"
       class="top_bar_style"
     >
-      <v-app-bar-nav-icon class="icon_color" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon class="open-menu" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="title neonText" v-text="title" />
       <v-spacer />
       <div style="padding-right: 15px">
@@ -82,17 +83,17 @@ export default Vue.extend({
       fixed: false,
       items: [
         {
-          icon: 'mdi-apps',
+          icon: 'mdi-home',
           title: 'Home',
           to: '/home'
         },
         {
-          icon: 'mdi-chart-bubble',
+          icon: 'mdi-account',
           title: 'Profile',
           to: '/profile'
         },
         {
-          icon: 'mdi-clipboard-account',
+          icon: 'mdi-ladder',
           title: 'Scoreboard',
           to: '/scoreboard'
         }
@@ -118,6 +119,15 @@ export default Vue.extend({
     background: #181818 !important;
   }
 
+.side-bar {
+  border-right: 3px solid #ffa768 !important;
+  /* height: 69px !important; */
+  /* max-height: 10%;
+  min-height: 2%;
+  padding-top: 0.2%; */
+  box-shadow: inset -50px 0px 30px -45px #fc6500, 0px 0px 30px 7px #fc6500 !important;
+}
+
 .text-field_search {
   /* min-width: 100%;
   max-width: 100%; */
@@ -139,11 +149,18 @@ export default Vue.extend({
     0 0 9px #f27719 !important;
 }
 
-.icon_color {
+.menu-icon {
   color: #f27719 !important;
   box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 10px 1px #f27719;
-  border: 0.2rem solid #ffc79c;
-  border-radius: 2rem;
+  border: 3px solid #ffc79c;
+  border-radius: 7px;
+}
+
+.open-menu{
+  color: #f27719 !important;
+  box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 10px 1px #f27719;
+  border: 3px solid #ffc79c;
+  border-radius: 40px;
 }
 
 .top_bar_style {
@@ -152,7 +169,7 @@ export default Vue.extend({
   /* max-height: 10%;
   min-height: 2%;
   padding-top: 0.2%; */
-  box-shadow: inset 0px -14px 30px -10px #fc6500, 0px 0px 30px 0px #fc6500 !important;
+  box-shadow: inset 0px -30px 25px -25px #fc6500, 0px 0px 30px 0px #fc6500 !important;
 }
 
 .logout-btn {
