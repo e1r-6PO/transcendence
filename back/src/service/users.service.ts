@@ -4,6 +4,7 @@ import { User } from 'src/entity/user.entity';
 import { Like, Repository } from 'typeorm'
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { existsSync } from 'fs';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +23,8 @@ export class UsersService {
     );
     if (!user)
       throw new NotFoundException
+    if (existsSync('../data/users/' + user.id + '.png'))
+      user.picture = 'http://localhost:8000/api/users/' + user.id + '/picture'
     var filtered = {
       id: user.id,
       nickName: user.nickName,

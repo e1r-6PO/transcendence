@@ -16,6 +16,11 @@ export class UsersController {
     return this.userService.findOne(nick);
   }
 
+  @Get(':id/picture')
+  seeUploadedFile(@Param('id') id: number, @Req() req: Request, @Res() res) {
+    return res.sendFile(id + '.png', { root: '../data/users' });
+  }
+
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateUserDto: User) {
   //   return this.userService.update(+id, updateUserDto);
