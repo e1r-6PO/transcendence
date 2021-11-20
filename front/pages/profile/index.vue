@@ -43,8 +43,12 @@
           @click="onButtonClick"
           color="#333333"
         >
+          <v-img class="background_element"
+            style="border-radius: 100%; position: absolute;"
+            v-if="this.user.picture != null" v-bind:src="this.user.picture"/>
           <v-icon
             x-large
+            style="position: absolute;"
           >
             mdi-camera-enhance
           </v-icon>
@@ -108,24 +112,32 @@
       </v-card>
   </div>
   <div class="flex-container" style="padding-top: 3%" justify="center" align="center" v-if="isEditing">
-    <v-card class="foreground_element editing_card" width="500"><!--  <v-btn
-        class="foreground_element"
-        to="/profile/2fa" nuxt
+    <div v-if="this.tfa_status == true">
+      <span style="color: #e6ffff">2fa is currently</span>
+      <span style="color: #0ADAA8; padding-right: 10px">enabled</span>
+      <v-btn
+        class="neon-button"
         rounded
-        elevation="2"
+        text
+        color="red"
+        @click="change2fa"
       >
-        2fa
-      </v-btn> -->
-        <v-switch
-        class="v-input--reverse"
-        :input-value="tfa_status"
-        @change="change2fa"
-        >
-          <template #label>
-            <h2 style="margin-left: 3%">Do you want active 2fa ?</h2>
-          </template>
-        </v-switch>
-    </v-card>
+        disable
+      </v-btn>
+    </div>
+    <div v-if="this.tfa_status == false">
+      <span style="color: #e6ffff">2fa is currently</span>
+      <span style="color: red; padding-right: 10px">disabled</span>
+      <v-btn
+        class="neon-button"
+        rounded
+        text
+        color="#0ADAA8"
+        @click="change2fa"
+      >
+        enable
+      </v-btn>
+    </div>
   </div>
   <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%">
     <v-btn v-if="isEditing"
@@ -312,7 +324,7 @@ export default class extends Vue {
 }
 
 .btn_camera {
-  border-radius: 30px!important;
+  border-radius: 100%!important;
   box-shadow: 0px 0px 20px 0px rgba(31, 31, 50, 0.89);
   color: #38393b;
   min-width: 200px;
