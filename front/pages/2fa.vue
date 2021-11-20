@@ -178,7 +178,7 @@ export default class extends Vue {
   @import '../assets/main_page.scss';
 
   .v-application{
-    background-color: darkgrey !important;
+    background-color: #181818 !important;
   }
 
   div[id^="particles-instance-"] {
@@ -189,7 +189,7 @@ export default class extends Vue {
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    background: rgba($color: #05114e, $alpha: 0.4);
+    // background: rgba($color: #05114e, $alpha: 0.4);
     z-index: 2 !important;
   }
 
