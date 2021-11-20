@@ -29,7 +29,7 @@
           class="foreground_element cross-item edit-button"
           fab
           small
-          @click="switchEditing"
+          @click="switchEditing(); close_btn()"
         >
           <v-icon color="error" v-if="isEditing" >
             mdi-close
@@ -178,6 +178,11 @@ export default class extends Vue {
 
   switchEditing() {
     this.isEditing = !this.isEditing;
+  }
+
+  close_btn() {
+    this.selectedFile = null
+    this.nick = this.user.nickName
   }
 
   onFileChanged(e: any) {
