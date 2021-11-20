@@ -6,30 +6,30 @@
         class="round_card item profile-picture"
         :src=user.picture
       />
+      <v-btn
+        color="#8124be"
+        class="friend-button"
+        fab
+        small
+        @click="friend()"
+        style="z-index: 6"
+        absolute
+        bottom
+        right
+      >
+        <v-icon v-if="isFriend == false" color="green">
+          mdi-account-plus
+        </v-icon>
+        <v-icon v-else color="red">
+          mdi-account-minus
+        </v-icon>
+      </v-btn>
     </v-avatar>
     </div>
     <div class="flex-container-editing" style="padding-top: 3%">
       <v-card class="foreground_element card_profile">
         <v-card-text align="center">
           <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
-          <p class="color_text text-h5" align="center">{{ user.email }}</p>
-          <p v-if="user.provider === 'github'" class="color_text text-h6" align="center">Connected via :</p>
-          <icon-github v-if="user.provider === 'github'"
-              width="50"
-              height="50"
-          />
-          <p v-if="user.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
-          <icon-42 v-if="user.provider === '42'"
-            width="50"
-            height="50"
-          />
-          <p v-if="user.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
-          <v-icon v-if="user.provider === 'google'"
-              color="primary"
-              x-large
-          >
-            mdi-google
-          </v-icon>
         </v-card-text>
       </v-card>
     </div>
@@ -58,11 +58,16 @@ import { User } from '../../assets/User';
 export default class extends Vue {
 
   user : User = new User;
+  isFriend : boolean = false;
 
   async mounted() {
     const { params: { slug } } = this.$route
 
     this.user = await this.$axios.$get('/api/users/' + slug)
+  }
+
+  async friend() {
+    this.isFriend = !this.isFriend
   }
 
   $refs!: {
@@ -75,7 +80,7 @@ export default class extends Vue {
 <style scoped>
 @import '../../assets/main_page.scss';
 
-.edit-button {
+.friend-button {
   /* border: 3px solid #e9c8ff !important;
   box-shadow: 0px 0px 10px 0px #9141c7 !important; */
   border: 3px solid #e9c8ff !important;
@@ -144,15 +149,14 @@ export default class extends Vue {
 .card_profile {
   border: 3px solid #a5fafa !important;
   /* border: 3px solid #e7b3ff !important; */
-  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
+  box-shadow: inset 0px 0px 400px 10px #0affff, 0px 0px 40px 0px #0affff !important;
   /* box-shadow: inset 0px 0px 1000px 0px #cb5cff, 0px 0px 40px 0px #cb5cff !important; */
   border-radius: 15px !important;
   background-color: #181818 !important;
   /* background-color: #35b4b2 !important; */
   /* box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important;  */
-  min-width: 400px;
-  height: 250px;
-  width: 30%;
+  height: 80px;
+  width: 550px;
 }
 
 .editing_card {

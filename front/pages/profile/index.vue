@@ -6,21 +6,21 @@
         class="round_card item profile-picture"
         :src=user.picture
       />
-        <v-btn
-          color="#8124be"
-          class="edit-button"
-          fab
-          small
-          @click="isEditing = !isEditing"
-          style="z-index: 6"
-          absolute
-          bottom
-          right
-        >
-          <v-icon color="#ffffff">
-            mdi-pencil
-          </v-icon>
-        </v-btn>
+      <v-btn
+        color="#8124be"
+        class="edit-button"
+        fab
+        small
+        @click="isEditing = !isEditing"
+        style="z-index: 6"
+        absolute
+        bottom
+        right
+      >
+        <v-icon color="#ffffff">
+          mdi-pencil
+        </v-icon>
+      </v-btn>
     </v-avatar>
     </div>
     <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%" v-else>
