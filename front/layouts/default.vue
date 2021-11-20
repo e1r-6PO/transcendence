@@ -100,7 +100,7 @@ export default Vue.extend({
       ],
       right: true,
       rightDrawer: false,
-      title: 'TranscendanceGod'
+      title: 'Tronscendence'
     }
   },
 
