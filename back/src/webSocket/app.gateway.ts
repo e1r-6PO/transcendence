@@ -17,12 +17,15 @@ import { AdvancedConsoleLogger } from "typeorm";
 })
 
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
+    count: number = 0;
+    
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
 
     @SubscribeMessage('msgToServer')
     handleMessage(client: Socket, payload: string): void{
         this.server.emit('msgToClient', payload);
+        console.log('New connection, users count: ' + this.count++ );
     }
 
     afterInit(server: Server){
@@ -35,5 +38,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
     handleConnection(client: Socket, ...args: any[]){
         this.logger.log(`Client connected: ${client.id}`);
+        console.log("Hello la miff");
     }
 }
