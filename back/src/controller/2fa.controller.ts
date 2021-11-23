@@ -4,13 +4,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ALPN_ENABLED } from "constants";
 import { Request, response, Response } from "express";
 import { User } from "src/entity/user.entity";
-import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from "src/guards/account.guards";
+import { HasNickGuard, TwoFaFileGuard, ValidTokenGuard } from "src/guards/account.guards";
 import { TwoFactorAuthenticationService } from "src/service/2fa.service";
 import { UsersService } from "src/service/users.service";
 import { Repository } from "typeorm";
 
 @Controller('api/auth/2fa')
 @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(TwoFaFileGuard)
 export class TwoFactorAuthenticationController {
   constructor(
     private readonly twoFactorAuthenticationService : TwoFactorAuthenticationService,
@@ -29,7 +30,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Post('generate')
-  @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
+  @UseGuards(ValidTokenGuard, HasNickGuard)
   async generate(@Res() response: Response, @Req() req : Request) {
 
     var user : User = await this.usersService.getUser(req)
@@ -40,7 +41,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Post('turn-on')
-  @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
+  @UseGuards(ValidTokenGuard, HasNickGuard)
   async turnOnTwoFactorAuthentication(@Req() req : Request, @Query('2fa') tfa : string) {
 
     var user : User = await this.usersService.getUser(req)
@@ -56,7 +57,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Post('turn-off')
-  @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
+  @UseGuards(ValidTokenGuard, HasNickGuard)
   async turnOffTwoFactorAuthentication(@Req() req : Request) {
 
     var user : User = await this.usersService.getUser(req)
@@ -67,7 +68,7 @@ export class TwoFactorAuthenticationController {
   }
 
   @Post('authenticate')
-  @UseGuards(ValidTokenGuard, HasNickGuard, TwoFaGuard)
+  @UseGuards(ValidTokenGuard, HasNickGuard)
   async authenticate(@Req() req : Request, @Res({ passthrough: true}) response : Response, @Query('2fa') tfa : string) {
 
     var user : User = await this.usersService.getUser(req)

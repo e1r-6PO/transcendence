@@ -7,7 +7,7 @@ import { User } from 'src/entity/user.entity';
 import { UsersService } from 'src/service/users.service';
 
 @Injectable()
-export class TwoFaGuard implements CanActivate {
+export class TwoFaFileGuard implements CanActivate {
   constructor(
     private usersService : UsersService,
     private reflector: Reflector
@@ -49,6 +49,22 @@ export class TwoFaGuard implements CanActivate {
       }
       default: { return false }
     }
+  }
+}
+
+@Injectable()
+export class TwoFaGuard implements CanActivate {
+  constructor(
+    private jwtService: JwtService,
+  ) {}
+  async canActivate(context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest();
+
+    var jwt = this.jwtService.decode(request.cookies['jwt'])
+
+    if (jwt['has2fa'] == true && jwt['is2factorauthenticated'] == false)
+      throw new ForbiddenException('2fa hasnt been authenticated yet')
+    return true
   }
 }
 
