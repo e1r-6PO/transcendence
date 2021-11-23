@@ -35,8 +35,8 @@ export class ProfileService {
     return { "nickname": user.nickName }
   }
 
-  async set_nickname(request, nick) {
-    if (nick == null || nick.len == 0 || nick.len > 20)
+  async set_nickname(request, nick : string) {
+    if (nick == null || nick.length == 0 || nick.length > 20)
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     var user = await this.usersRepository.findOne(
       { where:

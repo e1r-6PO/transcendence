@@ -92,7 +92,13 @@ export default {
           info: '#f28482',
           warning: '#f28482',
           error: '#f28482',
-          success: '#f28482'
+          success: '#f28482',
+          orange_neon: '#ffa768',
+          orange_glowing: '#fc6500',
+          purple_neon: '#e9c8ff',
+          purple_glowing: '#9141c7',
+          blue_neon: '#a5fafa',
+          blue_glowing: '#0affff',
         }
       }
     }

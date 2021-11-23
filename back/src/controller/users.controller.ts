@@ -11,9 +11,14 @@ export class UsersController {
     return this.userService.search(nick)
   }
 
-  @Get(':nick')
-  findOne(@Param('nick') nick: string) {
-    return this.userService.findOne(nick);
+  @Get(':hint')
+  getbyhint(@Param('hint') hint: string) {
+    return this.userService.findOne(hint);
+  }
+
+  @Get(':id/picture')
+  seeUploadedFile(@Param('id') id: number, @Req() req: Request, @Res() res) {
+    return res.sendFile(id + '.png', { root: '../data/users' });
   }
 
   // @Patch(':id')

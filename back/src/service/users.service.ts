@@ -4,6 +4,8 @@ import { User } from 'src/entity/user.entity';
 import { Like, Repository } from 'typeorm'
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { existsSync } from 'fs';
+import { LightUser } from 'src/entity/lightuser.entity';
 
 @Injectable()
 export class UsersService {
@@ -13,19 +15,37 @@ export class UsersService {
     private jwtService : JwtService
   ) {}
 
-  async findOne(nick: string) {
+  async findOne(hint: string | number) {
     // await new Promise(r => setTimeout(r, 2000));
-    var user = await this.usersRepository.findOne(
-      { where:
-        { nickName: nick }
-      }
-    );
+    if (typeof hint === "string") {
+      var user = await this.usersRepository.findOne(
+        { where:
+          { nickName: hint }
+        }
+      );
+    }
+    // else if (typeof hint === "number") {
+    //   var user = await this.usersRepository.findOne(
+    //     { where:
+    //       { id: hint }
+    //     }
+    //   );
+    // }
+
+
     if (!user)
       throw new NotFoundException
-    var filtered = {
+
+    // replace provider picture with custom one
+    if (existsSync('../data/users/' + user.id + '.png'))
+      user.picture = 'http://localhost:8000/api/users/' + user.id + '/picture'
+    
+    var filtered : LightUser = {
       id: user.id,
       nickName: user.nickName,
-      picture: user.picture
+      picture: user.picture,
+      gameWin: user.gameWin,
+      gameLose: user.gameLose,
     }
     return filtered
   }

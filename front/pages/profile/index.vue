@@ -3,34 +3,35 @@
   <div justify="center" align="center" style="padding-top: 3%" v-if="!isEditing">
     <v-avatar class="overflow-visible" size="128">
       <img v-if="user.picture != ''"
-        class="round_card item"
+        class="round_card item profile-picture"
         :src=user.picture
       />
-        <v-btn
-          color="#f27719"
-          fab
-          small
-          @click="isEditing = !isEditing"
-          style="z-index: 6"
-          absolute
-          bottom
-          right
-        >
-          <v-icon color="#7DFDFE">
-            mdi-pencil
-          </v-icon>
-        </v-btn>
+      <v-btn
+        color="#8124be"
+        class="edit-button"
+        fab
+        small
+        @click="isEditing = !isEditing"
+        style="z-index: 6"
+        absolute
+        bottom
+        right
+      >
+        <v-icon color="#ffffff">
+          mdi-pencil
+        </v-icon>
+      </v-btn>
     </v-avatar>
     </div>
     <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%" v-else>
       <v-btn
-          color="#f27719"
+          color="#8124be"
+          class="foreground_element cross-item edit-button"
           fab
           small
-          @click="switchEditing"
-          class="foreground_element cross-item"
+          @click="switchEditing(); close_btn()"
         >
-          <v-icon color="#7DFDFE" v-if="isEditing" >
+          <v-icon color="error" v-if="isEditing" >
             mdi-close
           </v-icon>
         </v-btn>
@@ -42,8 +43,12 @@
           @click="onButtonClick"
           color="#333333"
         >
+          <v-img class="background_element"
+            style="border-radius: 100%; position: absolute;"
+            v-if="this.user.picture != null" v-bind:src="this.user.picture"/>
           <v-icon
             x-large
+            style="position: absolute;"
           >
             mdi-camera-enhance
           </v-icon>
@@ -59,7 +64,7 @@
     </div>
     <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"
-        class="foreground_element text-field-nick-neon-blue custom-placeholder-color custom-input-color"
+        class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
         v-model="nick"
         placeholder="Nickname"
         color="#e6ffff"
@@ -72,11 +77,11 @@
       </v-text-field>
       <v-card class="foreground_element card_profile"
         v-if="!isEditing"
-      > 
+      >
         <v-card-text align="center">
           <p class="color_text text-h4 font-weight-medium" align="center">{{ nick }}</p>
           <p class="color_text text-h5" align="center">{{ user.email }}</p>
-          <p v-if="user.provider === 'github'" class="color_text text-h6" align="center"> Connected via :</p>
+          <p v-if="user.provider === 'github'" class="color_text text-h6" align="center">Connected via :</p>
           <icon-github v-if="user.provider === 'github'"
               width="50"
               height="50"
@@ -98,38 +103,48 @@
     </div>
     <div class="flex-container" v-if="!isEditing">
       <v-card class="foreground_element card_game flex-item" margin-top="5%">
-        <h1 class="color_win" align="center"> Games Won </h1>
+        <h1 class="color_win" align="center">Win</h1>
         <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
       </v-card>
       <v-card class="foreground_element card_game flex-item" margin-top="5%">
-        <h1 class="color_lose" align="center"> Games Lost </h1>
+        <h1 class="color_lose" align="center">Lose</h1>
         <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
       </v-card>
   </div>
   <div class="flex-container" style="padding-top: 3%" justify="center" align="center" v-if="isEditing">
-    <v-card class="foreground_element editing_card" width="500"><!--  <v-btn
-        class="foreground_element"
-        to="/profile/2fa" nuxt
+    <div v-if="this.tfa_status == true">
+      <span style="color: #e6ffff">2fa is currently</span>
+      <span style="color: #0ADAA8; padding-right: 10px">enabled</span>
+      <v-btn
+        class="neon-button"
         rounded
-        elevation="2"
+        text
+        color="red"
+        @click="change2fa"
       >
-        2fa
-      </v-btn> -->
-        <v-switch
-        class="v-input--reverse"
-        :input-value="tfa_status"
-        @change="change2fa"
-        >
-          <template #label>
-            <h2 style="margin-left: 3%">Do you want active 2fa ?</h2>
-          </template>
-        </v-switch>
-    </v-card>
+        disable
+      </v-btn>
+    </div>
+    <div v-if="this.tfa_status == false">
+      <span style="color: #e6ffff">2fa is currently</span>
+      <span style="color: red; padding-right: 10px">disabled</span>
+      <v-btn
+        class="neon-button"
+        rounded
+        text
+        color="#0ADAA8"
+        @click="change2fa"
+      >
+        enable
+      </v-btn>
+    </div>
   </div>
   <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%">
     <v-btn v-if="isEditing"
-    class="foreground_element save-item"
-    :disabled="(!isEditing || user.nickName.length > 20) && selectedFile == null"
+    class="foreground_element save-item neon-button"
+    :disabled="nick == user.nickName && selectedFile == null"
+    rounded
+    text
     color="#0ADAA8"
     @click="saveChange"
     >
@@ -153,7 +168,7 @@ export default class extends Vue {
   user : User = new User;
   isEditing = false
   isSelecting = false
-  selectedFile: Blob | string = new Blob
+  selectedFile: null | Blob = null
   nick = ""
   tfa_status = false
 
@@ -175,6 +190,11 @@ export default class extends Vue {
 
   switchEditing() {
     this.isEditing = !this.isEditing;
+  }
+
+  close_btn() {
+    this.selectedFile = null
+    this.nick = this.user.nickName
   }
 
   onFileChanged(e: any) {
@@ -212,15 +232,21 @@ export default class extends Vue {
             return error.response
         });
       this.user.nickName = this.nick
+      if (this.isEditing == true)
+        this.isEditing = false
     }
-    var formData = new FormData();
-    formData.append("image", this.selectedFile);
-    await this.$axios.$post('api/profile/me/picture', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    this.isEditing = !this.isEditing
+    if (this.selectedFile != null) {
+      var formData = new FormData();
+      formData.append("image", this.selectedFile);
+      await this.$axios.$post('api/profile/me/picture', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      if (this.isEditing == true)
+        this.isEditing = false
+      this.selectedFile = null
+    }
   }
 
   async change2fa() {
@@ -252,6 +278,19 @@ export default class extends Vue {
 <style scoped>
 @import '../../assets/main_page.scss';
 
+.edit-button {
+  /* border: 3px solid #e9c8ff !important;
+  box-shadow: 0px 0px 10px 0px #9141c7 !important; */
+  border: 3px solid #e9c8ff !important;
+  box-shadow: 0px 0px 10px 0px #9141c7 !important;
+}
+
+.profile-picture {
+  border: 3px solid #a5fafa !important;
+  /* border: 3px solid #e7b3ff !important; */
+  box-shadow: 0px 0px 15px 0px #63f3f3 !important;
+}
+
 .text-field_style {
   width: 15%;
   min-width: 15%;
@@ -267,12 +306,12 @@ export default class extends Vue {
 
 .color_lose {
   z-index: 6;
-  color: #E57373;
+  color: #c7401e;
 }
 
 .color_win {
   z-index: 6;
-  color: #00796B; 
+  color: #b8a435; 
 }
 
 .color_text { 
@@ -285,7 +324,7 @@ export default class extends Vue {
 }
 
 .btn_camera {
-  border-radius: 30px!important;
+  border-radius: 100%!important;
   box-shadow: 0px 0px 20px 0px rgba(31, 31, 50, 0.89);
   color: #38393b;
   min-width: 200px;
@@ -295,17 +334,25 @@ export default class extends Vue {
 }
 
 .card_game {
-  border-radius:17px!important;
-  background-color: #35b4b2 !important;
+  border: 3px solid #a5fafa !important;
+  /* border-radius:17px!important; */
+  box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
   min-width: 260px;
   width: 275px;
-  box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important; 
+  /* box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important;  */
 }
 
 .card_profile {
+  border: 3px solid #a5fafa !important;
+  /* border: 3px solid #e7b3ff !important; */
+  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
+  /* box-shadow: inset 0px 0px 1000px 0px #cb5cff, 0px 0px 40px 0px #cb5cff !important; */
   border-radius: 15px !important;
-  background-color: #35b4b2 !important;
-  box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important; 
+  background-color: #181818 !important;
+  /* background-color: #35b4b2 !important; */
+  /* box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important;  */
   min-width: 400px;
   height: 250px;
   width: 30%;
@@ -373,7 +420,8 @@ export default class extends Vue {
 .cross-item {
   margin-left: 90%;
   margin-bottom: 2%;
-  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
+  border: 3px solid #cd78ff !important;
+  box-shadow: 0px 0px 25px 0px #a200ff !important;
 }
 
 .save-item {

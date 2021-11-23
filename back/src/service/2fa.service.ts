@@ -15,7 +15,7 @@ export class TwoFactorAuthenticationService {
     
     const secret = authenticator.generateSecret();
 
-    const otpauthurl = authenticator.keyuri(user.email, 'Transcendancix', secret)
+    const otpauthurl = authenticator.keyuri(user.email, 'Tronscendence', secret)
 
     await this.usersService.setTwoFactorAuthenticationSecret(secret, user.id)
 

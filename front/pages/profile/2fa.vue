@@ -1,24 +1,28 @@
 <template>
   <v-main>
     <!-- <container style="align-item: center; align-content: center"> -->
-    <div class="foreground_elemen flex-contianer" style="padding-top: 12%;">
+    <div class="foreground_elemen flex-contianer" style="padding-top: 10%;">
       <v-row>
         <v-col justify="center" align="center">
           <v-btn
-            class="foreground_element"
+            class="foreground_element neon-button"
+            rounded
+            text
+            color="#ffffff"
             @click="generate_qr_code()"
           >
             Re-Generate 2fa
           </v-btn>
         </v-col>
       </v-row>
-      <v-row justify="center" align="center">
+      <v-row justify="center" align="center" style="padding-top: 20px">
         <!-- mettre le qr code au bon endroit  -->
         <v-img class="foreground_element"
           width="35%"
           height="35%"
           max-width="250"
           max-height="250"
+          style="border-radius: 10px"
           v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
       </v-row>
       <v-row align="center" justify="center" style="padding-top: 2%; column-gap: 15px">
@@ -187,8 +191,6 @@ export default class extends Vue {
   tfaIsComplete() {
     for (var i = 0; i < 6; i++)
     {
-      console.log("digit " + this.tfa_digit[i])
-      console.log(this.tfa_digit[i] == '')
       if (this.tfa_digit[i] == undefined || this.tfa_digit[i] == '')
       {
         console.log(i)

@@ -28,7 +28,7 @@ export default {
   props: {
     color: {
       type: String,
-      default: '#dedede'
+      default: '#fc6500'
     },
     particleOpacity: {
       type: Number,
@@ -48,7 +48,7 @@ export default {
     },
     linesColor: {
       type: String,
-      default: '#dedede'
+      default: '#0affff'
     },
     linesWidth: {
       type: Number,
