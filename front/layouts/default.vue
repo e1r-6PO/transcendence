@@ -25,6 +25,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+
     <v-app-bar
       fixed
       app
@@ -65,7 +66,9 @@
         </v-icon>
       </v-btn>
     </v-app-bar>
-    <Nuxt />
+    <v-main>
+      <Nuxt />
+    </v-main>
   </v-app>
 </template>
 

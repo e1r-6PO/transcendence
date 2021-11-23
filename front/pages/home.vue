@@ -1,26 +1,25 @@
 <template>
-  <v-main>
-    <div>
-      <li v-for=" (msg, index) in messages" :key="`msg-${index}`">
-      </li>
+  <v-container fluid style="position: relative">
+    <div align="center" justify="center">
+      <p>LOL</p>
+      <!-- <li v-for=" (msg, index) in messages" :key="`msg-${index}`"> -->
+      <!-- </li> -->
     </div>
-    <div>
-        <v-footer absolute class="foregound_element">
-          <v-row>
-            <v-col justify="center" align="center">
-          <v-text-field
-            v-model="message"
-            append-outer-icon="mdi-send"
-            filled
-            clear-icon="mdi-close-circle"
-            clearable
-            label="Message"
-          ></v-text-field>
-          </v-col>
-          </v-row>
-        </v-footer>
-    </div>
-  </v-main>
+  </v-container>
+    <!-- <v-footer absolute class="foregound_element">
+      <v-row>
+        <v-col justify="center" align="center">
+      <v-text-field
+        v-model="message"
+        append-outer-icon="mdi-send"
+        filled
+        clear-icon="mdi-close-circle"
+        clearable
+        label="Message"
+      ></v-text-field>
+      </v-col>
+      </v-row>
+    </v-footer> -->
 </template>
 
 <script lang='ts'>
