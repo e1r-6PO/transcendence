@@ -8,18 +8,6 @@ import { CustomJwtModule } from "./custom.jwt.module";
 @Module({
   imports: [ CustomJwtModule ]
 })
-export class ValidTokenModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ValidTokenMiddleware)
-      .exclude('api/auth/(.*)')
-      .forRoutes({ path: '*', method: RequestMethod.ALL })
-  }
-}
-
-@Module({
-  imports: [ CustomJwtModule ]
-})
 export class AddUserIdModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
@@ -28,35 +16,8 @@ export class AddUserIdModule implements NestModule {
   }
 }
 
-@Module({
-  imports: [ CustomJwtModule ]
-})
-export class TwoFaModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(TwoFaMiddleware)
-      .exclude('api/auth/(.*)')
-      .forRoutes({ path: '*', method: RequestMethod.ALL })
-  }
-}
-
-@Module({
-  imports: [ TypeOrmModule.forFeature([User]), CustomJwtModule ]
-})
-export class HasNickModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(HasNickMiddleware)
-      .exclude('api/auth/(.*)', 'api/profile/me/nickname')
-      .forRoutes({ path: '*', method: RequestMethod.ALL })
-  }
-}
-
 const allmiddleware = [
-  ValidTokenModule,
-  AddUserIdModule,
-  TwoFaModule,
-  HasNickModule
+  AddUserIdModule
 ]
 
 @Module({

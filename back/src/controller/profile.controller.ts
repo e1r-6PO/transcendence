@@ -1,21 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express'
 import { fstat } from 'fs';
 import multer, { diskStorage, memoryStorage } from 'multer';
 import { extname } from 'path/posix';
+import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.guards';
 import { ImageUpload } from 'src/middleware/image.upload.middleware';
 import { ProfileService } from 'src/service/profile.service';
+import { UsersService } from 'src/service/users.service';
 
 
 @Controller('api/profile')
+@UseGuards(ValidTokenGuard, TwoFaGuard)
 export class ProfileController {
   constructor(
-    private readonly profileService: ProfileService
+    private readonly profileService: ProfileService,
   ) {}
 
   @Get('me')
+  @UseGuards(HasNickGuard)
   me(@Req() request: Request) {
     return this.profileService.me(request)
   }
@@ -31,6 +35,7 @@ export class ProfileController {
   }
 
   @Post('me/picture')
+  @UseGuards(HasNickGuard)
   @UseInterceptors(FileInterceptor('image', {
     storage: diskStorage({
       destination: '../data/image_tmp',
@@ -52,6 +57,7 @@ export class ProfileController {
   }
 
   @Get('me/picture')
+  @UseGuards(HasNickGuard)
   seeUploadedFile(@Req() req: Request, @Res() res) {
     return res.sendFile(req.cookies['user_id'] + '.png', { root: '../data/users' });
   }

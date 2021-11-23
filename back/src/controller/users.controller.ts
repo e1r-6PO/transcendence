@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/service/users.service';
 import { Request, Response } from 'express'
+import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.guards';
 
 @Controller('api/users')
+@UseGuards(ValidTokenGuard, TwoFaGuard, HasNickGuard)
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
