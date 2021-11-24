@@ -1,77 +1,31 @@
 <template>
-  <v-container>
+  <v-app>
     <client-only class="background_effect">
       <Particles
         :move-straight="false"
         :move-speed="4"
       />
     </client-only>
-    <v-row justify="center" align="center">
-    <p class="foreground_element" align="center" style="font-size:30px"> Please enter 2fa code </p>
-    </v-row>
-    <v-row align="center" justify="center" style="padding-top: 2%; column-gap: 15px">
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_1"
-        v-model="tfa_digit[0]"
-        filled
-        background-color="white"
-        type="number"
-        maxlength="1"
-        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-        @keyup="tfaIsComplete"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_2"
-        v-model="tfa_digit[1]"
-        filled
-        background-color="white"
-        type="number"
-        maxlength="1"
-        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-        @input="tfaIsComplete"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_3"
-        v-model="tfa_digit[2]"
-        filled
-        background-color="white"
-        type="number"
-        maxlength="1"
-        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-        @input="tfaIsComplete"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_4"
-        v-model="tfa_digit[3]"
-        filled
-        background-color="white"
-        type="number"
-        maxlength="1"
-        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-        @input="tfaIsComplete"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_5"
-        v-model="tfa_digit[4]"
-        filled
-        background-color="white"
-        type="number"
-        maxlength="1"
-        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-        @input="tfaIsComplete"
-      ></v-text-field>
-      <v-text-field class="foreground_element text-field_size"
-        ref="digit_6"
-        v-model="tfa_digit[5]"
-        filled
-        background-color="white"
-        type="number"
-        maxlength="1"
-        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-        @input="tfaIsComplete"
-      ></v-text-field> 
-    </v-row>
-  </v-container>
+    <v-container style="justify-content: center; padding-top: 20%">
+      <v-row justify="center" align="center">
+        <p class="foreground_element main_title_test" align="center" style="font-size:30px"> Please enter 2fa code </p>
+      </v-row>
+      <v-row align="center" justify="center" style="column-gap: 15px; padding-top: 2%">
+        <p v-for="i in 6" :key="i">
+          <v-text-field class="foreground_element text-field_size"
+            :ref="createRef(i)"
+            v-model="tfa_digit[i - 1]"
+            filled
+            background-color="white"
+            type="number"
+            maxlength="1"
+            oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+            @input="tfaIsComplete"
+          ></v-text-field> 
+        </p>
+      </v-row>
+    </v-container>
+  </v-app>
 </template>
 
 <script lang='ts'>
@@ -95,7 +49,12 @@ export default class extends Vue {
   tfa_digit = ["", "", "", "", "", ""];
 
   mounted() {
-    this.$refs.digit_1.focus()
+    this.$refs[`digit_1`][0]?.focus?.()
+  }
+
+  createRef(i: number)
+  {
+    return ("digit_" + i.toString())
   }
 
   async validatetfa() {
@@ -104,7 +63,10 @@ export default class extends Vue {
     for (let i = 0; i < 6; i++)
     {
       if (this.tfa_digit[i] == '')
-        this.focusDigit(i);
+      {
+        this.$refs[`digit_${i + 1}`][0]?.focus?.()
+        break;
+      }
       this.tfa_code += this.tfa_digit[i];
     }
     const ret = await this.$axios.post('/api/auth/2fa/authenticate?2fa=' + this.tfa_code)
@@ -117,16 +79,16 @@ export default class extends Vue {
     {
       this.tfa_digit = []
       this.tfa_code = ""
-      this.$refs.digit_1.focus()
+      this.$refs[`digit_1`][0]?.focus?.()
     }
   }
 
-  $refs!: {
-      digit_1: HTMLFormElement
-      digit_2: HTMLFormElement
-      digit_3: HTMLFormElement
-      digit_4: HTMLFormElement
-      digit_5: HTMLFormElement
+    $refs: any = {
+      digit_1: HTMLFormElement,
+      digit_2: HTMLFormElement,
+      digit_3: HTMLFormElement,
+      digit_4: HTMLFormElement,
+      digit_5: HTMLFormElement,
       digit_6: HTMLFormElement
   }
 
@@ -135,41 +97,13 @@ export default class extends Vue {
     {
       if (this.tfa_digit[i] == undefined ||  this.tfa_digit[i] == '')
       {
-        this.focusDigit(i);
+        this.$refs[`digit_${i + 1}`][0]?.focus?.()
         return;
       }
     }
     this.validatetfa()
   }
-
-  focusDigit(i: number) {
-      switch (i) {
-        case 0:
-          this.$refs.digit_1.focus()
-          break;
-        case 1:
-          this.$refs.digit_2.focus()
-          break;
-        case 2:
-          this.$refs.digit_3.focus()
-          break;
-        case 3:
-          this.$refs.digit_4.focus()
-          break;
-        case 4:
-          this.$refs.digit_5.focus()
-          break;
-        case 5:
-          this.$refs.digit_6.focus()
-          break;
-        case 6:
-          this.$refs.digit_6.focus()
-          break;
-        default:
-          break;
-      }
-  }
-};
+}
 </script>
 
 <style lang="scss">

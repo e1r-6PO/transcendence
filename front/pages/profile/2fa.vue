@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <!-- <container style="align-item: center; align-content: center"> -->
     <div class="foreground_elemen flex-contianer" style="padding-top: 10%;">
       <v-row>
         <v-col justify="center" align="center">
@@ -16,7 +15,6 @@
         </v-col>
       </v-row>
       <v-row justify="center" align="center" style="padding-top: 20px">
-        <!-- mettre le qr code au bon endroit  -->
         <v-img class="foreground_element"
           width="35%"
           height="35%"
@@ -26,82 +24,20 @@
           v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
       </v-row>
       <v-row align="center" justify="center" style="padding-top: 2%; column-gap: 15px">
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_1"
-          v-model="tfa_digit[0]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_2"
-          v-model="tfa_digit[1]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_3"
-          v-model="tfa_digit[2]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_4"
-          v-model="tfa_digit[3]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_5"
-          v-model="tfa_digit[4]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_6"
-          v-model="tfa_digit[5]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field> 
+        <p v-for="i in 6" :key="i">
+          <v-text-field class="foreground_element text-field_size"
+            :ref="createRef(i)"
+            v-model="tfa_digit[i - 1]"
+            filled
+            background-color="white"
+            type="number"
+            maxlength="1"
+            oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+            @input="tfaIsComplete"
+          ></v-text-field>
+        </p>
       </v-row>
-<!--
-    <div class="flex-container">
-      <li v-for="i in 6" :key="i">
-        <v-text-field class="foreground_element text-field_size"
-          :ref="'digit_' + i.toString()"
-          v-model="tfa_digit[i - 1]"
-          filled
-          background-color="white"
-          @input="focusDigit(i)"
-        ></v-text-field> 
-      </li>
     </div>
--->
-    </div>
-    <!-- </container> -->
   </v-container>
 </template>
 
@@ -121,6 +57,7 @@ export default class extends Vue {
   tfa_status = false
   tfa_code = ""
   tfa_digit = []
+  digit_ref = ["digit_1", "digit_2", "digit_3", "digit_4", "digit_5", "digit_6"]
 
   async mounted() {
   
@@ -130,7 +67,7 @@ export default class extends Vue {
       return error.response
     })
     
-    this.$refs.digit_1.focus()
+    this.$refs[`digit_1`][0]?.focus?.()
 
     if (ret.status == 200) {
       this.tfa_status = ret.data['isTwoFactorAuthenticationEnabled']
@@ -171,15 +108,15 @@ export default class extends Vue {
     }
     this.tfa_code = ""
     this.tfa_digit = []
-    this.$refs.digit_1.focus()
+    this.$refs[`digit_1`][0]?.focus?.()
   }
 
-    $refs!: {
-      digit_1: HTMLFormElement
-      digit_2: HTMLFormElement
-      digit_3: HTMLFormElement
-      digit_4: HTMLFormElement
-      digit_5: HTMLFormElement
+    $refs: any = {
+      digit_1: HTMLFormElement,
+      digit_2: HTMLFormElement,
+      digit_3: HTMLFormElement,
+      digit_4: HTMLFormElement,
+      digit_5: HTMLFormElement,
       digit_6: HTMLFormElement
   }
 
@@ -193,41 +130,13 @@ export default class extends Vue {
     {
       if (this.tfa_digit[i] == undefined || this.tfa_digit[i] == '')
       {
-        console.log(i)
-        this.focusDigit(i);
+        this.$refs[`digit_${i + 1}`][0]?.focus?.()
         return;
       }
     }
     this.turn_on()
   }
 
-  focusDigit(i: number) {
-      switch (i) {
-        case 0:
-          this.$refs.digit_1.focus()
-          break;
-        case 1:
-          this.$refs.digit_2.focus()
-          break;
-        case 2:
-          this.$refs.digit_3.focus()
-          break;
-        case 3:
-          this.$refs.digit_4.focus()
-          break;
-        case 4:
-          this.$refs.digit_5.focus()
-          break;
-        case 5:
-          this.$refs.digit_6.focus()
-          break;
-        case 6:
-          this.$refs.digit_6.focus()
-          break;
-        default:
-          break;
-      }
-  }
 }
 </script>
 
