@@ -17,11 +17,20 @@
         bottom
         right
       >
-        <v-icon v-if="isFriend == false" color="green">
+        <v-icon v-if="friendStatus == status.null" color="green">
           mdi-account-plus
         </v-icon>
-        <v-icon v-else color="red">
+        <v-icon v-if="friendStatus == status.completed" color="red">
           mdi-account-minus
+        </v-icon>
+        <v-icon v-if="friendStatus == status.sent" color="yellow">
+          mdi-account-clock
+        </v-icon>
+        <v-icon v-if="friendStatus == status.incomming" color="yellow">
+          mdi-account-arrow-down
+        </v-icon>
+        <v-icon v-if="friendStatus == status.blocked" color="red">
+          mdi-account-cancel
         </v-icon>
       </v-btn>
     </v-avatar>
@@ -52,22 +61,36 @@ import Component from 'vue-class-component'
 import login from '../../middleware/login'
 import { User } from '../../assets/User';
 
+const All_Friend_Status = {
+  null: "null",
+  completed: "completed",
+  sent: "sent",
+  incomming: "incomming",
+  blocked: "blocked",
+}
+
 @Component({
   middleware: login
 })
 export default class extends Vue {
 
+  status = All_Friend_Status
   user : User = new User;
-  isFriend : boolean = false;
+  friendStatus : string = All_Friend_Status.null
+  isFriend : boolean = false
 
   async mounted() {
     const { params: { slug } } = this.$route
 
     this.user = await this.$axios.$get('/api/users/' + slug)
+    this.friendStatus = (await this.$axios.$get('/api/users/friend?id=' + this.user.id)).status
   }
 
   async friend() {
     this.isFriend = !this.isFriend
+
+    await this.$axios.$post('/api/users/friend?id=' + this.user.id)
+    this.friendStatus = (await this.$axios.$get('/api/users/friend?id=' + this.user.id)).status
   }
 
   $refs!: {
