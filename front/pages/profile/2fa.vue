@@ -34,6 +34,7 @@
             maxlength="1"
             oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @input="tfaIsComplete"
+            @keydown.delete="deleteDigit(i)"
           ></v-text-field>
         </p>
       </v-row>
@@ -123,6 +124,22 @@ export default class extends Vue {
   createRef(i: number)
   {
     return ("digit_" + i.toString())
+  }
+
+  deleteDigit(i: number)
+  {
+    if (this.tfa_digit[i - 1] == undefined || this.tfa_digit[i - 1] == '')
+    {
+      this.tfa_digit[i - 1] = ""
+      if (i > 1)
+        i--
+      else
+        i = 1
+      console.log(i)
+      this.$refs[`digit_${i}`][0]?.focus?.()
+    }
+    else
+      this.tfa_digit[i - 1] = ''
   }
 
   tfaIsComplete() {
