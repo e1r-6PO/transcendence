@@ -1,79 +1,77 @@
 <template>
-  <v-app>
+  <v-container>
     <client-only class="background_effect">
       <Particles
         :move-straight="false"
         :move-speed="4"
       />
     </client-only>
-    <v-container style="padding-top: 5%">
-      <v-row justify="center" align="center">
-      <p class="foreground_element" align="center" style="font-size:30px"> Please enter 2fa code </p>
-      </v-row>
-      <v-row align="center" justify="center" style="padding-top: 2%; column-gap: 15px">
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_1"
-          v-model="tfa_digit[0]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @keyup="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_2"
-          v-model="tfa_digit[1]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_3"
-          v-model="tfa_digit[2]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_4"
-          v-model="tfa_digit[3]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_5"
-          v-model="tfa_digit[4]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field>
-        <v-text-field class="foreground_element text-field_size"
-          ref="digit_6"
-          v-model="tfa_digit[5]"
-          filled
-          background-color="white"
-          type="number"
-          maxlength="1"
-          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @input="tfaIsComplete"
-        ></v-text-field> 
-      </v-row>
-    </v-container>
-  </v-app>
+    <v-row justify="center" align="center">
+    <p class="foreground_element" align="center" style="font-size:30px"> Please enter 2fa code </p>
+    </v-row>
+    <v-row align="center" justify="center" style="padding-top: 2%; column-gap: 15px">
+      <v-text-field class="foreground_element text-field_size"
+        ref="digit_1"
+        v-model="tfa_digit[0]"
+        filled
+        background-color="white"
+        type="number"
+        maxlength="1"
+        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+        @keyup="tfaIsComplete"
+      ></v-text-field>
+      <v-text-field class="foreground_element text-field_size"
+        ref="digit_2"
+        v-model="tfa_digit[1]"
+        filled
+        background-color="white"
+        type="number"
+        maxlength="1"
+        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+        @input="tfaIsComplete"
+      ></v-text-field>
+      <v-text-field class="foreground_element text-field_size"
+        ref="digit_3"
+        v-model="tfa_digit[2]"
+        filled
+        background-color="white"
+        type="number"
+        maxlength="1"
+        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+        @input="tfaIsComplete"
+      ></v-text-field>
+      <v-text-field class="foreground_element text-field_size"
+        ref="digit_4"
+        v-model="tfa_digit[3]"
+        filled
+        background-color="white"
+        type="number"
+        maxlength="1"
+        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+        @input="tfaIsComplete"
+      ></v-text-field>
+      <v-text-field class="foreground_element text-field_size"
+        ref="digit_5"
+        v-model="tfa_digit[4]"
+        filled
+        background-color="white"
+        type="number"
+        maxlength="1"
+        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+        @input="tfaIsComplete"
+      ></v-text-field>
+      <v-text-field class="foreground_element text-field_size"
+        ref="digit_6"
+        v-model="tfa_digit[5]"
+        filled
+        background-color="white"
+        type="number"
+        maxlength="1"
+        oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+        @input="tfaIsComplete"
+      ></v-text-field> 
+    </v-row>
+  </v-container>
 </template>
 
 <script lang='ts'>

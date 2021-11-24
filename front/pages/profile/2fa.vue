@@ -1,5 +1,5 @@
 <template>
-  <v-main>
+  <v-container>
     <!-- <container style="align-item: center; align-content: center"> -->
     <div class="foreground_elemen flex-contianer" style="padding-top: 10%;">
       <v-row>
@@ -102,7 +102,7 @@
 -->
     </div>
     <!-- </container> -->
-  </v-main>
+  </v-container>
 </template>
 
 <script lang='ts'>

@@ -1,4 +1,5 @@
 <template>
+<v-container>
   <v-card>
     <v-card-title>
       Ranking 🏆
@@ -31,6 +32,7 @@
       </template> 
     </v-data-table> 
   </v-card>
+</v-container>
 </template>
 
 <script>

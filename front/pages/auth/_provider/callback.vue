@@ -6,9 +6,11 @@
         :move-speed="4"
       />
     </client-only>
-    <v-card-text class="text-center main_title_test foreground_element">
-      Logging you in...
-    </v-card-text>
+    <v-container fill-height fluid>
+      <v-card-text class="text-center main_title_test foreground_element">
+        Logging you in...
+      </v-card-text>
+    </v-container>
   </v-app>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-<v-main>
+<v-container>
   <v-row style="padding-top: 2.5%">
     <v-col justify="center" align="center">
       <p v-if="users == null">LOADING...</p>
@@ -21,7 +21,7 @@
       </div>
     </v-col>
   </v-row>
-</v-main>
+</v-container>
 </template>
 
 <script lang='ts'>

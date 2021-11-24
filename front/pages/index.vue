@@ -6,52 +6,54 @@
         :move-speed="4"
       />
     </client-only>
-    <v-row justify="center" align="center">
-      <v-col cols="12" sm="8" md="6">
-        <v-card-text class="text-center main_title_test foreground_element" style="color: #e6ffff">
-          Welcome to Transcendence
-        </v-card-text>
-        <v-main>
-          <v-row justify="center" align="center">
-            <v-col align="center">
-              <v-btn  
-              href="/api/auth/42"
-              class="foreground_element button_auth white"
-            >
-              <icon-42 
-                width="75"
-                height="75"
-              />
-              </v-btn>
-            </v-col>
-            <v-col align="center">
-              <v-btn
-                href="/api/auth/google"
+    <v-container fill-height fluid>
+      <v-row justify="center" align="center">
+        <v-col cols="12" sm="8" md="6">
+          <v-card-text class="text-center main_title_test foreground_element" style="color: #e6ffff">
+            Welcome to Transcendence
+          </v-card-text>
+          <v-main>
+            <v-row justify="center" align="center">
+              <v-col align="center">
+                <v-btn  
+                href="/api/auth/42"
                 class="foreground_element button_auth white"
               >
-                <v-icon
-                  color="primary"
-                  x-large
-                >
-                mdi-google
-                </v-icon>
-              </v-btn>
-            </v-col>
-            <v-col align="center">
-              <v-btn
-                href="/api/auth/github"
-                class="foreground_element button_auth white"
-              >
-                <icon-github 
+                <icon-42 
                   width="75"
                   height="75"
                 />
-              </v-btn>
-            </v-col>
-          </v-row>
+                </v-btn>
+              </v-col>
+              <v-col align="center">
+                <v-btn
+                  href="/api/auth/google"
+                  class="foreground_element button_auth white"
+                >
+                  <v-icon
+                    color="primary"
+                    x-large
+                  >
+                  mdi-google
+                  </v-icon>
+                </v-btn>
+              </v-col>
+              <v-col align="center">
+                <v-btn
+                  href="/api/auth/github"
+                  class="foreground_element button_auth white"
+                >
+                  <icon-github 
+                    width="75"
+                    height="75"
+                  />
+                </v-btn>
+              </v-col>
+            </v-row>
         </v-main>
       </v-col>
     </v-row>
+    </v-container>
   </v-app>
 </template>
 

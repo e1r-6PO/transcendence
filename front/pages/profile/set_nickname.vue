@@ -1,5 +1,5 @@
 <template>
-  <v-main>
+  <v-container>
     <div class="flex-container" style="padding-top: 5%">
       <p align="center" class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</p>
       <v-row justify="center" align="center">
@@ -31,7 +31,7 @@
         </v-btn>
       </v-row>
     </div>
-  </v-main>
+  </v-container>
 </template>
 
 <script lang="ts">

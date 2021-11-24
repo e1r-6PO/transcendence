@@ -1,5 +1,5 @@
 <template>
-<v-main>
+<v-container fluid>
   <div justify="center" align="center" style="padding-top: 3%" v-if="!isEditing">
     <v-avatar class="overflow-visible" size="128">
       <img v-if="user.picture != ''"
@@ -151,7 +151,7 @@
       Save
     </v-btn>
   </div>
-</v-main>
+</v-container>
 </template>
 
 <script lang="ts">
