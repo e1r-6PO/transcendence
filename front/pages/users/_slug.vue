@@ -84,22 +84,13 @@ export default class extends Vue {
   /* border: 3px solid #e9c8ff !important;
   box-shadow: 0px 0px 10px 0px #9141c7 !important; */
   border: 3px solid #e9c8ff !important;
-  box-shadow: 0px 0px 10px 0px #9141c7 !important;
+  box-shadow: 0px 0px 15px 3px #9141c7 !important;
 }
 
 .profile-picture {
   border: 3px solid #a5fafa !important;
   /* border: 3px solid #e7b3ff !important; */
   box-shadow: 0px 0px 15px 0px #63f3f3 !important;
-}
-
-.text-field_style {
-  width: 15%;
-  min-width: 15%;
-  max-width: 15%;
-  margin-top: 3%;
-  box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
-  background: #f27719 !important; /* orange tron color */
 }
 
 .text-field_style input {
@@ -149,7 +140,7 @@ export default class extends Vue {
 .card_profile {
   border: 3px solid #a5fafa !important;
   /* border: 3px solid #e7b3ff !important; */
-  box-shadow: inset 0px 0px 400px 10px #0affff, 0px 0px 40px 0px #0affff !important;
+  box-shadow: inset 0px 0px 100px 10px #0affff, 0px 0px 40px 0px #0affff !important;
   /* box-shadow: inset 0px 0px 1000px 0px #cb5cff, 0px 0px 40px 0px #cb5cff !important; */
   border-radius: 15px !important;
   background-color: #181818 !important;
