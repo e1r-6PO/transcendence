@@ -8,9 +8,11 @@ import { ProfileModule } from './profile.module';
 import { CustomJwtModule } from './custom.jwt.module';
 import { UsersModule } from './users.module';
 import { AppGateway } from 'src/webSocket/app.gateway';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/entity/user.entity';
 
 @Module({
-  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware],
+  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, TypeOrmModule.forFeature([User]) ],
   controllers: [ AppController ],
   providers: [ AppService, AppGateway ],
 })

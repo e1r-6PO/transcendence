@@ -1,25 +1,30 @@
 <template>
-  <v-container fluid style="position: relative">
-    <div align="center" justify="center">
-      <p>LOL</p>
-      <!-- <li v-for=" (msg, index) in messages" :key="`msg-${index}`"> -->
-      <!-- </li> -->
+<v-container style="margin-top: 15%">
+  <div class="flex-container">
+
+    <div >
+      <v-card color="grey" width="700" height="700">
+      <li v-for=" msg in messages" :key="messages[msg]">
+        {{ msg }}
+      </li>
+      </v-card>
     </div>
-  </v-container>
-    <!-- <v-footer absolute class="foregound_element">
-      <v-row>
-        <v-col justify="center" align="center">
+    <div>
       <v-text-field
+        background-color="white"
+        color="blue"
         v-model="message"
-        append-outer-icon="mdi-send"
         filled
         clear-icon="mdi-close-circle"
         clearable
         label="Message"
-      ></v-text-field>
-      </v-col>
-      </v-row>
-    </v-footer> -->
+        @keypress.enter="sendMessage"
+      >
+        <v-icon slot="append-outer" color="blue"> mdi-send </v-icon>
+      </v-text-field>
+    </div>
+  </div>
+</v-container>
 </template>
 
 <script lang='ts'>
@@ -33,7 +38,7 @@ export default Vue.extend({
   data() {
     return {
       message: '',
-      messages: Array<string>(),
+      messages: new Array<string>(),
     }
   },
 
@@ -47,6 +52,7 @@ export default Vue.extend({
   mounted() {
     this.$socket.$subscribe('msgToClient', (msg: string) => {
       this.messages.push(msg);
+      console.log(this.$socket);
     })
   }
 })
@@ -65,13 +71,13 @@ export default Vue.extend({
    * flex-direction: row;
    * flex-wrap: wrap;
    */
-  flex-flow: row wrap;
+  flex-flow: column wrap;
   
   /* Then we define how is distributed the remaining space */
-  justify-content: space-around;
+  justify-content: center;
   align-content: center;
   list-style: none;
-
+  row-gap: 50px;
 }
 
 </style>

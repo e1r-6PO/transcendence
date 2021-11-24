@@ -28,7 +28,6 @@ export class AddUserIdMiddleware implements NestMiddleware {
     private jwtService: JwtService,
   ) {}
   async use(req: Request, res: Response, next: NextFunction) {
-    
     if (req.cookies['jwt'] != null)
       req.cookies['user_id'] = this.jwtService.decode(req.cookies['jwt'])['id']
     next()
