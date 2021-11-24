@@ -130,7 +130,6 @@ export default class extends Vue {
   {
     if (this.tfa_digit[i - 1] == undefined || this.tfa_digit[i - 1] == '')
     {
-      this.tfa_digit[i - 1] = ""
       if (i > 1)
         i--
       else
@@ -138,8 +137,6 @@ export default class extends Vue {
       console.log(i)
       this.$refs[`digit_${i}`][0]?.focus?.()
     }
-    else
-      this.tfa_digit[i - 1] = ''
   }
 
   tfaIsComplete() {
