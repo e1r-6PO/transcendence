@@ -6,9 +6,10 @@ import { User } from 'src/entity/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { CustomJwtModule } from './custom.jwt.module';
 import { UsersService } from 'src/service/users.service';
+import { Relationship } from 'src/entity/relationship.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), CustomJwtModule ],
+  imports: [TypeOrmModule.forFeature([User, Relationship]), CustomJwtModule ],
   controllers: [ ProfileController ],
   providers: [ ProfileService, UsersService ]
 })
