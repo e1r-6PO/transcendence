@@ -20,7 +20,7 @@ import { User } from "src/entity/user.entity";
         origin: "http://localhost:8000",
         credentials: true
     },
-    middlewares: [, AddUserIdMiddleware]
+    middlewares: [ AddUserIdMiddleware ]
 })
 
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
@@ -53,18 +53,22 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     }
 
     async handleConnection(client: Socket, ...args: any[]){
-        this.count++;
-        this.logger.log(`Client connected: ${client.id}`);
-        console.log('New connection, users count: ' + this.count );
-        
-        // parse cookies
-        const jwt = this.jwtService.decode(client.handshake.headers.cookie
+
+        const jwt = client.handshake.headers.cookie
         .split('; ')
         .find((cookie: string) => cookie.startsWith('jwt'))
-        .split('=')[1])
+        if (jwt == null)
+        {
+            client.disconnect()
+            return
+        }
+        this.count++;
+        console.log('New connection, users count: ' + this.count );
+        // parse cookies
+        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
 
         let user_data = await this.usersRepository.findOne({
-            where: {id: jwt['id']}
+            where: {id: jwt_decoded['id']}
         })
         
         console.log(user_data)

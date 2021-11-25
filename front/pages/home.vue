@@ -31,6 +31,14 @@
 
 import Vue from 'vue'
 
+import { io } from 'socket.io-client';
+
+import VueSocketIOExt from 'vue-socket.io-extended';
+const socket = io('http://localhost:3000', {
+    withCredentials: true
+})
+Vue.use(VueSocketIOExt, socket)
+
 export default Vue.extend({
 
   middleware: 'login',
