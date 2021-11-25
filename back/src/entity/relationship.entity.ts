@@ -14,12 +14,32 @@ export class Relationship {
   @PrimaryGeneratedColumn()
   id : number
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, {
+    eager: true,
+    onDelete: "CASCADE"
+  })
   user : User
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, {
+    eager: true,
+    onDelete: "CASCADE"
+  })
   peer : User
 
   @Column()
   status : Friend_Status
+
+  toJSON() {
+    return {
+      id: this.id,
+      peer: {
+        id: this.peer.id,
+        picture: 'http://localhost:8000/api/users/' + this.peer.id + '/picture',
+        nickName: this.peer.nickName,
+        gameWin: this.peer.gameWin,
+        gameLose: this.peer.gameLose,
+      },
+      status: this.status
+    }
+  }
 }
