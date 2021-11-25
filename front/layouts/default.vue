@@ -99,6 +99,11 @@ export default Vue.extend({
           icon: 'mdi-ladder',
           title: 'Scoreboard',
           to: '/scoreboard'
+        },
+        {
+          icon: 'mdi-account-group',
+          title: 'Friends',
+          to: '/friends'
         }
       ],
       right: true,
