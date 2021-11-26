@@ -1,6 +1,17 @@
 <template>
   <v-container>
-    <div class="flex-container" style="padding-top: 5%">
+    <div style="padding-top: 3%">
+    <v-alert
+      v-model="alertCode"
+      type="error"
+      text
+      dismissible
+      outlined
+    >
+      This nick is already register
+    </v-alert>
+    </div>
+    <div class="flex-container" style="padding-top: 2%">
       <p align="center" class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</p>
       <v-row justify="center" align="center">
         <v-text-field
@@ -47,6 +58,9 @@ import Component from 'vue-class-component'
 })
 export default class extends Vue {
 
+  nickname = "";
+  alertCode = false
+
   async mounted() {
     this.$refs.nickname_field.focus()
     const ret = await this.$axios.$get('api/profile/me/nickname')
@@ -54,8 +68,6 @@ export default class extends Vue {
     if (ret.nickname != "")
       this.$router.push('/home')
   }
-
-  nickname = "";
 
   nickIsValid() {
     var valid = this.nickname != "" && this.nickname.length <= 20
@@ -68,11 +80,12 @@ export default class extends Vue {
     const nick = this.nickname
     const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + nick)
       .catch(function (error) {
-        alert("nick " + nick + " is already taken")
         return error.response
     });
     if (ret.status == 201)
       this.$router.push('/home')
+    else
+      this.alertCode = true
   }
   
   $refs!: {
