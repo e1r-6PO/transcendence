@@ -3,6 +3,16 @@
     <div class="foreground_elemen flex-contianer" style="padding-top: 10%;">
       <v-row>
         <v-col justify="center" align="center">
+          <v-alert
+            v-model="alertCode"
+            outlined
+            :type="alertType"
+            text
+            dismissible
+            @input="closeAlert"
+          >
+            2fa successfully enable
+          </v-alert>
           <v-btn
             class="foreground_element neon-button"
             rounded
@@ -23,7 +33,7 @@
           style="border-radius: 10px"
           v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
       </v-row>
-      <v-row align="center" justify="center" style="padding-top: 2%; column-gap: 15px">
+      <v-row align="center" justify="center" style="padding-top: 3%; column-gap: 15px">
         <p v-for="i in 6" :key="i">
           <v-text-field class="foreground_element text-field_size"
             :ref="createRef(i)"
@@ -59,6 +69,8 @@ export default class extends Vue {
   tfa_code = ""
   tfa_digit = []
   digit_ref = ["digit_1", "digit_2", "digit_3", "digit_4", "digit_5", "digit_6"]
+  alertCode = false
+  alertType = "success"
 
   async mounted() {
   
@@ -85,7 +97,12 @@ export default class extends Vue {
       return error.response
     });
     if (ret.status == 201)
+    {
       this.qr_code = ret.data
+      this.alertCode = false
+      this.tfa_digit = []
+      this.$refs[`digit_1`][0]?.focus?.()
+    }
   }
 
   async turn_on() {
@@ -97,16 +114,16 @@ export default class extends Vue {
     }
     const ret = await this.$axios.post('/api/auth/2fa/turn-on?2fa=' + this.tfa_code)
     .catch(function (error) {
-      alert("Wrong code")
       return error.response
     });
     if (ret.status == 201) {
       this.tfa_status = true
       this.tfa_code = ""
-      alert("2fa successfully enable")
-      this.$router.push("/profile")
+      this.$router.push("/profile?2fa=on")
       return;
     }
+    this.alertType = "error"
+    this.alertCode = true
     this.tfa_code = ""
     this.tfa_digit = []
     this.$refs[`digit_1`][0]?.focus?.()
@@ -134,7 +151,6 @@ export default class extends Vue {
         i--
       else
         i = 1
-      console.log(i)
       this.$refs[`digit_${i}`][0]?.focus?.()
     }
   }
@@ -149,6 +165,11 @@ export default class extends Vue {
       }
     }
     this.turn_on()
+  }
+
+  closeAlert() {
+    this.alertCode = false;
+    this.tfaIsComplete()
   }
 
 }
