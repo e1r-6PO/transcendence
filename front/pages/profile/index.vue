@@ -1,6 +1,18 @@
 <template>
 <v-container fluid>
-  <div justify="center" align="center" style="padding-top: 3%" v-if="!isEditing">
+  <div style="padding-top: 3%">
+    <v-alert
+      v-model="alertCode"
+      outlined
+      :type=alertType
+      text
+      dismissible
+    >
+      {{ alertText }}
+    </v-alert>
+  </div>
+  <div justify="center" align="center" style="padding-top: 2%" v-if="!isEditing">
+
     <v-avatar class="overflow-visible" size="128">
       <img v-if="user.picture != ''"
         class="round_card item profile-picture"
@@ -23,7 +35,7 @@
       </v-btn>
     </v-avatar>
     </div>
-    <div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%" v-else>
+    <div class="flex-container-editing" justify="center" align="center" style="padding-top: 1%" v-else>
       <v-btn
           color="#8124be"
           class="foreground_element cross-item edit-button"
@@ -155,6 +167,7 @@
 </template>
 
 <script lang="ts">
+
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import login from '../../middleware/login'
@@ -171,6 +184,9 @@ export default class extends Vue {
   selectedFile: null | Blob = null
   nick = ""
   tfa_status = false
+  alertCode = false
+  alertText = ""
+  alertType = "success"
 
   async mounted() {
     this.user = await this.$axios.$get('/api/profile/me')
@@ -183,8 +199,17 @@ export default class extends Vue {
     
     if (ret2fa.status == 200) {
       this.tfa_status = ret2fa.data['isTwoFactorAuthenticationEnabled']
-    console.log(this.tfa_status)
-    this.nick = this.user.nickName
+      this.nick = this.user.nickName
+      if (this.$route.fullPath.search("2fa=on") != -1)
+      {
+        this.alertCode = true
+        this.alertType = "success"
+        this.alertText = "2fa successfully enabled"
+        setTimeout(()=>{
+          this.alertCode=false
+        },2000)
+      this.$router.replace('/profile')
+      }
     }
   }
 
@@ -200,13 +225,23 @@ export default class extends Vue {
   onFileChanged(e: any) {
     if (!e.target.files[0]) {
         e.preventDefault();
-        alert('No file chosen');
+        this.alertType = "error"
+        this.alertText = "No file chosen"
+        this.alertCode = true
+        setTimeout(()=>{
+          this.alertCode=false
+        },2000)
         return;
       }
       
       if (e.target.files[0].size > 1000000) {
         e.preventDefault();
-        alert('File too big (> 1MB)');
+        this.alertText = "File too big (> 1MB)"
+        this.alertType = "error"
+        this.alertCode = true
+        setTimeout(()=>{
+          this.alertCode=false
+        },2000)
         return;
       }
       this.selectedFile = e.target.files[0]
@@ -228,12 +263,24 @@ export default class extends Vue {
     if (this.user.nickName != this.nick) {
       const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
         .catch(function (error) {
-          alert("nick is already taken")
             return error.response
         });
-      this.user.nickName = this.nick
-      if (this.isEditing == true)
-        this.isEditing = false
+      if (ret.status == 409)
+      {
+        this.alertText = "Nick is alredy taken" 
+        this.alertType = "error"
+        this.alertCode = true
+        setTimeout(()=>{
+          this.alertCode=false
+        },2000)
+        return
+      }
+      else
+      {
+        this.user.nickName = this.nick
+        if (this.isEditing == true)
+          this.isEditing = false
+      }
     }
     if (this.selectedFile != null) {
       var formData = new FormData();
@@ -261,14 +308,17 @@ export default class extends Vue {
       });
       if (qr.status == 201) {
         this.tfa_status = false
-        alert("2fa disabled")
+        this.alertType = "success"
+        this.alertText = "2fa successfully enabled"
+        this.alertCode = true
+        setTimeout(()=>{
+          this.alertCode=false
+        },2000)
       }
     }
   }
 
   is2fa() {
-    console.log("is2fa")
-    console.log(this.tfa_status)
     return this.tfa_status
   }
 
