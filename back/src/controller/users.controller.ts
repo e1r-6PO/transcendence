@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseGuards, ForbiddenException } from '@nestjs/common';
 import { UsersService } from 'src/service/users.service';
 import { Request, Response } from 'express'
 import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.guards';
@@ -34,6 +34,10 @@ export class UsersController {
   async addFriend(@Query('id') id, @Req() req: Request) {
     let sender = null as Relationship
     let receiver = null as Relationship
+
+    if (id == req.cookies['user_id']) {
+      throw new ForbiddenException
+    }
 
     sender = await this.relationShipRepository.findOne({
       where: { user: req.cookies['user_id'], peer: id }

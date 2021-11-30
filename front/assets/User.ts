@@ -29,4 +29,20 @@ class User {
     }
 }
 
-export { User };
+class LightUser {
+    id: number;
+    picture: string;
+    nickName: string;
+    gameWin: number;
+    gameLose: number;
+    constructor()
+    {
+        this.nickName = "";
+        this.picture = "";
+        this.id = 0;
+        this.gameWin = 0;
+        this.gameLose = 0;
+    }
+}
+
+export { User, LightUser };

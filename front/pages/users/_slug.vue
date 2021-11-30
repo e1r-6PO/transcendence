@@ -6,7 +6,7 @@
         class="round_card item profile-picture"
         :src=user.picture
       />
-      <v-btn
+      <v-btn v-if="self.id != user.id"
         color="#8124be"
         class="friend-button"
         fab
@@ -59,7 +59,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import login from '../../middleware/login'
-import { User } from '../../assets/User';
+import { User, LightUser } from '../../assets/User';
 
 const All_Friend_Status = {
   null: "null",
@@ -75,13 +75,15 @@ const All_Friend_Status = {
 export default class extends Vue {
 
   status = All_Friend_Status
-  user : User = new User;
+  user : LightUser = new LightUser
   friendStatus : string = All_Friend_Status.null
   isFriend : boolean = false
+  self : User = new User
 
   async mounted() {
     const { params: { slug } } = this.$route
 
+    this.self = await this.$axios.$get('/api/profile/me')
     this.user = await this.$axios.$get('/api/users/' + slug)
     this.friendStatus = (await this.$axios.$get('/api/users/friend?id=' + this.user.id)).status
   }
