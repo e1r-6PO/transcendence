@@ -4,7 +4,8 @@
   class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
   placeholder="Nickname"
   color="#e6ffff"
-  @keydown.enter="changer"
+  v-model="search_string"
+  @input="filter"
   hide-details
   filled
   rounded
@@ -13,34 +14,34 @@
   ref="nickname_field"
   >
   </v-text-field>
-  <div v-if="friends_list != []" >
+  <div v-if="relationships != []" >
     <v-row>
       <v-col justify="center" align="center">
-        <v-card class="foreground_element card_profile" v-for="friend in friends_list" :key="friend.id">
-          <p class="color_text text-h5 font-weight-medium" align="center">{{friend.peer.nickName}}</p>
+        <v-card class="foreground_element card_profile" v-for="relationship in relationships" :key="relationship.id">
+          <p class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</p>
           <v-btn
             color="#8124be"
             class="friend-button"
             fab
             small
-            @click="friend()"
+            @click="edit_friend(relationship)"
             absolute
             bottom
             right
           >
-            <v-icon v-if="friend.status == status.null" color="green">
+            <v-icon v-if="relationship.status == status.null" color="green">
               mdi-account-plus
             </v-icon>
-            <v-icon v-if="friend.status == status.completed" color="red">
+            <v-icon v-if="relationship.status == status.completed" color="red">
               mdi-account-minus
             </v-icon>
-            <v-icon v-if="friend.status == status.sent" color="yellow">
+            <v-icon v-if="relationship.status == status.sent" color="yellow">
               mdi-account-clock
             </v-icon>
-            <v-icon v-if="friend.status == status.incomming" color="yellow">
+            <v-icon v-if="relationship.status == status.incomming" color="yellow">
               mdi-account-arrow-down
             </v-icon>
-            <v-icon v-if="friend.status == status.blocked" color="red">
+            <v-icon v-if="relationship.status == status.blocked" color="red">
               mdi-account-cancel
             </v-icon>
           </v-btn>
@@ -62,6 +63,7 @@ const All_Friend_Status = {
 }
 
 import Vue from 'vue'
+import { LightUser } from '../assets/User'
 
 export default Vue.extend({
 
@@ -69,23 +71,31 @@ export default Vue.extend({
 
   data() {
     return {
+      search_string: "",
       status: All_Friend_Status,
-      friends_list: [{
+      relationships: [{
         id: 0,
-        peer: {
-          id: 0,
-          picture: '',
-          nickName: '',
-          gameWin: 0,
-          gameLose: 0,
-        },
+        peer: LightUser,
         status: ''
       }]
     }
   },
 
   async mounted() {
-    this.friends_list = await this.$axios.$get('/api/profile/me/friends')
+    this.relationships = await this.$axios.$get('/api/profile/me/friends')
+  },
+
+  methods: {
+    filter() {
+      console.log(this.search_string)
+    },
+
+    async edit_friend(relationship) {
+      await this.$axios.$post('/api/users/friend?id=' + relationship.peer.id)
+      const friend_status = (await this.$axios.$get('/api/users/friend?id=' + relationship.peer.id)).status
+      if (friend_status == "null")
+        this.relationships.splice(this.relationships.findIndex( ({id}) => id === relationship.id ), 1)
+    }
   }
 
 })

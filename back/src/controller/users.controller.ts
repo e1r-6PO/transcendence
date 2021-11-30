@@ -35,7 +35,7 @@ export class UsersController {
     let sender = null as Relationship
     let receiver = null as Relationship
 
-    if (id == req.cookies['user_id']) {
+    if (id == req.cookies['user_id']) { //check that user with `id` = id exist
       throw new ForbiddenException
     }
 
