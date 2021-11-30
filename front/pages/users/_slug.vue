@@ -77,7 +77,6 @@ export default class extends Vue {
   status = All_Friend_Status
   user : LightUser = new LightUser
   friendStatus : string = All_Friend_Status.null
-  isFriend : boolean = false
   self : User = new User
 
   async mounted() {
@@ -89,7 +88,6 @@ export default class extends Vue {
   }
 
   async friend() {
-    this.isFriend = !this.isFriend
 
     await this.$axios.$post('/api/users/friend?id=' + this.user.id)
     this.friendStatus = (await this.$axios.$get('/api/users/friend?id=' + this.user.id)).status
