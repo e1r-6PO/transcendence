@@ -95,15 +95,21 @@ export default Vue.extend({
           title: 'Profile',
           to: '/profile'
         },
-        {
-          icon: 'mdi-ladder',
-          title: 'Scoreboard',
-          to: '/scoreboard'
-        },
+
         {
           icon: 'mdi-account-group',
           title: 'Friends',
           to: '/friends'
+        },
+        {
+          icon: 'mdi-wechat',
+          title: 'Chat Room',
+          to: '/chat'
+        },
+        {
+          icon: 'mdi-ladder',
+          title: 'Scoreboard',
+          to: '/scoreboard'
         }
       ],
       right: true,
