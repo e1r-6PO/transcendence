@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Messages } from 'src/entity/messages.entity';
 import { Relationship } from 'src/entity/relationship.entity';
 import { User } from 'src/entity/user.entity';
 
@@ -12,7 +13,7 @@ import { User } from 'src/entity/user.entity';
       username: process.env.DBUSER,
       password: process.env.DBPSWD,
       database: 'transcendence',
-      entities: [User, Relationship],
+      entities: [User, Relationship, Messages],
       synchronize: true,
     }),
   ],

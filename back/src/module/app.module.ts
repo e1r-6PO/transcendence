@@ -10,9 +10,11 @@ import { UsersModule } from './users.module';
 import { AppGateway } from 'src/webSocket/app.gateway';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
+import { Messages } from 'src/entity/messages.entity';
+import { ChatModule } from './chat.module';
 
 @Module({
-  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, TypeOrmModule.forFeature([User]) ],
+  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, ChatModule, TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Messages])],
   controllers: [ AppController ],
   providers: [ AppService, AppGateway ],
 })
