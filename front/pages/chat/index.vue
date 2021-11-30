@@ -1,53 +1,91 @@
 <template>
-<v-container>
-  <v-row>
-    <v-col>
-      <v-footer absolute>
-        <v-row justify="align-center">
-          <v-col justify="center" align="center">
-        <v-text-field
-          v-model="message"
-          append-outer-icon="mdi-send"
-          filled
-          clear-icon="mdi-close-circle"
-          clearable
-          label="Message"
-          @click:append-outer="sendMessage"
-          @click:clear="clearMessage"
-        ></v-text-field>
-        </v-col>
-        </v-row>
-      </v-footer>
-    </v-col>
-  </v-row>
+<v-container style="margin-top: 15%">
+  <div class="flex-container">
+      <v-card color="grey" width="700" height="700">
+        <li style="margin-top: 15px; margin-bottom: 15px; margin-right: 50%; margin-left: 15px" v-for=" msg in messages" :key="messages[msg]">
+          <v-card class="justify-center">
+            <v-card-text class="text-left">
+              {{ msg }}
+            </v-card-text>
+          </v-card>
+        </li>
+      </v-card>
+
+      <v-text-field
+        background-color="white"
+        color="blue"
+        v-model="message"
+        filled
+        clear-icon="mdi-close-circle"
+        clearable
+        label="Message"
+        @keypress.enter="sendMessage"
+      >
+        <v-icon slot="append-outer" color="blue"> mdi-send </v-icon>
+      </v-text-field>
+  </div>
 </v-container>
 </template>
 
-<script>
+<script lang='ts'>
 
-export default {
-  
-    mounted() {
-    this.socket = this.$nuxtSocket({
-      channel: '/index'
-    })
-    /* Listen for events: */
-    this.socket
-    .on('someEvent', (msg, cb) => {
-      /* Handle event */
-    })
-  },
-    data: () => ({
+import Vue from 'vue'
+
+import { io } from 'socket.io-client';
+
+import VueSocketIOExt from 'vue-socket.io-extended';
+const socket = io('http://localhost:3000', {
+    withCredentials: true
+})
+Vue.use(VueSocketIOExt, socket)
+
+export default Vue.extend({
+
+  middleware: 'login',
+
+  data() {
+    return {
       message: '',
-    }),
+      messages: new Array<string>(),
+    }
+  },
 
-    methods: {
-      sendMessage () {
-        this.clearMessage()
-      },
-      clearMessage () {
-        this.message = ''
-      },
-    },
+  methods: {
+    sendMessage(): void {
+      this.$socket.client.emit('msgToServer', this.message);
+        this.message = '';
+      }
+  },
+
+  mounted() {
+    this.$socket.$subscribe('msgToClient', (msg: string) => {
+      this.messages.push(msg);
+      console.log(this.$socket);
+    })
   }
+})
+
 </script>
+
+<style scoped>
+
+.flex-container {
+  /* We first create a flex layout context */
+  display: flex;
+  
+  /* Then we define the flow direction 
+     and if we allow the items to wrap 
+   * Remember this is the same as:
+   * flex-direction: row;
+   * flex-wrap: wrap;
+   */
+  flex-flow: column wrap;
+  
+  /* Then we define how is distributed the remaining space */
+  justify-content: center;
+  align-content: center;
+  list-style: none;
+  row-gap: 50px;
+}
+
+</style>
