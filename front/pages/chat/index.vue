@@ -1,39 +1,46 @@
 <template>
-<v-container style="margin-top: 15%">
-  <div class="flex-container">
-      <v-card color="grey" width="700" height="700">
-        <li style="margin-top: 15px; margin-bottom: 15px; margin-right: 50%; margin-left: 15px" v-for=" msg in messages" :key="messages[msg]">
-          <v-card class="justify-center">
-            <v-card-text class="text-left">
-              {{ msg }}
-            </v-card-text>
-          </v-card>
-        </li>
-      </v-card>
+  <v-container align-items="center" style="margin-top: 3%">
+    <div style="overflow-y: scroll; max-height: 900px">
+      <!-- <v-virtual-scroll class="foreground_element" itemHeight="30" height="100" items="messagesArray"> -->
+          <v-list-item
+            v-for="(msg, i) in messagesArray"
+            :key="i"
+            style="margin-top: 15px;"
+          >
+        <v-card class="text-left bubble" style="min-width: 70px; max-width: 400px !important">
+            <v-list-item-content style="margin-left: 10px; margin-right: 10px">
+              <v-list-item-title v-text="msg.message"></v-list-item-title> 
+              <v-list-item-subtitle class="text-right" v-text="formateTime(msg.time)"></v-list-item-subtitle>
+            </v-list-item-content>
+        </v-card>
+        </v-list-item>
+      <!-- </v-virtual-scroll> -->
+    </div>
 
-      <v-text-field
-        background-color="white"
-        color="blue"
-        v-model="message"
-        filled
-        clear-icon="mdi-close-circle"
-        clearable
-        label="Message"
-        @keypress.enter="sendMessage"
-      >
-        <v-icon slot="append-outer" color="blue"> mdi-send </v-icon>
-      </v-text-field>
-  </div>
-</v-container>
+    <v-text-field
+      style="margin-top: 3%"
+      background-color="white"
+      color="blue"
+      v-model="message"
+      filled
+      clear-icon="mdi-close-circle"
+      clearable
+      label="Message"
+      elevation="2"
+      @keypress.enter="sendMessage"
+    >
+      <v-icon slot="append-outer" color="blue"> mdi-send </v-icon>
+    </v-text-field>
+  </v-container>
 </template>
 
 <script lang='ts'>
 
 import Vue from 'vue'
-
 import { io } from 'socket.io-client';
-
 import VueSocketIOExt from 'vue-socket.io-extended';
+import { Messages } from '../../assets/Messages'
+
 const socket = io('http://localhost:3000', {
     withCredentials: true
 })
@@ -46,7 +53,7 @@ export default Vue.extend({
   data() {
     return {
       message: '',
-      messages: new Array<string>(),
+      messagesArray: new Array<Messages>(),
     }
   },
 
@@ -54,12 +61,20 @@ export default Vue.extend({
     sendMessage(): void {
       this.$socket.client.emit('msgToServer', this.message);
         this.message = '';
-      }
+      },
+    
+    formateTime(time: Date): string {
+
+      var newTime : Date = new Date(time)
+      return newTime.getHours() + ":" + newTime.getMinutes()
+    }
   },
 
-  mounted() {
-    this.$socket.$subscribe('msgToClient', (msg: string) => {
-      this.messages.push(msg);
+  async mounted() {
+    this.messagesArray = await this.$axios.$get('/api/chat/messages')
+    console.log(this.messagesArray)
+    this.$socket.$subscribe('msgToClient', (msg: Messages) => {
+      this.messagesArray.push(msg);
       console.log(this.$socket);
     })
   }
@@ -86,6 +101,26 @@ export default Vue.extend({
   align-content: center;
   list-style: none;
   row-gap: 50px;
+}
+
+.bubble {
+  background: #ffffff;
+  border-radius: 10px 10px 10px px;
+  color: #000; /* bubble text color */
+}
+
+.bubble:before, .bubble:after {
+  border-radius: 200px / 5px;
+  content: '';
+  display: block;
+  position: absolute;
+}
+
+.bubble:after {
+  border: 8px solid transparent !important;
+  border-bottom-color: #ffffff !important; /* arrow color */
+  bottom: 0px !important;
+  left: -7px !important;
 }
 
 </style>
