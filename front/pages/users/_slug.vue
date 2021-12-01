@@ -88,8 +88,14 @@ export default class extends Vue {
   }
 
   async friend() {
-
-    await this.$axios.$post('/api/users/friend?id=' + this.user.id)
+    if (this.friendStatus == this.status.null)
+      await this.$axios.$post('/api/users/friend?id=' + this.user.id, { action: 'create' })
+    else if (this.friendStatus == this.status.completed)
+      await this.$axios.$post('/api/users/friend?id=' + this.user.id, { action: 'delete' })
+    else if (this.friendStatus == this.status.sent)
+      await this.$axios.$post('/api/users/friend?id=' + this.user.id, { action: 'delete' })
+    else if (this.friendStatus == this.status.incomming)
+      await this.$axios.$post('/api/users/friend?id=' + this.user.id, { action: 'accept' })
     this.friendStatus = (await this.$axios.$get('/api/users/friend?id=' + this.user.id)).status
   }
 
