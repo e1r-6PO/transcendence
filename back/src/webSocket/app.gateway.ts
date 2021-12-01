@@ -14,6 +14,7 @@ import cookieParser from "cookie-parser";
 import { AddUserIdMiddleware } from "src/middleware/account.middleware";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/entity/user.entity";
+import { Messages } from "src/entity/messages.entity"
 
 @WebSocketGateway({
     cors: {
@@ -27,7 +28,9 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     constructor(
         private jwtService : JwtService,
         @InjectRepository(User)
-        private readonly usersRepository : Repository<User>
+        private readonly usersRepository : Repository<User>,
+        @InjectRepository(Messages)
+        private readonly messagesRepository : Repository<Messages>
       ) {}
 
     count: number = 0;
@@ -38,8 +41,14 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
     @SubscribeMessage('msgToServer')
     handleMessage(client: Socket, payload: string): void{
-        this.server.emit('msgToClient', payload);
-        console.log(client);
+        var newMsg: Messages = new Messages;
+        
+        newMsg.senderId = 0;
+        newMsg.message = payload;
+        newMsg.time = new Date();
+        this.messagesRepository.save(newMsg)
+        console.log(newMsg.time.getHours())
+        this.server.emit('msgToClient', newMsg);
     }
 
     afterInit(server: Server){
