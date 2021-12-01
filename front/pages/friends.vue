@@ -90,7 +90,7 @@ export default Vue.extend({
       console.log(this.search_string)
     },
 
-    async edit_friend(relationship) {
+    async edit_friend(relationship: any) {
       await this.$axios.$post('/api/users/friend?id=' + relationship.peer.id)
       const friend_status = (await this.$axios.$get('/api/users/friend?id=' + relationship.peer.id)).status
       if (friend_status == "null")
