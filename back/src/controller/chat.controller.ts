@@ -6,11 +6,13 @@ import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.gu
 import { UsersService } from 'src/service/users.service';
 import { Repository } from 'typeorm';
 import { Messages } from 'src/entity/messages.entity'
+import { MessagesService } from 'src/service/chat.service';
 
 @Controller('api/chat')
 @UseGuards(ValidTokenGuard, TwoFaGuard)
 export class ChatController {
   constructor(
+    private readonly messagesService: MessagesService,
     @InjectRepository(Messages)
     private readonly MessagesRepository : Repository<Messages>
   ) {}
@@ -18,10 +20,6 @@ export class ChatController {
   @Get('messages')
   async get_messages(@Req() req : Request)
   {
-      var messagesArray: Array<Messages> = [];
-
-      messagesArray = await this.MessagesRepository.find()
-      console.log(messagesArray)
-      return (messagesArray)
+      return this.messagesService.getAll()
   }
 }
