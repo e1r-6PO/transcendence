@@ -5,6 +5,7 @@ import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.gu
 import { Friend_Status, Relationship } from 'src/entity/relationship.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FriendsService } from 'src/service/friends.service';
 
 @Controller('api/users')
 @UseGuards(ValidTokenGuard, TwoFaGuard, HasNickGuard)
@@ -12,7 +13,8 @@ export class UsersController {
   constructor(
     private readonly userService: UsersService,
     @InjectRepository(Relationship)
-    private readonly relationShipRepository : Repository<Relationship>
+    private readonly relationShipRepository : Repository<Relationship>,
+    private readonly friendsService: FriendsService
   ) {}
 
   @Get('search')
@@ -31,13 +33,9 @@ export class UsersController {
   }
 
   @Post('friend')
-  async addFriend(@Query('id') id, @Req() req: Request) {
+  async addFriend(@Query('id') id, @Body('action') action, @Req() req: Request) {
     let sender = null as Relationship
-    let receiver = null as Relationship
-
-    if (id == req.cookies['user_id']) { //check that user with `id` = id exist
-      throw new ForbiddenException
-    }
+    let receiver = null as Relationship //mettre la verif dans unguard
 
     sender = await this.relationShipRepository.findOne({
       where: { user: req.cookies['user_id'], peer: id }
@@ -45,28 +43,20 @@ export class UsersController {
     receiver = await this.relationShipRepository.findOne({
       where: { user: id, peer: req.cookies['user_id'] }
     })
-    if (sender == null && receiver == null)
-    {
-      sender = new Relationship()
-      sender.user = req.cookies['user_id']
-      sender.peer = id
-      sender.status = Friend_Status.sent
-      
-      receiver = new Relationship()
-      receiver.user = id
-      receiver.peer = req.cookies['user_id']
-      receiver.status = Friend_Status.incomming
-      this.relationShipRepository.save(sender)
-      this.relationShipRepository.save(receiver)
+
+    if (id == req.cookies['user_id'] || (sender == null && receiver != null) || (sender != null && receiver == null)) {
+      throw new ForbiddenException
     }
-    else
-    {
-      if (sender.status == Friend_Status.completed || sender.status == Friend_Status.sent)
-      {
+
+    if (sender == null && receiver == null && action == 'create') {
+      this.friendsService.create_friend_request(req.cookies['user_id'], id);
+    }
+    else {
+      if ((sender.status == Friend_Status.completed || sender.status == Friend_Status.sent || sender.status == Friend_Status.incomming) && action == 'delete') {
         this.relationShipRepository.delete(sender)
         this.relationShipRepository.delete(receiver)
       }
-      else if (sender.status == Friend_Status.incomming)
+      else if (sender.status == Friend_Status.incomming && action == 'accept')
       {
         sender.status = Friend_Status.completed
         receiver.status = Friend_Status.completed
