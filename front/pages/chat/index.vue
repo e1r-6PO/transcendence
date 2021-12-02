@@ -88,33 +88,11 @@ export default Vue.extend({
     formateTime(time: Date): string {
       var newTime: Date = new Date(time)
       return newTime.getHours() + ':' + (newTime.getMinutes() < 10 ? '0' + newTime.getMinutes() : newTime.getMinutes())
-    },
-
-    formatNick(nick: Messages): string {
-      console.log("nick in subtitle : " + nick.senderNick)
-      return nick.senderNick
     }
   },
 
   async mounted() {
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
-
-    // for (var i = 0; i < this.messagesArray.length; i++)
-    // {
-    //   var userId = this.messagesArray[i].senderId
-    //   var fullMsg: Messages = new Messages(this.messagesArray[i])
-    //   if (this.usersNick.get(userId) == undefined)
-    //   {
-    //     var user: LightUser;
-    //     user = await this.$axios.$get('/api/users?id=' + userId)
-    //     if (user)
-    //       this.usersNick.set(userId, user.nickName)
-    //   }
-    //   fullMsg.senderNick = this.usersNick.get(userId)
-    //   this.messagesArray[i] = new Messages(fullMsg)
-    // }
-    console.log("test nick msg " + this.messagesArray[0].senderNick)
-    console.log(this.messagesArray)
     this.$socket.$subscribe('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
     })
