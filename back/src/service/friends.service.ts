@@ -23,4 +23,34 @@ export class FriendsService {
     this.relationShipRepository.save(sender)
     this.relationShipRepository.save(receiver)
   }
+
+  accept_friend_request(sender: Relationship, receiver: Relationship) {
+    sender.status = receiver.status = Friend_Status.completed;
+    this.relationShipRepository.save([sender, receiver])
+  }
+
+  delete_relationship(sender: Relationship, receiver: Relationship) {
+    this.relationShipRepository.delete(sender);
+    this.relationShipRepository.delete(receiver);
+  }
+
+  create_block(sender_id, receiver_id) {
+    let sender = new Relationship
+    sender.user = sender_id
+    sender.peer = receiver_id
+    sender.status = Friend_Status.blocked
+    this.relationShipRepository.save(sender)
+  }
+
+  async find_sender(sender_id, receiver_id) {
+    return await this.relationShipRepository.findOne({
+      where: { user: sender_id, peer: receiver_id }
+      })
+  }
+
+  async find_receiver(sender_id, receiver_id) {
+    return await this.relationShipRepository.findOne({
+      where: { user: receiver_id, peer: sender_id }
+    })
+  }
 }

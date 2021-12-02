@@ -17,55 +17,6 @@ export class UsersController {
     private readonly friendsService: FriendsService
   ) {}
 
-  @Get('search')
-  find(@Query('nick') nick: string) {
-    return this.userService.search(nick)
-  }
-
-  @Get('friend')
-  async getFriend(@Query('id') id, @Req() req: Request) {
-    let relation : Relationship | null = await this.relationShipRepository.findOne({
-      where: { user: req.cookies['user_id'], peer: id }
-    })
-    if (!relation)
-      return { status: "null" }
-    return { status: relation.status }
-  }
-
-  @Post('friend')
-  async addFriend(@Query('id') id, @Body('action') action, @Req() req: Request) {
-    let sender = null as Relationship
-    let receiver = null as Relationship //mettre la verif dans unguard
-
-    sender = await this.relationShipRepository.findOne({
-      where: { user: req.cookies['user_id'], peer: id }
-    })
-    receiver = await this.relationShipRepository.findOne({
-      where: { user: id, peer: req.cookies['user_id'] }
-    })
-
-    if (id == req.cookies['user_id'] || (sender == null && receiver != null) || (sender != null && receiver == null)) {
-      throw new ForbiddenException
-    }
-
-    if (sender == null && receiver == null && action == 'create') {
-      this.friendsService.create_friend_request(req.cookies['user_id'], id);
-    }
-    else {
-      if ((sender.status == Friend_Status.completed || sender.status == Friend_Status.sent || sender.status == Friend_Status.incomming) && action == 'delete') {
-        this.relationShipRepository.delete(sender)
-        this.relationShipRepository.delete(receiver)
-      }
-      else if (sender.status == Friend_Status.incomming && action == 'accept')
-      {
-        sender.status = Friend_Status.completed
-        receiver.status = Friend_Status.completed
-        this.relationShipRepository.save(sender)
-        this.relationShipRepository.save(receiver)
-      }
-    }
-  }
-
   @Get(':hint')
   getbyhint(@Param('hint') hint: string) {
     return this.userService.findOne(hint);
