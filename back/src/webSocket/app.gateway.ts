@@ -40,14 +40,32 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     private logger: Logger = new Logger('AppGateway');
 
     @SubscribeMessage('msgToServer')
-    handleMessage(client: Socket, payload: string): void{
+    async handleMessage(client: Socket, payload: string): Promise<void>{
         var newMsg: Messages = new Messages;
         
-        newMsg.senderId = 0;
+        const jwt = client.handshake.headers.cookie
+        .split('; ')
+        .find((cookie: string) => cookie.startsWith('jwt'))
+        if (jwt == null)
+        {
+            client.disconnect()
+            return
+        }
+        this.count++;
+        console.log('New connection, users count: ' + this.count );
+        // parse cookies
+        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
+
+        let user_data = await this.usersRepository.findOne({
+            where: {id: jwt_decoded['id']}
+        })
+        
         newMsg.message = payload;
         newMsg.time = new Date();
+        newMsg.senderId = user_data.id;
+        newMsg.senderNick = user_data.nickName;
+        
         this.messagesRepository.save(newMsg)
-        console.log(newMsg.time.getHours())
         this.server.emit('msgToClient', newMsg);
     }
 
