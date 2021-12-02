@@ -1,4 +1,5 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm"
+import { User } from "./user.entity";
 
 @Entity()
 export class Messages {
@@ -6,14 +7,20 @@ export class Messages {
     {
         this.senderId = 0;
         this.message = "";
+        this.senderNick = "";
         this.time = new Date();
     }
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @ManyToOne(() => User, {
+        eager: true,
+      })
     senderId: number;
+
+    @Column()
+    senderNick: string;
 
     @Column({
         // type: 'varchar',
