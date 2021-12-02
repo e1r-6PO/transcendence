@@ -84,19 +84,21 @@ export default class extends Vue {
 
     this.self = await this.$axios.$get('/api/profile/me')
     this.user = await this.$axios.$get('/api/users/' + slug)
-    this.friendStatus = (await this.$axios.$get('/api/users/friend?id=' + this.user.id)).status
+    this.friendStatus = (await this.$axios.$get('/api/friends/' + this.user.id)).status
   }
 
   async friend() {
     if (this.friendStatus == this.status.null)
-      await this.$axios.$post('/api/users/friend?id=' + this.user.id, { action: 'create' })
+      await this.$axios.$post('/api/friends/' + this.user.id)
     else if (this.friendStatus == this.status.completed)
-      await this.$axios.$post('/api/users/friend?id=' + this.user.id, { action: 'delete' })
+      await this.$axios.$delete('/api/friends/' + this.user.id)
     else if (this.friendStatus == this.status.sent)
-      await this.$axios.$post('/api/users/friend?id=' + this.user.id, { action: 'delete' })
+      await this.$axios.$delete('/api/friends/' + this.user.id)
     else if (this.friendStatus == this.status.incomming)
-      await this.$axios.$post('/api/users/friend?id=' + this.user.id, { action: 'accept' })
-    this.friendStatus = (await this.$axios.$get('/api/users/friend?id=' + this.user.id)).status
+      await this.$axios.$patch('/api/friends/' + this.user.id + '/accept')
+    else if (this.friendStatus == this.status.blocked)
+      await this.$axios.$post('/api/friends/' + this.user.id + '/unblock')
+    this.friendStatus = (await this.$axios.$get('/api/friends/' + this.user.id)).status
   }
 
   $refs!: {

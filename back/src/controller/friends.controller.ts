@@ -16,7 +16,7 @@ export class FriendsController {
     private relationShipRepository : Repository<Relationship>
   ) {}
 
-  // Get a friends
+  // Get friends
   @Get(':id')
   async getFriend(@Param('id') id, @Req() req: Request) {
     let relation : Relationship | null = await this.relationShipRepository.findOne({
@@ -86,9 +86,7 @@ export class FriendsController {
     {
       throw new ForbiddenException
     }
-    if (sender.status == Friend_Status.blocked)
-      this.relationShipRepository.delete(sender)
-    else if (receiver.status == Friend_Status.blocked)
+    if (receiver.status == Friend_Status.blocked)
       throw new ForbiddenException
     else
       this.friendsService.delete_relationship(sender, receiver);
@@ -115,6 +113,22 @@ export class FriendsController {
       this.relationShipRepository.delete(receiver);
 
     this.friendsService.create_block(req.cookies['user_id'], id);
+    return { message: "success" }
+  }
+
+  @Post(':id/unblock')
+  async unblockFriend(@Param('id') id, @Req() req: Request) {
+    let sender = null as Relationship 
+
+    sender = await this.friendsService.find_sender(req.cookies['user_id'], id)
+
+    if (id == req.cookies['user_id']
+      || sender == null
+      || sender.status != Friend_Status.blocked) {
+      throw new ForbiddenException
+    }
+
+    this.relationShipRepository.delete(sender);
     return { message: "success" }
   }
 }

@@ -17,6 +17,11 @@ export class UsersController {
     private readonly friendsService: FriendsService
   ) {}
 
+  @Get('search')
+  find(@Query('nick') nick: string) {
+    return this.userService.search(nick)
+  }
+
   @Get(':hint')
   getbyhint(@Param('hint') hint: string) {
     return this.userService.findOne(hint);
