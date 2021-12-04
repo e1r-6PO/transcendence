@@ -3,31 +3,57 @@
     align-items="center"
     style="margin-top: 3%;"
     class="body overflow-y-hidden"
-    
   >
     <div v-for="(msg, i) in messagesArray"
       class="overflow-y-auto"
       :key="i"
-      style="margin-top: 15px; padding-left: 1%; padding-right: 2%"
+      style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
     >
+      <v-img
+        :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
+        style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
+        width="30"
+        :src="msg.picture"
+        @click="redirectToUserProfile(msg.senderNick)"
+      >
+      </v-img>
       <v-card
         class="bubble"
-        :class="isYourMsg(msg) ? 'bubble bubble_blue bubble-alt' : 'bubble bubble_white'"
+        :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
         :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
         style="min-width: 70px; max-width: 400px !important;"
       >
-        <v-list-item-content style="margin-left: 10px; margin-right: 10px">
+        <v-card-subtitle
+          style="padding-bottom: 0px"
+          v-text="msg.senderNick"
+          class="text-left"
+        >
+
+        </v-card-subtitle>
+      <v-card-text
+        style="padding-bottom: 0px; padding-right: 55px"
+        v-text="msg.message"
+      >
+      </v-card-text>
+      <v-card-subtitle
+        style="padding-bottom: 5px; padding-top: 0px;"
+        v-text="formateTime(msg.time)"
+        class="text-right"
+      >
+      </v-card-subtitle>
+        <!-- <v-list-item-content style="margin-left: 10px; margin-right: 10px">
           <v-list-item-subtitle
             class="text-left"
             v-text="msg.senderNick"
           ></v-list-item-subtitle>
-          <v-list-item-title :class="isYourMsg(msg) ? 'text-left' : 'text-left'" v-text="msg.message"></v-list-item-title>
+          <v-list-item-title class="text-left" v-text="msg.message"></v-list-item-title>
           <v-list-item-subtitle
             class="text-right"
             v-text="formateTime(msg.time)"
           ></v-list-item-subtitle>
-        </v-list-item-content>
+        </v-list-item-content> -->
       </v-card>
+
     </div>
 
     <v-footer app inset color="#181818">
@@ -85,13 +111,15 @@ export default Vue.extend({
     },
 
     isYourMsg(msg: Messages): boolean {
-      console.log("me :" + this.me.nickName + " msg :" + msg.senderNick)
       if (this.me.nickName == msg.senderNick)
       {
-      console.log("res : " + (this.me.nickName == msg.senderNick))
         return (true)
       }
       return (false)
+    },
+
+    redirectToUserProfile(userNick: string) {
+      this.$router.push("/users/" + userNick)
     }
   },
 
@@ -100,7 +128,6 @@ export default Vue.extend({
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
 
 
-    // console.log("socket :" + this.$socket.$subscribe)
     this.$socket.$subscribe('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
     })
@@ -144,29 +171,33 @@ export default Vue.extend({
 .bubble_white:after {
   border: 8px solid transparent !important;
   border-bottom-color: #ffffff !important; /* arrow color */
-  bottom: 0px !important;
-  left: -7px !important;
 }
 
 .bubble_blue:after {
   border: 8px solid transparent !important;
   border-bottom-color: #1982FC !important; /* arrow color */
-  bottom: -1px !important;
-  left: 17px !important;
 }
 
-.bubble-alt {
+.bubble_left {
+  float: left;
+}
+
+.bubble_left:after {
+  border: 8px solid transparent !important;
+  border-bottom-color: #ffffff !important; /* arrow color */
+  bottom: 0px!important;
+  left: -7px !important;
+}
+
+.bubble_right {
   float: right;
 }
-.bubble-alt:before {
-  left: auto;
-  right: -10px;
-  bottom: -10px;
-}
-.bubble-alt:after {
-  left: auto;
-  right: -8px;
-  bottom: -2px;
+
+.bubble_right:after {
+  right: -8px !important;
+  border: 10px solid transparent !important;
+  border-bottom-color: #1982FC !important; /* arrow color */
+  bottom: 0px !important;
 }
 
 body {
