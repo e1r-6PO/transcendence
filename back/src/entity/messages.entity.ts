@@ -9,6 +9,7 @@ export class Messages {
         this.message = "";
         this.senderNick = "";
         this.time = new Date();
+        this.picture = "";
     }
 
     @PrimaryGeneratedColumn()
@@ -34,4 +35,7 @@ export class Messages {
         // default: () => 'CURRENT_TIMESTAMP'
     })
     time: Date;
+    
+    @Column()
+    picture: string;
 }
