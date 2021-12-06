@@ -12,6 +12,7 @@ class Messages {
     senderId: number;
     senderNick: string;
     message: string;
+    picture: string;
     time: Date;
 
     constructor();
@@ -23,6 +24,7 @@ class Messages {
         this.senderNick = msg && msg.senderNick || "";
         this.message = msg && msg.message || "";
         this.time = msg && msg.time || new Date();
+        this.picture = msg && msg.picture || "";
     }
 }
 

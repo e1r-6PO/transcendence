@@ -12,9 +12,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { Messages } from 'src/entity/messages.entity';
 import { ChatModule } from './chat.module';
+import { FriendsModule } from './friends.module';
 
 @Module({
-  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, ChatModule, TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Messages])],
+  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, ChatModule,
+    TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Messages]), FriendsModule],
   controllers: [ AppController ],
   providers: [ AppService, ChatGateway ],
 })

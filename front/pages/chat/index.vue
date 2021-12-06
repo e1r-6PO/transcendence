@@ -3,38 +3,57 @@
     align-items="center"
     style="margin-top: 3%;"
     class="body overflow-y-hidden"
-    
   >
-    <div class="overflow-y-auto">
-      <v-list
-        style="max-height: 800px !important; height: 800px"
-        class="overflow-y-auto"
-        color="#181818"
+    <div v-for="(msg, i) in messagesArray"
+      class="overflow-y-auto"
+      :key="i"
+      style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
+    >
+      <v-img
+        :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
+        style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
+        width="30"
+        :src="msg.picture"
+        @click="redirectToUserProfile(msg.senderNick)"
       >
-      <v-list-item
-        v-for="(msg, i) in messagesArray"
-        :key="i"
-        style="margin-top: 15px;"
+      </v-img>
+      <v-card
+        class="bubble"
+        :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
+        :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
+        style="min-width: 70px; max-width: 400px !important;"
       >
-        <v-card
-          class="text-left bubble"
-          style="min-width: 70px; max-width: 400px !important"
+        <v-card-subtitle
+          style="padding-bottom: 0px"
+          v-text="msg.senderNick"
+          class="text-left"
         >
-          <v-list-item-content style="margin-left: 10px; margin-right: 10px">
-            <v-list-item-subtitle
-              class="text-left"
-              v-text="msg.senderNick"
-            ></v-list-item-subtitle>
-            <v-list-item-title v-text="msg.message"></v-list-item-title>
-            <v-list-item-subtitle
-              class="text-right"
-              v-text="formateTime(msg.time)"
-            ></v-list-item-subtitle>
-          </v-list-item-content>
-        </v-card>
-      </v-list-item>
-      </v-list>
-      <!-- </v-virtual-scroll> -->
+
+        </v-card-subtitle>
+      <v-card-text
+        style="padding-bottom: 0px; padding-right: 55px"
+        v-text="msg.message"
+      >
+      </v-card-text>
+      <v-card-subtitle
+        style="padding-bottom: 5px; padding-top: 0px;"
+        v-text="formateTime(msg.time)"
+        class="text-right"
+      >
+      </v-card-subtitle>
+        <!-- <v-list-item-content style="margin-left: 10px; margin-right: 10px">
+          <v-list-item-subtitle
+            class="text-left"
+            v-text="msg.senderNick"
+          ></v-list-item-subtitle>
+          <v-list-item-title class="text-left" v-text="msg.message"></v-list-item-title>
+          <v-list-item-subtitle
+            class="text-right"
+            v-text="formateTime(msg.time)"
+          ></v-list-item-subtitle>
+        </v-list-item-content> -->
+      </v-card>
+
     </div>
 
     <v-footer app inset color="#181818">
@@ -59,7 +78,7 @@
 <script lang='ts'>
 import Vue from 'vue'
 import { Messages } from '../../assets/Messages'
-import { LightUser } from '../../assets/User'
+import { LightUser, User } from '../../assets/User'
 
 export default Vue.extend({
   middleware: 'login',
@@ -68,7 +87,8 @@ export default Vue.extend({
     return {
       message: '',
       messagesArray: new Array<Messages>(),
-      usersNick: new Map()
+      usersNick: new Map(),
+      me: new User()
     }
   },
 
@@ -81,10 +101,23 @@ export default Vue.extend({
     formateTime(time: Date): string {
       var newTime: Date = new Date(time)
       return newTime.getHours() + ':' + (newTime.getMinutes() < 10 ? '0' + newTime.getMinutes() : newTime.getMinutes())
+    },
+
+    isYourMsg(msg: Messages): boolean {
+      if (this.me.nickName == msg.senderNick)
+      {
+        return (true)
+      }
+      return (false)
+    },
+
+    redirectToUserProfile(userNick: string) {
+      this.$router.push("/users/" + userNick)
     }
   },
 
-  async mounted() {
+  async created() {
+    this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
     console.log(this.$socket)
     this.$socket.$subscribe('msgToClient', (msg: Messages) => {
@@ -116,11 +149,10 @@ export default Vue.extend({
 
 .bubble {
   background: #ffffff;
-  border-radius: 10px 10px 10px px;
+  border-radius: 8px 8px 8px 8px;
   color: #000; /* bubble text color */
 }
 
-.bubble:before,
 .bubble:after {
   border-radius: 200px / 5px;
   content: '';
@@ -128,16 +160,42 @@ export default Vue.extend({
   position: absolute;
 }
 
-.bubble:after {
+.bubble_white:after {
   border: 8px solid transparent !important;
   border-bottom-color: #ffffff !important; /* arrow color */
-  bottom: 0px !important;
+}
+
+.bubble_blue:after {
+  border: 8px solid transparent !important;
+  border-bottom-color: #1982FC !important; /* arrow color */
+}
+
+.bubble_left {
+  float: left;
+}
+
+.bubble_left:after {
+  border: 8px solid transparent !important;
+  border-bottom-color: #ffffff !important; /* arrow color */
+  bottom: 0px!important;
   left: -7px !important;
+}
+
+.bubble_right {
+  float: right;
+}
+
+.bubble_right:after {
+  right: -8px !important;
+  border: 10px solid transparent !important;
+  border-bottom-color: #1982FC !important; /* arrow color */
+  bottom: 0px !important;
 }
 
 body {
   overscroll-behavior: none;
   overflow-y: hidden;
 }
+
 
 </style>

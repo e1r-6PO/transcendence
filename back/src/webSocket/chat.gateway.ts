@@ -63,6 +63,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         newMsg.time = new Date();
         newMsg.senderId = user_data.id;
         newMsg.senderNick = user_data.nickName;
+        newMsg.picture = user_data.picture;
         
         this.messagesRepository.save(newMsg)
         this.server.emit('msgToClient', newMsg);

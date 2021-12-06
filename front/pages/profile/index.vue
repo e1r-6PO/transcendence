@@ -85,6 +85,7 @@
         rounded
         dense
         counter="20"
+        @keydown.enter="saveChange"
       >
       </v-text-field>
       <v-card class="foreground_element card_profile"
@@ -162,6 +163,7 @@
     >
       Save
     </v-btn>
+
   </div>
 </v-container>
 </template>
@@ -260,6 +262,8 @@ export default class extends Vue {
   }
 
   async saveChange() {
+    if (this.user.nickName == this.nick && this.selectedFile == null)
+      return
     if (this.user.nickName != this.nick) {
       const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
         .catch(function (error) {
