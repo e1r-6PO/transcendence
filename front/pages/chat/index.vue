@@ -23,7 +23,7 @@
           <v-list-item-content style="margin-left: 10px; margin-right: 10px">
             <v-list-item-subtitle
               class="text-left"
-              v-text="formatNick(msg)"
+              v-text="msg.senderNick"
             ></v-list-item-subtitle>
             <v-list-item-title v-text="msg.message"></v-list-item-title>
             <v-list-item-subtitle
@@ -58,15 +58,8 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import { io } from 'socket.io-client'
-import VueSocketIOExt from 'vue-socket.io-extended'
 import { Messages } from '../../assets/Messages'
 import { LightUser } from '../../assets/User'
-
-const socket = io('http://localhost:3000', {
-  withCredentials: true,
-})
-Vue.use(VueSocketIOExt, socket)
 
 export default Vue.extend({
   middleware: 'login',
@@ -93,10 +86,11 @@ export default Vue.extend({
 
   async mounted() {
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
+    console.log(this.$socket)
     this.$socket.$subscribe('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
     })
-  },
+  }
 })
 </script>
 

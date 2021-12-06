@@ -21,10 +21,11 @@ import { Messages } from "src/entity/messages.entity"
         origin: "http://localhost:8000",
         credentials: true
     },
-    middlewares: [ AddUserIdMiddleware ]
+    middlewares: [ AddUserIdMiddleware ],
+    // namespace: '/chat'
 })
 
-export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
     constructor(
         private jwtService : JwtService,
         @InjectRepository(User)
@@ -34,10 +35,9 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       ) {}
 
     count: number = 0;
-    clients = {};
 
     @WebSocketServer() server: Server;
-    private logger: Logger = new Logger('AppGateway');
+    private logger: Logger = new Logger('ChatGateway');
 
     @SubscribeMessage('msgToServer')
     async handleMessage(client: Socket, payload: string): Promise<void>{
@@ -52,7 +52,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             return
         }
         this.count++;
-        console.log('New connection, users count: ' + this.count );
         // parse cookies
         const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
 
@@ -80,7 +79,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     }
 
     async handleConnection(client: Socket, ...args: any[]){
-
+        
         const jwt = client.handshake.headers.cookie
         .split('; ')
         .find((cookie: string) => cookie.startsWith('jwt'))
@@ -90,7 +89,8 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             return
         }
         this.count++;
-        console.log('New connection, users count: ' + this.count );
+        console.log('New connection, users count: ' + this.count + ' Socket id: ' + client.id);
+        console.log('Socket Namespace: ' + client.nsp.name);
         // parse cookies
         const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
 

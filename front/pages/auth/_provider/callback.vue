@@ -22,10 +22,9 @@ import Component from 'vue-class-component'
 
 // import axios from 'Axios'
 
-@Component({
-  layout: 'empty'
-})
-export default class extends Vue {
+export default Vue.extend({
+  layout: 'empty',
+
   async mounted() {
     const { params: { provider } } = this.$route
 
@@ -40,22 +39,25 @@ export default class extends Vue {
     const ret = await this.$axios.$get(url)
 
     this.$router.push(await this.getRedirectUrl())
+  },
+
+  methods: {
+    async getRedirectUrl() {
+
+      const tfa = await this.$axios.$get('api/auth/2fa/is_enabled')
+
+      if (tfa.isTwoFactorAuthenticationEnabled == true)
+        return '/2fa'
+
+      const nick = await this.$axios.$get('api/profile/me/nickname')
+      console.log(this.$socket.client.open())
+      console.log("HELLO")
+      if (nick.nickname == "")
+        return '/profile/set_nickname'
+      return '/home'
+    }
   }
-
-  async getRedirectUrl() {
-
-    const tfa = await this.$axios.$get('api/auth/2fa/is_enabled')
-
-    if (tfa.isTwoFactorAuthenticationEnabled == true)
-      return '/2fa'
-
-    const nick = await this.$axios.$get('api/profile/me/nickname')
-
-    if (nick.nickname == "")
-      return '/profile/set_nickname'
-    return '/home'
-  }
-}
+})
 </script>
 
 <style lang="scss">

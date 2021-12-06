@@ -1,0 +1,40 @@
+<template>
+	<v-container>
+	</v-container>
+</template>
+
+<script lang="ts">
+// import Vue from 'vue'
+// import { io } from 'socket.io-client'
+// import VueSocketIOExt from 'vue-socket.io-extended'
+// // import { Messages } from '../../assets/Messages'
+// // import { LightUser } from '../../assets/User'
+
+// const socket = io('http://localhost:3000/game', {
+//   withCredentials: true,
+// })
+// Vue.use(VueSocketIOExt, socket)
+
+// export default Vue.extend({
+//   middleware: 'login',
+ 
+//   sockets:{
+//     connect(){
+//       console.log('Connected');
+//     },
+//     disconnect(){
+//       this.$socket.$unsubscribe('Disconnected');
+//     }
+//   },
+
+//   async mounted() {
+//     this.$socket.$subscribe('msgToClient', (mssg: string) => {
+//       console.log(mssg)
+//     })
+//   },
+// })
+</script>
+
+<style>
+
+</style>
