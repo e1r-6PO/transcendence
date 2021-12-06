@@ -77,15 +77,8 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import { io } from 'socket.io-client'
-import VueSocketIOExt from 'vue-socket.io-extended'
 import { Messages } from '../../assets/Messages'
 import { LightUser, User } from '../../assets/User'
-
-const socket = io('http://localhost:3000', {
-  withCredentials: true,
-})
-Vue.use(VueSocketIOExt, socket)
 
 export default Vue.extend({
   middleware: 'login',
@@ -139,12 +132,11 @@ export default Vue.extend({
   async created() {
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
-
     this.$socket.$subscribe('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
     })
-  },
+  }
 })
 </script>
 
