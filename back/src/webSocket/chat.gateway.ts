@@ -51,7 +51,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             client.disconnect()
             return
         }
-        this.count++;
         // parse cookies
         const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
 
