@@ -89,7 +89,7 @@ export default Vue.extend({
       messagesArray: new Array<Messages>(),
       usersNick: new Map(),
       me: new User(),
-      nbMsg: 0
+      nbMsg: -1
     }
   },
 
@@ -122,7 +122,8 @@ export default Vue.extend({
   },
 
   updated() {
-    if (this.nbMsg == this.messagesArray.length)
+    console.log("msg :" + this.nbMsg + " array : " + this.messagesArray.length)
+    if (this.nbMsg == this.messagesArray.length || this.nbMsg == -1)
     {
       this.scrollToEnd();
       this.nbMsg = 0;
