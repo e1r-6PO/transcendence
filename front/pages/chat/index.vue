@@ -95,7 +95,8 @@ export default Vue.extend({
       message: '',
       messagesArray: new Array<Messages>(),
       usersNick: new Map(),
-      me: new User()
+      me: new User(),
+      nbMsg: 0
     }
   },
 
@@ -120,6 +121,18 @@ export default Vue.extend({
 
     redirectToUserProfile(userNick: string) {
       this.$router.push("/users/" + userNick)
+    },
+
+    scrollToEnd() {    	
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  },
+
+  updated() {
+    if (this.nbMsg == this.messagesArray.length)
+    {
+      this.scrollToEnd();
+      this.nbMsg = 0;
     }
   },
 
@@ -127,9 +140,9 @@ export default Vue.extend({
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
 
-
     this.$socket.$subscribe('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
+      this.nbMsg = this.messagesArray.length
     })
   },
 })
