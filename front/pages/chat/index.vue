@@ -130,6 +130,7 @@ export default Vue.extend({
   },
 
   async created() {
+    console.log(this.$socket.client.connect())
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
     this.$socket.$subscribe('msgToClient', (msg: Messages) => {

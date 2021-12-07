@@ -22,9 +22,8 @@ import { Messages } from "src/entity/messages.entity"
         credentials: true
     },
     middlewares: [ AddUserIdMiddleware ],
-    // namespace: '/chat'
+    namespace: '/chat'
 })
-
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
     constructor(
         private jwtService : JwtService,

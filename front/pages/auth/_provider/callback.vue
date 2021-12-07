@@ -50,7 +50,6 @@ export default Vue.extend({
         return '/2fa'
 
       const nick = await this.$axios.$get('api/profile/me/nickname')
-      console.log(this.$socket.client.open())
       console.log("HELLO")
       if (nick.nickname == "")
         return '/profile/set_nickname'
