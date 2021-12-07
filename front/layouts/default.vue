@@ -58,6 +58,9 @@
         icon
         href="/api/auth/logout"
         class="logout-btn"
+        :color="exitFocus == true ? '#ffc79c' : 'black'"
+        v-on:mouseover="exitFocus = true"
+        v-on:mouseleave="exitFocus = false"
       >
         <v-icon
           large
@@ -84,6 +87,7 @@ export default Vue.extend({
       search: "",
       drawer: false,
       fixed: false,
+      exitFocus: false,
       items: [
         {
           icon: 'mdi-home',

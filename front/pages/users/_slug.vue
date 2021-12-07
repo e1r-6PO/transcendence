@@ -1,58 +1,128 @@
 <template>
-<v-main>
-  <div justify="center" align="center" style="padding-top: 3%">
-    <v-avatar class="overflow-visible" size="128">
-      <img v-if="user.picture != ''"
-        class="round_card item profile-picture"
-        :src=user.picture
-      />
-      <v-btn v-if="self.id != user.id"
-        color="#8124be"
-        class="friend-button"
-        fab
-        small
-        @click="friend()"
-        style="z-index: 6"
-        absolute
-        bottom
-        right
-      >
-        <v-icon v-if="friendStatus == status.null" color="green">
-          mdi-account-plus
-        </v-icon>
-        <v-icon v-if="friendStatus == status.completed" color="red">
-          mdi-account-minus
-        </v-icon>
-        <v-icon v-if="friendStatus == status.sent" color="yellow">
-          mdi-account-clock
-        </v-icon>
-        <v-icon v-if="friendStatus == status.incomming" color="yellow">
-          mdi-account-arrow-down
-        </v-icon>
-        <v-icon v-if="friendStatus == status.blocked" color="red">
-          mdi-account-cancel
-        </v-icon>
-      </v-btn>
-    </v-avatar>
+  <v-container fluid>
+    <div justify="center" align="center" style="padding-top: 5%">
+      <v-avatar class="overflow-visible" size="128">
+        <img v-if="user.picture != ''"
+          class="round_card item profile-picture"
+          :src=user.picture
+        />
+        <v-btn v-if="self.id != user.id"
+          color="#8124be"
+          class="friend-button"
+          fab
+          small
+          @click="mouseOverFriendOption = !mouseOverFriendOption"
+          style="z-index: 6"
+          absolute
+          bottom
+          right
+        >
+          <v-icon :color="getIconStatus() == 'mdi-account-cancel' ? 'red' : getIconStatus() == 'mdi-account-check' ? 'green' : 'yellow'">            
+            {{ getIconStatus() }}
+          </v-icon>
+          <!-- <v-icon v-if="friendStatus == status.null" color="green">
+            mdi-account-plus
+          </v-icon>
+          <v-icon v-if="friendStatus == status.completed" color="red">
+            mdi-account-minus
+          </v-icon>
+          <v-icon v-if="friendStatus == status.sent" color="yellow">
+            mdi-account-clock
+          </v-icon>
+          <v-icon v-if="friendStatus == status.incomming" color="yellow">
+            mdi-account-arrow-down
+          </v-icon>
+          <v-icon v-if="friendStatus == status.blocked" color="red">
+            mdi-account-cancel
+          </v-icon> -->
+        </v-btn>
+        <div v-if="mouseOverFriendOption == true"
+          @mouseleave="mouseLeaveFriendOption()"
+          style="z-index: 7; position: absolute; right: -56px; top: 108px; flex-direction: column; width: 80px"
+          color="#ffffff"
+          flat
+        >
+          <v-btn v-if="friendStatus == status.null"
+            @click="addFriend()"
+            class="friend-button"
+            color="#8124be"
+            height="40"
+          >
+            <v-icon color="green">
+              mdi-account-plus
+            </v-icon>
+          </v-btn>
+          <v-btn v-if="friendStatus == status.completed"
+            @click="deleteFriend()"
+            color="#8124be"
+            class="friend-button"
+            height="40"
+          >
+            <v-icon color="red">
+              mdi-account-minus
+            </v-icon>
+          </v-btn>
+          <v-btn v-if="friendStatus == status.incomming"
+            color="#8124be"
+            class="friend-button"
+            @click="acceptFriendRequest()"
+            height="40"
+          >
+            <v-icon color="green">
+              mdi-account-check
+            </v-icon>
+          </v-btn>
+          <v-btn v-if="friendStatus == status.incomming || friendStatus == status.sent"
+            color="#8124be"
+            class="friend-button"
+            @click="denyFriendRequest()"
+            height="40"
+          >
+            <v-icon color="red">
+                mdi-account-remove
+            </v-icon>
+          </v-btn>
+          <v-btn v-if="friendStatus != status.blocked"
+            color="#8124be"
+            @click="blockUser()"
+            class="friend-button"
+            height="40"
+          >
+            <v-icon color="black">
+              mdi-account-cancel
+            </v-icon>
+          </v-btn>
+          <v-btn v-if="friendStatus == status.blocked"
+            @click="unblockUser()"
+            class="friend-button"
+            color="#8124be"
+            height="40"
+          >
+            <v-icon color="green">
+              mdi-lock-open-variant
+            </v-icon>
+          </v-btn>
+        </div>
+      </v-avatar>
+      </div>
+      <div class="flex-container-editing" style="padding-top: 80px">
+        <v-card class="foreground_element card_profile">
+          <v-card-text align="center">
+            <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
+          </v-card-text>
+        </v-card>
+      </div>
+      <div class="flex-container">
+        <v-card class="foreground_element card_game flex-item" margin-top="5%">
+          <h1 class="color_win" align="center">Win</h1>
+          <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
+        </v-card>
+        <v-card class="foreground_element card_game flex-item" margin-top="5%">
+          <h1 class="color_lose" align="center">Lose</h1>
+          <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
+        </v-card>
     </div>
-    <div class="flex-container-editing" style="padding-top: 3%">
-      <v-card class="foreground_element card_profile">
-        <v-card-text align="center">
-          <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
-        </v-card-text>
-      </v-card>
-    </div>
-    <div class="flex-container">
-      <v-card class="foreground_element card_game flex-item" margin-top="5%">
-        <h1 class="color_win" align="center">Win</h1>
-        <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
-      </v-card>
-      <v-card class="foreground_element card_game flex-item" margin-top="5%">
-        <h1 class="color_lose" align="center">Lose</h1>
-        <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
-      </v-card>
-  </div>
-</v-main>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -78,6 +148,8 @@ export default class extends Vue {
   user : LightUser = new LightUser
   friendStatus : string = All_Friend_Status.null
   self : User = new User
+  mouseOverButton = false
+  mouseOverFriendOption = false
 
   async mounted() {
     const { params: { slug } } = this.$route
@@ -101,8 +173,64 @@ export default class extends Vue {
     this.friendStatus = (await this.$axios.$get('/api/friends/' + this.user.id)).status
   }
 
+  async addFriend() {
+    await this.$axios.$post('/api/friends/' + this.user.id)
+    this.friendStatus = this.status.sent
+    this.mouseOverFriendOption = false
+  }
+
+  async deleteFriend() {
+    await this.$axios.$delete('/api/friends/' + this.user.id)
+    this.friendStatus = this.status.null
+      this.mouseOverFriendOption = false
+  }
+
+  async acceptFriendRequest() {
+    await this.$axios.$patch('/api/friends/' + this.user.id + '/accept')
+    this.friendStatus = this.status.completed
+    this.mouseOverFriendOption = false
+  }
+
+  async denyFriendRequest() {
+    await this.$axios.$delete('/api/friends/' + this.user.id)
+    this.friendStatus = this.status.null
+    this.mouseOverFriendOption = false
+  }
+
+  async blockUser() {
+    await this.$axios.$post('/api/friends/' + this.user.id + '/block')
+    this.friendStatus = this.status.blocked
+    this.mouseOverFriendOption = false
+  }
+
+  async unblockUser() {
+    await this.$axios.$post('/api/friends/' + this.user.id + '/unblock')
+    this.friendStatus = this.status.null
+    this.mouseOverFriendOption = false
+  }
+
   $refs!: {
     uploader: HTMLFormElement
+  }
+
+
+  async mouseLeaveFriendOption() {
+      this.mouseOverFriendOption = false
+  }
+
+    async mouseLeaveButton() {
+    await new Promise(d => setTimeout(d, 300));
+      this.mouseOverButton = false
+  }
+
+  getIconStatus(): string {
+    if (this.friendStatus == this.status.blocked)
+      return 'mdi-account-cancel'
+    if (this.friendStatus == this.status.completed)
+      return 'mdi-account-check'
+    if (this.friendStatus == this.status.sent)
+      return 'mdi-account-clock'
+    return 'mdi-account-question'
   }
 
 }
@@ -114,7 +242,7 @@ export default class extends Vue {
 .friend-button {
   /* border: 3px solid #e9c8ff !important;
   box-shadow: 0px 0px 10px 0px #9141c7 !important; */
-  border: 3px solid #e9c8ff !important;
+  border: 3px solid #d5a5f5 !important;
   box-shadow: 0px 0px 15px 3px #9141c7 !important;
 }
 
