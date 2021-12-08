@@ -79,11 +79,12 @@
 import Vue from 'vue'
 import { Messages } from '../../assets/Messages'
 import { LightUser, User } from '../../assets/User'
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
+
+const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
 
 export default Vue.extend({
   middleware: 'login',
-  layout: 'channel',
 
   data() {
     return {
@@ -132,10 +133,12 @@ export default Vue.extend({
   },
 
   async created() {
-    this.$socket.client.connect()
+    //connect the socket
+    // this.$socket.client.connect()
+    console.log(socket_chat.connect());
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
-    this.$socket.$subscribe('msgToClient', (msg: Messages) => {
+    socket_chat.on('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
     })

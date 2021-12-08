@@ -22,7 +22,7 @@ import { Messages } from "src/entity/messages.entity"
         credentials: true
     },
     middlewares: [ AddUserIdMiddleware ],
-    namespace: '/'
+    namespace: '/chat'
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
     constructor(

@@ -67,7 +67,6 @@
 import Vue from 'vue'
 import { Messages } from '../../assets/Messages'
 import { LightUser, User } from '../../assets/User'
-import { io } from "socket.io-client";
 
 export default Vue.extend({
   middleware: 'login',
@@ -86,9 +85,7 @@ export default Vue.extend({
   },
 
   methods: {
-    
-    createChannel()
-    {
+    createChannel() {
       console.log("Chan name: " + this.channName)
       console.log("Chan type: " + this.channType)
       this.dialog = false
@@ -96,14 +93,12 @@ export default Vue.extend({
     },
 
     disableCreate() {
-      if (this.channName == '' || this.channName.lenght > 20)
+      if (this.channName == '' || this.channName.length > 20)
         return true
       if (this.channType == '')
         return true
       return false
     }
   }
-
-
 })
 </script>

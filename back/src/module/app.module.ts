@@ -8,12 +8,14 @@ import { ProfileModule } from './profile.module';
 import { CustomJwtModule } from './custom.jwt.module';
 import { MessagesModule } from './messages.module';
 import { UsersModule } from './users.module';
-import { ChatGateway } from 'src/webSocket/chat.gateway';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { Messages } from 'src/entity/messages.entity';
 import { Channel } from 'src/entity/channel.entity';
 import { FriendsModule } from './friends.module';
+
+//Gateway
+import { ChatGateway } from 'src/webSocket/chat.gateway';
 import { GameGateway } from 'src/webSocket/game.gateway';
 
 @Module({
