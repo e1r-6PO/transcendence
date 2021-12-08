@@ -1,216 +1,109 @@
 <template>
-  <v-container
-    align-items="center"
-    style="margin-top: 3%;"
-    class="body overflow-y-hidden"
-  >
-    <div v-for="(msg, i) in messagesArray"
-      class="overflow-y-auto"
-      :key="i"
-      style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
+<v-container>
+  <div style="padding-top: 50px" align="center">
+    <v-dialog
+      v-model="dialog"
+      max-width="600px"
     >
-      <v-img
-        :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
-        style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
-        width="30"
-        :src="msg.picture"
-        @click="redirectToUserProfile(msg.senderNick)"
-      >
-      </v-img>
-      <v-card
-        class="bubble"
-        :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
-        :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
-        style="min-width: 70px; max-width: 400px !important;"
-      >
-        <v-card-subtitle
-          style="padding-bottom: 0px"
-          v-text="msg.senderNick"
-          class="text-left"
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color="primary"
+          dark
+          v-bind="attrs"
+          v-on="on"
         >
-
-        </v-card-subtitle>
-      <v-card-text
-        style="padding-bottom: 0px; padding-right: 55px"
-        v-text="msg.message"
-      >
-      </v-card-text>
-      <v-card-subtitle
-        style="padding-bottom: 5px; padding-top: 0px;"
-        v-text="formateTime(msg.time)"
-        class="text-right"
-      >
-      </v-card-subtitle>
-        <!-- <v-list-item-content style="margin-left: 10px; margin-right: 10px">
-          <v-list-item-subtitle
-            class="text-left"
-            v-text="msg.senderNick"
-          ></v-list-item-subtitle>
-          <v-list-item-title class="text-left" v-text="msg.message"></v-list-item-title>
-          <v-list-item-subtitle
-            class="text-right"
-            v-text="formateTime(msg.time)"
-          ></v-list-item-subtitle>
-        </v-list-item-content> -->
+          Create channel
+        </v-btn>
+      </template>
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">Channel settings</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-text-field
+              label="Channel name"
+              v-model="channName"
+            ></v-text-field>
+          <!-- <v-col cols="12">
+            <v-text-field
+              label="Password*"
+              type="password"
+              required
+            ></v-text-field>
+          </v-col> -->
+            <v-select
+              :items="typeList"
+              label="Channel type"
+              v-model="channType"
+            ></v-select>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="dialog = false"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="createChannel()"
+            :disabled="disableCreate()"
+          >
+            Create
+          </v-btn>
+        </v-card-actions>
       </v-card>
-
-    </div>
-
-    <v-footer app inset color="#181818">
-      <v-text-field
-        style="margin-top: 3%"
-        background-color="white"
-        color="blue"
-        v-model="message"
-        filled
-        clear-icon="mdi-close-circle"
-        clearable
-        label="Message"
-        elevation="2"
-        @keypress.enter="sendMessage"
-      >
-        <v-icon slot="append-outer" color="blue"> mdi-send </v-icon>
-      </v-text-field>
-    </v-footer>
-  </v-container>
+    </v-dialog>
+  </div>
+</v-container>
 </template>
 
-<script lang='ts'>
+<script>
 import Vue from 'vue'
 import { Messages } from '../../assets/Messages'
 import { LightUser, User } from '../../assets/User'
+import { io } from "socket.io-client";
 
 export default Vue.extend({
   middleware: 'login',
 
   data() {
     return {
-      message: '',
-      messagesArray: new Array<Messages>(),
-      usersNick: new Map(),
-      me: new User(),
-      nbMsg: -1
+      dialog: false,
+      channName: '',
+      channType: '',
+      typeList: [
+        'Public',
+        'Private',
+        'Protected'
+      ]
     }
   },
 
   methods: {
-    sendMessage(): void {
-      this.$socket.client.emit('msgToServer', this.message)
-      this.message = ''
-    },
-
-    formateTime(time: Date): string {
-      var newTime: Date = new Date(time)
-      return newTime.getHours() + ':' + (newTime.getMinutes() < 10 ? '0' + newTime.getMinutes() : newTime.getMinutes())
-    },
-
-    isYourMsg(msg: Messages): boolean {
-      if (this.me.nickName == msg.senderNick)
-      {
-        return (true)
-      }
-      return (false)
-    },
-
-    redirectToUserProfile(userNick: string) {
-      this.$router.push("/users/" + userNick)
-    },
-
-    scrollToEnd() {    	
-      window.scrollTo(0, document.body.scrollHeight);
-    }
-  },
-
-  updated() {
-    console.log("msg :" + this.nbMsg + " array : " + this.messagesArray.length)
-    if (this.nbMsg == this.messagesArray.length || this.nbMsg == -1)
+    
+    createChannel()
     {
-      this.scrollToEnd();
-      this.nbMsg = 0;
-    }
-  },
+      console.log("Chan name: " + this.channName)
+      console.log("Chan type: " + this.channType)
+      this.dialog = false
+      this.$router.push("/chat/" + this.channName)
+    },
 
-  async created() {
-    console.log(this.$socket.client.connect())
-    this.me = await this.$axios.$get('/api/profile/me')
-    this.messagesArray = await this.$axios.$get('/api/chat/messages')
-    this.$socket.$subscribe('msgToClient', (msg: Messages) => {
-      this.messagesArray.push(msg)
-      this.nbMsg = this.messagesArray.length
-    })
+    disableCreate() {
+      if (this.channName == '' || this.channName.lenght > 20)
+        return true
+      if (this.channType == '')
+        return true
+      return false
+    }
   }
+
+
 })
 </script>
-
-<style scoped>
-.flex-container {
-  /* We first create a flex layout context */
-  display: flex;
-
-  /* Then we define the flow direction 
-     and if we allow the items to wrap 
-   * Remember this is the same as:
-   * flex-direction: row;
-   * flex-wrap: wrap;
-   */
-  flex-flow: column wrap;
-
-  /* Then we define how is distributed the remaining space */
-  justify-content: center;
-  align-content: center;
-  list-style: none;
-  row-gap: 50px;
-}
-
-.bubble {
-  background: #ffffff;
-  border-radius: 8px 8px 8px 8px;
-  color: #000; /* bubble text color */
-}
-
-.bubble:after {
-  border-radius: 200px / 5px;
-  content: '';
-  display: block;
-  position: absolute;
-}
-
-.bubble_white:after {
-  border: 8px solid transparent !important;
-  border-bottom-color: #ffffff !important; /* arrow color */
-}
-
-.bubble_blue:after {
-  border: 8px solid transparent !important;
-  border-bottom-color: #1982FC !important; /* arrow color */
-}
-
-.bubble_left {
-  float: left;
-}
-
-.bubble_left:after {
-  border: 8px solid transparent !important;
-  border-bottom-color: #ffffff !important; /* arrow color */
-  bottom: 0px!important;
-  left: -7px !important;
-}
-
-.bubble_right {
-  float: right;
-}
-
-.bubble_right:after {
-  right: -8px !important;
-  border: 10px solid transparent !important;
-  border-bottom-color: #1982FC !important; /* arrow color */
-  bottom: 0px !important;
-}
-
-body {
-  overscroll-behavior: none;
-  overflow-y: hidden;
-}
-
-
-</style>
