@@ -6,11 +6,11 @@ import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.gu
 import { UsersService } from 'src/service/users.service';
 import { Repository } from 'typeorm';
 import { Messages } from 'src/entity/messages.entity'
-import { MessagesService } from 'src/service/chat.service';
+import { MessagesService } from 'src/service/messages.service';
 
 @Controller('api/chat')
 @UseGuards(ValidTokenGuard, TwoFaGuard)
-export class ChatController {
+export class MessagesController {
   constructor(
     private readonly messagesService: MessagesService,
     @InjectRepository(Messages)

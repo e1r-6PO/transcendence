@@ -26,7 +26,7 @@ import { Messages } from "src/entity/messages.entity"
     namespace: '/game'
 })
 
-export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
+export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
     
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
