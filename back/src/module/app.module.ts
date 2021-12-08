@@ -7,17 +7,20 @@ import { DbConnectModule } from './db.connect.module';
 import { ProfileModule } from './profile.module';
 import { CustomJwtModule } from './custom.jwt.module';
 import { UsersModule } from './users.module';
-import { ChatGateway } from 'src/webSocket/chat.gateway';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { Messages } from 'src/entity/messages.entity';
-import { ChatModule } from './chat.module';
 import { FriendsModule } from './friends.module';
+
+//Gateway
+import { ChatGateway } from 'src/webSocket/chat.gateway';
+import { GameGateway } from 'src/webSocket/game.gateway';
+import { ChatModule } from './chat.module';
 
 @Module({
   imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, ChatModule,
     TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Messages]), FriendsModule],
   controllers: [ AppController ],
-  providers: [ AppService, ChatGateway ],
+  providers: [ AppService, ChatGateway, GameGateway ],
 })
 export class AppModule {}
