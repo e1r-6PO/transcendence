@@ -4,7 +4,7 @@
     style="margin-top: 3%;"
     class="body overflow-y-hidden"
   >
-    <v-card
+    <!-- <v-card
       flat
       color="#181818"
       height="50"
@@ -14,7 +14,7 @@
       <v-card-title class="justify-center" style="color: red">
         channel title
       </v-card-title>
-    </v-card>
+    </v-card> -->
     <div v-for="(msg, i) in messagesArray"
       max-height="400"
       class="overflow-y-auto"
@@ -98,7 +98,7 @@ export default Vue.extend({
 
   methods: {
     sendMessage(): void {
-      this.$socket.client.emit('msgToServer', this.message)
+      socket_chat.emit('msgToServer', this.message)
       this.message = ''
     },
 
