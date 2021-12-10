@@ -1,11 +1,12 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm"
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm"
+import { Channel } from "./channel.entity";
 import { User } from "./user.entity";
 
 @Entity()
 export class Messages {
     constructor()
     {
-        this.senderId = 0;
+        this.sender = null;
         this.message = "";
         this.senderNick = "";
         this.time = new Date();
@@ -17,25 +18,22 @@ export class Messages {
 
     @ManyToOne(() => User, {
         eager: true,
+        onDelete: "CASCADE"
       })
-    senderId: number;
+    sender: User;
 
     @Column()
     senderNick: string;
 
-    @Column({
-        // type: 'varchar',
-        // length: 255,
-        // nullable: false,
-    })
+    @Column({})
     message: string;
 
-    @Column({
-        // type: 'timestamp',
-        // default: () => 'CURRENT_TIMESTAMP'
-    })
+    @Column({})
     time: Date;
     
     @Column()
     picture: string;
+
+    @ManyToOne(() => Channel, { onDelete: "CASCADE"})
+    channel: Channel;
 }
