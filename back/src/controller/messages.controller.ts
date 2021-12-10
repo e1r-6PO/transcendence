@@ -1,9 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile, UseGuards, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Request, Response } from 'express'
-import { Relationship } from 'src/entity/relationship.entity';
+import { query, Request, Response } from 'express'
 import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.guards';
-import { UsersService } from 'src/service/users.service';
 import { Repository } from 'typeorm';
 import { Messages } from 'src/entity/messages.entity'
 import { MessagesService } from 'src/service/messages.service';
@@ -14,7 +12,7 @@ export class MessagesController {
   constructor(
     private readonly messagesService: MessagesService,
     @InjectRepository(Messages)
-    private readonly MessagesRepository : Repository<Messages>
+    private readonly MessagesRepository : Repository<Messages>,
   ) {}
 
   @Get('messages')
