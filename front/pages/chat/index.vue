@@ -139,6 +139,9 @@ export default Vue.extend({
     console.log(socket_chat.connect());
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
+    socket_chat.on('connect', () =>{
+      console.log('Connected')
+    })
     socket_chat.on('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
