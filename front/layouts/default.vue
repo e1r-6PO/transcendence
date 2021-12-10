@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app style="z-index: 10">
     <v-navigation-drawer
       v-model="drawer"
       fixed
@@ -31,6 +31,7 @@
       app
       color="#0f0f0f"
       class="top_bar_style"
+      style="z-index: 10"
     >
       <v-app-bar-nav-icon class="open-menu" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="title neonText" v-text="title" />
@@ -39,7 +40,8 @@
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
             <v-text-field
-              class="foreground_element text-field_search custom-placeholder-color custom-input-color neonText"
+              style="z-index: 10"
+              class="text-field_search custom-placeholder-color custom-input-color neonText"
               placeholder="Search"
               color="#e6ffff"
               v-model="search"
