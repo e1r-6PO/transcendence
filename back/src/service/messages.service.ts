@@ -18,7 +18,7 @@ export class MessagesService {
 
     for (var i = 0; i < messagesArray.length; i++)
     {
-        messagesArray[i].senderNick = messagesArray[i].senderId['nickName']
+        messagesArray[i].senderNick = messagesArray[i].sender.nickName
     }
     return (messagesArray)
   }
