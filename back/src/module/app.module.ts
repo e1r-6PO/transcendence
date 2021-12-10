@@ -17,10 +17,12 @@ import { FriendsModule } from './friends.module';
 //Gateway
 import { ChatGateway } from 'src/webSocket/chat.gateway';
 import { GameGateway } from 'src/webSocket/game.gateway';
+import { ChannelParticipant } from 'src/entity/channelParticipant.entity';
+import { ChannelModule } from './channel.module';
 
 @Module({
-  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, MessagesModule,
-    TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Messages]), TypeOrmModule.forFeature([Channel]), FriendsModule],
+  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, MessagesModule, ChannelModule,
+    TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Channel, ChannelParticipant, Messages]), FriendsModule],
   controllers: [ AppController ],
   providers: [ AppService, ChatGateway, GameGateway ],
 })
