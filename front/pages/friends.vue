@@ -1,23 +1,36 @@
 <template>
-<v-container>
+<v-container style="padding-top: 50px">
+  <v-row align="center" justify="space-around">
+    <p v-for="i in 4" :key="i">
+      <v-btn width="200" @click="filterByStatus(displayFriend[i - 1])">
+        {{ displayFriend[i - 1] }}
+      </v-btn>
+    </p>
+  </v-row>
+  <div align="center" style="padding-top: 30px">
   <v-text-field
-  class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
-  placeholder="Nickname"
-  color="#e6ffff"
-  v-model="search_string"
-  @input="filter"
-  hide-details
-  filled
-  rounded
-  dense
-  counter="20"
-  ref="nickname_field"
+    class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
+    placeholder="Nickname"
+    color="#e6ffff"
+    v-model="search_string"
+    @input="filter"
+    hide-details
+    filled
+    rounded
+    dense
+    counter="20"
+    width=50
+    ref="nickname_field"
   >
   </v-text-field>
-  <div v-if="relationships != []" >
+  </div>
+  <div v-if="filterRelationships != []" style="padding-top: 50px; padding-left: 30px">
     <v-row>
-      <v-col justify="center" align="center">
-        <v-card class="foreground_element card_profile" v-for="relationship in relationships" :key="relationship.id">
+      <v-col justify="center" align="left">
+        <v-card v-for="relationship in filterRelationships" :key="relationship.id"
+          class="foreground_element card_profile"
+          @click="goToProfile(relationship)"
+        >
           <p class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</p>
           <v-btn
             color="#8124be"
@@ -73,21 +86,60 @@ export default Vue.extend({
     return {
       search_string: "",
       status: All_Friend_Status,
-      relationships: [{
+      fullRelationships: [{
         id: 0,
         peer: LightUser,
         status: ''
-      }]
+      }],
+      filterRelationships: [{
+        id: 0,
+        peer: LightUser,
+        status: ''
+      }],
+      selectedStatus: '',
+      displayFriend: ['Online', 'All', 'En attente', 'Blocked']
     }
   },
 
   async mounted() {
-    this.relationships = await this.$axios.$get('/api/profile/me/friends')
+    this.fullRelationships = await this.$axios.$get('/api/profile/me/friends')
+    this.filterByStatus('All')
+    this.selectedStatus = 'All'
   },
 
   methods: {
     filter() {
-      console.log(this.search_string)
+        this.filterByStatus(this.selectedStatus)
+      if (this.search_string != '')
+      {
+        for (var i = 0; i < this.filterRelationships.length; i++)
+          {
+            if (this.filterRelationships[i].peer.nickName.search(this.search_string) == -1)
+              this.filterRelationships.pop(this.filterRelationships[i])
+          }
+      }
+    },
+
+    filterByStatus(status: string)
+    {
+      this.selectedStatus = status
+      this.filterRelationships = []
+      for (var i = 0; i < this.fullRelationships.length; i++)
+      {
+        if (status == 'All' && this.fullRelationships[i].status == 'completed')
+          this.filterRelationships.push(this.fullRelationships[i]);
+        else if (status == 'En attente' && (this.fullRelationships[i].status == 'send' || this.fullRelationships[i].status == 'incomming'))
+          this.filterRelationships.push(this.fullRelationships[i]);
+        else if (status == 'Online' && this.fullRelationships[i].status == 'completed' /* && this.fullRelationshops[i].peer.online */)
+          this.filterRelationships.push(this.fullRelationships[i]);
+        else if (status == 'Blocked' && this.fullRelationships[i].status == 'blocked')
+          this.filterRelationships.push(this.fullRelationships[i]);
+      }
+    },
+
+    goToProfile(relationship: any)
+    {
+      this.$router.push('/users/' + relationship.peer.nickName)
     },
 
     async edit_friend(relationship: any) {
@@ -114,7 +166,7 @@ export default Vue.extend({
   /* background-color: #35b4b2 !important; */
   /* box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important;  */
   height: 50px;
-  width: 80%;
+  width: 20%;
 }
 
 .color_text { 
