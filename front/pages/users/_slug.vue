@@ -17,24 +17,9 @@
           bottom
           right
         >
-          <v-icon :color="getIconStatus() == 'mdi-account-cancel' ? 'red' : getIconStatus() == 'mdi-account-check' ? 'green' : 'yellow'">            
+          <v-icon :color="getIconStatus() == 'mdi-account-cancel' ? 'black' : getIconStatus() == 'mdi-account-check' ? 'green' : 'yellow'">            
             {{ getIconStatus() }}
           </v-icon>
-          <!-- <v-icon v-if="friendStatus == status.null" color="green">
-            mdi-account-plus
-          </v-icon>
-          <v-icon v-if="friendStatus == status.completed" color="red">
-            mdi-account-minus
-          </v-icon>
-          <v-icon v-if="friendStatus == status.sent" color="yellow">
-            mdi-account-clock
-          </v-icon>
-          <v-icon v-if="friendStatus == status.incomming" color="yellow">
-            mdi-account-arrow-down
-          </v-icon>
-          <v-icon v-if="friendStatus == status.blocked" color="red">
-            mdi-account-cancel
-          </v-icon> -->
         </v-btn>
         <div v-if="mouseOverFriendOption == true"
           @mouseleave="mouseLeaveFriendOption()"
@@ -42,24 +27,14 @@
           color="#ffffff"
           flat
         >
-          <v-btn v-if="friendStatus == status.null"
-            @click="addFriend()"
+          <v-btn v-if="friendStatus == status.null || friendStatus == status.completed"
+            @click="friendStatus == status.null ? addFriend() : deleteFriend()"
             class="friend-button"
             color="#8124be"
             height="40"
           >
-            <v-icon color="green">
-              mdi-account-plus
-            </v-icon>
-          </v-btn>
-          <v-btn v-if="friendStatus == status.completed"
-            @click="deleteFriend()"
-            color="#8124be"
-            class="friend-button"
-            height="40"
-          >
-            <v-icon color="red">
-              mdi-account-minus
+            <v-icon :color="friendStatus == status.null ? 'green' : 'red'">
+              {{ friendStatus == status.null ? 'mdi-account-plus' : 'mdi-account-minus'}}
             </v-icon>
           </v-btn>
           <v-btn v-if="friendStatus == status.incomming"
@@ -82,24 +57,14 @@
                 mdi-account-remove
             </v-icon>
           </v-btn>
-          <v-btn v-if="friendStatus != status.blocked"
+          <v-btn
             color="#8124be"
-            @click="blockUser()"
+            @click="friendStatus != status.blocked ? blockUser() : unblockUser()"
             class="friend-button"
             height="40"
           >
-            <v-icon color="black">
-              mdi-account-cancel
-            </v-icon>
-          </v-btn>
-          <v-btn v-if="friendStatus == status.blocked"
-            @click="unblockUser()"
-            class="friend-button"
-            color="#8124be"
-            height="40"
-          >
-            <v-icon color="green">
-              mdi-lock-open-variant
+            <v-icon :color="friendStatus != status.blocked ? 'black' : 'green'">
+              {{ friendStatus != status.blocked ? 'mdi-account-cancel' : 'mdi-lock-open-variant' }}
             </v-icon>
           </v-btn>
         </div>
@@ -157,6 +122,7 @@ export default class extends Vue {
     this.self = await this.$axios.$get('/api/profile/me')
     this.user = await this.$axios.$get('/api/users/' + slug)
     this.friendStatus = (await this.$axios.$get('/api/friends/' + this.user.id)).status
+    console.log(this.friendStatus)
   }
 
   async friend() {
