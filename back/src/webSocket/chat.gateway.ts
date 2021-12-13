@@ -68,7 +68,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     afterInit(server: Server){
-        this.logger.log('Init');
+        this.logger.log('Initialized ChatGateway');
     }
 
     async handleDisconnect(client: Socket){
@@ -98,5 +98,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         })
         
         console.log(user_data)
+        client.join('Channel-1')
+        console.log(client.rooms)
+        // this.server.emit('ConnectedToRoom', "You are in room " + client.adapter.)
     }
 }
