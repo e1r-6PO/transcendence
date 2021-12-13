@@ -24,14 +24,22 @@
   >
   </v-text-field>
   </div>
-  <div v-if="filterRelationships != []" style="padding-top: 50px; padding-left: 30px">
-    <v-row>
+  <!-- <div v-if="filterRelationships != []" style="padding-top: 50px; padding-left: 30px"> -->
+    <v-row v-if="filterRelationships != []" justify="space-around" style="padding-top: 20px">
       <v-col justify="center" align="left">
-        <v-card v-for="relationship in filterRelationships" :key="relationship.id"
+      <div v-for="relationship in filterRelationships" :key="relationship.id" style="padding-top:30px">
+        <!-- <v-card v-for="relationship in filterRelationships" :key="relationship.id" -->
+        <!-- <div style="padding-top: 15px"> -->
+        <v-card
           class="foreground_element card_profile"
-          @click="goToProfile(relationship)"
+          align="left"
+          justify="center"
         >
-          <p class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</p>
+        <v-row align="center" justify="start" style="padding-left: 20px; padding-top: 7px">
+            <v-avatar size="40" @click="goToProfile(relationship)">
+          <v-img style="border-radius: 15px" :src="relationship.peer.picture" />
+            </v-avatar>
+          <v-card-title @click="goToProfile(relationship)" class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</v-card-title>
           <v-btn
             color="#8124be"
             class="friend-button"
@@ -42,7 +50,10 @@
             bottom
             right
           >
-            <v-icon v-if="relationship.status == status.null" color="green">
+            <v-icon>
+              {{ getStatusIcon(relationship) }}
+            </v-icon>
+            <!-- <v-icon v-if="relationship.status == status.null" color="green">
               mdi-account-plus
             </v-icon>
             <v-icon v-if="relationship.status == status.completed" color="red">
@@ -56,12 +67,14 @@
             </v-icon>
             <v-icon v-if="relationship.status == status.blocked" color="red">
               mdi-account-cancel
-            </v-icon>
+            </v-icon> -->
           </v-btn>
+        </v-row>
         </v-card>
+        </div>
       </v-col>
     </v-row>
-  </div>
+  <!-- </div> -->
 </v-container>
 </template>
 
@@ -128,7 +141,7 @@ export default Vue.extend({
       {
         if (status == 'All' && this.fullRelationships[i].status == 'completed')
           this.filterRelationships.push(this.fullRelationships[i]);
-        else if (status == 'En attente' && (this.fullRelationships[i].status == 'send' || this.fullRelationships[i].status == 'incomming'))
+        else if (status == 'En attente' && (this.fullRelationships[i].status == 'sent' || this.fullRelationships[i].status == 'incomming'))
           this.filterRelationships.push(this.fullRelationships[i]);
         else if (status == 'Online' && this.fullRelationships[i].status == 'completed' /* && this.fullRelationshops[i].peer.online */)
           this.filterRelationships.push(this.fullRelationships[i]);
@@ -142,11 +155,37 @@ export default Vue.extend({
       this.$router.push('/users/' + relationship.peer.nickName)
     },
 
+    getStatusIcon(relationship : any) : string
+    {
+        if (relationship.status == this.status.completed)
+          return ('mdi-account-minus')
+        else if (relationship.status == this.status.blocked)
+          return ('mdi-lock-open-variant')
+        else if (relationship.status == this.status.sent)
+          return ('mdi-account-remove')
+        else if (relationship.status == this.status.incomming)
+          return ('mdi-account-plus')
+        else
+          return ('mdi-account-minus')
+    },
+
     async edit_friend(relationship: any) {
-      await this.$axios.$post('/api/users/friend?id=' + relationship.peer.id)
-      const friend_status = (await this.$axios.$get('/api/users/friend?id=' + relationship.peer.id)).status
-      if (friend_status == "null")
-        this.relationships.splice(this.relationships.findIndex( ({id}) => id === relationship.id ), 1)
+      if (relationship.status == this.status.completed)
+        await this.$axios.$delete('/api/friends/' + relationship.peer.id)
+      else if (relationship.status == this.status.incomming)
+        await this.$axios.$patch('/api/friends/' + relationship.peer.id + '/accept')
+      else if (relationship.status == this.status.blocked)
+        await this.$axios.$post('/api/friends/' + relationship.peer.id + '/unblock')
+      else if (relationship.status == this.status.sent)
+        await this.$axios.$delete('/api/friends/' + relationship.peer.id)
+      
+      this.fullRelationships = await this.$axios.$get('/api/profile/me/friends')
+        this.filterByStatus(this.selectedStatus)
+      
+      // // await this.$axios.$post('/api/users/friend?id=' + relationship.peer.id)
+      // const friend_status = (await this.$axios.$get('/api/users/friend?id=' + relationship.peer.id)).status
+      // if (friend_status == "null")
+      //   this.relationships.splice(this.relationships.findIndex( ({id}) => id === relationship.id ), 1)
     }
   }
 
@@ -165,8 +204,8 @@ export default Vue.extend({
   background-color: #181818 !important;
   /* background-color: #35b4b2 !important; */
   /* box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important;  */
-  height: 50px;
-  width: 20%;
+  height: 60px;
+  width: 100%;
 }
 
 .color_text { 
