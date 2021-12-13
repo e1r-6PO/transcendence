@@ -39,7 +39,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     private logger: Logger = new Logger('ChatGateway');
 
     @SubscribeMessage('msgToServer')
-    async handleMessage(client: Socket, payload: string): Promise<void>{
+    async handleMessage(client: Socket, message: string): Promise<void>{
         var newMsg: Messages = new Messages;
         
         const jwt = client.handshake.headers.cookie
@@ -57,13 +57,20 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             where: {id: jwt_decoded['id']}
         })
         
-        newMsg.message = payload;
+        newMsg.message = message;
         newMsg.time = new Date();
         newMsg.senderNick = newMsg.sender.nickName;
         newMsg.picture = newMsg.sender.picture;
 
         this.messagesRepository.save(newMsg)
         this.server.emit('msgToClient', newMsg);
+    }
+
+    @SubscribeMessage('joinChannel')
+    async joinChannel(client: Socket, channName: string): Promise<void>{
+        client.join(channName)
+        console.log(client.rooms)
+        // this.server.emit('ConnectedToChannel', "You are in room " + client.adapter)
     }
 
     afterInit(server: Server){
@@ -97,8 +104,5 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         })
         
         console.log(user_data)
-        client.join('Channel-1')
-        console.log(client.rooms)
-        // this.server.emit('ConnectedToRoom', "You are in room " + client.adapter.)
     }
 }

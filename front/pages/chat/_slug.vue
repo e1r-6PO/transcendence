@@ -137,6 +137,8 @@ export default Vue.extend({
     //connect the socket
     // this.$socket.client.connect()
     console.log(socket_chat.connect());
+    console.log(this.$route.params.slug)
+    socket_chat.emit('joinChannel', this.$route.params.slug);
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
     socket_chat.on('connect', () =>{
