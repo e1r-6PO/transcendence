@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { channel, Channel } from 'diagnostics_channel';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany } from 'typeorm';
+import { ChannelParticipant } from './channelParticipant.entity';
 
 @Entity()
 export class User {
@@ -36,4 +38,7 @@ export class User {
 
   @Column()
   gameLose: number;
+
+  @OneToMany(() => ChannelParticipant, channelParticipant => channelParticipant.user, { cascade: true })
+  channelParticipant: ChannelParticipant[];
 }

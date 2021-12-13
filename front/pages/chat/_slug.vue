@@ -4,7 +4,7 @@
     style="margin-top: 3%;"
     class="body overflow-y-hidden"
   >
-    <v-card
+    <!-- <v-card
       flat
       color="#181818"
       height="50"
@@ -14,7 +14,7 @@
       <v-card-title class="justify-center" style="color: red">
         channel title
       </v-card-title>
-    </v-card>
+    </v-card> -->
     <div v-for="(msg, i) in messagesArray"
       max-height="400"
       class="overflow-y-auto"
@@ -98,7 +98,7 @@ export default Vue.extend({
 
   methods: {
     sendMessage(): void {
-      this.$socket.client.emit('msgToServer', this.message)
+      socket_chat.emit('msgToServer', this.message)
       this.message = ''
     },
 
@@ -124,7 +124,8 @@ export default Vue.extend({
     }
   },
 
-  updated() {
+    updated() {
+    console.log("msg :" + this.nbMsg + " array : " + this.messagesArray.length)
     if (this.nbMsg == this.messagesArray.length || this.nbMsg == -1)
     {
       this.scrollToEnd();
@@ -138,6 +139,9 @@ export default Vue.extend({
     console.log(socket_chat.connect());
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/chat/messages')
+    socket_chat.on('connect', () =>{
+      console.log('Connected')
+    })
     socket_chat.on('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length

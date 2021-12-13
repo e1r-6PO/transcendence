@@ -53,16 +53,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // parse cookies
         const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
 
-        let user_data = await this.usersRepository.findOne({
+        newMsg.sender = await this.usersRepository.findOne({
             where: {id: jwt_decoded['id']}
         })
         
         newMsg.message = payload;
         newMsg.time = new Date();
-        newMsg.senderId = user_data.id;
-        newMsg.senderNick = user_data.nickName;
-        newMsg.picture = user_data.picture;
-        
+        newMsg.senderNick = newMsg.sender.nickName;
+        newMsg.picture = newMsg.sender.picture;
+
         this.messagesRepository.save(newMsg)
         this.server.emit('msgToClient', newMsg);
     }

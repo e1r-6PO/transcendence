@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from './user.entity'
 import { Messages } from './messages.entity'
+import { ChannelParticipant } from "./channelParticipant.entity";
 
 @Entity()
 export class Channel {
@@ -20,11 +21,9 @@ export class Channel {
     @Column()
     channType: string;
 
-    @ManyToOne(() => User, {
-        eager: true
-    })
-    userList: User[]
+    @OneToMany(() => ChannelParticipant, channelParticipant => channelParticipant.channel, { cascade: true})
+    channelParticipant: ChannelParticipant[];
 
-    // @Column()
-    // messageList: Messages[]
+    @OneToMany(() => Messages, messages => messages.channel)
+    messages: Messages[];
 }
