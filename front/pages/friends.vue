@@ -2,9 +2,15 @@
 <v-container style="padding-top: 50px">
   <v-row align="center" justify="space-around">
     <p v-for="i in 4" :key="i">
-      <v-btn width="200" @click="filterByStatus(displayFriend[i - 1])">
-        {{ displayFriend[i - 1] }}
-      </v-btn>
+      <v-badge
+        color="pink"
+        content="6"
+        overlap
+      >
+        <v-btn width="200" @click="filterByStatus(displayFriend[i - 1])">
+          {{ displayFriend[i - 1] }}
+        </v-btn>
+      </v-badge>
     </p>
   </v-row>
   <div align="center" style="padding-top: 30px">
