@@ -61,7 +61,8 @@ export class UsersService {
     for (let result of userResult) {
       matches.push(result.nickName)
     }
-    return matches
+
+    return matches.sort((a, b) => (a > b ? 1 : -1))
   }
 
   async getUser(request: Request) {
