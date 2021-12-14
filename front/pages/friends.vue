@@ -25,6 +25,7 @@
     filled
     rounded
     dense
+    @input="filter()"
     counter="20"
     width=50
     ref="nickname_field"
@@ -34,7 +35,7 @@
     <v-row v-if="filterRelationships != []" justify="space-around" style="padding-top: 20px">
       <v-col justify="center" align="left">
       <div v-for="relationship in filterRelationships" :key="relationship.id" style="padding-top:30px">
-        <p v-if="matchSearch(relationship.peer)">
+        <!-- <p v-if="matchSearch(relationship.peer)"> -->
         <v-card
           class="foreground_element card_profile"
           align="left"
@@ -61,7 +62,7 @@
           </v-btn>
         </v-row>
         </v-card>
-        </p>
+        <!-- </p> -->
         </div>
       </v-col>
     </v-row>
@@ -157,6 +158,12 @@ export default Vue.extend({
       if (peer.nickName.search(this.search_string) != -1)
         return true
       return false
+    },
+
+    filter() {
+      this.changeSelectedStatus(this.selectedStatus)
+      if (this.search_string != '')
+        this.filterRelationships = this.filterRelationships.filter(relationship => relationship.peer.nickName.search(this.search_string) != -1)
     },
 
     changeSelectedStatus(changeStatus: string)
