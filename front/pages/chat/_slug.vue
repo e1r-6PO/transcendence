@@ -98,7 +98,7 @@ export default Vue.extend({
 
   methods: {
     sendMessage(): void {
-      socket_chat.emit('msgToServer', this.message)
+      socket_chat.emit('msgToServer', this.message, this.$route.params.slug)
       this.message = ''
     },
 
@@ -109,9 +109,7 @@ export default Vue.extend({
 
     isYourMsg(msg: Messages): boolean {
       if (this.me.nickName == msg.senderNick)
-      {
         return (true)
-      }
       return (false)
     },
 
@@ -134,16 +132,12 @@ export default Vue.extend({
   },
 
   async created() {
-    //connect the socket
-    // this.$socket.client.connect()
-    console.log(socket_chat.connect());
-    console.log(this.$route.params.slug)
+    socket_chat.connect();
+    // console.log(this.$route.params.slug)
     socket_chat.emit('joinChannel', this.$route.params.slug);
     this.me = await this.$axios.$get('/api/profile/me')
-    this.messagesArray = await this.$axios.$get('/api/chat/messages')
-    socket_chat.on('connect', () =>{
-      console.log('Connected')
-    })
+    this.messagesArray = await this.$axios.$get('/api/chat/messages/' + this.$route.params.slug)
+    
     socket_chat.on('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
