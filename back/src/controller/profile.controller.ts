@@ -74,6 +74,6 @@ export class ProfileController {
       where: { user: req.cookies['user_id'] }
     })
 
-    return friend_list
+    return friend_list.sort((a, b) => (a.peer.nickName > b.peer.nickName ? 1 : -1))
   }
 }

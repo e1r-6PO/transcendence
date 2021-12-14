@@ -110,12 +110,13 @@ export default Vue.extend({
         status: ''
       }],
       selectedStatus: '',
-      displayFriend: ['Online', 'All', 'En attente', 'Blocked']
+      displayFriend: ['Online', 'All', 'Pending', 'Blocked']
     }
   },
 
   async mounted() {
     this.fullRelationships = await this.$axios.$get('/api/profile/me/friends')
+    console.log(this.fullRelationships)
     this.filterByStatus('All')
     this.selectedStatus = 'All'
   },
@@ -144,7 +145,7 @@ export default Vue.extend({
       {
         if (status == 'All' && this.fullRelationships[i].status == 'completed')
           this.filterRelationships.push(this.fullRelationships[i]);
-        else if (status == 'En attente' && (this.fullRelationships[i].status == 'sent' || this.fullRelationships[i].status == 'incomming'))
+        else if (status == 'Pending' && (this.fullRelationships[i].status == 'sent' || this.fullRelationships[i].status == 'incomming'))
           this.filterRelationships.push(this.fullRelationships[i]);
         else if (status == 'Online' && this.fullRelationships[i].status == 'completed' /* && this.fullRelationshops[i].peer.online */)
           this.filterRelationships.push(this.fullRelationships[i]);
