@@ -77,5 +77,6 @@ export class ChannelController {
     participant.channel = channel
 
     this.channelParticipantsRepository.save(participant)
+    return { message: "success" }
   }
 }

@@ -15,6 +15,7 @@ import { AddUserIdMiddleware } from "src/middleware/account.middleware";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/entity/user.entity";
 import { Messages } from "src/entity/messages.entity"
+import { Channel } from "src/entity/channel.entity";
 
 @WebSocketGateway({
     cors: {
@@ -30,7 +31,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         @InjectRepository(User)
         private readonly usersRepository : Repository<User>,
         @InjectRepository(Messages)
-        private readonly messagesRepository : Repository<Messages>
+        private readonly messagesRepository : Repository<Messages>,
+        @InjectRepository(Channel)
+        private readonly ChannelsRepository : Repository<Channel>,
       ) {}
 
     count: number = 0;
@@ -39,9 +42,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     private logger: Logger = new Logger('ChatGateway');
 
     @SubscribeMessage('msgToServer')
-    async handleMessage(client: Socket, message: string): Promise<void>{
+    async handleMessage(client: Socket, av: string): Promise<void>{
         var newMsg: Messages = new Messages;
-        
+
         const jwt = client.handshake.headers.cookie
         .split('; ')
         .find((cookie: string) => cookie.startsWith('jwt'))
@@ -50,20 +53,27 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             client.disconnect()
             return
         }
+
+        var chan: Channel = new Channel;
+
+        chan = await this.ChannelsRepository.findOne({
+            where: { channName: av[1] }
+        })
         // parse cookies
         const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
 
         newMsg.sender = await this.usersRepository.findOne({
-            where: {id: jwt_decoded['id']}
+            where: { id: jwt_decoded['id'] }
         })
         
-        newMsg.message = message;
+        newMsg.message = av[0];
         newMsg.time = new Date();
         newMsg.senderNick = newMsg.sender.nickName;
         newMsg.picture = newMsg.sender.picture;
+        newMsg.channel = chan;
 
         this.messagesRepository.save(newMsg)
-        this.server.emit('msgToClient', newMsg);
+        this.server.to(av[1]).emit('msgToClient', newMsg);
     }
 
     @SubscribeMessage('joinChannel')
