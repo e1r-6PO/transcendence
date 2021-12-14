@@ -2,9 +2,17 @@
 <v-container style="padding-top: 50px">
   <v-row align="center" justify="space-around">
     <p v-for="i in 4" :key="i">
-      <v-btn width="200" @click="filterByStatus(displayFriend[i - 1])">
+      <v-badge 
+        color="error"
+        :content="getNumberNotif(displayFriend[i - 1])"
+        :value="getNumberNotif(displayFriend[i - 1])"
+        overlap
+        disable
+      >
+      <v-btn width="200" @click="changeSelectedStatus(displayFriend[i - 1])">
         {{ displayFriend[i - 1] }}
       </v-btn>
+      </v-badge>
     </p>
   </v-row>
   <div align="center" style="padding-top: 30px">
@@ -13,7 +21,6 @@
     placeholder="Nickname"
     color="#e6ffff"
     v-model="search_string"
-    @input="filter"
     hide-details
     filled
     rounded
@@ -24,12 +31,10 @@
   >
   </v-text-field>
   </div>
-  <!-- <div v-if="filterRelationships != []" style="padding-top: 50px; padding-left: 30px"> -->
     <v-row v-if="filterRelationships != []" justify="space-around" style="padding-top: 20px">
       <v-col justify="center" align="left">
       <div v-for="relationship in filterRelationships" :key="relationship.id" style="padding-top:30px">
-        <!-- <v-card v-for="relationship in filterRelationships" :key="relationship.id" -->
-        <!-- <div style="padding-top: 15px"> -->
+        <p v-if="matchSearch(relationship.peer)">
         <v-card
           class="foreground_element card_profile"
           align="left"
@@ -53,29 +58,14 @@
             <v-icon>
               {{ getStatusIcon(relationship) }}
             </v-icon>
-            <!-- <v-icon v-if="relationship.status == status.null" color="green">
-              mdi-account-plus
-            </v-icon>
-            <v-icon v-if="relationship.status == status.completed" color="red">
-              mdi-account-minus
-            </v-icon>
-            <v-icon v-if="relationship.status == status.sent" color="yellow">
-              mdi-account-clock
-            </v-icon>
-            <v-icon v-if="relationship.status == status.incomming" color="yellow">
-              mdi-account-arrow-down
-            </v-icon>
-            <v-icon v-if="relationship.status == status.blocked" color="red">
-              mdi-account-cancel
-            </v-icon> -->
           </v-btn>
         </v-row>
         </v-card>
+        </p>
         </div>
       </v-col>
     </v-row>
-  <!-- </div> -->
-</v-container>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -109,6 +99,26 @@ export default Vue.extend({
         peer: new LightUser(),
         status: ''
       }],
+      onlineRelationships: [{
+        id: 0,
+        peer: new LightUser(),
+        status: ''
+      }],
+      allRelationships: [{
+        id: 0,
+        peer: new LightUser(),
+        status: ''
+      }],
+      pendingRelationships: [{
+        id: 0,
+        peer: new LightUser(),
+        status: ''
+      }],
+      blockedRelationships: [{
+        id: 0,
+        peer: new LightUser(),
+        status: ''
+      }],
       selectedStatus: '',
       displayFriend: ['Online', 'All', 'Pending', 'Blocked']
     }
@@ -116,47 +126,67 @@ export default Vue.extend({
 
   async mounted() {
     this.fullRelationships = await this.$axios.$get('/api/profile/me/friends')
-    console.log(this.fullRelationships)
-    this.filterByStatus('All')
+    this.initTab()
+    for (var i = 0; i < this.fullRelationships.length; i++)
+    {
+      if (this.fullRelationships[i].status == this.status.blocked)
+        this.blockedRelationships.push(this.fullRelationships[i])
+      else if (this.fullRelationships[i].status == this.status.sent)
+        this.pendingRelationships.push(this.fullRelationships[i])
+      else if (this.fullRelationships[i].status == this.status.incomming)
+        this.pendingRelationships.push(this.fullRelationships[i])
+      else if (this.fullRelationships[i].status == this.status.completed)
+        this.allRelationships.push(this.fullRelationships[i])
+      // else if (this.onlineRelationships[i].status == this.status.completed)
+        // this.onlineRelationships.push(this.fullRelationships[i])
+    }
+    this.changeSelectedStatus('All')
     this.selectedStatus = 'All'
   },
 
   methods: {
-    filter() {
-        this.filterByStatus(this.selectedStatus)
-      if (this.search_string != '')
-      {
-        for (var i = 0; i < this.filterRelationships.length; i++)
-        {
-          var test = new LightUser();
-          test = this.filterRelationships[i].peer;
-          console.log(test.nickName)
-          if (this.filterRelationships[i].peer.nickName.search(this.search_string) == -1)
-            this.filterRelationships.splice(i, 1)
-        }
-      }
+    async initTab() {
+      this.blockedRelationships = []
+      this.pendingRelationships = []
+      this.allRelationships = []
+      this.onlineRelationships = []
     },
 
-    filterByStatus(status: string)
+    matchSearch(peer: LightUser): boolean
     {
-      this.selectedStatus = status
-      this.filterRelationships = []
-      for (var i = 0; i < this.fullRelationships.length; i++)
-      {
-        if (status == 'All' && this.fullRelationships[i].status == 'completed')
-          this.filterRelationships.push(this.fullRelationships[i]);
-        else if (status == 'Pending' && (this.fullRelationships[i].status == 'sent' || this.fullRelationships[i].status == 'incomming'))
-          this.filterRelationships.push(this.fullRelationships[i]);
-        else if (status == 'Online' && this.fullRelationships[i].status == 'completed' /* && this.fullRelationshops[i].peer.online */)
-          this.filterRelationships.push(this.fullRelationships[i]);
-        else if (status == 'Blocked' && this.fullRelationships[i].status == 'blocked')
-          this.filterRelationships.push(this.fullRelationships[i]);
-      }
+      if (peer.nickName.search(this.search_string) != -1)
+        return true
+      return false
+    },
+
+    changeSelectedStatus(changeStatus: string)
+    {
+      if (changeStatus == 'All')
+        this.filterRelationships = this.allRelationships
+      else if (changeStatus == 'Blocked')
+        this.filterRelationships = this.blockedRelationships
+      else if (changeStatus == 'Pending')
+        this.filterRelationships = this.pendingRelationships
+      this.selectedStatus = changeStatus
     },
 
     goToProfile(relationship: any)
     {
       this.$router.push('/users/' + relationship.peer.nickName)
+    },
+
+    getNumberNotif(type: string) : number
+    {
+      if (type == 'All')
+        return (this.allRelationships.length)
+      if (type == 'Blocked')
+        return (this.blockedRelationships.length)
+      if (type == 'Pending')
+        return (this.pendingRelationships.length)
+      if (type == 'Online')
+        return (this.onlineRelationships.length)
+      else
+        return 0
     },
 
     getStatusIcon(relationship : any) : string
@@ -184,10 +214,23 @@ export default Vue.extend({
         await this.$axios.$delete('/api/friends/' + relationship.peer.id)
       
       this.fullRelationships = await this.$axios.$get('/api/profile/me/friends')
-        this.filterByStatus(this.selectedStatus)
+      this.initTab()
+      for (var i = 0; i < this.fullRelationships.length; i++)
+      {
+        if (this.fullRelationships[i].status == this.status.blocked)
+          this.blockedRelationships.push(this.fullRelationships[i])
+        else if (this.fullRelationships[i].status == this.status.sent)
+          this.pendingRelationships.push(this.fullRelationships[i])
+        else if (this.fullRelationships[i].status == this.status.incomming)
+          this.pendingRelationships.push(this.fullRelationships[i])
+        else if (this.fullRelationships[i].status == this.status.completed)
+          this.allRelationships.push(this.fullRelationships[i])
+      // else if (this.onlineRelationships[i].status == this.status.completed)
+        // this.onlineRelationships.push(this.fullRelationships[i])
+      }
+      this.changeSelectedStatus(this.selectedStatus)
     }
   }
-
 })
 </script>
 
