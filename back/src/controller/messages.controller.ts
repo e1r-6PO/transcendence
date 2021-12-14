@@ -15,9 +15,9 @@ export class MessagesController {
     private readonly MessagesRepository : Repository<Messages>,
   ) {}
 
-  @Get('messages')
-  async get_messages(@Req() req : Request)
+  @Get('messages/:name')
+  async get_messages(@Param('name') param, @Req() req : Request)
   {
-      return this.messagesService.getAll()
+      return this.messagesService.getAllMessageInChannel(param)
   }
 }
