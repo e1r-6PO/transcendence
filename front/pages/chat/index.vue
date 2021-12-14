@@ -1,5 +1,16 @@
 <template>
 <v-container>
+  <div style="padding-top: 3%" align="center">
+    <v-alert
+      v-model="alertCode"
+      outlined
+      :type=alertType
+      text
+      dismissible
+    >
+      {{ alertText }}
+    </v-alert>
+  </div>
   <div style="padding-top: 50px" align="center">
     <v-dialog
       v-model="dialog"
@@ -124,6 +135,9 @@ export default Vue.extend({
       channName: '',
       channPass: '',
       channType: '',
+      alertText: '',
+      alertCode: false,
+      alertType: 'success',
       typeList: [
         'Public',
         'Private',
@@ -141,9 +155,30 @@ export default Vue.extend({
       this.$router.push("/chat/" + this.channName)
     },
 
-    joinChannel() {
+    async joinChannel() {
       this.dialogJoin = false;
-      this.$axios.$post('/api/chat/join?name=' + this.channName)
+      const ret = await this.$axios.post('/api/chat/join?name=' + this.channName)
+        .catch(function (error) {
+          return error.response
+      });
+      if (ret.status == 409)
+      {
+        this.alertText = "Already in channel"
+        this.alertType = "error"
+        this.alertCode = true
+        // alert("Already in channel")
+      }
+      else if (ret.status == 403)
+      {
+        this.alertText = "Channel inexist"
+        this.alertType = "error"
+        this.alertCode = true
+      }
+      else if (ret.status == 201)
+      {
+        this.$router.push("/chat/" + this.channName)
+      }
+      console.log(ret.status)
     },
 
     disableCreate() {
