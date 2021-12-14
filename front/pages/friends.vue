@@ -101,12 +101,12 @@ export default Vue.extend({
       status: All_Friend_Status,
       fullRelationships: [{
         id: 0,
-        peer: LightUser,
+        peer: new LightUser(),
         status: ''
       }],
       filterRelationships: [{
         id: 0,
-        peer: LightUser,
+        peer: new LightUser(),
         status: ''
       }],
       selectedStatus: '',
@@ -126,10 +126,13 @@ export default Vue.extend({
       if (this.search_string != '')
       {
         for (var i = 0; i < this.filterRelationships.length; i++)
-          {
-            if (this.filterRelationships[i].peer.nickName.search(this.search_string) == -1)
-              this.filterRelationships.pop(this.filterRelationships[i])
-          }
+        {
+          var test = new LightUser();
+          test = this.filterRelationships[i].peer;
+          console.log(test.nickName)
+          if (this.filterRelationships[i].peer.nickName.search(this.search_string) == -1)
+            this.filterRelationships.splice(i, 1)
+        }
       }
     },
 
@@ -181,11 +184,6 @@ export default Vue.extend({
       
       this.fullRelationships = await this.$axios.$get('/api/profile/me/friends')
         this.filterByStatus(this.selectedStatus)
-      
-      // // await this.$axios.$post('/api/users/friend?id=' + relationship.peer.id)
-      // const friend_status = (await this.$axios.$get('/api/users/friend?id=' + relationship.peer.id)).status
-      // if (friend_status == "null")
-      //   this.relationships.splice(this.relationships.findIndex( ({id}) => id === relationship.id ), 1)
     }
   }
 
