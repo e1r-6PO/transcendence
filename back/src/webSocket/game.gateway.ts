@@ -40,7 +40,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     async handleConnection(client: Socket, ...args: any[]){
         this.queue.push(client)
-        console.log(this.queue.length)
         if (this.queue.length >= 2) {
             await new Promise(r => setTimeout(r, 100));
             var player1: Socket = this.queue[0]
@@ -50,7 +49,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             this.queue.splice(0, 2)
             player2.emit('matchFound')
             player1.emit('matchFound')
-            console.log(player1.id, player2.id)
         }
     }
 
@@ -59,12 +57,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         index = this.queue.findIndex(clients => clients.id === client.id)
         if (index != -1) {
-            console.log("deleted")
             this.queue.splice(index, 1)
         }
         index = this.confirmation.findIndex(clients => clients.id === client.id)
         if (index != -1) {
-            console.log("deleted")
             this.confirmation.splice(index, 1)
         }
         // console.log("disconnected: " + client.id)
