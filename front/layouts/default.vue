@@ -7,23 +7,61 @@
       class="side-bar"
       color="#0f0f0f"
       style="z-index: 7"
+      clipped
+      stateless
     >
-      <v-list>
-        <v-list-item
+      <div style="display: flex ; flex-direction: column;" justify-content="space-around">
+        <v-btn
+          depressed
+          class="title_color neonText no-uppercase"
+          color="white"
+          style="margin-top: 10px"
+          x-large
           v-for="(item, i) in items"
           :key="i"
           :to="item.to"
           router
           exact
+          plain
+          text
         >
-          <v-list-item-action>
-            <v-icon class="menu-icon">{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content >
-            <v-list-item-title class="title_color neonText" v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+          <v-icon left>
+            <!-- <v-icon class="menu-icon">{{ item.icon }}</v-icon> -->
+            {{ item.icon }}
+          </v-icon>
+          <!-- <v-list-item-content > -->
+            <!-- <v-list-item-title class="title_color neonText" v-text="item.title" /> -->
+            {{ item.title }}
+          <!-- </v-list-item-content> -->
+        </v-btn>
+        <v-menu
+          v-model="channMenu"
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-x
+          
+        >
+          <template v-slot:activator="{ on, attrs}">
+            <v-btn
+              class="title_color neonText no-uppercase"
+              color="white"
+              style="margin-top: 10px"
+              x-large
+              plain
+              to="/chat"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon left>
+                mdi-wechat
+              </v-icon>
+                Chat Room
+            </v-btn>
+          </template>
+          <v-card color="white" style="width: 350px; height: 650px">
+          </v-card>
+        </v-menu>
+      </div>
     </v-navigation-drawer>
 
     <v-app-bar
@@ -32,6 +70,7 @@
       color="#0f0f0f"
       class="top_bar_style"
       style="z-index: 10"
+      clipped-left
     >
       <v-app-bar-nav-icon class="open-menu" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="title neonText" v-text="title" />
@@ -90,6 +129,7 @@ export default Vue.extend({
       drawer: false,
       fixed: false,
       exitFocus: false,
+      channMenu: false,
       items: [
         {
           icon: 'mdi-home',
@@ -107,11 +147,11 @@ export default Vue.extend({
           title: 'Friends',
           to: '/friends'
         },
-        {
-          icon: 'mdi-wechat',
-          title: 'Chat Room',
-          to: '/chat'
-        },
+        // {
+        //   icon: 'mdi-wechat',
+        //   title: 'Chat Room',
+        //   to: '/chat'
+        // },
         {
           icon: 'mdi-ladder',
           title: 'Scoreboard',
@@ -127,7 +167,7 @@ export default Vue.extend({
   methods: {
     searchbar() {
       this.$router.push({path: '/search', query: { nick: this.search }})
-    }
+    },
   }
 });
 </script>
@@ -135,7 +175,7 @@ export default Vue.extend({
 <style scoped>
   @import '../assets/main_page.scss';
 
-  .v-application{
+.v-application{
     background: #181818 !important;
   }
 
@@ -195,6 +235,14 @@ export default Vue.extend({
 .logout-btn {
   border: 3px solid #ffc79c !important;
   box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 26px 1px #f27719;
+}
+
+.no-uppercase {
+  text-transform: none;
+}
+
+.v-btn {
+  justify-content: space-evenly;
 }
 
 </style>
