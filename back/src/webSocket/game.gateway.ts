@@ -27,25 +27,42 @@ import { Messages } from "src/entity/messages.entity"
 })
 
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
+
+    queue: Socket[] = []
+    confirmation: Socket[] = []
     
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
-
-    @SubscribeMessage('msgToServer')
-    async handleMessage(client: Socket, payload: string): Promise<void>{
-
-        this.server.emit('msgToClient', 'lol');
-    }
 
     afterInit(server: Server){
         this.logger.log('Init');
     }
 
     async handleConnection(client: Socket, ...args: any[]){
-        console.log('Connected in game namespace')
+        this.queue.push(client)
+        if (this.queue.length >= 2) {
+            await new Promise(r => setTimeout(r, 100));
+            var player1: Socket = this.queue[0]
+            var player2: Socket = this.queue[1]
+            this.confirmation.push(player1)
+            this.confirmation.push(player2)
+            this.queue.splice(0, 2)
+            player2.emit('matchFound')
+            player1.emit('matchFound')
+        }
     }
 
-    async handleDisconnect(){
-        console.log('Disconnected from game namespace')
+    async handleDisconnect(client: Socket){
+        var index: number
+
+        index = this.queue.findIndex(clients => clients.id === client.id)
+        if (index != -1) {
+            this.queue.splice(index, 1)
+        }
+        index = this.confirmation.findIndex(clients => clients.id === client.id)
+        if (index != -1) {
+            this.confirmation.splice(index, 1)
+        }
+        // console.log("disconnected: " + client.id)
     }
 }
