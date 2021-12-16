@@ -147,12 +147,21 @@ export default Vue.extend({
   },
 
   methods: {
-    createChannel() {
-      console.log("Chan name: " + this.channName)
-      console.log("Chan type: " + this.channType)
+    async createChannel() {
       this.dialog = false
-      this.$axios.$post('/api/chat/create?name=' + this.channName + '&type=' + this.channType)
-      this.$router.push("/chat/" + this.channName)
+      const ret = await this.$axios.$post('/api/chat/create?name=' + this.channName + '&type=' + this.channType)
+        .catch(function (error) {
+          return error.response
+        });
+      if (ret.status == 409)
+      {
+        this.alertText = "Channel already"
+        this.alertType = "error"
+        this.alertCode = true
+        // alert("Already in channel")
+      }
+      else
+        this.$router.push("/chat/" + this.channName)
     },
 
     async joinChannel() {
@@ -178,7 +187,6 @@ export default Vue.extend({
       {
         this.$router.push("/chat/" + this.channName)
       }
-      console.log(ret.status)
     },
 
     disableCreate() {
