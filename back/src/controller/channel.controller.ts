@@ -37,6 +37,21 @@ export class ChannelController {
     return channel.channAccess
   }
 
+  @Get('myChannel')
+  async getMyChannel(@Req() req: Request)
+  {
+    var me = await this.usersRepository.findOne({
+      where: { id: req.cookies['user_id'] }
+    });
+
+    var channList = await this.channelParticipantsRepository.find({
+      where: { user: me }
+    });
+    console.log(channList)
+    return channList
+  }
+
+
   @Post('create')
   async createChannel(@Query() query, @Req() req: Request): Promise<void>
   {
@@ -61,7 +76,6 @@ export class ChannelController {
     
     var hash = await bcrypt.hash(query['pass'], 10)
 
-    console.log(hash)
     channel = new Channel();
     var participant: ChannelParticipant = new ChannelParticipant()
     

@@ -1,3 +1,9 @@
+export enum ChannAccess {
+    PRIVATE = "Private",
+    PROTECTED = "Protected",
+    PUBLIC = "Public"
+}
+
 interface IMessages {
     id: number;
     senderId: number;
