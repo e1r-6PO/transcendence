@@ -51,7 +51,6 @@ export class ChannelController {
     var channList: Array<String> = []
     for (var i = 0; i < participantList.length; i++)
       channList.push(participantList[i].channel.channName)
-    console.log(channList)
     return channList
   }
 
@@ -75,7 +74,7 @@ export class ChannelController {
       }
     );
 
-    if (query['pass'].length < 5)
+    if (query['type'] == ChannAccess.PROTECTED && query['pass'].length < 5)
       throw new ConflictException('Pass is to short')
     
     var hash = await bcrypt.hash(query['pass'], 10)
