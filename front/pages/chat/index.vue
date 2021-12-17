@@ -19,10 +19,9 @@
   
   <v-row style="height: 100%">
     <v-col cols="12" sm="3" class="border">
-    
-    </v-col>
-    <v-col cols="12" sm="6" class="border">
-      <div style="padding-top: 90px" align="center">
+      <div align="center"
+        style="margin-bottom: 14.5px"
+      >
         <v-dialog
           v-model="dialog"
           max-width="600px"
@@ -33,6 +32,7 @@
               dark
               v-bind="attrs"
               v-on="on"
+              style="margin-bottom: 10px"
             >
               Create channel
             </v-btn>
@@ -80,6 +80,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
         <v-dialog
           v-model="dialogJoin"
           max-width="600px"
@@ -163,6 +164,27 @@
           </v-card>
         </v-dialog>
       </div>
+      
+      <v-divider
+        class="side-bar" 
+        color="#ffa768"
+        style="margin-bottom: 14.5px; max-height: 5px; height: 3px"
+      >
+      </v-divider>
+      
+      <v-card
+        tile
+        v-for="channel, i in channList" :key="channList[i]"
+      >
+        <v-card-text>
+          {{ channel }}
+        </v-card-text>
+        <v-divider></v-divider>
+      </v-card>
+    </v-col>
+
+    <v-col cols="12" sm="6" class="border">
+
     </v-col>
 
     <v-col cols="12" sm="3">
@@ -195,13 +217,18 @@ export default Vue.extend({
         'Public',
         'Private',
         'Protected'
-      ]
+      ],
+      channList: []
     }
   },
 
-  mounted() {
+  async mounted() {
     if (this.$route.query['error'] != undefined && this.$route.query['error'] != "")
       this.activeAlert('error', this.$route.query['error'])
+    
+    var ret = await this.$axios.get('/api/chat/myChannel')
+    this.channList = ret.data
+    console.log(this.channList)
   },
 
   methods: {
@@ -281,7 +308,14 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+
 .border {
   border-right: 1px solid grey;
 }
+
+.side-bar {
+  border-right: 3px solid #ffa768 !important;
+  box-shadow: inset -50px 0px 17px -45px #fc6500, 0px 0px 17px 7px #fc6500 !important;
+}
+
 </style>
