@@ -172,9 +172,9 @@
       >
       </v-divider>
       
-      <v-card
+      <v-card v-for="(channel, i) in channList" :key="channList[i]"
         tile
-        v-for="channel, i in channList" :key="channList[i]"
+        @click="redirectToChannel(channel)"
       >
         <v-card-text>
           {{ channel }}
@@ -228,7 +228,6 @@ export default Vue.extend({
     
     var ret = await this.$axios.get('/api/chat/myChannel')
     this.channList = ret.data
-    console.log(this.channList)
   },
 
   methods: {
@@ -268,13 +267,16 @@ export default Vue.extend({
         this.joinChannel()
     },
 
+    redirectToChannel(channName: string) {
+        this.$router.push('/chat/' + channName)
+    },
+
     async joinChannel() {
       this.dialogPass = false;
       const ret = await this.$axios.post('/api/chat/join?name=' + this.channName + '&pass=' + this.channPass)
         .catch(function (error) {
           return error.response
       });
-      console.log(ret.data)
       if (ret.status == 409)
         this.activeAlert('error', ret.data['message'])
       else if (ret.status == 403)

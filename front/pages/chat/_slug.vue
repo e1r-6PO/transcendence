@@ -132,6 +132,7 @@ export default Vue.extend({
   },
 
   async created() {
+    console.log(this.$route.params.slug)
     const ret = await this.$axios.$get('/api/chat/messages/access?name=' + this.$route.params.slug)
       .catch(function (error) {
         return error.response
