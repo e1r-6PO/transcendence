@@ -1,20 +1,24 @@
 <template>
   <v-container
-    align-items="center"
-    style="margin-top: 3%;"
     class="body overflow-y-hidden"
+    fluid 
+    fill-height
   >
-    <!-- <v-card
-      flat
-      color="#181818"
-      height="50"
-      width="100%"
-      style="z-index: 1 !important; position: fixed; left: 0px; top: 65px; padding-bottom: 0px"
-    >
-      <v-card-title class="justify-center" style="color: red">
-        channel title
-      </v-card-title>
-    </v-card> -->
+   <v-row style="height: 100%; margin-top: 2.5%">
+    <v-col cols="12" sm="3" class="border">
+      <v-card v-for="(channel, i) in channList" :key="channList[i]"
+        tile
+        @click="redirectToChannel(channel)"
+      >
+        <v-card-text>
+          {{ channel }}
+        </v-card-text>
+        <v-divider></v-divider>
+      </v-card>
+    </v-col>
+
+
+    <v-col cols="12" sm="6" class="border">
     <div v-for="(msg, i) in messagesArray"
       max-height="400"
       class="overflow-y-auto"
@@ -55,7 +59,11 @@
       </v-card-subtitle>
       </v-card>
     </div>
+    </v-col>
 
+    <v-col cols="12" sm="3">
+    </v-col>
+  </v-row>
     <v-footer app inset color="#181818">
       <v-text-field
         style="margin-top: 3%"
@@ -92,7 +100,8 @@ export default Vue.extend({
       messagesArray: new Array<Messages>(),
       usersNick: new Map(),
       me: new User(),
-      nbMsg: -1
+      nbMsg: -1,
+      channList: []
     }
   },
 
@@ -119,11 +128,14 @@ export default Vue.extend({
 
     scrollToEnd() {    	
       window.scrollTo(0, document.body.scrollHeight);
-    }
+    },
+
+    redirectToChannel(channName: string) {
+      this.$router.push('/chat/' + channName)
+    },
   },
 
     updated() {
-    // console.log("msg :" + this.nbMsg + " array : " + this.messagesArray.length)
     if (this.nbMsg == this.messagesArray.length || this.nbMsg == -1)
     {
       this.scrollToEnd();
@@ -137,7 +149,6 @@ export default Vue.extend({
       .catch(function (error) {
         return error.response
       })
-    console.log(ret.status)
     if (ret.status == 404)
       this.$router.push('/chat?error=Channel%20does%20not%20exist')
     socket_chat.connect();
@@ -149,6 +160,11 @@ export default Vue.extend({
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
     })
+  },
+
+  async mounted() {
+    var ret = await this.$axios.get('/api/chat/myChannel')
+    this.channList = ret.data
   }
 })
 </script>
@@ -221,6 +237,10 @@ export default Vue.extend({
 body {
   overscroll-behavior: none !important;
   overflow-y: hidden !important;
+}
+
+.border {
+  border-right: 1px solid grey;
 }
 
 
