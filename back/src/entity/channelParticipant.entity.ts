@@ -13,8 +13,8 @@ export enum ChannelStatus {
 @Entity()
 export class ChannelParticipant {
   constructor() {
-    this.banTime = new Date();
-    this.muteTime = new Date();
+    this.banTime = null;
+    this.muteTime = null;
   }
 
   @PrimaryGeneratedColumn()
@@ -23,19 +23,19 @@ export class ChannelParticipant {
   @ManyToOne(() => Channel, channel => channel.channelParticipant, { eager: true, onDelete: "CASCADE", nullable: true})
   channel: Channel;
 
-  @ManyToOne(() => User, { onDelete: "CASCADE" })
+  @ManyToOne(() => User, { eager: true, onDelete: "CASCADE" })
   user: User;
 
   @Column({ default: ChannelStatus.default })
   status: ChannelStatus;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isMute: boolean;
 
   @Column()
   muteTime: Date;
 
-  @Column({ default: true })
+  @Column({ default: false })
   ban: boolean;
 
   @Column()
