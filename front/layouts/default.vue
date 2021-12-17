@@ -26,41 +26,23 @@
           text
         >
           <v-icon left>
-            <!-- <v-icon class="menu-icon">{{ item.icon }}</v-icon> -->
             {{ item.icon }}
           </v-icon>
-          <!-- <v-list-item-content > -->
-            <!-- <v-list-item-title class="title_color neonText" v-text="item.title" /> -->
             {{ item.title }}
-          <!-- </v-list-item-content> -->
         </v-btn>
-        <v-menu
-          v-model="channMenu"
-          :close-on-content-click="false"
-          :nudge-width="200"
-          offset-x
-          
+        <v-btn
+          class="title_color neonText no-uppercase"
+          color="white"
+          style="margin-top: 10px"
+          x-large
+          plain
+          to="/chat"
         >
-          <template v-slot:activator="{ on, attrs}">
-            <v-btn
-              class="title_color neonText no-uppercase"
-              color="white"
-              style="margin-top: 10px"
-              x-large
-              plain
-              to="/chat"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon left>
-                mdi-wechat
-              </v-icon>
-                Chat Room
-            </v-btn>
-          </template>
-          <v-card color="white" style="width: 350px; height: 650px">
-          </v-card>
-        </v-menu>
+          <v-icon left>
+            mdi-wechat
+          </v-icon>
+            Chat Room
+        </v-btn>
       </div>
     </v-navigation-drawer>
 
