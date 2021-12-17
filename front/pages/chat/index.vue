@@ -1,126 +1,135 @@
 <template>
-<v-container>
-  <div style="padding-top: 3%" align="center">
-    <v-alert
-      v-model="alertCode"
-      outlined
-      :type=alertType
-      text
-      dismissible
-    >
-      {{ alertText }}
-    </v-alert>
-  </div>
-  <div style="padding-top: 50px" align="center">
-    <v-dialog
-      v-model="dialog"
-      max-width="600px"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
+<v-container fluid fill-height>
+  <v-row style="height:100%">
+    <v-col cols="12" sm="3" class="border">
+
+    </v-col>
+    <v-col cols="12" sm="6" class="border">
+      <div align="center">
+        <v-alert
+          v-model="alertCode"
+          outlined
+          :type=alertType
+          text
+          dismissible
         >
-          Create channel
-        </v-btn>
-      </template>
-      <v-card>
-        <v-card-title>
-          <span class="text-h5">Channel settings</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-text-field
-              label="Channel name"
-              v-model="channName"
-            ></v-text-field>
-          <!-- <v-col cols="12">
-            <v-text-field
-              label="Password*"
-              type="password"
-              required
-            ></v-text-field>
-          </v-col> -->
-            <v-select
-              :items="typeList"
-              label="Channel type"
-              v-model="channType"
-            ></v-select>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="dialog = false"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="createChannel()"
-            :disabled="disableCreate()"
-          >
-            Create
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog
-      v-model="dialogJoin"
-      max-width="600px"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
+          {{ alertText }}
+        </v-alert>
+      </div>
+      <div align="center">
+        <v-dialog
+          v-model="dialog"
+          max-width="600px"
         >
-          Join channel
-        </v-btn>
-      </template>
-      <v-card>
-        <v-card-title>
-          <span class="text-h5">Channel settings</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-text-field
-              label="Channel name"
-              v-model="channName"
-            ></v-text-field>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="dialogJoin = false"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="joinChannel()"
-            :disabled="disableJoin()"
-          >
-            Join
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              v-bind="attrs"
+              v-on="on"
+            >
+              Create channel
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">Channel settings</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-text-field
+                  label="Channel name"
+                  v-model="channName"
+                ></v-text-field>
+              <!-- <v-col cols="12">
+                <v-text-field
+                  label="Password*"
+                  type="password"
+                  required
+                ></v-text-field>
+              </v-col> -->
+                <v-select
+                  :items="typeList"
+                  label="Channel type"
+                  v-model="channType"
+                ></v-select>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="dialog = false"
+              >
+                Close
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="createChannel()"
+                :disabled="disableCreate()"
+              >
+                Create
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog
+          v-model="dialogJoin"
+          max-width="600px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              v-bind="attrs"
+              v-on="on"
+            >
+              Join channel
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">Channel settings</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-text-field
+                  label="Channel name"
+                  v-model="channName"
+                ></v-text-field>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="dialogJoin = false"
+              >
+                Close
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="joinChannel()"
+                :disabled="disableJoin()"
+              >
+                Join
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
+    </v-col>
+    <v-col cols="12" sm="3">
+    </v-col>
+  </v-row>
 </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 import { Messages } from '../../assets/Messages'
 import { LightUser, User } from '../../assets/User'
@@ -205,3 +214,9 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.border {
+  border-right: 1px solid grey;
+}
+</style>
