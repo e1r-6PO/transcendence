@@ -23,6 +23,16 @@
     leave queue
   </v-btn>
 
+  <v-btn
+  class="foreground_element neon-button"
+  rounded
+  text
+  color="#ffffff"
+  @click="router_push()"
+  >
+    router push
+  </v-btn>
+
   <v-alert
     v-model="error_with_server"
     outlined
@@ -59,7 +69,8 @@ export default Vue.extend({
   data() {
     return {
       in_queue: false,
-      error_with_server: false
+      error_with_server: false,
+      change: false
     }
   },
 
@@ -91,12 +102,23 @@ export default Vue.extend({
 
     closeAlert() {
       this.error_with_server = false
+    },
+
+    router_push() {
+      this.change = !this.change
     }
   },
 
   async created() {
-    socket_game.on('matchFound', () => {
-      console.log('hey')
+    socket_game.on('matchFound', (info) => {
+      console.log('match found')
+      if (this.change == true)
+        this.$router.push('/game/' + info['id'] + '?side=' + info['side'])
+    })
+    socket_game.on('matchEnd', (info) => {
+      console.log('match end')
+      // if (this.change == true)
+      //   this.$router.push('/game/' + info['id'] + '?side=' + info['side'])
     })
   }
 })
