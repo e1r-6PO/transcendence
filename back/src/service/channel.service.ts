@@ -30,23 +30,16 @@ export class ChannelService {
     messagesArray = await this.MessagesRepository.find({
         where: { channel: chann }
     })
-    console.log(blocked)
     for (var i = 0; i < messagesArray.length; i++)
     {
-      console.log(blocked.includes(messagesArray[i].sender.id))
       if (blocked.includes(messagesArray[i].sender.id))
       {
-        console.log("SPLICE")
         messagesArray.splice(i, 1)
         i = i > 0 ? i - 1 : 0;
       }
     }
-    console.log("After :")
-    // console.log(messagesArray)
     for (var i = 0; i < messagesArray.length; i++)
-    {
         messagesArray[i].senderNick = messagesArray[i].sender.nickName
-    }
     return (messagesArray)
   }
 }
