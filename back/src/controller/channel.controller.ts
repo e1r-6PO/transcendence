@@ -44,9 +44,13 @@ export class ChannelController {
       where: { id: req.cookies['user_id'] }
     });
 
-    var channList = await this.channelParticipantsRepository.find({
+    var participantList = await this.channelParticipantsRepository.find({
       where: { user: me }
     });
+
+    var channList: Array<String> = []
+    for (var i = 0; i < participantList.length; i++)
+      channList.push(participantList[i].channel.channName)
     console.log(channList)
     return channList
   }
