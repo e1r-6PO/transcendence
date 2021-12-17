@@ -62,6 +62,25 @@
     </v-col>
 
     <v-col cols="12" sm="3">
+      <v-card v-for="(user, i) in userList" :key="`user-${i}`"
+        tile
+        @click="redirectToUserProfile(user.nickName)"
+      >
+
+        <v-card-title>
+          <v-avatar size="36">
+            <img
+              alt="user"
+              :src="user.picture"
+            >
+          </v-avatar>
+          <p style="margin-bottom: 0px" class="ml-3">{{ user.nickName }}</p>
+        </v-card-title>
+        <v-card-subtitle style="padding-bottom: 0px; margin-bottom: 4px !important" align="right">
+          <p class="ml-12" style="margin-bottom: 0px">{{ user.channelStatus }}</p>
+        </v-card-subtitle>
+        <v-divider></v-divider>
+      </v-card>
     </v-col>
   </v-row>
     <v-footer app inset color="#181818">
@@ -87,6 +106,7 @@
 import Vue from 'vue'
 import { Messages } from '../../assets/Messages'
 import { LightUser, User } from '../../assets/User'
+import { ChannelUser } from '../../assets/ChannelUser'
 import { io, Socket } from "socket.io-client";
 
 const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
@@ -101,8 +121,43 @@ export default Vue.extend({
       usersNick: new Map(),
       me: new User(),
       nbMsg: -1,
-      channList: []
+      channList: [],
+      userList: new Array<ChannelUser>(),
     }
+  },
+
+  updated() {
+    if (this.nbMsg == this.messagesArray.length || this.nbMsg == -1)
+    {
+      this.scrollToEnd();
+      this.nbMsg = 0;
+    }
+  },
+
+  async created() {
+    const ret = await this.$axios.$get('/api/chat/messages/access?name=' + this.$route.params.slug)
+      .catch(function (error) {
+        return error.response
+      })
+    if (ret.status == 404)
+      this.$router.push('/chat?error=Channel%20does%20not%20exist')
+    socket_chat.connect();
+    socket_chat.emit('joinChannel', this.$route.params.slug);
+    this.me = await this.$axios.$get('/api/profile/me')
+    this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
+    
+    socket_chat.on('msgToClient', (msg: Messages) => {
+      this.messagesArray.push(msg)
+      this.nbMsg = this.messagesArray.length
+    })
+  },
+
+  async mounted() {
+    var myChannelRet = await this.$axios.get('/api/chat/myChannel')
+    this.channList = myChannelRet.data
+    var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
+    this.userList = userListRet.data
+    console.log(this.userList)
   },
 
   methods: {
@@ -132,39 +187,7 @@ export default Vue.extend({
 
     redirectToChannel(channName: string) {
       this.$router.push('/chat/' + channName)
-    },
-  },
-
-    updated() {
-    if (this.nbMsg == this.messagesArray.length || this.nbMsg == -1)
-    {
-      this.scrollToEnd();
-      this.nbMsg = 0;
     }
-  },
-
-  async created() {
-    console.log(this.$route.params.slug)
-    const ret = await this.$axios.$get('/api/chat/messages/access?name=' + this.$route.params.slug)
-      .catch(function (error) {
-        return error.response
-      })
-    if (ret.status == 404)
-      this.$router.push('/chat?error=Channel%20does%20not%20exist')
-    socket_chat.connect();
-    socket_chat.emit('joinChannel', this.$route.params.slug);
-    this.me = await this.$axios.$get('/api/profile/me')
-    this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
-    
-    socket_chat.on('msgToClient', (msg: Messages) => {
-      this.messagesArray.push(msg)
-      this.nbMsg = this.messagesArray.length
-    })
-  },
-
-  async mounted() {
-    var ret = await this.$axios.get('/api/chat/myChannel')
-    this.channList = ret.data
   }
 })
 </script>
