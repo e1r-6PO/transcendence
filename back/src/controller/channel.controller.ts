@@ -10,6 +10,7 @@ import { use } from 'passport';
 import * as bcrypt from 'bcrypt';
 import { ChannelService } from 'src/service/channel.service';
 import { Friend_Status, Relationship } from 'src/entity/relationship.entity';
+import { ChannelUser } from 'src/entity/channelUser.entity';
 
 @Controller('api/chat')
 @UseGuards(ValidTokenGuard, TwoFaGuard)
@@ -54,6 +55,32 @@ export class ChannelController {
     return channList
   }
 
+  @Get(':channName/users')
+  async getChannelUsers(@Param('channName') param, @Req() req: Request)
+  {
+    var channel = await this.channelsRepository.findOne({
+      where: { channName: param }
+    });
+    if (channel == null)
+      throw new ConflictException('Channel does not exist')
+    var participantList = await this.channelParticipantsRepository.find({
+      where : { channel: channel }
+    });
+
+    var usersList = []
+    for (var i = 0; i < participantList.length; i++)
+    {
+      var user: ChannelUser = new ChannelUser()
+      user.nickName = participantList[i].user.nickName
+      user.id = participantList[i].user.id
+      user.channelStatus = participantList[i].status
+      user.isMute = participantList[i].isMute
+      user.muteTime = participantList[i].muteTime
+      user.picture = participantList[i].user.picture
+      usersList.push(user)
+    }
+    return usersList
+  }
 
   @Post('create')
   async createChannel(@Query() query, @Req() req: Request): Promise<void>
