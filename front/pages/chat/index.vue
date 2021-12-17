@@ -188,7 +188,6 @@ export default Vue.extend({
       channName: '',
       channPass: '',
       channType: '',
-      channPass: '',
       alertText: '',
       alertCode: false,
       alertType: 'success',
@@ -207,7 +206,7 @@ export default Vue.extend({
 
   methods: {
     
-    activeAlert(type, text ) {
+    activeAlert(type: string, text: any) {
       this.alertType = type
       this.alertCode = true
       this.alertText = text
