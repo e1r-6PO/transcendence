@@ -6,13 +6,14 @@ import { MessagesController } from "src/controller/messages.controller";
 import { Channel } from "src/entity/channel.entity";
 import { ChannelParticipant } from "src/entity/channelParticipant.entity";
 import { Messages } from "src/entity/messages.entity";
+import { Relationship } from "src/entity/relationship.entity";
 import { User } from "src/entity/user.entity";
-import { MessagesService } from "src/service/messages.service";
+import { ChannelService } from "src/service/channel.service";
 import { CustomJwtModule } from "./custom.jwt.module";
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([User, Messages, Channel, ChannelParticipant]), CustomJwtModule ],
+  imports: [ TypeOrmModule.forFeature([User, Messages, Channel, ChannelParticipant, Relationship]), CustomJwtModule ],
   controllers: [ ChannelController ],
-  providers: []
+  providers: [ ChannelService ]
 })
 export class ChannelModule {}
