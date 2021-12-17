@@ -16,6 +16,8 @@ import { AddUserIdMiddleware } from "src/middleware/account.middleware";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/entity/user.entity";
 import { Messages } from "src/entity/messages.entity"
+import { Game } from "src/entity/game.entity";
+import { GameService } from "src/service/game.service";
 
 @WebSocketGateway({
     cors: {
@@ -28,8 +30,8 @@ import { Messages } from "src/entity/messages.entity"
 
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 
+    gameService: GameService = new GameService
     queue: Socket[] = []
-    confirmation: Socket[] = []
     
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
@@ -41,14 +43,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleConnection(client: Socket, ...args: any[]){
         this.queue.push(client)
         if (this.queue.length >= 2) {
-            await new Promise(r => setTimeout(r, 100));
-            var player1: Socket = this.queue[0]
-            var player2: Socket = this.queue[1]
-            this.confirmation.push(player1)
-            this.confirmation.push(player2)
+            var game: Game = new Game
+            game.players = [this.queue[0], this.queue[1]]
             this.queue.splice(0, 2)
-            player2.emit('matchFound')
-            player1.emit('matchFound')
+            this.gameService.push_game(game) //also starting the game
         }
     }
 
@@ -59,10 +57,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         if (index != -1) {
             this.queue.splice(index, 1)
         }
-        index = this.confirmation.findIndex(clients => clients.id === client.id)
-        if (index != -1) {
-            this.confirmation.splice(index, 1)
-        }
+        else
+            this.gameService.disconnect(client)
         // console.log("disconnected: " + client.id)
     }
 }
