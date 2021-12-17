@@ -19,23 +19,23 @@
   
   <v-row style="height: 100%">
     <v-col cols="12" sm="3" class="border">
-      <div align="center"
-        style="margin-bottom: 14.5px"
-      >
+      <div>
         <v-dialog
           v-model="dialog"
           max-width="600px"
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              v-bind="attrs"
-              v-on="on"
-              style="margin-bottom: 10px"
-            >
-              Create channel
-            </v-btn>
+            <v-row align="center" justify="center" style="margin-top: 0px">
+              <v-btn
+                color="primary"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                style="margin-bottom: 10px"
+              >
+                Create channel
+              </v-btn>
+            </v-row>
           </template>
           <v-card>
             <v-card-title>
@@ -86,6 +86,7 @@
           max-width="600px"
         >
           <template v-slot:activator="{ on, attrs }">
+            <v-row align="center" justify="center" style="margin-top: 10px; margin-bottom: 20px">
             <v-btn
               color="primary"
               dark
@@ -94,6 +95,7 @@
             >
               Join channel
             </v-btn>
+            </v-row>
           </template>
           <v-card>
             <v-card-title>
@@ -188,7 +190,15 @@
     </v-col>
 
     <v-col cols="12" sm="3">
-
+      <!-- <v-card v-for="(channel, i) in channList" :key="channList[i]"
+        tile
+        @click="redirectToChannel(channel)"
+      >
+        <v-card-text>
+          {{ channel }}
+        </v-card-text>
+        <v-divider></v-divider>
+      </v-card> -->
     </v-col>
   </v-row>
 </v-container>

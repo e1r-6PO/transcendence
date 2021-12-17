@@ -1,6 +1,6 @@
 <template>
   <v-container
-    class="body overflow-y-hidden"
+    style="overflow-y: hidden !important"
     fluid 
     fill-height
   >
@@ -257,14 +257,17 @@ export default Vue.extend({
   bottom: 0px !important;
 }
 
-body {
+/* body {
   overscroll-behavior: none !important;
   overflow-y: hidden !important;
-}
+} */
 
 .border {
   border-right: 1px solid grey;
 }
 
+.scrollable {
+  overflow-y: scroll !important;
+}
 
 </style>
