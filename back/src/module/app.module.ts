@@ -22,7 +22,7 @@ import { ChannelModule } from './channel.module';
 
 @Module({
   imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, MessagesModule, ChannelModule,
-    TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Channel, ChannelParticipant, Messages]), FriendsModule],
+    TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Channel, ChannelParticipant, Messages]), FriendsModule ],
   controllers: [ AppController ],
   providers: [ AppService, ChatGateway, GameGateway ],
 })

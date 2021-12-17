@@ -123,7 +123,7 @@ export default Vue.extend({
   },
 
     updated() {
-    console.log("msg :" + this.nbMsg + " array : " + this.messagesArray.length)
+    // console.log("msg :" + this.nbMsg + " array : " + this.messagesArray.length)
     if (this.nbMsg == this.messagesArray.length || this.nbMsg == -1)
     {
       this.scrollToEnd();
@@ -132,11 +132,17 @@ export default Vue.extend({
   },
 
   async created() {
+    const ret = await this.$axios.$get('/api/chat/messages/access?name=' + this.$route.params.slug)
+      .catch(function (error) {
+        return error.response
+      })
+    console.log(ret.status)
+    if (ret.status == 404)
+      this.$router.push('/chat?error=Channel%20does%20not%20exist')
     socket_chat.connect();
-    // console.log(this.$route.params.slug)
     socket_chat.emit('joinChannel', this.$route.params.slug);
     this.me = await this.$axios.$get('/api/profile/me')
-    this.messagesArray = await this.$axios.$get('/api/chat/messages/' + this.$route.params.slug)
+    this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
     
     socket_chat.on('msgToClient', (msg: Messages) => {
       this.messagesArray.push(msg)
