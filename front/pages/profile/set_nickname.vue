@@ -98,7 +98,7 @@ export default class extends Vue {
 
 @import '../../assets/main_page.scss';
 @import '../../assets/custom_flexBox.scss';
-@import '../../assets/neon_effects';
+@import '../../assets/neon_effects.scss';
 
 .neonText {
   color: #e6ffff;
