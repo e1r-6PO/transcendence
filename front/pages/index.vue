@@ -76,22 +76,10 @@ export default class extends Vue {
 
 <style lang="scss">
   @import '../assets/main_page.scss';
-
+  @import '../assets/particles.scss';
 
   .v-application{
     background-color: #181818 !important;
-  }
-
-  div[id^="particles-instance-"] {
-    height: 100vh !important;
-    width: 100vw !important;
-    position: fixed !important;
-    top: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    // background: rgba($color: #05114e, $alpha: 0.4);
-    z-index: 2 !important;
   }
 
   .v-button{

@@ -246,27 +246,18 @@ export default Vue.extend({
 
 .card_profile {
   border: 3px solid #a5fafa !important;
-  /* border: 3px solid #e7b3ff !important; */
   box-shadow: 0px 0px 40px 0px #0affff !important;
-  /* box-shadow: inset 0px 0px 1000px 0px #cb5cff, 0px 0px 40px 0px #cb5cff !important; */
   border-radius: 15px !important;
   background-color: #181818 !important;
-  /* background-color: #35b4b2 !important; */
-  /* box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important;  */
   height: 60px;
   width: 100%;
 }
 
 .color_text { 
-  /* z-index: 6; */
-  /* padding-top: 0.5%;
-  padding-right: 85%; */
   color: #ffffff;
 }
 
 .friend-button {
-  /* border: 3px solid #e9c8ff !important;
-  box-shadow: 0px 0px 10px 0px #9141c7 !important; */
   border: 3px solid #e9c8ff !important;
   box-shadow: 0px 0px 15px 3px #9141c7 !important;
 }

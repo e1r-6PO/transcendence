@@ -114,7 +114,7 @@
         </v-card-text>
       </v-card>
     </div>
-    <div class="flex-container" v-if="!isEditing">
+    <div class="flex-container-row" v-if="!isEditing">
       <v-card class="foreground_element card_game flex-item" margin-top="5%">
         <h1 class="color_win" align="center">Win</h1>
         <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
@@ -124,7 +124,7 @@
         <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
       </v-card>
   </div>
-  <div class="flex-container" style="padding-top: 3%" justify="center" align="center" v-if="isEditing">
+  <div class="flex-container-row" style="padding-top: 3%" justify="center" align="center" v-if="isEditing">
     <div v-if="this.tfa_status == true">
       <span style="color: #e6ffff">2fa is currently</span>
       <span style="color: #0ADAA8; padding-right: 10px">enabled</span>
@@ -331,17 +331,15 @@ export default class extends Vue {
 
 <style scoped>
 @import '../../assets/main_page.scss';
+@import '../../assets/custom_flexBox.scss';
 
 .edit-button {
-  /* border: 3px solid #e9c8ff !important;
-  box-shadow: 0px 0px 10px 0px #9141c7 !important; */
   border: 3px solid #e9c8ff !important;
   box-shadow: 0px 0px 10px 0px #9141c7 !important;
 }
 
 .profile-picture {
   border: 3px solid #a5fafa !important;
-  /* border: 3px solid #e7b3ff !important; */
   box-shadow: 0px 0px 15px 0px #63f3f3 !important;
 }
 
@@ -389,24 +387,18 @@ export default class extends Vue {
 
 .card_game {
   border: 3px solid #a5fafa !important;
-  /* border-radius:17px!important; */
   box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
   border-radius: 15px !important;
   background-color: #181818 !important;
   min-width: 260px;
   width: 275px;
-  /* box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important;  */
 }
 
 .card_profile {
   border: 3px solid #a5fafa !important;
-  /* border: 3px solid #e7b3ff !important; */
   box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
-  /* box-shadow: inset 0px 0px 1000px 0px #cb5cff, 0px 0px 40px 0px #cb5cff !important; */
   border-radius: 15px !important;
   background-color: #181818 !important;
-  /* background-color: #35b4b2 !important; */
-  /* box-shadow: 0px 0px 20px 0px rgba(58, 189, 182, 0.7) !important;  */
   min-width: 400px;
   height: 250px;
   width: 30%;
@@ -419,45 +411,6 @@ export default class extends Vue {
   border-radius: 15px !important;
   box-shadow: 0px 0px 20px 0px rgba(224, 185, 10, 0.89) !important;
   background-color: #f27719 !important;
-}
-
-.flex-container {
-  /* We first create a flex layout context */
-  display: flex;
-  
-  /* Then we define the flow direction 
-     and if we allow the items to wrap 
-   * Remember this is the same as:
-   * flex-direction: row;
-   * flex-wrap: wrap;
-   */
-  flex-flow: row wrap;
-  
-  /* Then we define how is distributed the remaining space */
-  justify-content: space-evenly;
-  align-content: center;
-  list-style: none;
-
-}
-
-.flex-container-editing {
-  /* We first create a flex layout context */
-  display: flex;
-  
-  /* Then we define the flow direction 
-     and if we allow the items to wrap 
-   * Remember this is the same as:
-   * flex-direction: row;
-   * flex-wrap: wrap;
-   */
-  flex-flow: column wrap;
-  
-  /* Then we define how is distributed the remaining space */
-  justify-content: center;
-  align-content: center;
-  list-style: none;
-  padding-top: 1%;
-  column-gap: 100px !important;
 }
 
 .item {
