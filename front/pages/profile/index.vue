@@ -209,8 +209,8 @@ export default class extends Vue {
         this.alertText = "2fa successfully enabled"
         setTimeout(()=>{
           this.alertCode=false
-        },2000)
-      this.$router.replace('/profile')
+        },5000)
+        this.$router.replace('/profile')
       }
     }
   }
@@ -232,7 +232,7 @@ export default class extends Vue {
         this.alertCode = true
         setTimeout(()=>{
           this.alertCode=false
-        },2000)
+        },5000)
         return;
       }
       
@@ -243,7 +243,7 @@ export default class extends Vue {
         this.alertCode = true
         setTimeout(()=>{
           this.alertCode=false
-        },2000)
+        },5000)
         return;
       }
       this.selectedFile = e.target.files[0]
@@ -276,7 +276,7 @@ export default class extends Vue {
         this.alertCode = true
         setTimeout(()=>{
           this.alertCode=false
-        },2000)
+        },5000)
         return
       }
       else
@@ -312,12 +312,12 @@ export default class extends Vue {
       });
       if (qr.status == 201) {
         this.tfa_status = false
-        this.alertType = "success"
-        this.alertText = "2fa successfully enabled"
+        this.alertType = "warning"
+        this.alertText = "2fa successfully disabled"
         this.alertCode = true
         setTimeout(()=>{
           this.alertCode=false
-        },2000)
+        },5000)
       }
     }
   }

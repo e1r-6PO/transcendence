@@ -11,7 +11,7 @@
             dismissible
             @input="closeAlert"
           >
-            2fa successfully enable
+            Wrong 2fa code
           </v-alert>
           <v-btn
             class="foreground_element neon-button"
@@ -127,6 +127,9 @@ export default class extends Vue {
     this.tfa_code = ""
     this.tfa_digit = []
     this.$refs[`digit_1`][0]?.focus?.()
+    setTimeout(()=>{
+      this.alertCode=false
+    },5000)
   }
 
     $refs: any = {
