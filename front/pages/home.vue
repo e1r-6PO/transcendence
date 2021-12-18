@@ -60,9 +60,7 @@
 
 import Vue from 'vue'
 
-import { io, Socket } from "socket.io-client";
-
-const socket_game = io("http://localhost:3000/game", { withCredentials: true, autoConnect: false });
+import socket_game from '../plugins/socket.io'
 
 export default Vue.extend({
 
@@ -112,13 +110,7 @@ export default Vue.extend({
   async created() {
     socket_game.on('matchFound', (info) => {
       console.log('match found')
-      if (this.change == true)
-        this.$router.push('/game/' + info['id'] + '?side=' + info['side'])
-    })
-    socket_game.on('matchEnd', (info) => {
-      console.log('match end')
-      // if (this.change == true)
-      //   this.$router.push('/game/' + info['id'] + '?side=' + info['side'])
+      this.$router.push('/game/' + info['id'] + '?side=' + info['side'])
     })
   }
 })

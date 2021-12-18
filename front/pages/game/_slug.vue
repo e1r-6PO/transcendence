@@ -6,9 +6,7 @@
 
 import Vue from 'vue'
 
-import { io, Socket } from "socket.io-client";
-
-const socket_game = io("http://localhost:3000/game", { withCredentials: true, autoConnect: false });
+import socket_game from '../../plugins/socket.io'
 
 export default Vue.extend({
 
