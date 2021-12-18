@@ -65,9 +65,10 @@
           :items="messagesArray"
           height="500"
           benched="3"
-          item-height="200"
+          item-height="100"
         >
           <template v-slot:default="{ item }">
+            
     <!-- <div v-for="(msg, i) in messagesArray" -->
       <!-- :key="i" -->
       <div
@@ -279,25 +280,6 @@ export default Vue.extend({
 
 <style scoped>
 @import '../../assets/main_page.scss';
-
-.flex-container {
-  /* We first create a flex layout context */
-  display: flex;
-
-  /* Then we define the flow direction 
-     and if we allow the items to wrap 
-   * Remember this is the same as:
-   * flex-direction: row;
-   * flex-wrap: wrap;
-   */
-  flex-flow: column wrap;
-
-  /* Then we define how is distributed the remaining space */
-  justify-content: center;
-  align-content: center;
-  list-style: none;
-  row-gap: 50px;
-}
 
 .bubble {
   background: #ffffff;

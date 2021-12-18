@@ -71,7 +71,6 @@ export class FriendsController {
   // deny la friend request
   // supprimer le mecs des amis
   // annuler la friend request
-  // enlever un blocquage
   @Delete(':id')
   async delete_relationship(@Param('id') id, @Req() req: Request) {
     let sender = null as Relationship

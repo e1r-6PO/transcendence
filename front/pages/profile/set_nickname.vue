@@ -11,7 +11,7 @@
       This nick is already register
     </v-alert>
     </div>
-    <div class="flex-container" style="padding-top: 2%">
+    <div class="flex-container-col" style="padding-top: 2%">
       <p align="center" class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</p>
       <v-row justify="center" align="center">
         <v-text-field
@@ -97,6 +97,8 @@ export default class extends Vue {
 <style scoped>
 
 @import '../../assets/main_page.scss';
+@import '../../assets/custom_flexBox.scss';
+@import '../../assets/neon_effects.scss';
 
 .neonText {
   color: #e6ffff;
@@ -104,25 +106,6 @@ export default class extends Vue {
     0 0 7px #63f3f3,
     0 0 8px #63f3f3,
     0 0 50px #63f3f3;
-}
-
-.flex-container {
-  /* We first create a flex layout context */
-  display: flex;
-  
-  /* Then we define the flow direction 
-     and if we allow the items to wrap 
-   * Remember this is the same as:
-   * flex-direction: row;
-   * flex-wrap: wrap;
-   */
-  flex-flow: column wrap;
-  
-  /* Then we define how is distributed the remaining space */
-  justify-content: space-evenly;
-  align-content: center;
-  /* padding-top: 5%; */
-  list-style: none;
 }
 
 .text-field_size{

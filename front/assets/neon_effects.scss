@@ -1,0 +1,48 @@
+.side-bar {
+  border-right: 3px solid #ffa768 !important;
+  box-shadow: inset -50px 0px 30px -45px #fc6500, 0px 0px 30px 7px #fc6500 !important;
+}
+
+.text-field_search {
+  width: 100%;
+  box-shadow: inset 0px 0px 20px 0px #f27719, 0px 0px 20px 0px #f27719 !important;
+  border: 3px solid #fffdfb !important;
+}
+
+.title {
+  text-overflow: clip;
+  overflow: visible;
+}
+
+.neonText {
+  color: #e6ffff;
+  text-shadow:
+      0 0 7px #f27719,
+      0 0 8px #f27719,
+      0 0 9px #f27719 !important;
+}
+
+.menu-icon {
+  color: #f27719 !important;
+  box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 10px 1px #f27719;
+  border: 3px solid #ffc79c;
+  border-radius: 7px;
+}
+
+.open-menu {
+  color: #f27719 !important;
+  box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 10px 1px #f27719;
+  border: 3px solid #ffc79c;
+  border-radius: 40px;
+}
+
+.top_bar_style {
+  border-bottom: 3px solid #ffa768 !important;
+  height: 69px !important;
+  box-shadow: inset 0px -30px 25px -25px #fc6500, 0px 0px 30px 0px #fc6500 !important;
+}
+
+.logout-btn {
+  border: 3px solid #ffc79c !important;
+  box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 26px 1px #f27719;
+}

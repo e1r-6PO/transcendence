@@ -30,19 +30,6 @@
           </v-icon>
             {{ item.title }}
         </v-btn>
-        <v-btn
-          class="title_color neonText no-uppercase"
-          color="white"
-          style="margin-top: 10px"
-          x-large
-          plain
-          to="/chat"
-        >
-          <v-icon left>
-            mdi-wechat
-          </v-icon>
-            Chat Room
-        </v-btn>
       </div>
     </v-navigation-drawer>
 
@@ -99,7 +86,6 @@
 </template>
 
 <script lang='ts'>
-// import Particles from '~/components/Particles.vue'
 
 import Vue from 'vue'
 
@@ -129,11 +115,11 @@ export default Vue.extend({
           title: 'Friends',
           to: '/friends'
         },
-        // {
-        //   icon: 'mdi-wechat',
-        //   title: 'Chat Room',
-        //   to: '/chat'
-        // },
+        {
+          icon: 'mdi-wechat',
+          title: 'Chat Room',
+          to: '/chat'
+        },
         {
           icon: 'mdi-ladder',
           title: 'Scoreboard',
@@ -156,68 +142,11 @@ export default Vue.extend({
 
 <style scoped>
   @import '../assets/main_page.scss';
+  @import '../assets/neon_effects.scss';
 
 .v-application{
     background: #181818 !important;
   }
-
-.side-bar {
-  border-right: 3px solid #ffa768 !important;
-  /* height: 69px !important; */
-  /* max-height: 10%;
-  min-height: 2%;
-  padding-top: 0.2%; */
-  box-shadow: inset -50px 0px 30px -45px #fc6500, 0px 0px 30px 7px #fc6500 !important;
-}
-
-.text-field_search {
-  /* min-width: 100%;
-  max-width: 100%; */
-  width: 100%;
-  box-shadow: inset 0px 0px 20px 0px #f27719, 0px 0px 20px 0px #f27719 !important;
-  border: 3px solid #ffc79c !important;
-}
-
-.title {
-  text-overflow: clip;
-  overflow: visible;
-}
-
-.neonText {
-  color: #e6ffff;
-  text-shadow:
-    0 0 7px #f27719,
-    0 0 8px #f27719,
-    0 0 9px #f27719 !important;
-}
-
-.menu-icon {
-  color: #f27719 !important;
-  box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 10px 1px #f27719;
-  border: 3px solid #ffc79c;
-  border-radius: 7px;
-}
-
-.open-menu{
-  color: #f27719 !important;
-  box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 10px 1px #f27719;
-  border: 3px solid #ffc79c;
-  border-radius: 40px;
-}
-
-.top_bar_style {
-  border-bottom: 3px solid #ffa768 !important;
-  height: 69px !important;
-  /* max-height: 10%;
-  min-height: 2%;
-  padding-top: 0.2%; */
-  box-shadow: inset 0px -30px 25px -25px #fc6500, 0px 0px 30px 0px #fc6500 !important;
-}
-
-.logout-btn {
-  border: 3px solid #ffc79c !important;
-  box-shadow: 0px 0px 20px 0px #f27719, inset 0px 0px 26px 1px #f27719;
-}
 
 .no-uppercase {
   text-transform: none;

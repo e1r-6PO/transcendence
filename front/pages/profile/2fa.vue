@@ -198,32 +198,4 @@ export default class extends Vue {
   border-bottom-style: none !important;
 }
 
-.flex-container {
-  /* We first create a flex layout context */
-  display: flex;
-  
-  /* Then we define the flow direction 
-     and if we allow the items to wrap 
-   * Remember this is the same as:
-   * flex-direction: row;
-   * flex-wrap: wrap;
-   */
-  flex-flow: row wrap;
-  
-  /* Then we define how is distributed the remaining space */
-  justify-content: center;
-  align-content: center;
-  /* padding-top: 5%; */
-  list-style: none;
-  gap: 1%
-}
-
-.flex-item {
-  background: tomato;
-  margin-top: 5%;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-}
-
 </style>
