@@ -47,12 +47,25 @@
       app
       left
       temporary
-      style="margin-top: 70px"
+      style="padding-top: 65px"
       color="#181818"
     >
       <v-list dense>
+        <v-subheader>
+          <v-btn
+            icon
+            class="neon-button"
+            @click.stop="channelDrawer = !channelDrawer"
+            :color="channelFocus == true ? '#9141c7' : 'black'"
+            v-on:mouseover="channelFocus = true"
+            v-on:mouseleave="channelFocus = false"
+          >
+            <v-icon> mdi-forum </v-icon>
+          </v-btn>
+        </v-subheader>
         <v-list-item
           class="neon-button"
+          color="white"
           style="border-radius: 15px; margin-top: 10px"
           v-for="(channel, i) in channList"
           :key="channList[i]"
@@ -72,9 +85,23 @@
       right
       temporary
       color="#181818"
-      style="margin-top: 70px"
+      style="padding-top: 70px"
     >
       <v-list dense>
+        <v-subheader>
+          <v-spacer />
+          <v-btn
+            icon
+            right
+            class="neon-button"
+            @click.stop="userDrawer = !userDrawer"
+            :color="userFocus == true ? '#9141c7' : 'black'"
+            v-on:mouseover="userFocus = true"
+            v-on:mouseleave="userFocus = false"
+          >
+            <v-icon> mdi-account-group </v-icon>
+          </v-btn>
+         </v-subheader>
         <v-list-item
           class="neon-button"
           style="border-radius: 15px; margin-top: 10px"
