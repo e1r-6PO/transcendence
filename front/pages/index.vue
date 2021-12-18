@@ -13,6 +13,7 @@
             Welcome to Transcendence
           </v-card-text>
           <v-main>
+            <v-btn class="foreground_element" @click="$store.commit('increment')">{{ $store.state.counter }}</v-btn>
             <v-row justify="center" align="center">
               <v-col align="center">
                 <v-btn  
