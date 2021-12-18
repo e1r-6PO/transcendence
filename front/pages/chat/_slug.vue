@@ -1,11 +1,47 @@
 <template>
   <v-container
     style="overflow-y: hidden !important"
+    class="body"
     fluid 
     fill-height
   >
    <v-row style="height: 100%; margin-top: 2.5%">
     <v-col cols="12" sm="3" class="border">
+
+
+    <v-card
+      max-width="350"
+      color="#181818"
+      flat
+    >
+      <v-virtual-scroll
+        :items="channList"
+        height="500"
+        min-width="100"
+        item-height="60"
+      >
+        <template v-slot:default="{ item }">
+          <v-list-item :key="item" @click="redirectToChannel(item)" style="padding-bottom: 10px" align="center">
+            <v-card flat height="54" min-width="150" width="300" style="margin-bottom: -8px; border-radius: 15px" color="#181818" class="neon-button">
+            <v-card-text style="color: white">
+              <h3>{{ item }}</h3>
+            </v-card-text>
+            </v-card>
+          </v-list-item>
+          <!-- <v-divider class="divider"></v-divider> -->
+        </template>
+      </v-virtual-scroll>
+    </v-card>
+
+
+
+
+      <!-- <v-virtual-scroll
+        :bench="benched"
+        :items="channList"
+        height="500"
+        item-height="64"
+      >
       <v-card v-for="(channel, i) in channList" :key="channList[i]"
         tile
         @click="redirectToChannel(channel)"
@@ -15,54 +51,103 @@
         </v-card-text>
         <v-divider></v-divider>
       </v-card>
+      </v-virtual-scroll> -->
     </v-col>
 
 
     <v-col cols="12" sm="6" class="border">
-    <div v-for="(msg, i) in messagesArray"
-      max-height="400"
-      class="overflow-y-auto"
-      :key="i"
-      style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
-    >
+      <v-card
+        max-width="1000"
+        color="#181818"
+        flat
+      >
+        <v-virtual-scroll
+          :items="messagesArray"
+          height="500"
+          benched="3"
+          item-height="200"
+        >
+          <template v-slot:default="{ item }">
+    <!-- <div v-for="(msg, i) in messagesArray" -->
+      <!-- :key="i" -->
+      <div
+        class="overflow-y-auto"
+        style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
+      >
       <v-img
-        :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
+        :style="isYourMsg(item) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
         style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
         width="30"
-        :src="msg.picture"
-        @click="redirectToUserProfile(msg.senderNick)"
+        :src="item.picture"
+        @click="redirectToUserProfile(item.senderNick)"
       >
       </v-img>
       <v-card
         class="bubble"
-        :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
-        :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
-        style="min-width: 70px; max-width: 400px !important;"
+        :class="isYourMsg(item) ? 'bubble bubble_right' : 'bubble bubble_left'"
+        :color="isYourMsg(item) ? '#1982FC' : '#ffffff'"
+        style="min-width: 70px; max-width: 400px !important; margin-top: 20px"
       >
         <v-card-subtitle
-          style="padding-bottom: 0px"
-          v-text="msg.senderNick"
+          style="padding-bottom: 0px; color: white"
+          v-text="item.senderNick"
           class="text-left"
         >
 
         </v-card-subtitle>
       <v-card-text
-        style="padding-bottom: 0px; padding-right: 55px"
-        v-text="msg.message"
+        style="padding-bottom: 0px; padding-right: 55px; color: white"
+        v-text="item.message"
       >
       </v-card-text>
       <v-card-subtitle
-        style="padding-bottom: 5px; padding-top: 0px;"
-        v-text="formateTime(msg.time)"
+        style="padding-bottom: 5px; padding-top: 0px; color: white"
+        v-text="formateTime(item.time)"
         class="text-right"
       >
       </v-card-subtitle>
       </v-card>
     </div>
+        </template>
+      </v-virtual-scroll>
+    </v-card>
     </v-col>
 
     <v-col cols="12" sm="3">
-      <v-card v-for="(user, i) in userList" :key="`user-${i}`"
+
+          <v-card
+      max-width="350"
+      color="#181818"
+      flat
+    >
+      <v-virtual-scroll
+        :items="userList"
+        height="500"
+        min-width="80"
+        item-height="64"
+      >
+        <template v-slot:default="{ item }">
+          <v-list-item :key="item" @click="redirectToUserProfile(item.nickName)">
+            <v-card flat height="60" min-width="150" width="300" style="border-radius: 15px;" color="#181818" class="neon-button">
+              <v-card-title style="padding-top: 8px; padding-bottom: 0px">
+                <v-avatar size="36">
+                  <img
+                    alt="user"
+                    :src="item.picture"
+                  >
+                </v-avatar>
+                <h4 style="color: white; margin-left: 10px">{{ item.nickName }}</h4>
+              </v-card-title>
+              <v-card-subtitle align="right">
+                <h6 style="color: white">{{ item.channelStatus }}</h6>
+              </v-card-subtitle>
+            </v-card>
+          </v-list-item>
+          <!-- <v-divider class="divider"></v-divider> -->
+        </template>
+      </v-virtual-scroll>
+          </v-card>
+      <!-- <v-card v-for="(user, i) in userList" :key="`user-${i}`"
         tile
         @click="redirectToUserProfile(user.nickName)"
       >
@@ -80,7 +165,7 @@
           <p class="ml-12" style="margin-bottom: 0px">{{ user.channelStatus }}</p>
         </v-card-subtitle>
         <v-divider></v-divider>
-      </v-card>
+      </v-card> -->
     </v-col>
   </v-row>
     <v-footer app inset color="#181818">
@@ -193,6 +278,8 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+@import '../../assets/main_page.scss';
+
 .flex-container {
   /* We first create a flex layout context */
   display: flex;
@@ -227,40 +314,53 @@ export default Vue.extend({
 
 .bubble_white:after {
   border: 8px solid transparent !important;
-  border-bottom-color: #ffffff !important; /* arrow color */
+  border-bottom-color: #ffc79c !important; /* arrow color */
 }
 
 .bubble_blue:after {
-  border: 8px solid transparent !important;
-  border-bottom-color: #1982FC !important; /* arrow color */
+  border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+
+  /* border: 8px solid transparent !important; */
+  /* border-bottom-color: #1982FC !important; arrow color */
 }
 
 .bubble_left {
+  border: 3px solid #ffc79c !important;
+  box-shadow: inset 0px 0px 110px 0px #f27719 !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
   float: left;
 }
 
 .bubble_left:after {
   border: 8px solid transparent !important;
-  border-bottom-color: #ffffff !important; /* arrow color */
-  bottom: 0px!important;
-  left: -7px !important;
+  border-bottom-color: #ffc79c !important; /* arrow color */
+  bottom: -2px!important;
+  left: -9px !important;
 }
 
 .bubble_right {
+    border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 110px 0px #0affff!important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
   float: right;
 }
 
 .bubble_right:after {
-  right: -8px !important;
+  right: -12px !important;
   border: 10px solid transparent !important;
-  border-bottom-color: #1982FC !important; /* arrow color */
-  bottom: 0px !important;
+  border-bottom-color: #a5fafa !important; /* arrow color */
+  bottom: -2px !important;
 }
 
-/* body {
+body {
   overscroll-behavior: none !important;
   overflow-y: hidden !important;
-} */
+}
 
 .border {
   border-right: 1px solid grey;
@@ -268,6 +368,11 @@ export default Vue.extend({
 
 .scrollable {
   overflow-y: scroll !important;
+}
+
+.neon-button {
+  border: 3px solid #cd78ff !important;
+  box-shadow: inset 0px 0px 20px 0px #a200ff, 0px 0px 20px 0px #a200ff !important;
 }
 
 </style>
