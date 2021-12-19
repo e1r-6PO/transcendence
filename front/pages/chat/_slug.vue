@@ -12,31 +12,19 @@
     fixed
     clipped-left
   >
-    <v-btn
-      icon
-      class="neon-button"
+    <CloseBtn
       style="margin-top: 80px"
-      @click.stop="channelDrawer = !channelDrawer"
-      :color="channelFocus == true ? '#9141c7' : 'black'"
-      v-on:mouseover="channelFocus = true"
-      v-on:mouseleave="channelFocus = false"
-    >
-      <v-icon> mdi-forum </v-icon>
-    </v-btn>
+      customMdi="mdi-forum"
+      v-on:click="channelDrawer = !channelDrawer">
+    </CloseBtn>
     <v-spacer />
     <h3 style="color: white; margin-top: 80px">{{ $route.params.slug }}</h3>
     <v-spacer />
-    <v-btn
-      icon
-      class="neon-button"
+    <CloseBtn
       style="margin-top: 80px"
-      @click.stop="userDrawer = !userDrawer"
-      :color="userFocus == true ? '#9141c7' : 'black'"
-      v-on:mouseover="userFocus = true"
-      v-on:mouseleave="userFocus = false"
-    >
-      <v-icon> mdi-account-group </v-icon>
-    </v-btn>
+      customMdi="mdi-account-group"
+      v-on:click="userDrawer = !userDrawer">
+    </CloseBtn>
   </v-app-bar>
   <v-row style="height: 100%; margin-top: 2.5%">
 
@@ -50,7 +38,7 @@
     >
       <ChannelList class="mt-4" :state="true">
          <v-subheader class="mt-3 mb-8">
-          <CloseBtn v-on:click="channelDrawer = !channelDrawer">  </CloseBtn>
+          <CloseBtn customMdi="mdi-close" v-on:click="channelDrawer = !channelDrawer"></CloseBtn>
           <v-spacer />
           <CreateChannelBtn class="pr-5 pb-3"/>
         </v-subheader>
@@ -69,7 +57,7 @@
       <ChannelUserList>
         <v-subheader>
           <v-spacer />
-          <CloseBtn class="mt-2" v-on:click="userDrawer = !userDrawer">  </CloseBtn>
+          <CloseBtn customMdi="mdi-close" class="mt-2" v-on:click="userDrawer = !userDrawer"></CloseBtn>
          </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelUserList>
