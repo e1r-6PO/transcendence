@@ -1,6 +1,5 @@
 <template>
-  <v-alert
-    v-model="alertCode"
+  <v-alert v-if="state" :state="state"
     outlined
     :type=alertType
     text
@@ -14,31 +13,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { Component, Prop, Vue } from 'nuxt-property-decorator'
 
-export default Vue.extend({
-  middleware: 'login',
-  name: "AlertError",
+@Component
+export default class AlertError extends Vue{
 
-  data() {
-    return {
-      alertCode: false,
-      alertType: 'error',
-      alertText: '',
-    }
-  },
+  @Prop({ type: Boolean, default: false})
+  state!: boolean
 
-  methods: {
-    
-    activeAlert(alert: string) {
-      this.alertType = 'error'
-      this.alertText = alert
-      this.alertCode = true
-      setTimeout(() => {
-        this.alertCode = false
-      }, 2000)
-      // this.$emit("alertEnd")
-    },
-  }
-})
+      alertCode: boolean = true
+      alertType: string = 'error'
+      alertText: string = ""
+}
 </script>
