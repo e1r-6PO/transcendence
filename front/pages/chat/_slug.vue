@@ -50,16 +50,7 @@
     >
       <ChannelList class="mt-4" :state="true">
          <v-subheader class="mt-3 mb-8">
-          <v-btn
-            icon
-            class="neon-button"
-            @click.stop="channelDrawer = !channelDrawer"
-            :color="channelFocus == true ? '#9141c7' : 'black'"
-            v-on:mouseover="channelFocus = true"
-            v-on:mouseleave="channelFocus = false"
-          >
-            <v-icon> mdi-close </v-icon>
-          </v-btn>
+          <CloseBtn v-on:clicked="channelDrawer = !channelDrawer">  </CloseBtn>
           <v-spacer />
           <CreateChannelBtn class="pr-5 pb-3"/>
         </v-subheader>
@@ -78,18 +69,7 @@
       <ChannelUserList>
         <v-subheader>
           <v-spacer />
-
-          <v-btn
-            icon
-            class="neon-button"
-            @click.stop="userDrawer = !userDrawer"
-            :color="userFocus == true ? '#9141c7' : 'black'"
-            v-on:mouseover="userFocus = true"
-            v-on:mouseleave="userFocus = false"
-          >
-            <v-icon> mdi-close </v-icon>
-          </v-btn>
-
+          <CloseBtn class="mt-2" v-on:clicked="userDrawer = !userDrawer">  </CloseBtn>
          </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelUserList>
@@ -173,11 +153,12 @@ import { io, Socket } from "socket.io-client";
 import ChannelList from '../../components/channel/ChannelList.vue';
 import ChannelUserList from '../../components/channel/ChannelUserList.vue';
 import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
+import CloseBtn from '../../components/channel/button/CloseBtn.vue';
 
 const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
 
 export default Vue.extend({
-  components: { CreateChannelBtn, ChannelList, ChannelUserList },
+  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn },
   middleware: 'login',
 
   data() {
