@@ -50,7 +50,7 @@
     >
       <ChannelList class="mt-4" :state="true">
          <v-subheader class="mt-3 mb-8">
-          <CloseBtn v-on:clicked="channelDrawer = !channelDrawer">  </CloseBtn>
+          <CloseBtn v-on:click="channelDrawer = !channelDrawer">  </CloseBtn>
           <v-spacer />
           <CreateChannelBtn class="pr-5 pb-3"/>
         </v-subheader>
@@ -69,7 +69,7 @@
       <ChannelUserList>
         <v-subheader>
           <v-spacer />
-          <CloseBtn class="mt-2" v-on:clicked="userDrawer = !userDrawer">  </CloseBtn>
+          <CloseBtn class="mt-2" v-on:click="userDrawer = !userDrawer">  </CloseBtn>
          </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelUserList>
