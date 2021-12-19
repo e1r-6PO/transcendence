@@ -3,6 +3,7 @@
   fluid 
   fill-height
  >
+      <AlertError :state="alert"> {{ alertText }} </AlertError>
   <v-row style="height: 100%">
 
     <v-col cols="12" sm="3" class="border">
@@ -59,11 +60,15 @@ export default Vue.extend({
 
   data() {
     return {
-      channList: []
+      channList: [],
+      alertText: "",
+      alert: false,
     }
   },
 
   async mounted() {
+    if (this.$route.query['error'] && this.$route.query['error'] != "")
+      this.activeAlert(this.$route.query['error'])
     var ret = await this.$axios.get('/api/chat/myChannel')
     this.channList = ret.data
   },
@@ -73,6 +78,17 @@ export default Vue.extend({
     redirectToChannel(channName: string) {
         this.$router.push('/chat/' + channName)
     },
+    
+    activeAlert(error: any)
+    {
+        this.alertText = error
+        this.alert = true
+        console.log("here")
+        setTimeout(() => {
+          this.alert = false
+      }, 2000)
+        console.log("here2")
+    }
   },
 })
 </script>
