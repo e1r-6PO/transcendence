@@ -63,7 +63,15 @@ export class ChannelController {
     });
     if (channel == null)
       throw new ConflictException('Channel does not exist')
-    var participantList = await this.channelParticipantsRepository.find({
+    
+    var checkAccess = this.channelParticipantsRepository.findOne({
+      where: { user: req.cookies['user_id'], channel: channel }
+    });
+
+    if (checkAccess == null)
+      throw new ForbiddenException()
+
+      var participantList = await this.channelParticipantsRepository.find({
       where : { channel: channel }
     });
 
@@ -117,7 +125,7 @@ export class ChannelController {
     participant.status = ChannelStatus.owner;
     participant.user = owner;
 
-    // channel.channelParticipant = [participant]
+    channel.channelParticipant = [participant]
     channel = await this.channelsRepository.save(channel)
     participant.channel = channel
     this.channelParticipantsRepository.save(participant)
