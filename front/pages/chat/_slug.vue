@@ -225,6 +225,7 @@ export default Vue.extend({
       userFocus: false,
       channelFocus: false,
       createFocus: false,
+      access: true,
     }
   },
 
@@ -236,30 +237,48 @@ export default Vue.extend({
     }
   },
 
-  async created() {
+  async mounted() {
     const ret = await this.$axios.$get('/api/chat/messages/access?name=' + this.$route.params.slug)
       .catch(function (error) {
         return error.response
       })
     if (ret.status == 404)
       this.$router.push('/chat?error=Channel%20does%20not%20exist')
-    socket_chat.connect();
-    socket_chat.emit('joinChannel', this.$route.params.slug);
-    this.me = await this.$axios.$get('/api/profile/me')
-    this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
-    
-    socket_chat.on('msgToClient', (msg: string) => {
-      this.messagesArray.push(msg)
-      this.nbMsg = this.messagesArray.length
-    })
+      // this.access = false
+    else if (ret.status == 201)
+    {
+      socket_chat.connect();
+      socket_chat.emit('joinChannel', this.$route.params.slug);
+      this.me = await this.$axios.$get('/api/profile/me')
+      this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
+      
+      socket_chat.on('msgToClient', (msg: string) => {
+        this.messagesArray.push(msg)
+        this.nbMsg = this.messagesArray.length
+      })
+      var myChannelRet = await this.$axios.get('/api/chat/myChannel')
+      this.channList = myChannelRet.data
+      var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
+      this.userList = userListRet.data
+    }
+    console.log("before mount access :" + this.access)
+
   },
 
-  async mounted() {
-    var myChannelRet = await this.$axios.get('/api/chat/myChannel')
-    this.channList = myChannelRet.data
-    var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
-    this.userList = userListRet.data
-  },
+  // async mounted() {
+  //   this.$nextTick(async function () {
+  //     console.log("access" + this.access)
+  //     if (this.access == false)
+  //       this.$router.push('/chat?error=Channel%20does%20not%20exist')
+  //     else
+  //     {
+  //       var myChannelRet = await this.$axios.get('/api/chat/myChannel')
+  //       this.channList = myChannelRet.data
+  //       var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
+  //       this.userList = userListRet.data
+  //     }
+  //   })
+  // },
 
   methods: {
     sendMessage(): void {
@@ -289,10 +308,6 @@ export default Vue.extend({
     redirectToChannel(channName: string) {
       this.$router.push('/chat/' + channName)
     },
-
-    logCreate() {
-      console.log(this.createFocus)
-    }
   }
 })
 </script>
