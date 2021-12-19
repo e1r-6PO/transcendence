@@ -24,9 +24,7 @@
       <v-icon> mdi-forum </v-icon>
     </v-btn>
     <v-spacer />
-    <h3 
-      style="color: white; margin-top: 80px"
-    >{{ $route.params.slug }}</h3>
+    <h3 style="color: white; margin-top: 80px">{{ $route.params.slug }}</h3>
     <v-spacer />
     <v-btn
       icon
@@ -51,7 +49,7 @@
       color="#181818"
     >
       <v-list dense>
-        <v-subheader>
+        <v-subheader class="mt-8 mb-8">
           <v-btn
             icon
             class="neon-button"
@@ -60,9 +58,12 @@
             v-on:mouseover="channelFocus = true"
             v-on:mouseleave="channelFocus = false"
           >
-            <v-icon> mdi-forum </v-icon>
+            <v-icon> mdi-close </v-icon>
           </v-btn>
+          <v-spacer />
+          <CreateChannelBtn class="pr-5 pb-3"/>
         </v-subheader>
+        <v-divider class="mb-4" style="border-color: #f27719;"> </v-divider>
         <v-list-item
           class="neon-button"
           color="white"
@@ -127,7 +128,8 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-col cols="12" sm="12">
+    <v-spacer />
+    <v-col cols="12" sm="11">
       <v-card
         color="#181818"
         flat
@@ -173,6 +175,7 @@
         </div>
       </v-card>
     </v-col>
+    <v-spacer />
   </v-row>
   
   <v-footer app inset color="#181818">
@@ -200,10 +203,12 @@ import { Messages } from '../../assets/Messages'
 import { LightUser, User } from '../../assets/User'
 import { ChannelUser } from '../../assets/ChannelUser'
 import { io, Socket } from "socket.io-client";
+import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
 
 const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
 
 export default Vue.extend({
+  components: { CreateChannelBtn},
   middleware: 'login',
 
   data() {
@@ -219,6 +224,7 @@ export default Vue.extend({
       channelDrawer: false,
       userFocus: false,
       channelFocus: false,
+      createFocus: false,
     }
   },
 
@@ -242,7 +248,7 @@ export default Vue.extend({
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
     
-    socket_chat.on('msgToClient', (msg: Messages) => {
+    socket_chat.on('msgToClient', (msg: string) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
     })
@@ -253,10 +259,6 @@ export default Vue.extend({
     this.channList = myChannelRet.data
     var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
     this.userList = userListRet.data
-    console.log(userListRet)
-    console.log(this.userList)
-    console.log(myChannelRet)
-    console.log(this.channList)
   },
 
   methods: {
@@ -286,6 +288,10 @@ export default Vue.extend({
 
     redirectToChannel(channName: string) {
       this.$router.push('/chat/' + channName)
+    },
+
+    logCreate() {
+      console.log(this.createFocus)
     }
   }
 })
