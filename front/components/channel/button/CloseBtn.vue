@@ -7,17 +7,20 @@
     v-on:mouseover="btnFocus = true"
     v-on:mouseleave="btnFocus = false"
   >
-    <v-icon> mdi-close </v-icon>
+    <v-icon> {{customMdi}} </v-icon>
   </v-btn>
 </template>
 
 <script lang="ts">
-import { Component } from "nuxt-property-decorator";
+import { Component, Prop } from "nuxt-property-decorator";
 import Vue from 'vue'
 
 @Component
 export default class CloseBtn extends Vue {
   
+  @Prop({default: ""})
+  customMdi!: string
+
   btnFocus: boolean = false
 
   btnClicked() {
