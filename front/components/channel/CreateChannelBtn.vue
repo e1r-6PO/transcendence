@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AlertError @alertEnd="activeAlert = !activeAlert" ref="alert" />
+    <AlertError :state="alert"> {{ alertText }} </AlertError>
     <v-dialog
       v-model="dialog"
       max-width="600px"
@@ -73,28 +73,23 @@
 <script lang="ts">
 import Vue from 'vue'
 import AlertError from '../../components/AlertError.vue'
+import { Component, Prop } from 'nuxt-property-decorator'
 
-export default Vue.extend({
-  middleware: 'login',
-  name: "CreateChannelBtn",
+@Component
+export default class CreateChannelBtn extends Vue{
 
-  data() {
-    return {
-      dialog: false,
-      channName: '',
-      channPass: '',
-      channType: '',
-      createFocus: false,
-      activeAlert: false,
-      typeList: [
+      dialog: boolean = false
+      channName: string = ''
+      channPass: string = ''
+      channType: string = ''
+      createFocus: boolean = false
+      alert: boolean = false
+      alertText: string = ""
+      typeList: Array<string> = [
         'Public',
         'Private',
         'Protected'
-      ],
-    }
-  },
-
-  methods: {
+      ]
 
     async createChannel() {
       this.dialog = false
@@ -103,14 +98,14 @@ export default Vue.extend({
           return error.response
         });
       if (ret.status == 409)
-        this.$refs.alert.activeAlert("Channel already exists")
+        this.activeAlert("Channel already exists")
       else
         this.$router.push("/chat/" + this.channName)
-    },
+    }
 
     redirectToChannel(channName: string) {
         this.$router.push('/chat/' + channName)
-    },
+    }
 
     disableCreate() {
       if (this.channName == '' || this.channName.length > 20)
@@ -120,9 +115,17 @@ export default Vue.extend({
       if (this.channType == 'Protected' && (this.channPass == '' || this.channPass.length < 5))
         return true
       return false
-    },
-  },
-})
+    }
+
+    activeAlert(error: string)
+    {
+        this.alertText = error
+        this.alert = true
+        setTimeout(() => {
+          this.alert = false
+      }, 2000)
+    }
+}
 </script>
 
 <style >

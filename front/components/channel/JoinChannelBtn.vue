@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AlertError @alertEnd="activeAlert = !activeAlert" ref="alert" />
+    <AlertError :state="alert"> {{ alertText }} </AlertError>
     <v-dialog
           v-model="dialogJoin"
           max-width="600px"
@@ -96,78 +96,82 @@
 </template>
 
 <script lang="ts">
+import { Component } from 'nuxt-property-decorator';
 import Vue from 'vue'
 import { ChannAccess } from '../../assets/Messages'
 import AlertError from '../../components/AlertError.vue';
 
-export default Vue.extend({
-  middleware: 'login',
-  name: "JoinChannelBtn",
+@Component
+export default class JoinChannelBtn extends Vue{
+  
+  dialogJoin: boolean = false
+  dialogPass: boolean = false
+  joinFocus: boolean = false
+  channName: string = ""
+  channPass: string = ""
+  channType: string = ""
+  alertText: string = ""
+  alert: boolean = false
 
-  data() {
-    return {
-      dialogJoin: false,
-      dialogPass: false,
-      joinFocus: false,
-      channName: '',
-      channPass: '',
-      channType: '',
-      alertText: 'Join alert',
-      activeAlert: false,
-    }
-  },
+async mounted() {
+  // console.log("HERE")
+  // if (this.$route.query['error'] && this.$route.query['error'] != "")
+  //   this.activeAlert(this.$route.query['error'])
+  // console.log("HERE2")
+}
 
-  async mounted() {
-    if (this.$route.query['error'] != undefined && this.$route.query['error'] != "")
-      this.$refs.alert.activeAlert(this.$route.query['error'])
-  },
+  async tryJoin() {
+    this.dialogJoin = false;
+    const type = await this.$axios.get('/api/chat/' + this.channName + '/type')
+      .catch(function (error) {
+        return error.response
+      })
+    if (type.status == 403)
+    this.activeAlert("Channel does not exist")
+    else if (type.data == ChannAccess.PROTECTED)
+      this.dialogPass = true
+    else
+      this.joinChannel()
+  }
 
-  methods: {
+  redirectToChannel(channName: string) {
+      this.$router.push('/chat/' + channName)
+  }
 
-    async tryJoin() {
-      this.dialogJoin = false;
-      const type = await this.$axios.get('/api/chat/' + this.channName + '/type')
-        .catch(function (error) {
-          return error.response
-        })
-      if (type.status == 403)
-        this.$refs.alert.activeAlert("Channel does not exist")
-      else if (type.data == ChannAccess.PROTECTED)
-        this.dialogPass = true
-      else
-        this.joinChannel()
-    },
+  async joinChannel() {
+    this.dialogPass = false;
+    const ret = await this.$axios.post('/api/chat/join?name=' + this.channName + '&pass=' + this.channPass)
+      .catch(function (error) {
+        return error.response
+    });
+    if (ret.status == 409)
+    this.activeAlert(ret.data['message'])
+    else if (ret.status == 403)
+    this.activeAlert(ret.data['message'])
+    else if (ret.status == 201)
+      this.$router.push("/chat/" + this.channName)
+  }
 
-    redirectToChannel(channName: string) {
-        this.$router.push('/chat/' + channName)
-    },
+  async joinChannelWithPass()
+  {
+    const ret = await this.$axios.post('/api/chat/messages')
+  }
 
-    async joinChannel() {
-      this.dialogPass = false;
-      const ret = await this.$axios.post('/api/chat/join?name=' + this.channName + '&pass=' + this.channPass)
-        .catch(function (error) {
-          return error.response
-      });
-      if (ret.status == 409)
-        this.$refs.alert.activeAlert(ret.data['message'])
-      else if (ret.status == 403)
-        this.$refs.alert.activeAlert(ret.data['message'])
-      else if (ret.status == 201)
-        this.$router.push("/chat/" + this.channName)
-    },
-
-    async joinChannelWithPass()
-    {
-      const ret = await this.$axios.post('/api/chat/messages')
-    },
-
-    disableJoin() {
-      if (!this.dialogPass && this.channName == '')
-        return true
-      return false
-    }
-  },
-})
+  disableJoin() {
+    if (!this.dialogPass && this.channName == '')
+      return true
+    return false
+  }
+  
+  activeAlert(error: any)
+  {
+      this.alertText = error
+      this.alert = true
+      setTimeout(() => {
+        this.alert = false
+    }, 2000)
+  }
+}
 </script>
 
 <style>
