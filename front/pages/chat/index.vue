@@ -16,7 +16,8 @@
       >
       </v-divider>
       
-      <v-card v-for="(channel, i) in channList" :key="channList[i]"
+      <ChannelList class="mt-4" :state="true" />
+      <!-- <v-card v-for="(channel, i) in channList" :key="channList[i]"
         tile
         @click="redirectToChannel(channel)"
       >
@@ -24,7 +25,7 @@
           {{ channel }}
         </v-card-text>
         <v-divider></v-divider>
-      </v-card>
+      </v-card> -->
     </v-col>
 
     <v-col cols="12" sm="6" class="border">
@@ -52,10 +53,11 @@ import { ChannAccess, Messages } from '../../assets/Messages'
 import { LightUser, User } from '../../assets/User'
 import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue'
 import JoinChannelBtn from '../../components/channel/JoinChannelBtn.vue';
+import ChannelList from '../../components/channel/ChannelList.vue';
 import AlertError from '../../components/AlertError.vue';
 
 export default Vue.extend({
-  components: { CreateChannelBtn, JoinChannelBtn  },
+  components: { CreateChannelBtn, JoinChannelBtn, ChannelList },
   middleware: 'login',
 
   data() {
@@ -83,11 +85,9 @@ export default Vue.extend({
     {
         this.alertText = error
         this.alert = true
-        console.log("here")
         setTimeout(() => {
           this.alert = false
       }, 2000)
-        console.log("here2")
     }
   },
 })

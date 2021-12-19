@@ -48,8 +48,8 @@
       style="padding-top: 65px"
       color="#181818"
     >
-      <v-list dense>
-        <v-subheader class="mt-8 mb-8">
+      <ChannelList class="mt-4" :state="true">
+         <v-subheader class="mt-3 mb-8">
           <v-btn
             icon
             class="neon-button"
@@ -63,21 +63,8 @@
           <v-spacer />
           <CreateChannelBtn class="pr-5 pb-3"/>
         </v-subheader>
-        <v-divider class="mb-4" style="border-color: #f27719;"> </v-divider>
-        <v-list-item
-          class="neon-button"
-          color="white"
-          style="border-radius: 15px; margin-top: 10px"
-          v-for="(channel, i) in channList"
-          :key="channList[i]"
-          link
-          @click="redirectToChannel(channel)"
-        >
-          <v-list-item-content>
-            <h4 style="color: white; margin-left: 10px">{{ channel }}</h4>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+        <v-divider class="mb-4 divider" style="border-color: #f27719;"> </v-divider>
+      </ChannelList>
     </v-navigation-drawer>
 
     <v-navigation-drawer
@@ -88,44 +75,24 @@
       color="#181818"
       style="padding-top: 70px"
     >
-      <v-list dense>
+      <ChannelUserList>
         <v-subheader>
           <v-spacer />
+
           <v-btn
             icon
-            right
             class="neon-button"
             @click.stop="userDrawer = !userDrawer"
             :color="userFocus == true ? '#9141c7' : 'black'"
             v-on:mouseover="userFocus = true"
             v-on:mouseleave="userFocus = false"
           >
-            <v-icon> mdi-account-group </v-icon>
+            <v-icon> mdi-close </v-icon>
           </v-btn>
+
          </v-subheader>
-        <v-list-item
-          class="neon-button"
-          style="border-radius: 15px; margin-top: 10px"
-          v-for="(user, i) in userList"
-          :key="`user-${i}`"
-          link
-          @click="redirectToUserProfile(user.nickName)"
-        >
-          <v-list-item-icon style="margin-right: 10px; padding-top: 4px">
-          <v-avatar size="36">
-            <img
-              alt="user"
-              :src="user.picture"
-            >
-          </v-avatar>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title v-text="user.nickName" class="text-h6" style="color: white; margin-top: 14px"></v-list-item-title>
-          <v-list-item-subtitle v-text="user.channelStatus" align="right" style="color: white; margin-top: 0px">
-          </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+        <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
+      </ChannelUserList>
     </v-navigation-drawer>
 
     <v-spacer />
@@ -203,12 +170,14 @@ import { Messages } from '../../assets/Messages'
 import { LightUser, User } from '../../assets/User'
 import { ChannelUser } from '../../assets/ChannelUser'
 import { io, Socket } from "socket.io-client";
+import ChannelList from '../../components/channel/ChannelList.vue';
+import ChannelUserList from '../../components/channel/ChannelUserList.vue';
 import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
 
 const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
 
 export default Vue.extend({
-  components: { CreateChannelBtn},
+  components: { CreateChannelBtn, ChannelList, ChannelUserList },
   middleware: 'login',
 
   data() {
@@ -225,7 +194,6 @@ export default Vue.extend({
       userFocus: false,
       channelFocus: false,
       createFocus: false,
-      access: true,
     }
   },
 
@@ -244,7 +212,6 @@ export default Vue.extend({
       })
     if (ret.status == 404)
       this.$router.push('/chat?error=Channel%20does%20not%20exist')
-      // this.access = false
     else if (ret.status == 201)
     {
       socket_chat.connect();
@@ -256,29 +223,18 @@ export default Vue.extend({
         this.messagesArray.push(msg)
         this.nbMsg = this.messagesArray.length
       })
-      var myChannelRet = await this.$axios.get('/api/chat/myChannel')
+      var myChannelRet = await this.$axios.$get('/api/chat/myChannel')
       this.channList = myChannelRet.data
-      var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
-      this.userList = userListRet.data
+      var userListRet = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/users')
+        .catch(function(error) {
+          return error.response
+        })
+      if (userListRet.status == 403)
+        this.$router.push('/chat')
+      else
+        this.userList = userListRet.data
     }
-    console.log("before mount access :" + this.access)
-
   },
-
-  // async mounted() {
-  //   this.$nextTick(async function () {
-  //     console.log("access" + this.access)
-  //     if (this.access == false)
-  //       this.$router.push('/chat?error=Channel%20does%20not%20exist')
-  //     else
-  //     {
-  //       var myChannelRet = await this.$axios.get('/api/chat/myChannel')
-  //       this.channList = myChannelRet.data
-  //       var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
-  //       this.userList = userListRet.data
-  //     }
-  //   })
-  // },
 
   methods: {
     sendMessage(): void {
@@ -389,6 +345,12 @@ body {
 .neon-button {
   border: 3px solid #cd78ff !important;
   box-shadow: inset 0px 0px 20px 0px #a200ff, 0px 0px 20px 0px #a200ff !important;
+}
+
+.divider {
+  border-bottom: 1px solid #ffa768 !important;
+  height: 69px !important;
+  box-shadow: inset 0px -5px 5px -5px #fc6500, 0px 0px 7px 1px #fc6500 !important;
 }
 
 </style>
