@@ -141,8 +141,8 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-  @import '../assets/main_page.scss';
-  @import '../assets/neon_effects.scss';
+  @import '../assets/Classes-scss/main_page.scss';
+  @import '../assets/Classes-scss/neon_effects.scss';
 
 .v-application{
     background: #181818 !important;

@@ -42,7 +42,7 @@
           <v-spacer />
           <CreateChannelBtn class="pr-5 pb-3"/>
         </v-subheader>
-        <v-divider class="mb-4 divider" style="border-color: #f27719;"> </v-divider>
+        <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelList>
     </v-navigation-drawer>
 
@@ -52,12 +52,13 @@
       right
       temporary
       color="#181818"
-      style="padding-top: 70px"
+      style="padding-top: 65px"
     >
-      <ChannelUserList>
-        <v-subheader>
+      <ChannelUserList class="mt-4">
+        <v-subheader class="mt-3 mb-8">
+          <ChannelSettingBtn class="pl-5 pb-3"> </ChannelSettingBtn>
           <v-spacer />
-          <CloseBtn customMdi="mdi-close" class="mt-2" v-on:click="userDrawer = !userDrawer"></CloseBtn>
+          <CloseBtn customMdi="mdi-close" v-on:click="userDrawer = !userDrawer"></CloseBtn>
          </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelUserList>
@@ -114,7 +115,7 @@
     <v-spacer />
   </v-row>
   
-  <v-footer app inset color="#181818" class="pb-4">
+  <v-footer app inset color="#181818">
     <v-text-field
       v-model="message"
       class="text-field-nick-neon custom-placeholder-color custom-input-color"
@@ -140,19 +141,20 @@
 
 <script lang='ts'>
 import Vue from 'vue'
-import { Messages } from '../../assets/Messages'
-import { LightUser, User } from '../../assets/User'
-import { ChannelUser } from '../../assets/ChannelUser'
+import { Messages } from '../../assets/Classes-ts/Messages'
+import { LightUser, User } from '../../assets/Classes-ts/User'
+import { ChannelUser } from '../../assets/Classes-ts/ChannelUser'
 import { io, Socket } from "socket.io-client";
 import ChannelList from '../../components/channel/ChannelList.vue';
 import ChannelUserList from '../../components/channel/ChannelUserList.vue';
 import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
 import CloseBtn from '../../components/channel/button/CloseBtn.vue';
+import ChannelSettingBtn from '../../components/channel/ChannelSettingBtn.vue';
 
 const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
 
 export default Vue.extend({
-  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn },
+  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn, ChannelSettingBtn },
   middleware: 'login',
 
   data() {
@@ -181,7 +183,7 @@ export default Vue.extend({
   },
 
   async mounted() {
-    const ret = await this.$axios.$get('/api/chat/messages/access?name=' + this.$route.params.slug)
+    const ret = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/access')
       .catch(function (error) {
         return error.response
       })
@@ -248,65 +250,8 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-@import '../../assets/main_page.scss';
-
-.bubble {
-  background: #ffffff;
-  border-radius: 8px 8px 8px 8px;
-  color: #000; /* bubble text color */
-}
-
-.bubble:after {
-  border-radius: 200px / 5px;
-  content: '';
-  display: block;
-  position: absolute;
-}
-
-.bubble_white:after {
-  border: 8px solid transparent !important;
-  border-bottom-color: #ffc79c !important; /* arrow color */
-}
-
-.bubble_blue:after {
-  border: 3px solid #a5fafa !important;
-  box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
-  border-radius: 15px !important;
-  background-color: #181818 !important;
-
-  /* border: 8px solid transparent !important; */
-  /* border-bottom-color: #1982FC !important; arrow color */
-}
-
-.bubble_left {
-  border: 3px solid #ffc79c !important;
-  box-shadow: inset 0px 0px 110px 0px #f27719 !important;
-  border-radius: 15px !important;
-  background-color: #181818 !important;
-  float: left;
-}
-
-.bubble_left:after {
-  border: 8px solid transparent !important;
-  border-bottom-color: #ffc79c !important; /* arrow color */
-  bottom: -2px!important;
-  left: -9px !important;
-}
-
-.bubble_right {
-    border: 3px solid #a5fafa !important;
-  box-shadow: inset 0px 0px 110px 0px #0affff!important;
-  border-radius: 15px !important;
-  background-color: #181818 !important;
-  float: right;
-}
-
-.bubble_right:after {
-  right: -12px !important;
-  border: 10px solid transparent !important;
-  border-bottom-color: #a5fafa !important; /* arrow color */
-  bottom: -2px !important;
-}
+@import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/chat_bubble.scss';
 
 body {
   overscroll-behavior: none !important;

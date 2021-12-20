@@ -93,7 +93,7 @@ export default class CreateChannelBtn extends Vue{
 
     async createChannel() {
       this.dialog = false
-      const ret = await this.$axios.$post('/api/chat/create?name=' + this.channName + '&type=' + this.channType + '&pass=' + this.channPass)
+      const ret = await this.$axios.$post('/api/chat/' + this.channName + '/create?type=' + this.channType + '&pass=' + this.channPass)
         .catch(function (error) {
           return error.response
         });
@@ -129,5 +129,5 @@ export default class CreateChannelBtn extends Vue{
 </script>
 
 <style >
-@import '../../assets/main_page.scss';
+@import '../../assets/Classes-scss/main_page.scss';
 </style>

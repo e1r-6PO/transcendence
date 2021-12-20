@@ -76,8 +76,8 @@ export default class extends Vue {
 </script>
 
 <style lang="scss">
-  @import '../assets/main_page.scss';
-  @import '../assets/particles.scss';
+  @import '../assets/Classes-scss/main_page.scss';
+  @import '../assets/Classes-scss/particles.scss';
 
   .v-application{
     background-color: #181818 !important;

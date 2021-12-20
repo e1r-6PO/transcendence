@@ -120,5 +120,5 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-@import '../assets/main_page.scss';
+@import '../assets/Classes-scss/main_page.scss';
 </style>

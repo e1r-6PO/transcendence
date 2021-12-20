@@ -28,7 +28,7 @@ import { Component, Prop, Vue } from 'nuxt-property-decorator'
 @Component
 export default class ChannelList extends Vue {
 
-  @Prop({ type: Boolean, default: false})
+  @Prop({ type: Boolean, default: false })
   state!: boolean
   
   channList: Array<string> = []
@@ -52,5 +52,5 @@ export default class ChannelList extends Vue {
 </script>
 
 <style>
-@import '../../assets/main_page.scss';
+@import '../../assets/Classes-scss/main_page.scss';
 </style>

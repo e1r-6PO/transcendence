@@ -30,7 +30,7 @@
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator';
 import Vue from 'vue'
-import { ChannelUser } from '../../assets/ChannelUser';
+import { ChannelUser } from '../../assets/Classes-ts/ChannelUser';
 
 @Component
 export default class ChannelUserList extends Vue {

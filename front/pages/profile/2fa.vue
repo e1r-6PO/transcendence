@@ -179,7 +179,7 @@ export default class extends Vue {
 </script>
 
 <style>
-  @import '../../assets/main_page.scss';
+  @import '../../assets/Classes-scss/main_page.scss';
 
 
 .text-field_size{

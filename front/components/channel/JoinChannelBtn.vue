@@ -26,7 +26,7 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="text-h5">Channel settings</span>
+              <span class="text-h5">Channel name</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -98,7 +98,7 @@
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator';
 import Vue from 'vue'
-import { ChannAccess } from '../../assets/Messages'
+import { ChannAccess } from '../../assets/Classes-ts/Messages'
 import AlertError from '../../components/AlertError.vue';
 
 @Component
@@ -112,13 +112,6 @@ export default class JoinChannelBtn extends Vue{
   channType: string = ""
   alertText: string = ""
   alert: boolean = false
-
-async mounted() {
-  // console.log("HERE")
-  // if (this.$route.query['error'] && this.$route.query['error'] != "")
-  //   this.activeAlert(this.$route.query['error'])
-  // console.log("HERE2")
-}
 
   async tryJoin() {
     this.dialogJoin = false;
@@ -140,21 +133,17 @@ async mounted() {
 
   async joinChannel() {
     this.dialogPass = false;
-    const ret = await this.$axios.post('/api/chat/join?name=' + this.channName + '&pass=' + this.channPass)
+    const ret = await this.$axios.post('/api/chat/' + this.channName + '/join?pass=' + this.channPass)
       .catch(function (error) {
         return error.response
     });
+    console.log(ret.status)
     if (ret.status == 409)
     this.activeAlert(ret.data['message'])
     else if (ret.status == 403)
     this.activeAlert(ret.data['message'])
     else if (ret.status == 201)
       this.$router.push("/chat/" + this.channName)
-  }
-
-  async joinChannelWithPass()
-  {
-    const ret = await this.$axios.post('/api/chat/messages')
   }
 
   disableJoin() {
@@ -175,5 +164,5 @@ async mounted() {
 </script>
 
 <style>
-@import '../../assets/main_page.scss';
+@import '../../assets/Classes-scss/main_page.scss';
 </style>
