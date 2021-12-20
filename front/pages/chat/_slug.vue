@@ -18,7 +18,7 @@
       v-on:click="channelDrawer = !channelDrawer">
     </CloseBtn>
     <v-spacer />
-    <h3 style="color: white; margin-top: 80px">{{ $route.params.slug }}</h3>
+    <h3 class="neonText" style="color: white; margin-top: 80px">{{ $route.params.slug }}</h3>
     <v-spacer />
     <CloseBtn
       style="margin-top: 80px"
@@ -68,6 +68,7 @@
       <v-card
         color="#181818"
         flat
+        class="pt-4"
       >
         <div v-for="(msg, i) in messagesArray"
           :key="i"
@@ -113,20 +114,23 @@
     <v-spacer />
   </v-row>
   
-  <v-footer app inset color="#181818">
+  <v-footer app inset color="#181818" class="pb-4">
     <v-text-field
-      style="margin-top: 3%"
-      background-color="white"
-      color="blue"
       v-model="message"
+      class="text-field-nick-neon custom-placeholder-color custom-input-color"
+      style="margin-top: 3%"
+      placeholder="Message"
+      background-color="#181818"
+      color="blue"
+      hide-details
       filled
       clear-icon="mdi-close-circle"
       clearable
-      label="Message"
-      elevation="2"
+      dense
+      rounded
       @keypress.enter="sendMessage"
     >
-      <v-icon slot="append-outer" color="blue"> mdi-send </v-icon>
+      <v-icon slot="append-outer" color="#b8a435" class="mr-2"> mdi-send </v-icon>
     </v-text-field>
   </v-footer>
 </v-container>
@@ -320,6 +324,14 @@ body {
   border-bottom: 1px solid #ffa768 !important;
   height: 69px !important;
   box-shadow: inset 0px -5px 5px -5px #fc6500, 0px 0px 7px 1px #fc6500 !important;
+}
+
+.neonText {
+  color: #e6ffff;
+  text-shadow:
+    0 0 7px #f27719,
+    0 0 8px #f27719,
+    0 0 9px #f27719 !important;
 }
 
 </style>
