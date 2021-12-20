@@ -16,7 +16,7 @@
 
 import Vue from 'vue'
 
-import socket_game from '../../plugins/socket.io'
+import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
 

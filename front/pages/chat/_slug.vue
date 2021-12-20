@@ -151,7 +151,7 @@ import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
 import CloseBtn from '../../components/channel/button/CloseBtn.vue';
 import ChannelSettingBtn from '../../components/channel/ChannelSettingBtn.vue';
 
-const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
+import socket_chat from '../../plugins/chat.io'
 
 export default Vue.extend({
   components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn, ChannelSettingBtn },
