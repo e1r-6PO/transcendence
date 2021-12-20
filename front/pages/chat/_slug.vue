@@ -124,12 +124,14 @@
       color="blue"
       hide-details
       filled
-      clear-icon="mdi-close-circle"
-      clearable
       dense
       rounded
+      autofocus
       @keypress.enter="sendMessage"
     >
+    <template v-slot:append>
+      <v-icon v-if="message.length > 0" @click="clearMessage()" color="#b8a435"> mdi-close-circle </v-icon>
+    </template>
       <v-icon slot="append-outer" color="#b8a435" class="mr-2"> mdi-send </v-icon>
     </v-text-field>
   </v-footer>
@@ -237,6 +239,10 @@ export default Vue.extend({
     redirectToChannel(channName: string) {
       this.$router.push('/chat/' + channName)
     },
+
+    clearMessage() {
+      this.message = ""
+    }
   }
 })
 </script>
