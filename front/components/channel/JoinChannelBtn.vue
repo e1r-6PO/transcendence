@@ -133,10 +133,11 @@ export default class JoinChannelBtn extends Vue{
 
   async joinChannel() {
     this.dialogPass = false;
-    const ret = await this.$axios.post('/api/chat/join?name=' + this.channName + '&pass=' + this.channPass)
+    const ret = await this.$axios.post('/api/chat/' + this.channName + '/join?pass=' + this.channPass)
       .catch(function (error) {
         return error.response
     });
+    console.log(ret.status)
     if (ret.status == 409)
     this.activeAlert(ret.data['message'])
     else if (ret.status == 403)

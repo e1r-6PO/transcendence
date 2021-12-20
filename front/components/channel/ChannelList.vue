@@ -28,7 +28,7 @@ import { Component, Prop, Vue } from 'nuxt-property-decorator'
 @Component
 export default class ChannelList extends Vue {
 
-  @Prop({ type: Boolean, default: false})
+  @Prop({ type: Boolean, default: false })
   state!: boolean
   
   channList: Array<string> = []
