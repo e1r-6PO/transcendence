@@ -14,7 +14,7 @@
   >
     <CloseBtn
       style="margin-top: 80px"
-      customMdi="mdi-forum"
+      content="mdi-forum"
       v-on:click="channelDrawer = !channelDrawer">
     </CloseBtn>
     <v-spacer />
@@ -22,7 +22,7 @@
     <v-spacer />
     <CloseBtn
       style="margin-top: 80px"
-      customMdi="mdi-account-group"
+      content="mdi-account-group"
       v-on:click="userDrawer = !userDrawer">
     </CloseBtn>
   </v-app-bar>
@@ -38,7 +38,7 @@
     >
       <ChannelList class="mt-4" :state="true">
          <v-subheader class="mt-3 mb-8">
-          <CloseBtn customMdi="mdi-close" v-on:click="channelDrawer = !channelDrawer"></CloseBtn>
+          <CloseBtn content="mdi-close" v-on:click="channelDrawer = !channelDrawer"></CloseBtn>
           <v-spacer />
           <CreateChannelBtn class="pr-5 pb-3"/>
         </v-subheader>
@@ -56,9 +56,10 @@
     >
       <ChannelUserList class="mt-4">
         <v-subheader class="mt-3 mb-8">
-          <ChannelSettingBtn class="pl-5 pb-3"> </ChannelSettingBtn>
+          <ChannelLeaveBtn v-if="isDefaultUser()" class="pl-5 pb-3"> </ChannelLeaveBtn>
+          <ChannelSettings v-if="isOwner()" class="pl-5 pb-3"> </ChannelSettings>
           <v-spacer />
-          <CloseBtn customMdi="mdi-close" v-on:click="userDrawer = !userDrawer"></CloseBtn>
+          <CloseBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></CloseBtn>
          </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelUserList>
@@ -149,12 +150,14 @@ import ChannelList from '../../components/channel/ChannelList.vue';
 import ChannelUserList from '../../components/channel/ChannelUserList.vue';
 import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
 import CloseBtn from '../../components/channel/button/CloseBtn.vue';
-import ChannelSettingBtn from '../../components/channel/ChannelSettingBtn.vue';
+import ChannelLeaveBtn from '../../components/channel/ChannelLeaveBtn.vue';
+import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
+import ChannelSettings from '../../components/channel/ChannelSettings.vue'
 
 const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
 
 export default Vue.extend({
-  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn, ChannelSettingBtn },
+  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn, ChannelLeaveBtn, ChannelSettings },
   middleware: 'login',
 
   data() {
@@ -162,7 +165,7 @@ export default Vue.extend({
       message: '',
       messagesArray: new Array<String>(),
       usersNick: new Map(),
-      me: new User(),
+      me: new ChannelUser(),
       nbMsg: -1,
       channList: [],
       userList: new Array<ChannelUser>(),
@@ -193,23 +196,13 @@ export default Vue.extend({
     {
       socket_chat.connect();
       socket_chat.emit('joinChannel', this.$route.params.slug);
-      this.me = await this.$axios.$get('/api/profile/me')
+      this.me = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/me')
       this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
       
       socket_chat.on('msgToClient', (msg: string) => {
         this.messagesArray.push(msg)
         this.nbMsg = this.messagesArray.length
       })
-      var myChannelRet = await this.$axios.$get('/api/chat/myChannel')
-      this.channList = myChannelRet.data
-      var userListRet = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/users')
-        .catch(function(error) {
-          return error.response
-        })
-      if (userListRet.status == 403)
-        this.$router.push('/chat')
-      else
-        this.userList = userListRet.data
     }
   },
 
@@ -225,7 +218,7 @@ export default Vue.extend({
     },
 
     isYourMsg(msg: Messages): boolean {
-      if (this.me.nickName == msg.senderNick)
+      if (this.me.user.nickName == msg.senderNick)
         return (true)
       return (false)
     },
@@ -244,6 +237,14 @@ export default Vue.extend({
 
     clearMessage() {
       this.message = ""
+    },
+
+    isDefaultUser(): boolean {
+      return this.me.status == ChannelUserStatus.DEFAULT
+    },
+
+    isOwner(): boolean {
+      return this.me.status == ChannelUserStatus.OWNER
     }
   }
 })
