@@ -52,6 +52,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         }
     }
 
+    @SubscribeMessage('leave')
+    async leave(client: Socket) {
+        client.disconnect()
+    }
+
     afterInit(server: Server){
         this.logger.log('Init');
     }
