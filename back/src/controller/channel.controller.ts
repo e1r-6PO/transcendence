@@ -38,6 +38,24 @@ export class ChannelController {
     return channel.channAccess
   }
 
+  @Get(':channName/me')
+  async getMyInfo(@Param('channName') channName, @Req() req: Request)
+  {
+    console.log("coucou")
+    var channel = await this.channelsRepository.findOne({
+      where: { channName: channName }
+    })
+    if (channel == null)
+      throw new NotFoundException()
+
+    var participant = await this.channelParticipantsRepository.findOne({
+      where: { user: req.cookies['user_id'], channel: channel }
+    })
+    if (participant == null)
+      throw new NotFoundException()
+    return participant
+  }
+
   @Get('myChannel')
   async getMyChannel(@Req() req: Request)
   {
