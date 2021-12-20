@@ -168,15 +168,29 @@ export class ChannelController {
     return { message: "success" }
   }
 
+  @Post(':channName/leave')
+  async leaveChannel(@Param('channName') channName, @Req() req: Request)
+  {
+    var channel = await this.channelsRepository.findOne({
+      where : { channName: channName }
+    })
+    if (channel == null)
+      throw new NotFoundException()
+
+    var participant = await this.channelParticipantsRepository.findOne({
+      where: { user: req.cookies['user_id'], channel: channel } 
+    })
+    if (participant == null)
+      throw new ForbiddenException('Not in channel')
+
+    this.channelParticipantsRepository.remove(participant)
+  }
+
   @Get(':channName/messages')
   async get_messages(@Param('channName') param, @Req() req : Request)
   {
-    var me: User = await this.usersRepository.findOne({
-      where : { id: req.cookies['user_id'] }
-    });
-
     var blocked_relation = await this.relationShipRepository.find({
-      where: { user: me, status: Friend_Status.blocked }
+      where: { user: req.cookies['user_id'], status: Friend_Status.blocked }
     })
 
     var blocked: Array<number> = []
