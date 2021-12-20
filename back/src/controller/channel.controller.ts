@@ -6,7 +6,7 @@ import { JoinTable, Repository } from 'typeorm';
 import { ChannAccess, Channel, ChannType } from 'src/entity/channel.entity';
 import { User } from 'src/entity/user.entity';
 import { ChannelParticipant, ChannelStatus } from 'src/entity/channelParticipant.entity';
-import { use } from 'passport';
+import passport, { use } from 'passport';
 import * as bcrypt from 'bcrypt';
 import { ChannelService } from 'src/service/channel.service';
 import { Friend_Status, Relationship } from 'src/entity/relationship.entity';
@@ -135,7 +135,7 @@ export class ChannelController {
   }
 
   @Post(':channName/join')
-  async joinChannel(@Param('channName') channName, @Req() req: Request)
+  async joinChannel(@Query('pass') pass, @Param('channName') channName, @Req() req: Request)
   {
     var channel = await this.channelsRepository.findOne({
       where : { channName: channName }
@@ -143,28 +143,32 @@ export class ChannelController {
     if (channel == null)
       throw new ForbiddenException('Channel inexist')
 
-    var user: User = await this.usersRepository.findOne({
-      where : { id: req.cookies['user_id'] }
+    var participant = await this.channelParticipantsRepository.findOne({
+      where : { user: req.cookies['user_id'], channel: channel.id }
     });
 
-    var ret = await this.channelParticipantsRepository.findOne({
-      where : { user: user.id, channel: channel.id }
-    });
-    if (ret != null)
+    if (participant != null)
       throw new ConflictException('Already in channel')
     
-    if (channel.channAccess == ChannAccess.PROTECTED)
-      var isMatch = bcrypt.compareSync(query['pass'], channel.channPass) 
+    var isMatch = null
+    if (channel.channAccess == ChannAccess.PROTECTED && pass != "")
+      isMatch = bcrypt.compareSync(pass, channel.channPass) 
     if (channel.channAccess == ChannAccess.PROTECTED && !isMatch)
       throw new ForbiddenException('Wrong password')
 
-    var participant: ChannelParticipant = new ChannelParticipant()
+    var user = await this.usersRepository.findOne({
+      where: { id: req.cookies['user_id'] }
+    })
 
-    participant.status = ChannelStatus.default
-    participant.user = user
-    participant.channel = channel
+    var newParticipant: ChannelParticipant = new ChannelParticipant()
 
-    this.channelParticipantsRepository.save(participant)
+    console.log(channel)
+    console.log(user)
+    newParticipant.status = ChannelStatus.default
+    newParticipant.user = user
+    newParticipant.channel = channel
+
+    this.channelParticipantsRepository.save(newParticipant)
     return { message: "success" }
   }
 

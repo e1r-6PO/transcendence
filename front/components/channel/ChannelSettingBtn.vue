@@ -14,6 +14,7 @@
             style="border-radius: 15px;"
             link
             width="100"
+            @click="leaveChannel()"
             v-on:mouseover="btnFocus = true"
             v-on:mouseleave="btnFocus = false"
           >
@@ -85,5 +86,12 @@ export default class ChannelSettingsBtn extends Vue{
   
   dialog: boolean = false
   btnFocus: boolean = false
+
+  leaveChannel() {
+    console.log("COUCOU c est moi")
+    console.log(this.$route.params.slug)
+    this.$axios.post('/api/chat/' + this.$route.params.slug + '/leave')
+    this.$router.push('/chat')
+  }
 }
 </script>
