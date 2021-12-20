@@ -112,7 +112,7 @@ export default Vue.extend({
   async created() {
     socket_game.on('matchFound', (info) => {
       console.log('match found')
-      this.$router.push('/game/' + info['id'] + '?side=' + info['side'])
+      this.$router.push('/game/' + info['id'])
     })
   }
 })
