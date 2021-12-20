@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile, UseGuards, ConflictException, ForbiddenException, Get } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile, UseGuards, ConflictException, ForbiddenException, Get, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { query, Request } from 'express'
 import { TwoFaGuard, ValidTokenGuard } from 'src/guards/account.guards';
@@ -27,11 +27,11 @@ export class ChannelController {
     private readonly relationShipRepository: Repository<Relationship>
   ) {}
 
-  @Get(':name/type')
-  async getChannelType(@Param('name') param, @Req() req: Request)
+  @Get(':channName/type')
+  async getChannelType(@Param('channName') channName, @Req() req: Request)
   {
     var channel = await this.channelsRepository.findOne({
-      where: { channName: param }
+      where: { channName: channName }
     });
     if (channel == null)
       throw new ConflictException('Channel does not exist')
@@ -90,18 +90,18 @@ export class ChannelController {
     return usersList
   }
 
-  @Post('create')
-  async createChannel(@Query() query, @Req() req: Request): Promise<void>
+  @Post(':channName/create')
+  async createChannel(@Param('channName') channName, @Req() req: Request): Promise<void>
   {
     var channel: Channel = await this.channelsRepository.findOne(
       { where :
-        { channName: query['name'] }
+        { channName: channName }
       }
     );
     if (channel != null)
       throw new ConflictException('Channel exist')
     
-    if (query['name'].length > 20)
+    if (channName.length > 20)
       throw new ConflictException('Channel name is to long')
     var owner: User = await this.usersRepository.findOne(
       { where :
@@ -112,12 +112,15 @@ export class ChannelController {
     if (query['type'] == ChannAccess.PROTECTED && query['pass'].length < 5)
       throw new ConflictException('Pass is to short')
     
-    var hash = await bcrypt.hash(query['pass'], 10)
+    if (query['pass'])
+      var hash = await bcrypt.hash(query['pass'], 10)
+    else
+      var hash = ""
 
     channel = new Channel();
     var participant: ChannelParticipant = new ChannelParticipant()
     
-    channel.channName = query['name']
+    channel.channName = channName
     channel.channAccess = query['type']
     channel.channType = ChannType.CHANNEL
     channel.channPass = hash;
@@ -131,11 +134,11 @@ export class ChannelController {
     this.channelParticipantsRepository.save(participant)
   }
 
-  @Post('join')
-  async joinChannel(@Query() query, @Req() req: Request)
+  @Post(':channName/join')
+  async joinChannel(@Param('channName') channName, @Req() req: Request)
   {
     var channel = await this.channelsRepository.findOne({
-      where : { channName: query['name'] }
+      where : { channName: channName }
     });
     if (channel == null)
       throw new ForbiddenException('Channel inexist')
@@ -150,7 +153,8 @@ export class ChannelController {
     if (ret != null)
       throw new ConflictException('Already in channel')
     
-    var isMatch = bcrypt.compareSync(query['pass'], channel.channPass) 
+    if (channel.channAccess == ChannAccess.PROTECTED)
+      var isMatch = bcrypt.compareSync(query['pass'], channel.channPass) 
     if (channel.channAccess == ChannAccess.PROTECTED && !isMatch)
       throw new ForbiddenException('Wrong password')
 
@@ -184,5 +188,24 @@ export class ChannelController {
       blocked.push(tmp.id)
     }
     return this.channelService.getAllMessageInChannel(param, blocked)
+  }
+
+  @Get(':channName/access')
+  async checkAccess(@Param('channName') channName, @Req() req : Request)
+  {
+    var channel = await this.channelsRepository.findOne({
+      where: { channName: channName }
+    })
+    if (channel == null)
+      throw new NotFoundException()
+
+    var ret = this.channelParticipantsRepository.findOne({
+      where: { user: req.cookies['user_id'],
+              channel: channel
+      }
+    })
+    if (ret == null)
+      throw new ForbiddenException()
+    return {status: 201}
   }
 }
