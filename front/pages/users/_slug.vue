@@ -94,7 +94,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import login from '../../middleware/login'
-import { User, LightUser } from '../../assets/User';
+import { User, LightUser } from '../../assets/Classes-ts/User';
 
 const All_Friend_Status = {
   null: "null",
@@ -203,8 +203,8 @@ export default class extends Vue {
 </script>
 
 <style scoped>
-@import '../../assets/main_page.scss';
-@import '../../assets/custom_flexBox.scss';
+@import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/custom_flexBox.scss';
 
 .friend-button {
   border: 3px solid #d5a5f5 !important;
