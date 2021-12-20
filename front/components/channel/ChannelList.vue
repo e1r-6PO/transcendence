@@ -6,15 +6,16 @@
     <slot></slot>
     <v-list-item
       class="neon-button text-center mb-2"
-      color="white"
       style="border-radius: 15px"
       v-for="(channel, i) in channList"
       :key="channList[i]"
       link
+      v-on:mouseover="channelFocus = i"
+      v-on:mouseleave="channelFocus = -1"
       @click="redirectToChannel(channel)"
     >
       <v-list-item-content>
-        <h4 style="color: white">{{ channel }}</h4>
+        <h4 :style="'color:' + getChannelTextColor(i)" >{{ channel }}</h4>
       </v-list-item-content>
     </v-list-item>
   </v-list>
@@ -31,6 +32,7 @@ export default class ChannelList extends Vue {
   state!: boolean
   
   channList: Array<string> = []
+  channelFocus: number = -1
 
   async mounted() {
     var myChannelRet = await this.$axios.get('/api/chat/myChannel')
@@ -39,6 +41,12 @@ export default class ChannelList extends Vue {
 
   redirectToChannel(channName: string) {
     this.$router.push('/chat/' + channName)
+  }
+
+  getChannelTextColor(i: number) : string {
+    if (this.channelFocus == i)
+      return '#9141c7'
+    return 'white'
   }
 }
 </script>

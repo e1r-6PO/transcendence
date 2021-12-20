@@ -7,6 +7,8 @@
       v-for="(user, i) in userList"
       :key="`user-${i}`"
       link
+      v-on:mouseover="userFocus = i"
+      v-on:mouseleave="userFocus = -1"
       @click="redirectToUserProfile(user.nickName)"
     >
       <v-list-item-icon style="margin-right: 10px; padding-top: 4px">
@@ -18,9 +20,8 @@
       </v-avatar>
       </v-list-item-icon>
       <v-list-item-content>
-        <v-list-item-title v-text="user.nickName" class="text-h6" style="color: white; margin-top: 14px"></v-list-item-title>
-      <v-list-item-subtitle v-text="user.channelStatus" align="right" style="color: white; margin-top: 0px">
-      </v-list-item-subtitle>
+        <v-list-item-title v-text="user.nickName" class="text-h6" style="margin-top: 14px" :style="'color:' + getUserTextColor(i)" />
+          <v-list-item-subtitle v-text="user.channelStatus" align="right" style="margin-top: 0px" :style="'color:' + getUserTextColor(i)" />
       </v-list-item-content>
     </v-list-item>
   </v-list>
@@ -36,6 +37,7 @@ export default class ChannelUserList extends Vue {
   
 
   userList: Array<ChannelUser> = []
+  userFocus: number = -1
 
   async mounted() {
     var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
@@ -50,6 +52,12 @@ export default class ChannelUserList extends Vue {
 
   redirectToUserProfile(userNick: string) {
     this.$router.push("/users/" + userNick)
+  }
+
+  getUserTextColor(i: number): string {
+    if (i == this.userFocus)
+      return '#9142c7'
+    return 'white'
   }
 }
 </script>
