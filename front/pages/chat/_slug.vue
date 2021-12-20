@@ -154,7 +154,7 @@ import ChannelLeaveBtn from '../../components/channel/ChannelLeaveBtn.vue';
 import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
 import ChannelSettings from '../../components/channel/ChannelSettings.vue'
 
-const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
+import socket_chat from '../../plugins/chat.io'
 
 export default Vue.extend({
   components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn, ChannelLeaveBtn, ChannelSettings },

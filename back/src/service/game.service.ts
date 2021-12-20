@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { Socket } from "socket.io";
 import { Game } from "src/entity/game.entity";
 
-@Injectable()
 export class GameService {
     games: Array<Game> = []
     newgameid: number = 0
@@ -17,18 +16,18 @@ export class GameService {
     disconnect(client: Socket) {
         for (let i = 0; i < this.games.length; ++i) {
             if (this.games[i].players[0].id == client.id) {
-                console.log(0)
                 this.games[i].players[1].emit('matchEnd', { message: 'You win !'}) // update scores
                 // this.games[i].players[1].disconnect()
                 // notify spect
+                this.games[i].stop()
                 this.games.splice(i, 1)
                 return
             }
             else if (this.games[i].players[1].id == client.id) {
-                console.log(1)
                 this.games[i].players[0].emit('matchEnd', { message: 'You win !'}) // update scores
                 // this.games[i].players[0].disconnect()
                 // notify spect
+                this.games[i].stop()
                 this.games.splice(i, 1)
                 return
             }

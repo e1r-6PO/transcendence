@@ -24,8 +24,8 @@
           </v-card>
         </v-row>
       </template>
-      <v-card>
-        <v-card-title>
+      <v-card class="neon_card">
+        <v-card-title class="white--text">
           <span class="text-h5">Channel settings</span>
         </v-card-title>
         <v-card-text>
@@ -50,7 +50,10 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="blue darken-1"
+            class="neon-button"
+            color="#181818"
+            v-on:mouseover="createFocus = true"
+            v-on:mouseleave="createFocus = false"
             text
             @click="dialog = false"
           >
@@ -130,4 +133,10 @@ export default class CreateChannelBtn extends Vue{
 
 <style >
 @import '../../assets/Classes-scss/main_page.scss';
+
+.neon_card {
+  border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
+  background-color: #181818 !important;
+}
 </style>

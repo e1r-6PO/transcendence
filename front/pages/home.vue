@@ -60,7 +60,7 @@
 
 import Vue from 'vue'
 
-import socket_game from '../plugins/socket.io'
+import socket_game from '../plugins/game.io'
 
 export default Vue.extend({
 
@@ -84,6 +84,8 @@ export default Vue.extend({
           break
         await new Promise(f => setTimeout(f, 50));
       }
+
+      socket_game.emit('joinQueue')
 
       this.in_queue = socket_game.connected
 
@@ -110,7 +112,7 @@ export default Vue.extend({
   async created() {
     socket_game.on('matchFound', (info) => {
       console.log('match found')
-      this.$router.push('/game/' + info['id'] + '?side=' + info['side'])
+      this.$router.push('/game/' + info['id'])
     })
   }
 })

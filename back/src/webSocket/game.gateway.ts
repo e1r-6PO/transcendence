@@ -29,18 +29,20 @@ import { GameService } from "src/service/game.service";
 })
 
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
-
+    constructor(
+        private jwtService : JwtService,
+        @InjectRepository(User)
+        private readonly usersRepository : Repository<User>,
+      ) {}
     gameService: GameService = new GameService
     queue: Socket[] = []
+    mymap = new Map<string, User>();
     
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
 
-    afterInit(server: Server){
-        this.logger.log('Init');
-    }
-
-    async handleConnection(client: Socket, ...args: any[]){
+    @SubscribeMessage('joinQueue')
+    async joinQueue(client: Socket) {
         this.queue.push(client)
         if (this.queue.length >= 2) {
             var game: Game = new Game
@@ -50,9 +52,42 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         }
     }
 
+    @SubscribeMessage('leave')
+    async leave(client: Socket) {
+        client.disconnect()
+    }
+
+    afterInit(server: Server){
+        this.logger.log('Init');
+    }
+
+    async handleConnection(client: Socket, ...args: any[]){
+        const jwt = client.handshake.headers.cookie
+        .split('; ')
+        .find((cookie: string) => cookie.startsWith('jwt'))
+        if (jwt == null)
+        {
+            client.disconnect()
+            return
+        }
+        // parse cookies
+        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
+
+        let user_data: User = await this.usersRepository.findOne({
+            where: {id: jwt_decoded['id']}
+        })
+        if (user_data == null)
+        {
+            client.disconnect()
+            return
+        }
+        this.mymap.set(client.id, user_data)
+    }
+
     async handleDisconnect(client: Socket){
         var index: number
 
+        this.mymap.delete(client.id)
         index = this.queue.findIndex(clients => clients.id === client.id)
         if (index != -1) {
             this.queue.splice(index, 1)
