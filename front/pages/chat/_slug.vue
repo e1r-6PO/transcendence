@@ -42,7 +42,7 @@
           <v-spacer />
           <CreateChannelBtn class="pr-5 pb-3"/>
         </v-subheader>
-        <v-divider class="mb-4 divider" style="border-color: #f27719;"> </v-divider>
+        <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelList>
     </v-navigation-drawer>
 
@@ -52,12 +52,13 @@
       right
       temporary
       color="#181818"
-      style="padding-top: 70px"
+      style="padding-top: 65px"
     >
-      <ChannelUserList>
-        <v-subheader>
+      <ChannelUserList class="mt-4">
+        <v-subheader class="mt-3 mb-8">
+          <ChannelSettingBtn class="pl-5 pb-3"> </ChannelSettingBtn>
           <v-spacer />
-          <CloseBtn customMdi="mdi-close" class="mt-2" v-on:click="userDrawer = !userDrawer"></CloseBtn>
+          <CloseBtn customMdi="mdi-close" v-on:click="userDrawer = !userDrawer"></CloseBtn>
          </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelUserList>
@@ -114,7 +115,7 @@
     <v-spacer />
   </v-row>
   
-  <v-footer app inset color="#181818" class="pb-4">
+  <v-footer app inset color="#181818">
     <v-text-field
       v-model="message"
       class="text-field-nick-neon custom-placeholder-color custom-input-color"
@@ -148,11 +149,12 @@ import ChannelList from '../../components/channel/ChannelList.vue';
 import ChannelUserList from '../../components/channel/ChannelUserList.vue';
 import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
 import CloseBtn from '../../components/channel/button/CloseBtn.vue';
+import ChannelSettingBtn from '../../components/channel/ChannelSettingBtn.vue';
 
 const socket_chat = io("http://localhost:3000/chat", { withCredentials: true});
 
 export default Vue.extend({
-  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn },
+  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn, ChannelSettingBtn },
   middleware: 'login',
 
   data() {
@@ -181,7 +183,7 @@ export default Vue.extend({
   },
 
   async mounted() {
-    const ret = await this.$axios.$get('/api/chat/messages/access?name=' + this.$route.params.slug)
+    const ret = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/access')
       .catch(function (error) {
         return error.response
       })
