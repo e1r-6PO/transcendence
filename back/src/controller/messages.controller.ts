@@ -45,6 +45,6 @@ export class MessagesController {
     })
     if (ret == null)
       throw new ForbiddenException()
-    return {status: "success"}
+    return {status: 201}
   }
 }
