@@ -9,12 +9,13 @@ export class Game {
     // balls: Array<Ball>
 
     tick() {
+        console.log('wsh')
         // do logic
     }
 
     start() {
-        this.players[0].emit('matchFound', { id: 0, side: "left"})
-        this.players[1].emit('matchFound', { id: 0, side: "right"})
+        this.players[0].emit('matchFound', { id: this.id, side: "left"})
+        this.players[1].emit('matchFound', { id: this.id, side: "right"})
         this.loopId = setInterval(this.tick, 1000 / 20)
     }
 

@@ -44,6 +44,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('joinQueue')
     async joinQueue(client: Socket) {
         this.queue.push(client)
+        if (this.queue.length >= 2) {
+            var game: Game = new Game
+            game.players = [this.queue[0], this.queue[1]]
+            this.queue.splice(0, 2)
+            this.gameService.push_game(game) //also starting the game
+        }
     }
 
     afterInit(server: Server){
@@ -76,9 +82,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleDisconnect(client: Socket){
         var index: number
 
-        console.log(this.mymap.size)
         this.mymap.delete(client.id)
-        console.log(this.mymap.size)
         index = this.queue.findIndex(clients => clients.id === client.id)
         if (index != -1) {
             this.queue.splice(index, 1)

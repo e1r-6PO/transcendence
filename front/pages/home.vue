@@ -85,6 +85,8 @@ export default Vue.extend({
         await new Promise(f => setTimeout(f, 50));
       }
 
+      socket_game.emit('joinQueue')
+
       this.in_queue = socket_game.connected
 
       if (socket_game.connected == false) {
