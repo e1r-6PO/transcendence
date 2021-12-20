@@ -49,8 +49,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { ChannAccess, Messages } from '../../assets/Messages'
-import { LightUser, User } from '../../assets/User'
+import { ChannAccess, Messages } from '../../assets/Classes-ts/Messages'
+import { LightUser, User } from '../../assets/Classes-ts/User'
 import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue'
 import JoinChannelBtn from '../../components/channel/JoinChannelBtn.vue';
 import ChannelList from '../../components/channel/ChannelList.vue';

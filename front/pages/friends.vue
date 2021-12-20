@@ -80,7 +80,7 @@ const All_Friend_Status = {
 }
 
 import Vue from 'vue'
-import { LightUser } from '../assets/User'
+import { LightUser } from '../assets/Classes-ts/User'
 
 export default Vue.extend({
 
@@ -242,7 +242,7 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-@import '../assets/main_page.scss';
+@import '../assets/Classes-scss/main_page.scss';
 
 .card_profile {
   border: 3px solid #a5fafa !important;

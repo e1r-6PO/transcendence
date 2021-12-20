@@ -173,7 +173,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import login from '../../middleware/login'
-import { User } from '../../assets/User';
+import { User } from '../../assets/Classes-ts/User';
 
 @Component({
   middleware: login
@@ -330,8 +330,8 @@ export default class extends Vue {
 </script>
 
 <style scoped>
-@import '../../assets/main_page.scss';
-@import '../../assets/custom_flexBox.scss';
+@import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/custom_flexBox.scss';
 
 .edit-button {
   border: 3px solid #e9c8ff !important;

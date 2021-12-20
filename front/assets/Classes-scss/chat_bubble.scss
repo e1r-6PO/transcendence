@@ -1,0 +1,57 @@
+.bubble {
+  background: #ffffff;
+  border-radius: 8px 8px 8px 8px;
+  color: #000; /* bubble text color */
+}
+  
+.bubble:after {
+  border-radius: 200px / 5px;
+  content: '';
+  display: block;
+  position: absolute;
+}
+
+.bubble_white:after {
+  border: 8px solid transparent !important;
+  border-bottom-color: #ffc79c !important; /* arrow color */
+}
+
+.bubble_blue:after {
+  border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+
+  /* border: 8px solid transparent !important; */
+  /* border-bottom-color: #1982FC !important; arrow color */
+}
+
+.bubble_left {
+  border: 3px solid #ffc79c !important;
+  box-shadow: inset 0px 0px 110px 0px #f27719 !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+  float: left;
+}
+
+.bubble_left:after {
+  border: 8px solid transparent !important;
+  border-bottom-color: #ffc79c !important; /* arrow color */
+  bottom: -2px!important;
+  left: -9px !important;
+}
+
+.bubble_right {
+    border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 110px 0px #0affff!important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+  float: right;
+}
+
+.bubble_right:after {
+  right: -12px !important;
+  border: 10px solid transparent !important;
+  border-bottom-color: #a5fafa !important; /* arrow color */
+  bottom: -2px !important;
+}
