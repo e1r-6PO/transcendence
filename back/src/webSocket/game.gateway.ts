@@ -29,30 +29,56 @@ import { GameService } from "src/service/game.service";
 })
 
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
-
+    constructor(
+        private jwtService : JwtService,
+        @InjectRepository(User)
+        private readonly usersRepository : Repository<User>,
+      ) {}
     gameService: GameService = new GameService
     queue: Socket[] = []
+    mymap = new Map<string, User>();
     
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
+
+    @SubscribeMessage('joinQueue')
+    async joinQueue(client: Socket) {
+        this.queue.push(client)
+    }
 
     afterInit(server: Server){
         this.logger.log('Init');
     }
 
     async handleConnection(client: Socket, ...args: any[]){
-        this.queue.push(client)
-        if (this.queue.length >= 2) {
-            var game: Game = new Game
-            game.players = [this.queue[0], this.queue[1]]
-            this.queue.splice(0, 2)
-            this.gameService.push_game(game) //also starting the game
+        const jwt = client.handshake.headers.cookie
+        .split('; ')
+        .find((cookie: string) => cookie.startsWith('jwt'))
+        if (jwt == null)
+        {
+            client.disconnect()
+            return
         }
+        // parse cookies
+        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
+
+        let user_data: User = await this.usersRepository.findOne({
+            where: {id: jwt_decoded['id']}
+        })
+        if (user_data == null)
+        {
+            client.disconnect()
+            return
+        }
+        this.mymap.set(client.id, user_data)
     }
 
     async handleDisconnect(client: Socket){
         var index: number
 
+        console.log(this.mymap.size)
+        this.mymap.delete(client.id)
+        console.log(this.mymap.size)
         index = this.queue.findIndex(clients => clients.id === client.id)
         if (index != -1) {
             this.queue.splice(index, 1)
