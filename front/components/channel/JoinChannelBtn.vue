@@ -115,13 +115,13 @@ export default class JoinChannelBtn extends Vue{
 
   async tryJoin() {
     this.dialogJoin = false;
-    const type = await this.$axios.get('/api/chat/' + this.channName + '/type')
+    const ret = await this.$axios.get('/api/chat/' + this.channName + '/info')
       .catch(function (error) {
         return error.response
       })
-    if (type.status == 403)
-    this.activeAlert("Channel does not exist")
-    else if (type.data == ChannAccess.PROTECTED)
+    if (ret.status == 403)
+      this.activeAlert("Channel does not exist")
+    else if (ret.data.channAccess == ChannAccess.PROTECTED)
       this.dialogPass = true
     else
       this.joinChannel()
@@ -133,6 +133,7 @@ export default class JoinChannelBtn extends Vue{
 
   async joinChannel() {
     this.dialogPass = false;
+    console.log(this.channPass)
     const ret = await this.$axios.post('/api/chat/' + this.channName + '/join?pass=' + this.channPass)
       .catch(function (error) {
         return error.response
