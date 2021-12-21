@@ -8,9 +8,9 @@ export class ChannelUser {
     this.id = 0;
     this.nickName = '';
     this.isMute = false;
-    this.muteTime = null;
-    this.channelStatus = ChannelStatus.default
-    this.picture = ''
+    this.muteTime = new Date();
+    this.channelStatus = ChannelStatus.default;
+    this.picture = '';
   }
 
   id: number;

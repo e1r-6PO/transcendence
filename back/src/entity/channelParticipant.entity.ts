@@ -13,8 +13,8 @@ export enum ChannelStatus {
 @Entity()
 export class ChannelParticipant {
   constructor() {
-    this.banTime = null;
-    this.muteTime = null;
+    this.banTime = new Date();
+    this.muteTime = new Date();
   }
 
   @PrimaryGeneratedColumn()
