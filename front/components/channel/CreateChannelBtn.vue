@@ -1,6 +1,5 @@
 <template>
   <div>
-    <AlertError :state="alert"> {{ alertText }} </AlertError>
     <v-dialog
       v-model="dialog"
       max-width="600px"
@@ -86,8 +85,6 @@ export default class CreateChannelBtn extends Vue{
       channPass: string = ''
       channType: string = ''
       createFocus: boolean = false
-      alert: boolean = false
-      alertText: string = ""
       typeList: Array<string> = [
         'Public',
         'Private',
@@ -122,11 +119,7 @@ export default class CreateChannelBtn extends Vue{
 
     activeAlert(error: string)
     {
-        this.alertText = error
-        this.alert = true
-        setTimeout(() => {
-          this.alert = false
-      }, 2000)
+      this.$emit('error', error)
     }
 }
 </script>

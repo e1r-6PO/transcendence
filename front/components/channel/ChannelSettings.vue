@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <AlertError :state="alert"> {{ alertText }} </AlertError> -->
     <v-dialog
       v-model="dialog"
       max-width="600px"
@@ -75,6 +74,7 @@
 import { Component, Prop } from 'nuxt-property-decorator'
 import Vue from 'vue'
 import { ChannAccess } from '../../assets/Classes-ts/Messages'
+import  AlertError  from '../AlertError.vue'
 
 @Component
 export default class ChannelSettings extends Vue{
@@ -126,13 +126,21 @@ export default class ChannelSettings extends Vue{
       })
     console.log(ret)
     if (ret.status == 404)
-      this.$router.push('/chat')
+      this.$router.push('/chat?error=' + ret.data.message)
     else if (ret.status == 403)
-      console.log(ret)
+      this.activeAlert(ret.data.message)
     else
     {
+      this.dialog = false
+      this.actualAccess = this.channAccess
+      this.actualPass = this.channPass
       console.log("success")
     }
+  }
+  
+  activeAlert(error: any)
+  {
+    this.$emit('error', error)
   }
 }
 </script>
