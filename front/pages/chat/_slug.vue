@@ -218,7 +218,7 @@ export default Vue.extend({
     },
 
     isYourMsg(msg: Messages): boolean {
-      if (this.me.user.nickName == msg.senderNick)
+      if (this.me.nickName == msg.senderNick)
         return (true)
       return (false)
     },
@@ -240,11 +240,11 @@ export default Vue.extend({
     },
 
     isDefaultUser(): boolean {
-      return this.me.status == ChannelUserStatus.DEFAULT
+      return this.me.channelStatus == ChannelUserStatus.DEFAULT
     },
 
     isOwner(): boolean {
-      return this.me.status == ChannelUserStatus.OWNER
+      return this.me.channelStatus == ChannelUserStatus.OWNER
     }
   }
 })
