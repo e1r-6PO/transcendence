@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile, UseGuards, ConflictException, ForbiddenException, Get, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile, UseGuards, ConflictException, ForbiddenException, Get, NotFoundException, Put } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { query, Request } from 'express'
 import { TwoFaGuard, ValidTokenGuard } from 'src/guards/account.guards';
@@ -27,15 +27,50 @@ export class ChannelController {
     private readonly relationShipRepository: Repository<Relationship>
   ) {}
 
-  @Get(':channName/type')
-  async getChannelType(@Param('channName') channName, @Req() req: Request)
+  @Get(':channName/info')
+  async getChannelInfo(@Param('channName') channName, @Req() req: Request)
   {
     var channel = await this.channelsRepository.findOne({
       where: { channName: channName }
     });
     if (channel == null)
       throw new ConflictException('Channel does not exist')
-    return channel.channAccess
+    var participant = await this.channelParticipantsRepository.findOne({
+      where : { user: req.cookies['user_id'], channel: channel }
+    })
+    if (participant && participant.status == ChannelStatus.owner)
+      return { channName: channel.channName, channAccess: channel.channAccess, channPass: channel.channPass }  
+    else
+      return { channName: channel.channName, channAccess: channel.channAccess, channPass: "" }
+  }
+
+  @Patch(':channName/info')
+  async changeInfo(@Query() query,@Param('channName') channName, @Req() req: Request)
+  {
+    var channel = await this.channelsRepository.findOne({
+      where: { channName: channName }
+    })
+    if (channel == null)
+      throw new NotFoundException('Channel does not exist')
+    var participant = await this.channelParticipantsRepository.findOne({
+      where: { user: req.cookies['user_id'], channel: channel }
+    })
+    if (participant == null)
+      throw new NotFoundException("You re not in channel")
+    if (participant.status != ChannelStatus.owner)
+      throw new ForbiddenException("You re not the owner")
+    if (!query['channAccess'])
+      throw new ForbiddenException("Missing param1")
+    if (query['channAccess'] == ChannAccess.PROTECTED && !query['channPass'])
+      throw new ForbiddenException("Missing param2")
+      var hash = ""
+    if (query['channAccess']== ChannAccess.PROTECTED)
+      hash = await bcrypt.hash(query['channPass'], 10)
+    this.channelsRepository.update({
+      channName: channName
+    }, {
+      channAccess: query['channAccess'], channPass: hash
+    })
   }
 
   @Get(':channName/me')
@@ -46,14 +81,21 @@ export class ChannelController {
       where: { channName: channName }
     })
     if (channel == null)
-      throw new NotFoundException()
+      throw new NotFoundException('Channel does not exist')
 
     var participant = await this.channelParticipantsRepository.findOne({
       where: { user: req.cookies['user_id'], channel: channel }
     })
     if (participant == null)
-      throw new NotFoundException()
-    return participant
+      throw new NotFoundException("You re not in channel")
+    var channelUser = new ChannelUser()
+    channelUser.id = participant.user.id
+    channelUser.nickName = participant.user.nickName
+    channelUser.picture = participant.user.picture
+    channelUser.channelStatus = participant.status
+    channelUser.isMute = participant.isMute
+    channelUser.muteTime = participant.muteTime
+    return channelUser
   }
 
   @Get('myChannel')
