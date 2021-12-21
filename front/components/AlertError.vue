@@ -1,5 +1,5 @@
 <template>
-  <v-alert v-if="state" :state="state"
+  <v-alert v-if="state" :textError="textError" :state="state"
     outlined
     :type=alertType
     text
@@ -7,13 +7,12 @@
     style="position: absolute; right: 0px; top: 30px; z-index: 12; width: 100%"
     align="center"
   >
-    {{ alertText }}
-    <slot></slot>
+    {{ textError }}
   </v-alert>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'nuxt-property-decorator'
+import { Watch, Component, Prop, Vue } from 'nuxt-property-decorator'
 
 @Component
 export default class AlertError extends Vue{
@@ -21,8 +20,25 @@ export default class AlertError extends Vue{
   @Prop({ type: Boolean, default: false})
   state!: boolean
 
-      alertCode: boolean = true
-      alertType: string = 'error'
-      alertText: string = ""
+  @Prop({ type: String, default: "" })
+  textError!: string
+
+  alertCode: boolean = true
+  alertType: string = 'error'
+  alert: boolean = false
+
+  @Watch('state', { immediate: true })
+  onStateChange()
+  {
+    this.activeAlert()
+  }
+
+  activeAlert()
+  {
+      this.alert = true
+      setTimeout(() => {
+        this.$emit('end')
+    }, 2000)
+  }
 }
 </script>

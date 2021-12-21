@@ -3,12 +3,12 @@
   fluid 
   fill-height
  >
-      <AlertError :state="alert"> {{ alertText }} </AlertError>
+  <AlertError @end="onEnd" :textError="alertText" :state="alert"></AlertError>
   <v-row style="height: 100%">
 
     <v-col cols="12" sm="3" class="border">
-      <CreateChannelBtn class="pb-2"/>
-      <JoinChannelBtn />
+      <CreateChannelBtn @error="activeAlert" class="pb-2"/>
+      <JoinChannelBtn @error="activeAlert" />
       <v-divider
         class="side-bar" 
         color="#ffa768"
@@ -85,9 +85,10 @@ export default Vue.extend({
     {
         this.alertText = error
         this.alert = true
-        setTimeout(() => {
-          this.alert = false
-      }, 2000)
+    },
+
+    onEnd() {
+      this.alert = false
     }
   },
 })

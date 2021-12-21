@@ -5,6 +5,7 @@
   fluid 
   fill-height
 >
+  <AlertError @end="onEnd" :textError="alertText" :state="alert"> {{ alertText }} </AlertError>
   <v-app-bar
     color="#181818"
     height="130"
@@ -40,7 +41,7 @@
          <v-subheader class="mt-3 mb-8">
           <CloseBtn content="mdi-close" v-on:click="channelDrawer = !channelDrawer"></CloseBtn>
           <v-spacer />
-          <CreateChannelBtn class="pr-5 pb-3"/>
+          <CreateChannelBtn @error="activeAlert" class="pr-5 pb-3"/>
         </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelList>
@@ -57,7 +58,7 @@
       <ChannelUserList class="mt-4">
         <v-subheader class="mt-3 mb-8">
           <ChannelLeaveBtn v-if="isDefaultUser()" class="pl-5 pb-3"> </ChannelLeaveBtn>
-          <ChannelSettings v-if="isOwner()" class="pl-5 pb-3"> </ChannelSettings>
+          <ChannelSettings v-if="isOwner()" @error="activeAlert" class="pl-5 pb-3"> </ChannelSettings>
           <v-spacer />
           <CloseBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></CloseBtn>
          </v-subheader>
@@ -151,13 +152,15 @@ import ChannelUserList from '../../components/channel/ChannelUserList.vue';
 import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
 import CloseBtn from '../../components/channel/button/CloseBtn.vue';
 import ChannelLeaveBtn from '../../components/channel/ChannelLeaveBtn.vue';
+import AlertError from '../../components/AlertError.vue';
 import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
 import ChannelSettings from '../../components/channel/ChannelSettings.vue'
 
 import socket_chat from '../../plugins/chat.io'
 
 export default Vue.extend({
-  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn, ChannelLeaveBtn, ChannelSettings },
+  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn,
+      ChannelLeaveBtn, ChannelSettings, AlertError },
   middleware: 'login',
 
   data() {
@@ -174,6 +177,8 @@ export default Vue.extend({
       userFocus: false,
       channelFocus: false,
       createFocus: false,
+      alert: false,
+      alertText: ""
     }
   },
 
@@ -245,6 +250,19 @@ export default Vue.extend({
 
     isOwner(): boolean {
       return this.me.channelStatus == ChannelUserStatus.OWNER
+    },
+
+    activeAlert(error: any)
+    {
+        this.alertText = error
+        this.alert = true
+      //   setTimeout(() => {
+      //     this.alert = false
+      // }, 2000)
+    },
+
+    onEnd() {
+      this.alert = false
     }
   }
 })
