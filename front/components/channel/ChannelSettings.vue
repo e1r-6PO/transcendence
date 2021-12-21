@@ -33,17 +33,18 @@
             <v-text-field
               label="Channel name"
               v-model="channName"
+              disabled
             ></v-text-field>
             <v-select
               :items="typeList"
               label="Channel type"
-              v-model="channType"
+              v-model="channAccess"
             ></v-select>
             <v-text-field
               label="Password"
               v-model="channPass"
               required
-              :disabled="channType != 'Protected'"
+              :disabled="channAccess != 'Protected'"
             ></v-text-field>
           </v-container>
         </v-card-text>
@@ -56,14 +57,14 @@
           >
             Close
           </v-btn>
-          <!-- <v-btn
+          <v-btn
             color="blue darken-1"
             text
-            @click="createChannel()"
-            :disabled="disableCreate()"
+            :disabled="disableSave()"
+            @click="saveSettings()"
           >
-            Create
-          </v-btn> -->
+            Save
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -71,17 +72,67 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'nuxt-property-decorator'
+import { Component, Prop } from 'nuxt-property-decorator'
 import Vue from 'vue'
+import { ChannAccess } from '../../assets/Classes-ts/Messages'
 
 @Component
 export default class ChannelSettings extends Vue{
   
-  channName: string = ""
-  channType: string = ""
-  channPass: string =""
+  actualAccess: string = ""
+  actualPass: string = ""
+  channName: string = this.$route.params.slug
+  channAccess: string = ""
+  channPass: string = ""
+  typeList: Array<string> = [
+    'Public',
+    'Private',
+    'Protected'
+  ]
 
   dialog: boolean = false
   settingsFocus: boolean = false
+
+  async mounted() {
+    var ret = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/info')
+      .catch(function(error) {
+        return error.response
+      })
+    if (ret.status == 409)
+      this.$router.push('/chat?error=Channel%20does%20not%20exist')
+    else if (ret.status == 403)
+      this.$router.push('/chat?error=Not%20in%20channel')
+    else
+    {
+      console.log(ret.data)
+      this.actualAccess = ret.data.channAccess
+      this.channAccess = ret.data.channAccess
+      this.actualPass = ret.data.channPass
+    }
+  }
+
+  disableSave() {
+    if (this.channAccess == this.actualAccess && this.channAccess != ChannAccess.PROTECTED)
+      return true
+    if (this.channAccess == ChannAccess.PROTECTED && this.channPass == "")
+      return true
+    return false
+  }
+
+  async saveSettings() {
+    var ret = await this.$axios.patch('/api/chat/' + this.$route.params.slug + '/info?channAccess=' + this.channAccess + '&channPass=' + this.channPass)
+      .catch(function(error) {
+        return error.response
+      })
+    console.log(ret)
+    if (ret.status == 404)
+      this.$router.push('/chat')
+    else if (ret.status == 403)
+      console.log(ret)
+    else
+    {
+      console.log("success")
+    }
+  }
 }
 </script>
