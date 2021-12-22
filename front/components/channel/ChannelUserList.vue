@@ -22,11 +22,15 @@
       </v-avatar>
       </v-list-item-icon>
       <v-list-item-content>
-        <v-list-item-title v-text="user.nickName" class="text-h6" style="margin-top: 14px" :style="'color:' + getUserTextColor(i)" />
-          <v-list-item-subtitle v-text="user.channelStatus" align="right" class="mt-5" :style="'color:' + getUserTextColor(i)" />
+        <v-list-item-title v-text="user.nickName" style="font-size: 15px; margin-top: 14px" :style="'color:' + getUserTextColor(i)" />
+        <v-list-item-subtitle v-text="user.channelStatus" align="right" class="mt-5" style="font-size: 12px;" :style="'color:' + getUserTextColor(i)" />
       </v-list-item-content>
-      <v-list-item-icon class="mt-3">
-        <DeleteUserBtn @refreshUser="refreshList" :userName="user.nickName" />
+      <v-list-item-icon v-if="ownerAction && user.channelStatus != isOwner()" class="mt-3">
+        <DeleteUserBtn style="margin-right: 5px" :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
+        <ChangeGradeUserBtn :small="small" :grade="user.channelStatus" @refreshUser="refreshUser" :userName="user.nickName" />
+        <!-- <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
+        <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
+        <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" /> -->
       </v-list-item-icon>
     </v-list-item>
   </v-list>
@@ -35,7 +39,7 @@
 <script lang="ts">
 import { Component, Prop, Watch } from 'nuxt-property-decorator';
 import Vue from 'vue'
-import { ChannelUser } from '../../assets/Classes-ts/ChannelUser';
+import { ChannelUser, ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
 
 @Component
 export default class ChannelUserList extends Vue {
@@ -45,7 +49,13 @@ export default class ChannelUserList extends Vue {
 
   @Prop({ type: Number, default: 0 })
   refresh: Number
+  
+  @Prop({ type: Boolean, default: false})
+  small!: Boolean
 
+  @Prop({ type: Boolean, default: false})
+  ownerAction!: Boolean
+  
   userList: Array<ChannelUser> = []
   userFocus: number = -1
 
@@ -58,6 +68,7 @@ export default class ChannelUserList extends Vue {
       this.$router.push('/chat')
     else
       this.userList = userListRet.data
+    console.log(this.userList)
   }
 
   @Watch('refresh', { immediate: true })
@@ -81,6 +92,14 @@ export default class ChannelUserList extends Vue {
     if (i == this.userFocus)
       return '#9142c7'
     return 'white'
+  }
+
+  refreshUser() {
+    this.$emit('refreshUser')
+  }
+
+  isOwner() {
+    return ChannelUserStatus.OWNER
   }
 }
 </script>

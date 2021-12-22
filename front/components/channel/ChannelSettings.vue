@@ -62,23 +62,25 @@
             </v-row>
           </v-container>
         </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <CloseBtn @click="dialog = false" :isText="true" content="Close" />
+        <CloseBtn :disable="disableSave()" @click="saveSettings()" :isText="true" content="Save" />
+      </v-card-actions>
+    <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
         <v-row class="justify-center">
-          <v-card-title class="justify-center">
-            <p class="text-h5 white--text"> Users </p>
+          <v-card-title>
+            <p class="text-h4 white--text"> Users </p>
           </v-card-title>
           <AddUserBtn @refreshUser="updateToken" @error="activeAlert" />
         </v-row>
         <ChannelUserList
           :refresh="refreshToken"
+          :ownerAction="true"
+          @refreshUser="updateToken"
           class="ml-3 mr-3"
           style="background-color: #181818"
-          @refreshUser="updateToken"
         />
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <CloseBtn v-on:click="dialog = false" :isText="true" content="Close" />
-          <CloseBtn :disable="disableSave()" v-on:click="saveSettings()" :isText="true" content="Save" />
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -179,5 +181,4 @@ export default class ChannelSettings extends Vue{
 <style>
 @import '../../assets/Classes-scss/main_page.scss';
 @import '../../assets/Classes-scss/neon_effects.scss';
-
 </style>

@@ -2,6 +2,7 @@
   <CloseBtn
     v-on:click="deleteUser()"
     content="mdi-account-minus"
+    :smaller="small"
   />
 </template>
       
@@ -15,6 +16,9 @@ export default class DeleteUserBtn extends Vue{
   @Prop({ type: String, default: ""})
   userName: string
 
+  @Prop({ type: Boolean, default: false})
+  small!: Boolean
+  
   async deleteUser() {
     const ret = await this.$axios.delete('/api/chat/' + this.$route.params.slug + '/deleteUser?userName=' + this.userName)
       .catch(function(error) {
