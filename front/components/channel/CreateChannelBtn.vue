@@ -74,7 +74,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import AlertError from '../../components/AlertError.vue'
 import { Component, Prop } from 'nuxt-property-decorator'
 
 @Component

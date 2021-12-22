@@ -1,8 +1,9 @@
 <template>
   <v-btn
-    :icon="!isText"
     class="neon-button"
+    :icon="!isText"
     :text="isText"
+    :style="isText ? 'border-radius: 10px': ''"
     :color="btnFocus == true ? '#9141c7' : 'black'"
     @click.stop="btnClicked()"
     v-on:mouseover="btnFocus = true"
@@ -14,13 +15,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "nuxt-property-decorator";
-import Vue from 'vue'
+import { Component, Prop, Vue } from "nuxt-property-decorator";
 
 @Component
 export default class CloseBtn extends Vue {
   
-  @Prop({default: "" })
+  @Prop({ default: "" })
   content!: string
 
   @Prop({ default: false })

@@ -256,9 +256,6 @@ export default Vue.extend({
     {
         this.alertText = error
         this.alert = true
-      //   setTimeout(() => {
-      //     this.alert = false
-      // }, 2000)
     },
 
     onEnd() {

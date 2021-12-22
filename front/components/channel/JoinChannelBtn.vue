@@ -98,7 +98,6 @@
 import { Component } from 'nuxt-property-decorator';
 import Vue from 'vue'
 import { ChannAccess } from '../../assets/Classes-ts/Messages'
-import AlertError from '../../components/AlertError.vue';
 
 @Component
 export default class JoinChannelBtn extends Vue{

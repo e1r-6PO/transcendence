@@ -22,7 +22,6 @@
 </template>
 
 <script lang="ts">
-import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 
 @Component
