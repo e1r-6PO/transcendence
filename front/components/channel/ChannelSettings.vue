@@ -64,8 +64,8 @@
         </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <CloseBtn @click="dialog = false" :isText="true" content="Close" />
-        <CloseBtn :disable="disableSave()" @click="saveSettings()" :isText="true" content="Save" />
+        <BasicBtn @click="dialog = false" :isText="true" content="Close" />
+        <BasicBtn :disable="disableSave()" @click="saveSettings()" :isText="true" content="Save" />
       </v-card-actions>
     <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
         <v-row class="justify-center">

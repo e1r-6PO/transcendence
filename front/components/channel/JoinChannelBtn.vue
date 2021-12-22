@@ -134,7 +134,6 @@ export default class JoinChannelBtn extends Vue{
       .catch(function (error) {
         return error.response
     });
-    console.log(ret.status)
     if (ret.status == 409)
     this.activeAlert(ret.data['message'])
     else if (ret.status == 403)

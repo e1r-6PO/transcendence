@@ -1,5 +1,5 @@
 <template>
-  <CloseBtn
+  <BasicBtn
     v-on:click="changeGrade()"
     :content="grade == isAdmin() ? 'mdi-account-arrow-down' : 'mdi-account-arrow-up'"
     :smaller="small"

@@ -1,5 +1,5 @@
 <template>
-  <CloseBtn
+  <BasicBtn
     v-on:click="deleteUser()"
     content="mdi-account-minus"
     :smaller="small"

@@ -13,19 +13,19 @@
     fixed
     clipped-left
   >
-    <CloseBtn
+    <BasicBtn
       style="margin-top: 80px"
       content="mdi-forum"
       v-on:click="channelDrawer = !channelDrawer">
-    </CloseBtn>
+    </BasicBtn>
     <v-spacer />
     <h3 class="neonText" style="color: white; margin-top: 80px">{{ $route.params.slug }}</h3>
     <v-spacer />
-    <CloseBtn
+    <BasicBtn
       style="margin-top: 80px"
       content="mdi-account-group"
       v-on:click="userDrawer = !userDrawer">
-    </CloseBtn>
+    </BasicBtn>
   </v-app-bar>
   <v-row style="height: 100%; margin-top: 2.5%">
 
@@ -39,7 +39,7 @@
     >
       <ChannelList class="mt-4" :state="true">
          <v-subheader class="mt-3 mb-8">
-          <CloseBtn content="mdi-close" v-on:click="channelDrawer = !channelDrawer"></CloseBtn>
+          <BasicBtn content="mdi-close" v-on:click="channelDrawer = !channelDrawer"></BasicBtn>
           <v-spacer />
           <CreateChannelBtn @error="activeAlert" class="pr-5 pb-3"/>
         </v-subheader>
@@ -65,7 +65,7 @@
           >
           </ChannelSettings>
           <v-spacer />
-          <CloseBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></CloseBtn>
+          <BasicBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></BasicBtn>
          </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelUserList>
@@ -155,7 +155,7 @@ import { io, Socket } from "socket.io-client";
 import ChannelList from '../../components/channel/ChannelList.vue';
 import ChannelUserList from '../../components/channel/ChannelUserList.vue';
 import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
-import CloseBtn from '../../components/channel/button/CloseBtn.vue';
+import BasicBtn from '../../components/channel/button/BasicBtn.vue';
 import ChannelLeaveBtn from '../../components/channel/ChannelLeaveBtn.vue';
 import AlertError from '../../components/AlertError.vue';
 import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
@@ -164,7 +164,7 @@ import ChannelSettings from '../../components/channel/ChannelSettings.vue'
 import socket_chat from '../../plugins/chat.io'
 
 export default Vue.extend({
-  components: { CreateChannelBtn, ChannelList, ChannelUserList, CloseBtn,
+  components: { CreateChannelBtn, ChannelList, ChannelUserList, BasicBtn,
       ChannelLeaveBtn, ChannelSettings, AlertError },
   middleware: 'login',
 
