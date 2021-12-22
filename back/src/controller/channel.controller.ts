@@ -60,9 +60,9 @@ export class ChannelController {
     if (participant.status != ChannelStatus.owner)
       throw new ForbiddenException("You re not the owner")
     if (!query['channAccess'])
-      throw new ForbiddenException("Missing param1")
+      throw new ForbiddenException("Missing param")
     if (query['channAccess'] == ChannAccess.PROTECTED && !query['channPass'])
-      throw new ForbiddenException("Missing param2")
+      throw new ForbiddenException("Missing param")
       var hash = ""
     if (query['channAccess']== ChannAccess.PROTECTED)
       hash = await bcrypt.hash(query['channPass'], 10)
@@ -285,5 +285,43 @@ export class ChannelController {
     if (ret == null)
       throw new ForbiddenException()
     return {status: 201}
+  }
+
+  @Post(':channName/addUser')
+  async addUser(@Param('channName') channName, @Query() query, @Req() req: Request)
+  {
+    if (!query['userName'])
+      throw new ForbiddenException('Missing params')
+    var channel = await this.channelsRepository.findOne({
+      where: { channName: channName }
+    })
+    if (channel == null)
+      throw new NotFoundException('Channel does not exist')
+    var owner = await this.channelParticipantsRepository.findOne({
+      where: { user: req.cookies['user_id'], channel: channel }
+    })
+    if (owner == null)
+      throw new NotFoundException('You re not in channel')
+    if (owner.status != ChannelStatus.owner)
+      throw new ForbiddenException('Only owner can add user')
+    
+    var user = await this.usersRepository.findOne({
+      where: { nickName: query['userName'] }
+    })
+    if (user == null)
+      throw new ForbiddenException('User ' + query['userName'] + ' does not exist')
+    
+    var isInChann = await this.channelParticipantsRepository.findOne({
+      where: { user: user, channel: channel }
+    })
+    if (isInChann)
+      throw new ForbiddenException('User ' + query['userName'] + ' is already in channel')
+    
+    var newParticipant = new ChannelParticipant()
+    newParticipant.user = user
+    newParticipant.channel = channel
+
+    this.channelParticipantsRepository.save(newParticipant)
+    return
   }
 }
