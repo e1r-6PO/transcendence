@@ -1,7 +1,7 @@
 export enum ChannelUserStatus {
   OWNER = 'owner',
   ADMINISTRATOR = 'administrator',
-  DEFAULT = 'DEFAULT'
+  DEFAULT = 'default'
 }
 class ChannelUser {
 
@@ -15,10 +15,10 @@ class ChannelUser {
     }
 
     id: number;
+    channelStatus: ChannelUserStatus;
     nickName: string;
     isMute: boolean;
     muteTime: Date;
-    channelStatus: ChannelUserStatus;
     picture: string;
 }
 
