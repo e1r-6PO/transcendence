@@ -60,15 +60,11 @@ export default class AddUserBtn extends Vue{
     else
       this.$emit('refreshUser')
     this.dialog = false
-  }
-
-  disableAdd() {
-    
+    this.userName = ""
   }
 
   activeAlert(error: string)
   {
-    console.log("addUserBtn error:" + error)
     this.$emit('error', error)
   }
 }

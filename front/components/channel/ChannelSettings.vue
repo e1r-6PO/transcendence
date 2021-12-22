@@ -34,11 +34,6 @@
           <v-container>
             <v-row>
               <v-col>
-            <!-- <v-text-field
-              label="Channel name"
-              v-model="channName"
-              disabled
-            ></v-text-field> -->
                 <v-select
                   v-model="channAccess"
                   :items="typeList"
@@ -71,26 +66,18 @@
           <v-card-title class="justify-center">
             <p class="text-h5 white--text"> Users </p>
           </v-card-title>
-          <AddUserBtn @error="activeAlert" />
+          <AddUserBtn @refreshUser="updateToken" @error="activeAlert" />
         </v-row>
-        <ChannelUserList class="ml-3 mr-3" style="background-color: #181818" />
+        <ChannelUserList
+          :refresh="refreshToken"
+          class="ml-3 mr-3"
+          style="background-color: #181818"
+          @refreshUser="updateToken"
+        />
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="dialog = false"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            :disabled="disableSave()"
-            @click="saveSettings()"
-          >
-            Save
-          </v-btn>
+          <CloseBtn v-on:click="dialog = false" :isText="true" content="Close" />
+          <CloseBtn :disable="disableSave()" v-on:click="saveSettings()" :isText="true" content="Save" />
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -122,6 +109,7 @@ export default class ChannelSettings extends Vue{
   dialog: boolean = false
   settingsFocus: boolean = false
   btnFocus: boolean = false
+  refreshToken: number = 0
 
   async mounted() {
     var ret = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/info')
@@ -134,7 +122,6 @@ export default class ChannelSettings extends Vue{
       this.$router.push('/chat?error=Not%20in%20channel')
     else
     {
-      console.log(ret.data)
       this.actualAccess = ret.data.channAccess
       this.channAccess = ret.data.channAccess
       this.actualPass = ret.data.channPass
@@ -162,7 +149,6 @@ export default class ChannelSettings extends Vue{
       .catch(function(error) {
         return error.response
       })
-    console.log(ret)
     if (ret.status == 404)
       this.$router.push('/chat?error=' + ret.data.message)
     else if (ret.status == 403)
@@ -172,13 +158,19 @@ export default class ChannelSettings extends Vue{
       this.dialog = false
       this.actualAccess = this.channAccess
       this.actualPass = this.channPass
-      console.log("success")
     }
+    this.channPass = ""
   }
   
   activeAlert(error: any)
   {
     this.$emit('error', error)
+  }
+
+  updateToken()
+  {
+    this.$emit('refreshUser')
+    this.refreshToken += 1
   }
 }
 
