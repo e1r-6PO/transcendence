@@ -55,10 +55,15 @@
       color="#181818"
       style="padding-top: 65px"
     >
-      <ChannelUserList class="mt-4">
+      <ChannelUserList :small="true" :refresh="tokenUser" @refreshUser="updateToken" class="mt-4">
         <v-subheader class="mt-3 mb-8">
           <ChannelLeaveBtn v-if="isDefaultUser()" class="pl-5 pb-3"> </ChannelLeaveBtn>
-          <ChannelSettings v-if="isOwner()" @error="activeAlert" class="pl-5 pb-3"> </ChannelSettings>
+          <ChannelSettings v-if="isOwner()"
+            @error="activeAlert"
+            class="pl-5 pb-3"
+            @refreshUser="updateToken"
+          >
+          </ChannelSettings>
           <v-spacer />
           <CloseBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></CloseBtn>
          </v-subheader>
@@ -178,7 +183,8 @@ export default Vue.extend({
       channelFocus: false,
       createFocus: false,
       alert: false,
-      alertText: ""
+      alertText: "",
+      tokenUser: 0,
     }
   },
 
@@ -260,6 +266,10 @@ export default Vue.extend({
 
     onEnd() {
       this.alert = false
+    },
+
+    updateToken() {
+      this.tokenUser += 1
     }
   }
 })
@@ -285,12 +295,6 @@ body {
 .neon-button {
   border: 3px solid #cd78ff !important;
   box-shadow: inset 0px 0px 20px 0px #a200ff, 0px 0px 20px 0px #a200ff !important;
-}
-
-.divider {
-  border-bottom: 1px solid #ffa768 !important;
-  height: 69px !important;
-  box-shadow: inset 0px -5px 5px -5px #fc6500, 0px 0px 7px 1px #fc6500 !important;
 }
 
 .neonText {
