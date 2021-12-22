@@ -2,7 +2,8 @@
   <div>
     <v-dialog
       v-model="dialog"
-      max-width="600px"
+      max-width="500"
+      transition="dialog-top-transition"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-row align="center" justify="center" style="margin-top: 0px">
@@ -23,30 +24,56 @@
           </v-card>
         </v-row>
       </template>
-      <v-card>
-        <v-card-title>
-          <span class="text-h5">Channel settings</span>
+      <v-card
+        style="background-color: #181818"
+      > 
+        <v-card-title class="justify-center">
+          <p align="center" class="text-h4 white--text">{{ channName }}</p>
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field
+            <v-row>
+              <v-col>
+            <!-- <v-text-field
               label="Channel name"
               v-model="channName"
               disabled
-            ></v-text-field>
-            <v-select
-              :items="typeList"
-              label="Channel type"
-              v-model="channAccess"
-            ></v-select>
-            <v-text-field
-              label="Password"
-              v-model="channPass"
-              required
-              :disabled="channAccess != 'Protected'"
-            ></v-text-field>
+            ></v-text-field> -->
+                <v-select
+                  v-model="channAccess"
+                  :items="typeList"
+                  class="custom-select-color"
+                  placeholder="Channel type"
+                  color="yellow"
+                  background-color="#181818"
+                  item-color="yellow"
+                  hide-details
+                  filled
+                  dense
+                  rounded
+                ></v-select>
+                <v-text-field
+                  v-model="channPass"
+                  placeholder="Password"
+                  class="mt-3 custom-select-color custom-placeholder-color custom-input-color neonText"
+                  color="blue"
+                  hide-details
+                  filled
+                  dense
+                  rounded
+                  :disabled="channAccess != 'Protected'"
+                ></v-text-field>
+              </v-col>
+            </v-row>
           </v-container>
         </v-card-text>
+        <v-row class="justify-center">
+          <v-card-title class="justify-center">
+            <p class="text-h5 white--text"> Users </p>
+          </v-card-title>
+          <AddUserBtn @error="activeAlert" />
+        </v-row>
+        <ChannelUserList class="ml-3 mr-3" style="background-color: #181818" />
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -71,10 +98,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'nuxt-property-decorator'
-import Vue from 'vue'
+import { Component, Prop, Vue} from 'nuxt-property-decorator'
+import { ChannelUser } from '../../assets/Classes-ts/ChannelUser'
 import { ChannAccess } from '../../assets/Classes-ts/Messages'
 import  AlertError  from '../AlertError.vue'
+import AddUserBtn from './AddUserBtn.vue'
+import ChannelUserList from './ChannelUserList.vue'
 
 @Component
 export default class ChannelSettings extends Vue{
@@ -89,9 +118,10 @@ export default class ChannelSettings extends Vue{
     'Private',
     'Protected'
   ]
-
+  userList: Array<ChannelUser> = []
   dialog: boolean = false
   settingsFocus: boolean = false
+  btnFocus: boolean = false
 
   async mounted() {
     var ret = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/info')
@@ -109,6 +139,14 @@ export default class ChannelSettings extends Vue{
       this.channAccess = ret.data.channAccess
       this.actualPass = ret.data.channPass
     }
+    var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
+    .catch(function(error) {
+      return error.response
+    })
+    if (userListRet.status == 403)
+      this.$router.push('/chat?error=' + userListRet.data.message)
+    else
+      this.userList = userListRet.data
   }
 
   disableSave() {
@@ -143,4 +181,11 @@ export default class ChannelSettings extends Vue{
     this.$emit('error', error)
   }
 }
+
 </script>
+
+<style>
+@import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/neon_effects.scss';
+
+</style>
