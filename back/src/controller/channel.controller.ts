@@ -297,4 +297,37 @@ export class ChannelController {
     var participantToDelete = await this.channelService.findParticipant(user, channel)
     this.channelParticipantsRepository.delete(participantToDelete)
   }
+
+  @Patch(':channName/changeGrade')
+  async changeGrade(@Param('channName') channName, @Query() query, @Req() req: Request)
+  {
+    if (!query['userName'])
+    throw new ForbiddenException('Missing params')
+    
+    var channel = await this.channelService.findChannel(channName)
+    if (channel == null)
+      throw new NotFoundException('Channel does not exist')
+    
+    var owner = await this.channelService.findParticipant(req.cookies['user_id'], channel)
+    if (owner == null)
+      throw new NotFoundException('You re not in channel')
+    if (owner.status != ChannelStatus.owner)
+      throw new ForbiddenException('Only owner can delete user')
+    
+    var user = await this.channelService.findUserByNick(query['userName'])
+    if (user == null)
+      throw new ForbiddenException('User ' + query['userName'] + ' does not exist')
+    
+        var participant = await this.channelService.findParticipant(user, channel)
+    if (participant == null)
+      throw new ForbiddenException('User ' + query['userName'] + ' not in channel')
+    
+    var newStatus = participant.status == ChannelStatus.default ? ChannelStatus.administrator : ChannelStatus.default
+    
+    this.channelParticipantsRepository.update({
+        channel: channel, user: user
+      }, {
+        status: newStatus
+      })
+  }
 }
