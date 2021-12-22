@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Channel } from "src/entity/channel.entity";
+import { ChannelParticipant } from "src/entity/channelParticipant.entity";
 import { Messages } from "src/entity/messages.entity";
 import { Relationship } from "src/entity/relationship.entity";
 import { User } from "src/entity/user.entity";
@@ -10,9 +11,13 @@ import { Repository } from "typeorm";
 export class ChannelService {
   constructor(
     @InjectRepository(Messages)
-    private MessagesRepository: Repository<Messages>,
+    private messagesRepository: Repository<Messages>,
     @InjectRepository(Channel)
-    private ChannelsRepository: Repository<Channel>
+    private channelsRepository: Repository<Channel>,
+    @InjectRepository(ChannelParticipant)
+    private readonly channelParticipantsRepository: Repository<ChannelParticipant>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>
   ) {}
 
   async getAllMessageInChannel(name: string, blocked: Array<number>): Promise<Array<Messages>>
@@ -20,14 +25,14 @@ export class ChannelService {
     var messagesArray: Array<Messages> = [];
     var chann : Channel = new Channel();
 
-    chann = await this.ChannelsRepository.findOne({
+    chann = await this.channelsRepository.findOne({
       where: { channName: name }
     });
 
     if (chann == null)
       return null
     
-    messagesArray = await this.MessagesRepository.find({
+    messagesArray = await this.messagesRepository.find({
         where: { channel: chann }
     })
     for (var i = 0; i < messagesArray.length; i++)
@@ -41,5 +46,33 @@ export class ChannelService {
     for (var i = 0; i < messagesArray.length; i++)
         messagesArray[i].senderNick = messagesArray[i].sender.nickName
     return (messagesArray)
+  }
+
+  async findChannel(channName: string)
+  {
+    return await this.channelsRepository.findOne({
+      where: { channName: channName }
+    })
+  }
+
+  async findParticipant(userToFind, channel)
+  {
+    return await this.channelParticipantsRepository.findOne({
+      where: { user: userToFind, channel: channel}
+    })
+  }
+
+  async findUserById(userId)
+  {
+    return await this.usersRepository.findOne({
+      where: { id: userId }
+    })
+  }
+
+  async findUserByNick(userName: string)
+  {
+    return await this.usersRepository.findOne({
+      where: { nickName: userName }
+    })
   }
 }

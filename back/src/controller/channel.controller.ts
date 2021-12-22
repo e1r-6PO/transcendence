@@ -30,14 +30,11 @@ export class ChannelController {
   @Get(':channName/info')
   async getChannelInfo(@Param('channName') channName, @Req() req: Request)
   {
-    var channel = await this.channelsRepository.findOne({
-      where: { channName: channName }
-    });
+    var channel = await this.channelService.findChannel(channName)
     if (channel == null)
       throw new ConflictException('Channel does not exist')
-    var participant = await this.channelParticipantsRepository.findOne({
-      where : { user: req.cookies['user_id'], channel: channel }
-    })
+    
+    var participant = await this.channelService.findParticipant(req.cookies['user_id'], channel)
     if (participant && participant.status == ChannelStatus.owner)
       return { channName: channel.channName, channAccess: channel.channAccess, channPass: channel.channPass }  
     else
@@ -47,14 +44,11 @@ export class ChannelController {
   @Patch(':channName/info')
   async changeInfo(@Query() query,@Param('channName') channName, @Req() req: Request)
   {
-    var channel = await this.channelsRepository.findOne({
-      where: { channName: channName }
-    })
+    var channel = await this.channelService.findChannel(channName)
     if (channel == null)
       throw new NotFoundException('Channel does not exist')
-    var participant = await this.channelParticipantsRepository.findOne({
-      where: { user: req.cookies['user_id'], channel: channel }
-    })
+    
+      var participant = await this.channelService.findParticipant(req.cookies['user_id'], channel)
     if (participant == null)
       throw new NotFoundException("You re not in channel")
     if (participant.status != ChannelStatus.owner)
@@ -76,18 +70,14 @@ export class ChannelController {
   @Get(':channName/me')
   async getMyInfo(@Param('channName') channName, @Req() req: Request)
   {
-    console.log("coucou")
-    var channel = await this.channelsRepository.findOne({
-      where: { channName: channName }
-    })
+    var channel = await this.channelService.findChannel(channName)
     if (channel == null)
       throw new NotFoundException('Channel does not exist')
 
-    var participant = await this.channelParticipantsRepository.findOne({
-      where: { user: req.cookies['user_id'], channel: channel }
-    })
+    var participant = await this.channelService.findParticipant(req.cookies['user_id'], channel)
     if (participant == null)
       throw new NotFoundException("You re not in channel")
+    
     var channelUser = new ChannelUser()
     channelUser.id = participant.user.id
     channelUser.nickName = participant.user.nickName
@@ -101,9 +91,7 @@ export class ChannelController {
   @Get('myChannel')
   async getMyChannel(@Req() req: Request)
   {
-    var me = await this.usersRepository.findOne({
-      where: { id: req.cookies['user_id'] }
-    });
+    var me = await this.channelService.findUserById(req.cookies['user_id'])
 
     var participantList = await this.channelParticipantsRepository.find({
       where: { user: me }
@@ -116,22 +104,17 @@ export class ChannelController {
   }
 
   @Get(':channName/users')
-  async getChannelUsers(@Param('channName') param, @Req() req: Request)
+  async getChannelUsers(@Param('channName') channName, @Req() req: Request)
   {
-    var channel = await this.channelsRepository.findOne({
-      where: { channName: param }
-    });
+    var channel = await this.channelService.findChannel(channName)
     if (channel == null)
       throw new ConflictException('Channel does not exist')
     
-    var checkAccess = this.channelParticipantsRepository.findOne({
-      where: { user: req.cookies['user_id'], channel: channel }
-    });
-
+    var checkAccess = await this.channelService.findParticipant(req.cookies['user_id'], channel)
     if (checkAccess == null)
       throw new ForbiddenException()
 
-      var participantList = await this.channelParticipantsRepository.find({
+    var participantList = await this.channelParticipantsRepository.find({
       where : { channel: channel }
     });
 
@@ -153,22 +136,14 @@ export class ChannelController {
   @Post(':channName/create')
   async createChannel(@Param('channName') channName, @Req() req: Request): Promise<void>
   {
-    var channel: Channel = await this.channelsRepository.findOne(
-      { where :
-        { channName: channName }
-      }
-    );
+    var channel = await this.channelService.findChannel(channName)
     if (channel != null)
       throw new ConflictException('Channel exist')
     
     if (channName.length > 20)
       throw new ConflictException('Channel name is to long')
-    var owner: User = await this.usersRepository.findOne(
-      { where :
-          { id: req.cookies['user_id'] }
-      }
-    );
 
+    var owner = await this.channelService.findUserById(req.cookies['user_id'])
     if (query['type'] == ChannAccess.PROTECTED && query['pass'].length < 5)
       throw new ConflictException('Pass is to short')
     
@@ -197,16 +172,11 @@ export class ChannelController {
   @Post(':channName/join')
   async joinChannel(@Query('pass') pass, @Param('channName') channName, @Req() req: Request)
   {
-    var channel = await this.channelsRepository.findOne({
-      where : { channName: channName }
-    });
+    var channel = await this.channelService.findChannel(channName)
     if (channel == null)
       throw new ForbiddenException('Channel inexist')
 
-    var participant = await this.channelParticipantsRepository.findOne({
-      where : { user: req.cookies['user_id'], channel: channel.id }
-    });
-
+    var participant = await this.channelService.findParticipant(req.cookies['user_id'], channel)
     if (participant != null)
       throw new ConflictException('Already in channel')
     
@@ -216,14 +186,9 @@ export class ChannelController {
     if (channel.channAccess == ChannAccess.PROTECTED && !isMatch)
       throw new ForbiddenException('Wrong password')
 
-    var user = await this.usersRepository.findOne({
-      where: { id: req.cookies['user_id'] }
-    })
-
+    var user = await this.channelService.findUserById(req.cookies['user_id'])
     var newParticipant: ChannelParticipant = new ChannelParticipant()
 
-    console.log(channel)
-    console.log(user)
     newParticipant.status = ChannelStatus.default
     newParticipant.user = user
     newParticipant.channel = channel
@@ -235,15 +200,11 @@ export class ChannelController {
   @Post(':channName/leave')
   async leaveChannel(@Param('channName') channName, @Req() req: Request)
   {
-    var channel = await this.channelsRepository.findOne({
-      where : { channName: channName }
-    })
+    var channel = await this.channelService.findChannel(channName)
     if (channel == null)
       throw new NotFoundException()
 
-    var participant = await this.channelParticipantsRepository.findOne({
-      where: { user: req.cookies['user_id'], channel: channel } 
-    })
+    var participant = await this.channelService.findParticipant(req.cookies['user_id'], channel)
     if (participant == null)
       throw new ForbiddenException('Not in channel')
 
@@ -260,9 +221,7 @@ export class ChannelController {
     var blocked: Array<number> = []
     for (var i = 0; i < blocked_relation.length; i++)
     {
-      var tmp: User = await this.usersRepository.findOne({
-        where : { id: blocked_relation[i].peer.id }
-      });
+      var tmp = await this.channelService.findUserById(blocked_relation[i].peer.id)
       blocked.push(tmp.id)
     }
     return this.channelService.getAllMessageInChannel(param, blocked)
@@ -271,17 +230,11 @@ export class ChannelController {
   @Get(':channName/access')
   async checkAccess(@Param('channName') channName, @Req() req : Request)
   {
-    var channel = await this.channelsRepository.findOne({
-      where: { channName: channName }
-    })
+    var channel = await this.channelService.findChannel(channName)
     if (channel == null)
       throw new NotFoundException()
 
-    var ret = this.channelParticipantsRepository.findOne({
-      where: { user: req.cookies['user_id'],
-              channel: channel
-      }
-    })
+    var ret = await this.channelService.findParticipant(req.cookies['user_id'], channel)
     if (ret == null)
       throw new ForbiddenException()
     return {status: 201}
@@ -292,22 +245,18 @@ export class ChannelController {
   {
     if (!query['userName'])
       throw new ForbiddenException('Missing params')
-    var channel = await this.channelsRepository.findOne({
-      where: { channName: channName }
-    })
+    
+    var channel = await this.channelService.findChannel(channName)
     if (channel == null)
       throw new NotFoundException('Channel does not exist')
-    var owner = await this.channelParticipantsRepository.findOne({
-      where: { user: req.cookies['user_id'], channel: channel }
-    })
+    
+    var owner = await this.channelService.findParticipant(req.cookies['user_id'], channel)
     if (owner == null)
       throw new NotFoundException('You re not in channel')
     if (owner.status != ChannelStatus.owner)
       throw new ForbiddenException('Only owner can add user')
     
-    var user = await this.usersRepository.findOne({
-      where: { nickName: query['userName'] }
-    })
+    var user = await this.channelService.findUserByNick(query['userName'])
     if (user == null)
       throw new ForbiddenException('User ' + query['userName'] + ' does not exist')
     
@@ -323,5 +272,29 @@ export class ChannelController {
 
     this.channelParticipantsRepository.save(newParticipant)
     return
+  }
+
+  @Delete(':channName/deleteUser')
+  async deleteUser(@Param('channName') channName, @Query() query, @Req() req: Request)
+  {
+    if (!query['userName'])
+      throw new ForbiddenException('Missing params')
+    
+    var channel = await this.channelService.findChannel(channName)
+    if (channel == null)
+      throw new NotFoundException('Channel does not exist')
+    
+    var owner = await this.channelService.findParticipant(req.cookies['user_id'], channel)
+    if (owner == null)
+      throw new NotFoundException('You re not in channel')
+    if (owner.status != ChannelStatus.owner)
+      throw new ForbiddenException('Only owner can delete user')
+    
+    var user = await this.channelService.findUserByNick(query['userName'])
+    if (user == null)
+      throw new ForbiddenException('User ' + query['userName'] + ' does not exist')
+    
+    var participantToDelete = await this.channelService.findParticipant(user, channel)
+    this.channelParticipantsRepository.delete(participantToDelete)
   }
 }
