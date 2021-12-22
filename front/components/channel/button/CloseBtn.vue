@@ -1,6 +1,7 @@
 <template>
   <v-btn
     class="neon-button"
+    :disabled="disable"
     :icon="!isText"
     :text="isText"
     :style="isText ? 'border-radius: 10px': ''"
@@ -25,6 +26,9 @@ export default class CloseBtn extends Vue {
 
   @Prop({ default: false })
   isText!: boolean
+
+  @Prop({ default: false })
+  disable!: boolean
 
   btnFocus: boolean = false
 
