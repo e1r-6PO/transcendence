@@ -53,19 +53,17 @@ export default Vue.extend({
   },
 
   async created() {
-    if (!socket_game.hasListeners('matchInfo')) {
       socket_game.on('matchInfo', (info) => {
         console.log(info)
         this.player0 = info['player0']
         this.player1 = info['player1']
         this.has_load = true
-    })}
-    if (!socket_game.hasListeners('matchEnd')) {
+    })
     socket_game.on('matchEnd', (info) => {
         new Promise(f => setTimeout(f, 1000))
         console.log('match ended nik saner', info)
         this.$router.push('/home')
-    })}
+    })
   },
   beforeRouteLeave (to, from , next) {
     socket_game.off('matchInfo')
