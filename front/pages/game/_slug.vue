@@ -1,6 +1,6 @@
 <template>
 <v-container>
-  <div if="has_load == true">
+  <div v-if="has_load == true">
     <v-btn
     class="foreground_element neon-button"
     rounded
