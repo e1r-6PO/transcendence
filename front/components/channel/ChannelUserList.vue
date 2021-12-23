@@ -25,14 +25,13 @@
         <v-list-item-title v-text="user.nickName" style="font-size: 15px; margin-top: 14px" :style="'color:' + getUserTextColor(i)" />
         <v-list-item-subtitle v-text="user.channelStatus" align="right" class="mt-5" style="font-size: 12px;" :style="'color:' + getUserTextColor(i)" />
       </v-list-item-content>
-      <v-list-item-icon v-if="ownerAction && user.channelStatus != isOwner()" class="mt-3">
+      <v-list-item-icon v-if="ownerAction && isUserOwner() && user.channelStatus != isOwner()" class="mt-3">
         <DeleteUserBtn style="margin-right: 5px" :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
         <ChangeGradeUserBtn style="margin-right: 5px" :small="small" :grade="user.channelStatus" @refreshUser="refreshUser" :userName="user.nickName" />
-        <MuteUserBtn style="margin-right: 5px" :userName="user.nickName" @refreshUser="refreshUser" :mute="user.isMute" />
-        <!-- <BanUserBtn :userName="user.nickName" @refreshUser="refreshUser" :ban="user.isBan" /> -->
-        <!-- <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
-        <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
-        <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" /> -->
+      </v-list-item-icon>
+      <v-list-item-icon v-if="ownerAction && isUserOwnerOrAdmin() && user.channelStatus != isOwner()" class="mt-3">
+        <MuteUserBtn style="margin-right: 0px" :userName="user.nickName" @refreshUser="refreshUser" :mute="user.isMute" />
+        <BanUserBtn :userName="user.nickName" @refreshUser="refreshUser" :ban="user.isBan" />
       </v-list-item-icon>
     </v-list-item>
   </v-list>
@@ -46,17 +45,17 @@ import { ChannelUser, ChannelUserStatus } from '../../assets/Classes-ts/ChannelU
 @Component
 export default class ChannelUserList extends Vue {
   
-  @Prop({ type: Boolean, default: true})
-  owner!: Boolean
+  @Prop({ type: Boolean, default: false })
+  ownerAction!: Boolean
 
   @Prop({ type: Number, default: 0 })
   refresh!: Number
   
-  @Prop({ type: Boolean, default: false})
+  @Prop({ type: Boolean, default: false })
   small!: Boolean
 
-  @Prop({ type: Boolean, default: false})
-  ownerAction!: Boolean
+  @Prop({ type: String, default: ChannelUserStatus.DEFAULT})
+  status!: ChannelUserStatus
   
   userList: Array<ChannelUser> = []
   userFocus: number = -1
@@ -70,7 +69,6 @@ export default class ChannelUserList extends Vue {
       this.$router.push('/chat')
     else
       this.userList = userListRet.data
-    console.log(this.userList)
   }
 
   @Watch('refresh', { immediate: true })
@@ -102,6 +100,14 @@ export default class ChannelUserList extends Vue {
 
   isOwner() {
     return ChannelUserStatus.OWNER
+  }
+
+  isUserOwnerOrAdmin() {
+    return this.status != ChannelUserStatus.DEFAULT
+  }
+  
+  isUserOwner() {
+    return this.status == ChannelUserStatus.OWNER
   }
 }
 </script>
