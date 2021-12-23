@@ -5,7 +5,7 @@
   fluid 
   fill-height
 >
-  <AlertError @end="onEnd" :textError="alertText" :state="alert"> {{ alertText }} </AlertError>
+  <AlertError style="margin-top: 10px" @end="onEnd" :textError="alertText" :state="alert"> {{ alertText }} </AlertError>
   <v-app-bar
     color="#181818"
     height="130"
@@ -58,7 +58,8 @@
       <ChannelUserList :small="true" :refresh="tokenUser" @refreshUser="updateToken" class="mt-4">
         <v-subheader class="mt-3 mb-8">
           <ChannelLeaveBtn v-if="isDefaultUser()" class="pl-5 pb-3"> </ChannelLeaveBtn>
-          <ChannelSettings v-if="isOwner()"
+          <ChannelSettings v-if="isOwnerOrAdmin()"
+            :status="me.channelStatus"
             @error="activeAlert"
             class="pl-5 pb-3"
             @refreshUser="updateToken"
@@ -202,8 +203,10 @@ export default Vue.extend({
         return error.response
       })
     if (ret.status == 404)
-      this.$router.push('/chat?error=Channel%20does%20not%20exist')
-    else if (ret.status == 201)
+      this.$router.push('/chat?error=' + ret.data.message)
+    else if (ret.status == 403)
+      this.activeAlert(ret.data.message)
+    else
     {
       socket_chat.connect();
       socket_chat.emit('joinChannel', this.$route.params.slug);
@@ -214,12 +217,19 @@ export default Vue.extend({
         this.messagesArray.push(msg)
         this.nbMsg = this.messagesArray.length
       })
+      socket_chat.on('refreshUser', (msg: string) => {
+        console.log("here received")
+        this.tokenUser += 1
+      })
     }
   },
 
   methods: {
     sendMessage(): void {
-      socket_chat.emit('msgToServer', this.message, this.$route.params.slug)
+      var test = socket_chat.emit('msgToServer', this.message, this.$route.params.slug)
+      socket_chat.on('MuteError', (msg: string) => {
+        this.activeAlert(msg)
+      })
       this.message = ''
     },
 
@@ -254,8 +264,8 @@ export default Vue.extend({
       return this.me.channelStatus == ChannelUserStatus.DEFAULT
     },
 
-    isOwner(): boolean {
-      return this.me.channelStatus == ChannelUserStatus.OWNER
+    isOwnerOrAdmin(): boolean {
+      return this.me.channelStatus == ChannelUserStatus.OWNER || this.me.channelStatus == ChannelUserStatus.ADMINISTRATOR
     },
 
     activeAlert(error: any)
@@ -268,8 +278,12 @@ export default Vue.extend({
       this.alert = false
     },
 
+    updateUser() {
+    },
+
     updateToken() {
       this.tokenUser += 1
+      socket_chat.emit('refreshUser', this.$route.params.slug)
     }
   }
 })
