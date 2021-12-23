@@ -34,7 +34,7 @@ export default class ChannelList extends Vue {
   channelFocus: number = -1
 
   async mounted() {
-    var myChannelRet = await this.$axios.get('/api/chat/myChannel')
+    var myChannelRet = await this.$axios.get('/api/profile/me/channels')
     this.channList = myChannelRet.data
   }
 

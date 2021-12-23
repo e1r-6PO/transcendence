@@ -35,7 +35,6 @@ export default class ChangeGradeUserBtn extends Vue{
       .catch(function(error) {
         return error.response
     })
-    console.log(ret)
     if (ret.status == 403)
       this.activeAlert(ret.data.message)
     else if (ret.status == 404)

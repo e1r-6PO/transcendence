@@ -39,11 +39,6 @@ export default class CloseBtn extends Vue {
   btnClicked() {
     this.$emit('click')
   }
-
-  mounted()
-  {
-     console.log(this.smaller)
-  }
 }
 </script>
 

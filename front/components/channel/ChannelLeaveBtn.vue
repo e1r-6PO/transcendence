@@ -88,8 +88,6 @@ export default class ChannelLeaveBtn extends Vue{
   btnFocus: boolean = false
 
   leaveChannel() {
-    console.log("COUCOU c est moi")
-    console.log(this.$route.params.slug)
     this.$axios.post('/api/chat/' + this.$route.params.slug + '/leave')
     this.$router.push('/chat')
   }

@@ -62,7 +62,6 @@ export default Vue.extend({
 
   data() {
     return {
-      channList: [],
       alertText: "",
       alert: false,
     }
@@ -71,8 +70,6 @@ export default Vue.extend({
   async mounted() {
     if (this.$route.query['error'] && this.$route.query['error'] != "")
       this.activeAlert(this.$route.query['error'])
-    var ret = await this.$axios.get('/api/chat/myChannel')
-    this.channList = ret.data
   },
 
   methods: {

@@ -65,6 +65,7 @@ export default class MuteUserBtn extends Vue{
   async switchMute() {
     if (!this.mute)
       this.setTime()
+    
     const ret = await this.$axios.patch('/api/chat/' + this.$route.params.slug + '/mute?userName=' + this.userName + '&time=' + this.muteTime)
       .catch(function(error) {
         return error.response
@@ -116,7 +117,6 @@ export default class MuteUserBtn extends Vue{
         this.addTime('year', 1);
         break;
       default:
-        console.log("default");
         break;
       }
   }
