@@ -41,4 +41,14 @@ export class User {
 
   @OneToMany(() => ChannelParticipant, channelParticipant => channelParticipant.user, { cascade: true })
   channelParticipant: ChannelParticipant[];
+
+  toLightuser() {
+    return {
+      id: this.id,
+      picture: 'http://localhost:8000/api/users/' + this.id + '/picture',
+      nickName: this.nickName,
+      gameWin: this.gameWin,
+      gameLose: this.gameLose,
+    }
+  }
 }
