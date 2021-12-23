@@ -36,7 +36,7 @@ export class ChannelParticipant {
   muteTime: Date;
 
   @Column({ default: false })
-  ban: boolean;
+  isBan: boolean;
 
   @Column()
   banTime: Date;
