@@ -10,6 +10,8 @@ class ChannelUser {
       this.nickName = '';
       this.isMute = false;
       this.muteTime = new Date();
+      this.isBan = false;
+      this.banTime = new Date();
       this.channelStatus = ChannelUserStatus.DEFAULT;
       this.picture = ''
     }
@@ -19,6 +21,8 @@ class ChannelUser {
     nickName: string;
     isMute: boolean;
     muteTime: Date;
+    isBan: boolean;
+    banTime: Date;
     picture: string;
 }
 
