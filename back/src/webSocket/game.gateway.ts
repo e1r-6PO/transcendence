@@ -36,7 +36,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       ) {}
     gameService: GameService = new GameService
     queue: Socket[] = []
-    mymap = new Map<string, User>();
+    sid_to_user = new Map<string, User>();
     
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
@@ -81,13 +81,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             client.disconnect()
             return
         }
-        this.mymap.set(client.id, user_data)
+        this.sid_to_user.set(client.id, user_data)
+        client['info'] = user_data
     }
 
     async handleDisconnect(client: Socket){
         var index: number
 
-        this.mymap.delete(client.id)
+        this.sid_to_user.delete(client.id)
         index = this.queue.findIndex(clients => clients.id === client.id)
         if (index != -1) {
             this.queue.splice(index, 1)
