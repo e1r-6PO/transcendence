@@ -7,7 +7,7 @@ import {
     OnGatewayDisconnect,
 } from "@nestjs/websockets";
 import { Socket, Server } from 'socket.io';
-import { Logger } from "@nestjs/common";
+import { ForbiddenException, Logger } from "@nestjs/common";
 import { AdvancedConsoleLogger, Repository } from "typeorm";
 import { JwtService } from '@nestjs/jwt';
 import cookieParser from "cookie-parser";
@@ -16,6 +16,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/entity/user.entity";
 import { Messages } from "src/entity/messages.entity"
 import { Channel } from "src/entity/channel.entity";
+import { ChannelParticipant } from "src/entity/channelParticipant.entity";
+import { IoAdapter } from "@nestjs/platform-socket.io";
 
 @WebSocketGateway({
     cors: {
@@ -34,6 +36,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private readonly messagesRepository : Repository<Messages>,
         @InjectRepository(Channel)
         private readonly ChannelsRepository : Repository<Channel>,
+        @InjectRepository(ChannelParticipant)
+        private readonly ChannelsParticipantsRepository : Repository<ChannelParticipant>,
       ) {}
 
     count: number = 0;
@@ -54,9 +58,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             return
         }
 
-        var chan: Channel = new Channel;
-
-        chan = await this.ChannelsRepository.findOne({
+        var chan = await this.ChannelsRepository.findOne({
             where: { channName: av[1] }
         })
         // parse cookies
@@ -65,7 +67,29 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         newMsg.sender = await this.usersRepository.findOne({
             where: { id: jwt_decoded['id'] }
         })
-        
+
+        var participant = await this.ChannelsParticipantsRepository.findOne({
+            where: { user: newMsg.sender, channel: chan }
+        })
+        if (!participant)
+        {
+            client.disconnect()
+            return
+        }
+        var tmp = new Date()
+        if (participant.isMute && participant.muteTime.getTime() > tmp.getTime())
+        {
+            this.server.to(client.id).emit('MuteError', 'You re mute until ' + participant.banTime.toString().slice(0,21).replace(/-/g,'/'))
+            return
+        }
+        else
+        {
+            this.ChannelsParticipantsRepository.update({
+                channel: chan, user: newMsg.sender
+                }, {
+                isMute: false, muteTime: new Date()
+            })
+        }
         newMsg.message = av[0];
         newMsg.time = new Date();
         newMsg.senderNick = newMsg.sender.nickName;
@@ -78,9 +102,44 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('joinChannel')
     async joinChannel(client: Socket, channName: string): Promise<void>{
+        
+        var chan = await this.ChannelsRepository.findOne({
+            where: { channName: channName }
+        })
+        
+        var participant = await this.ChannelsParticipantsRepository.findOne({
+            where: { user: client['info'], channel: chan }
+        })
+        if (!participant)
+        {
+            client.disconnect()
+            return
+        }
+        var tmp = new Date()
+        if (participant.isBan && participant.banTime.getTime() > tmp.getTime())
+        {
+            client.disconnect()
+            return
+        }
+        else
+        {
+            this.ChannelsParticipantsRepository.update({
+                channel: chan, user: client['info']
+                }, {
+                isBan: false, banTime: new Date()
+            })
+        }
         client.join(channName)
+        this.server.to(channName).emit("refreshUser")
         console.log(client.rooms)
         // this.server.emit('ConnectedToChannel', "You are in room " + client.adapter)
+    }
+
+    @SubscribeMessage('refreshUser')
+    async refreshUser(client: Socket, channName: string): Promise<void> {
+        setTimeout(() => {
+            this.server.to(channName).emit("refreshUser")
+        }, 200)
     }
 
     afterInit(server: Server){
@@ -112,6 +171,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         let user_data = await this.usersRepository.findOne({
             where: {id: jwt_decoded['id']}
         })
+        client['info'] = user_data
         
         console.log(user_data)
     }

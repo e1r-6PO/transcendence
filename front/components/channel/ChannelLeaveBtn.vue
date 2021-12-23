@@ -90,6 +90,7 @@ export default class ChannelLeaveBtn extends Vue{
   leaveChannel() {
     this.$axios.post('/api/chat/' + this.$route.params.slug + '/leave')
     this.$router.push('/chat')
+    this.$emit("refreshUser")
   }
 }
 </script>

@@ -105,6 +105,9 @@ export default class ChannelSettings extends Vue{
   @Prop({ type: String, default: ChannelUserStatus.DEFAULT })
   status!: String
 
+  @Prop({ type: Number, default: 0})
+  refreshToken!: Boolean
+
   actualAccess: string = ""
   actualPass: string = ""
   channName: string = this.$route.params.slug
@@ -119,7 +122,6 @@ export default class ChannelSettings extends Vue{
   dialog: boolean = false
   settingsFocus: boolean = false
   btnFocus: boolean = false
-  refreshToken: number = 0
 
   async mounted() {
     var ret = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/info')
@@ -180,7 +182,6 @@ export default class ChannelSettings extends Vue{
   updateToken()
   {
     this.$emit('refreshUser')
-    this.refreshToken += 1
   }
 
   isOwner()
