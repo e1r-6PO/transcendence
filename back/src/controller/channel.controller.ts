@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { ChannelService } from 'src/service/channel.service';
 import { Friend_Status, Relationship } from 'src/entity/relationship.entity';
 import { ChannelUser } from 'src/entity/channelUser.entity';
+import { start } from 'repl';
 
 @Controller('api/chat')
 @UseGuards(ValidTokenGuard, TwoFaGuard)
@@ -328,6 +329,40 @@ export class ChannelController {
         channel: channel, user: user
       }, {
         status: newStatus
+    })
+  }
+
+  @Patch(':channName/mute')
+  async muteUser(@Param('channName') channName, @Query() query, @Req() req: Request)
+  {
+    if (!query['userName'] || !query['time'])
+      throw new ForbiddenException('Missing params')
+    
+    var channel = await this.channelService.findChannel(channName)
+    if (channel == null)
+      throw new NotFoundException('Channel does not exist')
+    
+    var admin = await this.channelService.findParticipant(req.cookies['user_id'], channel)
+    if (admin == null)
+      throw new NotFoundException('You re not in channel')
+    if (admin.status == ChannelStatus.default)
+      throw new ForbiddenException('Only owner or administrator can mute user')
+    
+    var user = await this.channelService.findUserByNick(query['userName'])
+    if (user == null)
+      throw new ForbiddenException('User ' + query['userName'] + ' does not exist')
+
+    var participant = await this.channelService.findParticipant(user, channel)
+    if (participant == null)
+      throw new ForbiddenException('User ' + query['userName'] + ' not in channel')
+    
+    var muteTime = new Date(query['time'])
+    muteTime.setHours(muteTime.getHours() - 1)
+    var startMute = participant.isMute == true ? false : true
+    this.channelParticipantsRepository.update({
+        channel: channel, user: user
+      }, {
+        isMute: startMute, muteTime: startMute == true ? muteTime : new Date()
       })
   }
 }
