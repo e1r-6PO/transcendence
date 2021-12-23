@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Channel } from "src/entity/channel.entity";
 import { ChannelParticipant } from "src/entity/channelParticipant.entity";
@@ -50,29 +50,55 @@ export class ChannelService {
 
   async findChannel(channName: string)
   {
-    return await this.channelsRepository.findOne({
+    var channel = await this.channelsRepository.findOne({
       where: { channName: channName }
     })
+    if (!channel)
+      throw new NotFoundException('Channel ' + channName + ' does not exist')
+    return channel
   }
 
-  async findParticipant(userToFind, channel)
+  async findParticipant(userToFind : User, channel)
   {
-    return await this.channelParticipantsRepository.findOne({
+    var participant = await this.channelParticipantsRepository.findOne({
       where: { user: userToFind, channel: channel}
     })
+    if (!participant)
+      throw new NotFoundException('User ' + userToFind.nickName + ' not in channels')
+    return participant
+  }
+
+  async isParticipantexist(userToFind : User, channel)
+  {
+    var participant = await this.channelParticipantsRepository.findOne({
+      where: { user: userToFind, channel: channel}
+    })
+    return participant
   }
 
   async findUserById(userId)
   {
-    return await this.usersRepository.findOne({
+    var user = await this.usersRepository.findOne({
       where: { id: userId }
     })
+    if (!user)
+      throw new NotFoundException('User does not exist')
+    return user
   }
 
   async findUserByNick(userName: string)
   {
-    return await this.usersRepository.findOne({
+    var user = await this.usersRepository.findOne({
       where: { nickName: userName }
+    })
+    if (!user)
+      throw new NotFoundException('User ' + userName + ' does not exist')
+    return user
+  }
+
+  async findUserChannels(me: User) {
+    return await this.channelParticipantsRepository.find({
+      where: { user: me }
     })
   }
 }

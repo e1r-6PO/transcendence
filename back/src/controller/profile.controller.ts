@@ -9,6 +9,7 @@ import { extname } from 'path/posix';
 import { Relationship } from 'src/entity/relationship.entity';
 import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.guards';
 import { ImageUpload } from 'src/middleware/image.upload.middleware';
+import { ChannelService } from 'src/service/channel.service';
 import { ProfileService } from 'src/service/profile.service';
 import { UsersService } from 'src/service/users.service';
 import { Repository } from 'typeorm';
@@ -19,6 +20,7 @@ import { Repository } from 'typeorm';
 export class ProfileController {
   constructor(
     private readonly profileService: ProfileService,
+    private readonly channelService: ChannelService,
     @InjectRepository(Relationship)
     private readonly relationShipRepository : Repository<Relationship>
   ) {}
@@ -75,5 +77,18 @@ export class ProfileController {
     })
 
     return friend_list.sort((a, b) => (a.peer.nickName > b.peer.nickName ? 1 : -1))
+  }
+
+  @Get('me/channels')
+  async getMyChannel(@Req() req: Request)
+  {
+    var me = await this.channelService.findUserById(req.cookies['user_id'])
+
+    var participantList = await this.channelService.findUserChannels(me)
+
+    var channList: Array<String> = []
+    for (var i = 0; i < participantList.length; i++)
+      channList.push(participantList[i].channel.channName)
+    return channList
   }
 }

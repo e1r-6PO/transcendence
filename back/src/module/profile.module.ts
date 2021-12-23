@@ -7,10 +7,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { CustomJwtModule } from './custom.jwt.module';
 import { UsersService } from 'src/service/users.service';
 import { Relationship } from 'src/entity/relationship.entity';
+import { ChannelService } from 'src/service/channel.service';
+import { ChannelParticipant } from 'src/entity/channelParticipant.entity';
+import { Messages } from 'src/entity/messages.entity';
+import { Channel } from 'src/entity/channel.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Relationship]), CustomJwtModule ],
+  imports: [TypeOrmModule.forFeature([User, Relationship, ChannelParticipant, Channel, Messages]), CustomJwtModule ],
   controllers: [ ProfileController ],
-  providers: [ ProfileService, UsersService ]
+  providers: [ ProfileService, UsersService, ChannelService ]
 })
 export class ProfileModule {}
