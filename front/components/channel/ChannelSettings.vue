@@ -27,10 +27,10 @@
       <v-card
         style="background-color: #181818"
       > 
-        <v-card-title class="justify-center">
+        <v-card-title v-if="status == isOwner()" class="justify-center">
           <p align="center" class="text-h4 white--text">{{ channName }}</p>
         </v-card-title>
-        <v-card-text>
+        <v-card-text v-if="status == isOwner()">
           <v-container>
             <v-row>
               <v-col>
@@ -62,12 +62,12 @@
             </v-row>
           </v-container>
         </v-card-text>
-      <v-card-actions>
+      <v-card-actions v-if="status == isOwner()">
         <v-spacer></v-spacer>
         <BasicBtn @click="dialog = false" :isText="true" content="Close" />
         <BasicBtn :disable="disableSave()" @click="saveSettings()" :isText="true" content="Save" />
       </v-card-actions>
-    <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
+      <v-divider v-if="status == isOwner()" class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
         <v-row class="justify-center">
           <v-card-title>
             <p class="text-h4 white--text"> Users </p>
@@ -77,10 +77,15 @@
         <ChannelUserList
           :refresh="refreshToken"
           :ownerAction="true"
+          :status="status"
           @refreshUser="updateToken"
           class="ml-3 mr-3"
           style="background-color: #181818"
         />
+      <v-card-actions v-if="status != isOwner()">
+        <v-spacer></v-spacer>
+        <BasicBtn @click="dialog = false" :isText="true" content="Close" />
+      </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -88,7 +93,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue} from 'nuxt-property-decorator'
-import { ChannelUser } from '../../assets/Classes-ts/ChannelUser'
+import { ChannelUser, ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser'
 import { ChannAccess } from '../../assets/Classes-ts/Messages'
 import  AlertError  from '../AlertError.vue'
 import AddUserBtn from './AddUserBtn.vue'
@@ -97,6 +102,9 @@ import ChannelUserList from './ChannelUserList.vue'
 @Component
 export default class ChannelSettings extends Vue{
   
+  @Prop({ type: String, default: ChannelUserStatus.DEFAULT })
+  status!: String
+
   actualAccess: string = ""
   actualPass: string = ""
   channName: string = this.$route.params.slug
@@ -173,6 +181,11 @@ export default class ChannelSettings extends Vue{
   {
     this.$emit('refreshUser')
     this.refreshToken += 1
+  }
+
+  isOwner()
+  {
+    return ChannelUserStatus.OWNER
   }
 }
 
