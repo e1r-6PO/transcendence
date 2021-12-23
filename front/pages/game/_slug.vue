@@ -20,7 +20,6 @@ import Vue from 'vue'
 import { LightUser } from '../../assets/Classes-ts/User'
 
 import socket_game from '../../plugins/game.io'
-import FaVue from '../2fa.vue'
 
 export default Vue.extend({
 
@@ -64,10 +63,18 @@ export default Vue.extend({
         console.log('match ended nik saner', info)
         this.$router.push('/home')
     })
+    socket_game.on('matchSetup', (info) => {
+      console.log(info)
+    })
+    socket_game.on('gameInfo', (info) => {
+      console.log(info)
+    })
   },
   beforeRouteLeave (to, from , next) {
     socket_game.off('matchInfo')
     socket_game.off('matchEnd')
+    socket_game.off('matchSetup')
+    socket_game.off('gameInfo')
     next()
   }
 })
