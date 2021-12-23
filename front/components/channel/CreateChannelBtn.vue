@@ -24,48 +24,50 @@
         </v-row>
       </template>
       <v-card class="neon_card">
-        <v-card-title class="white--text">
+        <v-card-title class="white--text justify-center">
           <span class="text-h5">Channel settings</span>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-text-field
-              label="Channel name"
+              placeholder="Channel name"
               v-model="channName"
+              class="custom-select-color custom-placeholder-color custom-input-color"
+              hide-details
+              rounded
+              filled
+              dense
             ></v-text-field>
             <v-select
               :items="typeList"
-              label="Channel type"
+              placeholder="Channel type"
               v-model="channType"
-            ></v-select>
+              hide-details
+              filled
+              dense
+              rounded
+              class="mt-3 custom-select-color"
+              color="yellow"
+              item-color="yellow"
+            >
+            </v-select>
             <v-text-field
-              label="Password"
+              placeholder="Password"
               v-model="channPass"
+              class="mt-3 custom-select-color custom-placeholder-color custom-input-color"
               required
+              hide-details
+              rounded
+              filled
+              dense
               :disabled="channType != 'Protected'"
             ></v-text-field>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            class="neon-button"
-            color="#181818"
-            v-on:mouseover="createFocus = true"
-            v-on:mouseleave="createFocus = false"
-            text
-            @click="dialog = false"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="createChannel()"
-            :disabled="disableCreate()"
-          >
-            Create
-          </v-btn>
+          <BasicBtn @click="dialog = false" :isText="true" content="Close" />
+          <BasicBtn @click="createChannel()" :isText="true" content="Create" :disable="disableCreate()" />
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -125,10 +127,11 @@ export default class CreateChannelBtn extends Vue{
 
 <style >
 @import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/neon_effects.scss';
 
 .neon_card {
   border: 3px solid #a5fafa !important;
-  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
-  background-color: #181818 !important;
+  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 0px 0px #0affff !important;
+  background-color: #262e2e !important;
 }
 </style>
