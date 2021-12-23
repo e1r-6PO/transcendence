@@ -1,4 +1,5 @@
 export class Ball {
+    
     x: number
     y: number
     velocity: number
