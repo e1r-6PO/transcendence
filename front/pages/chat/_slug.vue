@@ -57,12 +57,13 @@
     >
       <ChannelUserList :small="true" :refresh="tokenUser" @refreshUser="updateToken" class="mt-4">
         <v-subheader class="mt-3 mb-8">
-          <ChannelLeaveBtn v-if="isDefaultUser()" class="pl-5 pb-3"> </ChannelLeaveBtn>
+          <ChannelLeaveBtn v-if="isDefaultUser()" @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
           <ChannelSettings v-if="isOwnerOrAdmin()"
             :status="me.channelStatus"
             @error="activeAlert"
             class="pl-5 pb-3"
             @refreshUser="updateToken"
+            :refreshToken="tokenUser"
           >
           </ChannelSettings>
           <v-spacer />
@@ -185,7 +186,7 @@ export default Vue.extend({
       createFocus: false,
       alert: false,
       alertText: "",
-      tokenUser: 0,
+      tokenUser: 1,
     }
   },
 
@@ -218,8 +219,7 @@ export default Vue.extend({
         this.nbMsg = this.messagesArray.length
       })
       socket_chat.on('refreshUser', (msg: string) => {
-        console.log("here received")
-        this.tokenUser += 1
+        this.tokenUser = -this.tokenUser
       })
     }
   },
