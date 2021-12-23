@@ -12,7 +12,7 @@ import { ChannelService } from 'src/service/channel.service';
 import { Friend_Status, Relationship } from 'src/entity/relationship.entity';
 import { ChannelUser } from 'src/entity/channelUser.entity';
 import { start } from 'repl';
-import { ChannelGuard } from 'src/guards/channel.guards';
+import { ChannelGuard } from 'src/guards/.channel.guards';
 
 @Controller('api/chat')
 @UseGuards(ValidTokenGuard, TwoFaGuard)
@@ -216,9 +216,9 @@ export class ChannelController {
       throw new ForbiddenException('Only owner can add user')
     
     var user = await this.channelService.findUserByNick(query['userName'])
-          .catch(function(error) {
-            throw new ForbiddenException('User does not exist')
-          })
+      .catch(function(error) {
+        throw new ForbiddenException('User does not exist')
+      })
     var isInChann = await this.channelParticipantsRepository.findOne({
       where: { user: user, channel: channel }
     })
