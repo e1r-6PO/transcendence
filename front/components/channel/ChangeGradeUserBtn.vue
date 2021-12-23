@@ -15,13 +15,13 @@ import { ChannelUser, ChannelUserStatus } from '../../assets/Classes-ts/ChannelU
 export default class ChangeGradeUserBtn extends Vue{
   
   @Prop({ type: String, default: ""})
-  userName: string
+  userName!: string
 
   @Prop({ type: String, default: ""})
-  grade: string
+  grade!: string
 
   @Prop({ type: String, default: "default"})
-  status: string
+  status!: string
 
   @Prop({ type: Boolean, default: false})
   small!: Boolean

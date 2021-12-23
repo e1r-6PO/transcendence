@@ -28,6 +28,8 @@
       <v-list-item-icon v-if="ownerAction && user.channelStatus != isOwner()" class="mt-3">
         <DeleteUserBtn style="margin-right: 5px" :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
         <ChangeGradeUserBtn :small="small" :grade="user.channelStatus" @refreshUser="refreshUser" :userName="user.nickName" />
+        <MuteUserBtn :userName="user.nickName" @refreshUser="refreshUser" :mute="user.isMute" />
+        <MuteUserBtn :userName="user.nickName" @refreshUser="refreshUser" :ban="user.isBan" />
         <!-- <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
         <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
         <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" /> -->
@@ -48,7 +50,7 @@ export default class ChannelUserList extends Vue {
   owner!: Boolean
 
   @Prop({ type: Number, default: 0 })
-  refresh: Number
+  refresh!: Number
   
   @Prop({ type: Boolean, default: false})
   small!: Boolean

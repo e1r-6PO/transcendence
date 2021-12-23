@@ -14,7 +14,7 @@ import Vue from 'vue'
 export default class DeleteUserBtn extends Vue{
   
   @Prop({ type: String, default: ""})
-  userName: string
+  userName!: string
 
   @Prop({ type: Boolean, default: false})
   small!: Boolean
