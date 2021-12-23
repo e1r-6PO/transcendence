@@ -27,9 +27,9 @@
       </v-list-item-content>
       <v-list-item-icon v-if="ownerAction && user.channelStatus != isOwner()" class="mt-3">
         <DeleteUserBtn style="margin-right: 5px" :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
-        <ChangeGradeUserBtn :small="small" :grade="user.channelStatus" @refreshUser="refreshUser" :userName="user.nickName" />
-        <MuteUserBtn :userName="user.nickName" @refreshUser="refreshUser" :mute="user.isMute" />
-        <MuteUserBtn :userName="user.nickName" @refreshUser="refreshUser" :ban="user.isBan" />
+        <ChangeGradeUserBtn style="margin-right: 5px" :small="small" :grade="user.channelStatus" @refreshUser="refreshUser" :userName="user.nickName" />
+        <MuteUserBtn style="margin-right: 5px" :userName="user.nickName" @refreshUser="refreshUser" :mute="user.isMute" />
+        <!-- <BanUserBtn :userName="user.nickName" @refreshUser="refreshUser" :ban="user.isBan" /> -->
         <!-- <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
         <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
         <DeleteUserBtn :small="small" @refreshUser="refreshUser" :userName="user.nickName" /> -->
