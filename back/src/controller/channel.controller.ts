@@ -12,7 +12,7 @@ import { ChannelService } from 'src/service/channel.service';
 import { Friend_Status, Relationship } from 'src/entity/relationship.entity';
 import { ChannelUser } from 'src/entity/channelUser.entity';
 import { start } from 'repl';
-import { ChannelGuard } from 'src/guards/.channel.guards';
+// import { ChannelGuard } from 'src/guards/.channel.guards';
 
 @Controller('api/chat')
 @UseGuards(ValidTokenGuard, TwoFaGuard)
