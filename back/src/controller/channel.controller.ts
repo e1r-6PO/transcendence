@@ -112,6 +112,11 @@ export class ChannelController {
   async createChannel(@Param('channName') channName, @Req() req: Request): Promise<void>
   {
     var channel = await this.channelService.findChannel(channName)
+      .catch(function(error) {
+        return null
+      })
+    if (channel)
+      throw new ConflictException('Channel already exist')
     
     if (channName.length > 20)
       throw new ConflictException('Channel name is to long')
