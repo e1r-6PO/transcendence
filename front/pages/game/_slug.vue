@@ -11,7 +11,7 @@
       forfeit
     </v-btn>
   </div>
-  <canvas id="map" width="700" height="500"></canvas>
+  <canvas id="map" width="840" height="600"></canvas>
 </v-container>
 </template>
 
@@ -30,6 +30,8 @@ export default Vue.extend({
     return {
       player0: LightUser,
       player1: LightUser,
+      mapx: 840,
+      mapy: 600,
       map: CanvasRenderingContext2D,
       balls: new Array<Ball>()
     }
@@ -77,9 +79,9 @@ export default Vue.extend({
     })
     socket_game.on('matchSetup', (info) => {
       console.log(info)
-      this.map.clearRect(0, 0, 700, 500);
+      this.map.clearRect(0, 0, this.mapx, this.mapy);
       this.map.fillStyle = 'white'
-      this.map.fillText(info['gameStart'], 350, 250);
+      this.map.fillText(info['gameStart'], this.mapx / 2, this.mapy / 2);
     })
     socket_game.on('gameInfo', (info) => {
       for (let i = 0; i < info.length; ++i) {
@@ -92,11 +94,11 @@ export default Vue.extend({
         }
       }
       // drawing balls
-      this.map.clearRect(0, 0, 700, 500);
+      this.map.clearRect(0, 0, this.mapx, this.mapy);
       this.map.beginPath()
       this.map.fillStyle = 'white'
       console.log(this.balls[0].x, this.balls[0].y)
-      this.map.rect(this.balls[0].x - 2, this.balls[0].y - 2, 5, 5)
+      this.map.rect(this.balls[0].x - 10, this.balls[0].y - 10, 18, 18)
       this.map.fill()
     })
   },
