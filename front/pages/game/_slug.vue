@@ -11,7 +11,7 @@
       forfeit
     </v-btn>
   </div>
-  <canvas id="map" width="1400" height="1000"></canvas>
+  <canvas id="map" width="700" height="500"></canvas>
 </v-container>
 </template>
 
@@ -91,11 +91,11 @@ export default Vue.extend({
         }
       }
       // drawing balls
-      this.map.clearRect(0, 0, 1400, 1000);
+      this.map.clearRect(0, 0, 700, 500);
       this.map.beginPath()
       this.map.fillStyle = 'white'
       console.log(this.balls[0].x, this.balls[0].y)
-      this.map.rect(this.balls[0].x, this.balls[0].x, 10, 10)
+      this.map.rect(this.balls[0].x, this.balls[0].y, 5, 5)
       this.map.fill()
     })
   },

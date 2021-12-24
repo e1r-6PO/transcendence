@@ -15,8 +15,8 @@ export class Ball {
 
     constructor()
     {
-        this.canvas_x = 1400 // map width
-        this.canvas_y = 1000 // map height
+        this.canvas_x = 700 // map width
+        this.canvas_y = 500 // map height
         this.x = 700, // middle of the map x
         this.y = 500, // middle of the map y
         this.xd = Math.floor(Math.random() * 2) == 0 ? directions.negative : directions.positive // random x directions
