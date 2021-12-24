@@ -36,7 +36,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       ) {}
     gameService: GameService = new GameService
     queue: Socket[] = []
-    sid_to_user = new Map<string, User>();
+    id_to_user = new Map<number, User>();
     
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
@@ -76,19 +76,19 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         let user_data: User = await this.usersRepository.findOne({
             where: {id: jwt_decoded['id']}
         })
-        if (user_data == null)
+        if (user_data == null || this.id_to_user.has(user_data.id)) // dont allow him to connect in 2 different places + check if exist
         {
             client.disconnect()
             return
         }
-        this.sid_to_user.set(client.id, user_data)
+        this.id_to_user.set(user_data.id, user_data)
         client['info'] = user_data
     }
 
     async handleDisconnect(client: Socket){
         var index: number
 
-        this.sid_to_user.delete(client.id)
+        this.id_to_user.delete(client['info'].id)
         index = this.queue.findIndex(clients => clients.id === client.id)
         if (index != -1) {
             this.queue.splice(index, 1)
