@@ -1,6 +1,6 @@
 <template>
 <v-container>
-  <div v-if="has_load == true">
+  <div>
     <v-btn
     class="foreground_element neon-button"
     rounded
@@ -30,7 +30,6 @@ export default Vue.extend({
     return {
       player0: LightUser,
       player1: LightUser,
-      has_load: false,
       map: CanvasRenderingContext2D,
       balls: new Array<Ball>()
     }
@@ -70,7 +69,6 @@ export default Vue.extend({
         console.log(info)
         this.player0 = info['player0']
         this.player1 = info['player1']
-        this.has_load = true
     })
     socket_game.on('matchEnd', (info) => {
         new Promise(f => setTimeout(f, 1000))
@@ -79,6 +77,9 @@ export default Vue.extend({
     })
     socket_game.on('matchSetup', (info) => {
       console.log(info)
+      this.map.clearRect(0, 0, 700, 500);
+      this.map.fillStyle = 'white'
+      this.map.fillText(info['gameStart'], 350, 250);
     })
     socket_game.on('gameInfo', (info) => {
       for (let i = 0; i < info.length; ++i) {
@@ -95,7 +96,7 @@ export default Vue.extend({
       this.map.beginPath()
       this.map.fillStyle = 'white'
       console.log(this.balls[0].x, this.balls[0].y)
-      this.map.rect(this.balls[0].x, this.balls[0].y, 5, 5)
+      this.map.rect(this.balls[0].x - 2, this.balls[0].y - 2, 5, 5)
       this.map.fill()
     })
   },
@@ -104,6 +105,7 @@ export default Vue.extend({
     socket_game.off('matchEnd')
     socket_game.off('matchSetup')
     socket_game.off('gameInfo')
+    socket_game.emit('leave')
     next()
   }
 })
