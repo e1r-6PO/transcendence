@@ -17,8 +17,8 @@ export class Ball {
     {
         this.canvas_x = 700 // map width
         this.canvas_y = 500 // map height
-        this.x = 700, // middle of the map x
-        this.y = 500, // middle of the map y
+        this.x = this.canvas_x / 2, // middle of the map x
+        this.y = this.canvas_y / 2, // middle of the map y
         this.xd = Math.floor(Math.random() * 2) == 0 ? directions.negative : directions.positive // random x directions
         this.yd = Math.floor(Math.random() * 2) == 0 ? directions.negative : directions.positive // random y directions
         this.velocity = 1 // must be positive value, distance traveled per tick
