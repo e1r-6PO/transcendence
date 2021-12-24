@@ -43,7 +43,7 @@ export class Game {
         }
         this.balls = new Array
         this.balls.push(new Ball)
-        this.loopId = setInterval(this.tick.bind(this), 1000 / 150)
+        this.loopId = setInterval(this.tick.bind(this), 1000 / 50)
     }
 
     stop() {
