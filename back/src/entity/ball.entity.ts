@@ -27,11 +27,16 @@ export class Ball {
     }
 
     tick() {
+        // const paddle0x = 0 + 40
+        // let paddle0y = this.canvas_y / 2
+        // const paddle1x = this.canvas_x - 40
+        // let paddle1y = this.canvas_y / 2
+
         this.x += this.velocity * this.xd
         this.y += this.velocity * this.yd
         if (this.x < 0 + this.ball_size) {
-            // this.xd = directions.positive
-            this.xd = 2
+            // player 0 lost
+            this.xd = directions.positive
             this.x = 0 + this.ball_size
         }
         if (this.y < 0 + this.ball_size) {
@@ -39,6 +44,7 @@ export class Ball {
             this.y = 0 + this.ball_size
         }
         if (this.x > this.canvas_x - this.ball_size) {
+            // player 1 lost
             this.xd = directions.negative
             this.x = this.canvas_x - this.ball_size
         }
