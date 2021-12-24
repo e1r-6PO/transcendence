@@ -11,6 +11,7 @@
       forfeit
     </v-btn>
   </div>
+  <canvas id="map" width="1400" height="1000"></canvas>
 </v-container>
 </template>
 
@@ -18,6 +19,8 @@
 
 import Vue from 'vue'
 import { LightUser } from '../../assets/Classes-ts/User'
+
+import { Ball } from '../../assets/Classes-ts/Ball'
 
 import socket_game from '../../plugins/game.io'
 
@@ -27,7 +30,9 @@ export default Vue.extend({
     return {
       player0: LightUser,
       player1: LightUser,
-      has_load: false
+      has_load: false,
+      map: CanvasRenderingContext2D,
+      balls: new Array<Ball>()
     }
   },
 
@@ -42,6 +47,15 @@ export default Vue.extend({
       // socket_game.emit('spectate', {})
       }
     }
+
+    var m = <HTMLCanvasElement> document.getElementById("map")
+    var ctx = m.getContext("2d");
+    this.map = ctx
+
+    // this.balls.push(new Ball(50, 50))
+    // this.map.fillStyle = 'white'
+    // this.map.rect(0, 0, 10, 10)
+    // this.map.fill()
   },
 
   methods: {
@@ -67,7 +81,22 @@ export default Vue.extend({
       console.log(info)
     })
     socket_game.on('gameInfo', (info) => {
-      console.log(info)
+      for (let i = 0; i < info.length; ++i) {
+        if(this.balls[i] == undefined) {
+          this.balls.push(new Ball(info[0]['ball_location'][0], info[0]['ball_location'][1]))
+        }
+        else {
+          this.balls[i].x = info[0]['ball_location'][0]
+          this.balls[i].y = info[0]['ball_location'][1]
+        }
+      }
+      // drawing balls
+      this.map.clearRect(0, 0, 1400, 1000);
+      this.map.beginPath()
+      this.map.fillStyle = 'white'
+      console.log(this.balls[0].x, this.balls[0].y)
+      this.map.rect(this.balls[0].x, this.balls[0].x, 10, 10)
+      this.map.fill()
     })
   },
   beforeRouteLeave (to, from , next) {
@@ -82,4 +111,10 @@ export default Vue.extend({
 
 <style scoped>
 @import '../../assets/Classes-scss/main_page.scss';
+
+#map {
+  width: 150;
+  height: 150;
+  border: 1px solid white;
+}
 </style>
