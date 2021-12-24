@@ -12,12 +12,12 @@ export class Game {
 
     player0: User
     player1: User
+
     tick() {
         this.balls[0].tick();
-        this.players[0].emit('gameInfo', { id: this.id, ball_location: this.balls[0].x })
-        this.players[1].emit('gameInfo', { id: this.id, ball_location: this.balls[0].y })
-        // console.log('wsh')
-        // do logic
+        this.players[0].emit('gameInfo', { id: this.id, ball_location: [this.balls[0].x, this.balls[0].y] })
+        this.players[1].emit('gameInfo', { id: this.id, ball_location: [this.balls[0].x, this.balls[0].y] })
+        // emit to spec etc...
     }
 
     async start() {
@@ -35,7 +35,9 @@ export class Game {
             this.players[1].emit('matchSetup', { gameStart: i} )
             await new Promise(f => setTimeout(f, 1000)); // countdown
         }
-        this.loopId = setInterval(this.tick, 1000 / 20)
+        this.balls = new Array
+        this.balls.push(new Ball)
+        this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
     }
 
     stop() {
