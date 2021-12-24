@@ -14,9 +14,15 @@ export class Game {
     player1: User
 
     tick() {
-        this.balls[0].tick();
-        this.players[0].emit('gameInfo', { id: this.id, ball_location: [this.balls[0].x, this.balls[0].y] })
-        this.players[1].emit('gameInfo', { id: this.id, ball_location: [this.balls[0].x, this.balls[0].y] })
+        for (let i = 0; i < this.balls.length; ++i) {
+            this.balls[i].tick();
+        }
+        let ballsinfo = []
+        for (let i = 0; i < this.balls.length; ++i) {
+            ballsinfo.push({ id: i, ball_location: [this.balls[i].x, this.balls[i].y] })
+        }
+        this.players[0].emit('gameInfo', ballsinfo)
+        this.players[1].emit('gameInfo', ballsinfo)
         // emit to spec etc...
     }
 
