@@ -28,6 +28,7 @@ export default Vue.extend({
 
   data() {
     return {
+      game_id: this.$route.params.slug,
       player0: LightUser,
       player1: LightUser,
       mapx: 840,
@@ -39,6 +40,7 @@ export default Vue.extend({
 
   async mounted() {
     if (socket_game.connected == false) {
+      // check if game has ended
       socket_game.connect()
       var s1 = new Date().getTime() / 1000;
       while (socket_game.connected == false) {

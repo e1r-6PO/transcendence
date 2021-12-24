@@ -3,42 +3,43 @@ import { Socket } from "socket.io";
 import { Game } from "src/entity/game.entity";
 
 export class GameService {
-    games: Array<Game> = []
+    games: Map<number, Game> = new Map<number, Game>()
     newgameid: number = 0
 
     push_game(game: Game) {
         game.id = this.newgameid
         this.newgameid += 1
         game.start()
-        this.games.push(game)
+        // this.games.push(game)
+        this.games.set(game.id, game)
     }
 
     disconnect(client: Socket) {
-        for (let i = 0; i < this.games.length; ++i) {
-            if (this.games[i].players[0].id == client.id) {
-                this.games[i].players[1].emit('matchEnd', { message: 'You win !'}) // update scores
-                // this.games[i].players[1].disconnect()
+        this.games.forEach(function(game, id, map) {
+            if (game.players[0].id == client.id) {
+                game.players[1].emit('matchEnd', { message: 'You win !'}) // update scores
+                // game.players[1].disconnect()
                 // notify spect
-                this.games[i].stop()
-                this.games.splice(i, 1)
-                return
+                game.stop()
+                map.delete(id)
+                // return
             }
-            else if (this.games[i].players[1].id == client.id) {
-                this.games[i].players[0].emit('matchEnd', { message: 'You win !'}) // update scores
-                // this.games[i].players[0].disconnect()
+            else if (game.players[1].id == client.id) {
+                game.players[0].emit('matchEnd', { message: 'You win !'}) // update scores
+                // game.players[0].disconnect()
                 // notify spect
-                this.games[i].stop()
-                this.games.splice(i, 1)
-                return
+                game.stop()
+                map.delete(id)
+                // return
             }
             else {
-                for (let j = 0; j < this.games[i].spectators.length; ++i) {
-                    if (this.games[i].spectators[j].id === client.id) {
+                for (let j = 0; j < game.spectators.length; ++j) {
+                    if (game.spectators[j].id === client.id) {
                         // remove him from spectator
-                        return
+                        // return
                     }
                 }
             }
-        }
+        })
     }
 }
