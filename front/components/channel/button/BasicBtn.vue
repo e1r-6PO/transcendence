@@ -5,6 +5,7 @@
     :disabled="disable"
     :icon="!isText"
     :text="isText"
+    :width="setWidth()"
     :style="isText ? 'border-radius: 10px': ''"
     :color="btnFocus == true ? '#cd78ff' : '#616161'"
     @click.stop="btnClicked()"
@@ -34,10 +35,18 @@ export default class CloseBtn extends Vue {
   @Prop({ type: Boolean, default: false})
   smaller!: Boolean
 
+  @Prop({ type: Number, default: 0 })
+  width!: Number
+
   btnFocus: boolean = false
 
   btnClicked() {
     this.$emit('click')
+  }
+
+  setWidth() {
+    if (this.width != 0)
+      return this.width
   }
 }
 </script>

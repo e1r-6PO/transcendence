@@ -9,9 +9,11 @@
         overlap
         disable
       >
-      <v-btn width="200" @click="changeSelectedStatus(displayFriend[i - 1])">
-        {{ displayFriend[i - 1] }}
-      </v-btn>
+      <BasicBtn @click="changeSelectedStatus(displayFriend[i - 1])" :width="150" :content="displayFriend[i - 1]" :isText="true">
+      </BasicBtn>
+      <!-- <v-btn width="200" @click="changeSelectedStatus(displayFriend[i - 1])"> -->
+        <!-- {{ displayFriend[i - 1] }} -->
+      <!-- </v-btn> -->
       </v-badge>
     </p>
   </v-row>
@@ -138,8 +140,8 @@ export default Vue.extend({
         this.pendingRelationships.push(this.fullRelationships[i])
       else if (this.fullRelationships[i].status == this.status.completed)
         this.allRelationships.push(this.fullRelationships[i])
-      // else if (this.onlineRelationships[i].status == this.status.completed)
-        // this.onlineRelationships.push(this.fullRelationships[i])
+      else if (this.onlineRelationships[i].status == this.status.completed)
+        this.onlineRelationships.push(this.fullRelationships[i])
     }
     this.changeSelectedStatus('All')
     this.selectedStatus = 'All'
@@ -174,6 +176,8 @@ export default Vue.extend({
         this.filterRelationships = this.blockedRelationships
       else if (changeStatus == 'Pending')
         this.filterRelationships = this.pendingRelationships
+      else if (changeStatus == 'Online')
+        this.filterRelationships = this.onlineRelationships
       this.selectedStatus = changeStatus
     },
 
