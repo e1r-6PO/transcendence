@@ -23,35 +23,27 @@
       </v-card>
         </v-row>
       </template>
-      <v-card>
-        <v-card-title>
+      <v-card class="neon_card">
+        <v-card-title class="white--text justify-center">
           <span class="text-h5">Channel name</span>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-text-field
-              label="Channel name"
+              placeholder="Channel name"
               v-model="channName"
+              class="custom-select-color custom-placeholder-color custom-input-color"
+              hide-details
+              rounded
+              filled
+              dense
             ></v-text-field>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="dialogJoin = false"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="tryJoin()"
-            :disabled="disableJoin()"
-          >
-            Join
-          </v-btn>
+          <BasicBtn @click="dialogJoin = false" :isText="true" content="Close" />
+          <BasicBtn :isText="true" content="Join" @click="tryJoin()" :disable="disableJoin()" />
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -73,21 +65,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="dialogPass = false"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="joinChannel()"
-            :disabled="disableJoin()"
-          >
-            Join
-          </v-btn>
+          <BasicBtn @click="dialogPass = false" :isText="true" content="Close" />
+          <BasicBtn @click="joinChannel()" :isText="true" content="Join" :disable="disableJoin()" />
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -156,4 +135,11 @@ export default class JoinChannelBtn extends Vue{
 
 <style>
 @import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/neon_effects.scss';
+
+.neon_card {
+  border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 0px 0px #0affff !important;
+  background-color: #262e2e !important;
+}
 </style>
