@@ -6,8 +6,8 @@
     :icon="!isText"
     :text="isText"
     :width="setWidth()"
-    :style="isText ? 'border-radius: 10px': ''"
-    :color="btnFocus == true ? '#cd78ff' : '#616161'"
+    :height="!isText ? setWidth(): ''"
+    :style="getStyle()"
     @click.stop="btnClicked()"
     v-on:mouseover="btnFocus = true"
     v-on:mouseleave="btnFocus = false"
@@ -38,6 +38,12 @@ export default class CloseBtn extends Vue {
   @Prop({ type: Number, default: 0 })
   width!: Number
 
+  @Prop({ type: String, default: "" })
+  backgroundColor!: String
+
+  @Prop({ type: String, default: "" })
+  color!: String
+
   btnFocus: boolean = false
 
   btnClicked() {
@@ -47,6 +53,20 @@ export default class CloseBtn extends Vue {
   setWidth() {
     if (this.width != 0)
       return this.width
+  }
+
+  getStyle() {
+    var style = ""
+    
+    if (this.backgroundColor != "")
+      style += "background-color: " + this.backgroundColor + ";"
+    if (this.isText)
+      style += "border-radius: 10px;"
+    if (this.btnFocus)
+      style += "color: #cd78ff;"
+    else
+      style += "color: " + (this.color != "" ? this.color : "#616161") + ";"
+    return style
   }
 }
 </script>

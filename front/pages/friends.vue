@@ -2,7 +2,7 @@
 <v-container style="padding-top: 50px">
   <v-row align="center" justify="space-around">
     <p v-for="i in 4" :key="i">
-      <v-badge 
+      <v-badge
         color="error"
         :content="getNumberNotif(displayFriend[i - 1])"
         :value="getNumberNotif(displayFriend[i - 1])"
@@ -19,10 +19,11 @@
   </v-row>
   <div align="center" style="padding-top: 30px">
   <v-text-field
-    class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
+    class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color neonTextYellow"
     placeholder="Nickname"
     color="#e6ffff"
     v-model="search_string"
+    prepend-inner-icon="mdi-magnify"
     hide-details
     filled
     rounded
@@ -48,7 +49,24 @@
           <v-img style="border-radius: 15px" :src="relationship.peer.picture" />
             </v-avatar>
           <v-card-title @click="goToProfile(relationship)" class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</v-card-title>
-          <v-btn
+          <BasicBtn
+            v-if="selectedStatus == 'Pending' && relationship.status == status.incomming"
+            style="position: absolute; bottom: -20px; right: 58px"
+            @click="edit_friend(relationship, true)"
+            :width="40"
+            content="mdi-account-remove"
+            color="black"
+            backgroundColor="#18124be0"
+          />
+          <BasicBtn
+            style="position: absolute; bottom: -20px; right: 13px"
+            @click="edit_friend(relationship, false)"
+            :width="40"
+            :content="getStatusIcon(relationship)"
+            color="black"
+            backgroundColor="#18124be0"
+          />
+          <!-- <v-btn
             color="#8124be"
             class="friend-button"
             fab
@@ -61,7 +79,7 @@
             <v-icon>
               {{ getStatusIcon(relationship) }}
             </v-icon>
-          </v-btn>
+          </v-btn> -->
         </v-row>
         </v-card>
         <!-- </p> -->
@@ -214,8 +232,10 @@ export default Vue.extend({
           return ('mdi-account-minus')
     },
 
-    async edit_friend(relationship: any) {
-      if (relationship.status == this.status.completed)
+    async edit_friend(relationship: any, isRemove: boolean) {
+      if (isRemove)
+        await this.$axios.$delete('/api/friends/' + relationship.peer.id)
+      else if (relationship.status == this.status.completed)
         await this.$axios.$delete('/api/friends/' + relationship.peer.id)
       else if (relationship.status == this.status.incomming)
         await this.$axios.$patch('/api/friends/' + relationship.peer.id + '/accept')
@@ -247,7 +267,7 @@ export default Vue.extend({
 
 <style scoped>
 @import '../assets/Classes-scss/main_page.scss';
-
+@import '../assets/Classes-scss/main_page.scss';
 .card_profile {
   border: 3px solid #a5fafa !important;
   box-shadow: 0px 0px 40px 0px #0affff !important;

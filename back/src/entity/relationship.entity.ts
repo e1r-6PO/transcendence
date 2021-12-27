@@ -16,11 +16,13 @@ export class Relationship {
 
   @ManyToOne(() => User, {
     eager: true,
+    onDelete: "CASCADE"
   })
   user : User
 
   @ManyToOne(() => User, {
     eager: true,
+    onDelete: "CASCADE"
   })
   peer : User
 
