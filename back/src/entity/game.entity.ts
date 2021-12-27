@@ -13,7 +13,7 @@ export class Game {
 
     loopId: any
     players: Array<Socket>
-    spectators: Array<Socket>
+    // spectators: Array<Socket>
     balls: Array<Ball>
     room: BroadcastOperator<DefaultEventsMap>
 

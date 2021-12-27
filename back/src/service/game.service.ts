@@ -4,27 +4,32 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { Game } from "src/entity/game.entity";
 
 export class GameService {
-    games: Map<number, Game> = new Map<number, Game>()
+    games = new Map<number, Game>()
 
     push_game(game: Game, room: BroadcastOperator<DefaultEventsMap>) {
         game.room = room
         game.start()
         // this.games.push(game)
-        console.log(game.id)
         this.games.set(game.id, game)
+        // console.log(game.id, typeof game.id, 24, typeof 24, this.games.get(24), this.games.get(game.id))
     }
 
     join(client: Socket, id: number) { // check if match is done
         var game: Game = this.games.get(id)
-        console.log(id, this.games, game, this.games.get(id))
-        if (client['info'].id == game.player0.id || client['info'].id == game.player1.id) {
-            game.players.push(client)
-            client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
-            client.join(game.id.toString()) // rejoin the game
+
+        if (game == undefined) { // game is finished
+            
         }
         else {
-            client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
-            client.join(id.toString()) // join as spectator
+            if (client['info'].id == game.player0.id || client['info'].id == game.player1.id) {
+                game.players.push(client)
+                client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
+                client.join(game.id.toString()) // rejoin the game
+            }
+            else {
+                client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
+                client.join(id.toString()) // join as spectator
+            }
         }
     }
 
@@ -46,14 +51,14 @@ export class GameService {
                 map.delete(id)
                 // return
             }
-            else {
-                for (let j = 0; j < game.spectators.length; ++j) {
-                    if (game.spectators[j].id === client.id) {
-                        // remove him from spectator
-                        // return
-                    }
-                }
-            }
+            // else {
+            //     for (let j = 0; j < game.spectators.length; ++j) {
+            //         if (game.spectators[j].id === client.id) {
+            //             // remove him from spectator
+            //             // return
+            //         }
+            //     }
+            // }
         })
     }
 }

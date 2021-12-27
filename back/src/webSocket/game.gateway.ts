@@ -46,10 +46,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('join') // to spectate a game or to see a game history
     async join(client: Socket, info: []) {
-        this.gameService.join(client, info['id'])
+        this.gameService.join(client, parseInt(info['id']))
     }
 
-    @SubscribeMessage('joinQueue') // to join the queue
+    @SubscribeMessage('joinQueue') // to join the queue if he is in the queue, kick him
     async joinQueue(client: Socket) {
         this.queue.push(client)
         if (this.queue.length >= 2) {
