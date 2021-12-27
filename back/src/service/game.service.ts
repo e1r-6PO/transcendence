@@ -18,11 +18,16 @@ export class GameService {
         var game: Game = this.games.get(id)
 
         if (game == undefined) { // game is finished
-            
+
         }
         else {
             if (client['info'].id == game.player0.id || client['info'].id == game.player1.id) {
-                game.players.push(client)
+                if (client['info'].id == game.player0.id) { // twice same condition = shit
+                    game.player0socket = client
+                }
+                else {
+                    game.player1socket = client 
+                }
                 client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
                 client.join(game.id.toString()) // rejoin the game
             }
@@ -33,22 +38,38 @@ export class GameService {
         }
     }
 
+    forfeit(client: Socket, id: number) {
+        var game: Game = this.games.get(id) 
+
+        if (game != undefined) {
+            var winner: Socket = (client.id == game.player0socket.id ? game.player1socket : game.player0socket)
+            var loser: Socket = (client.id == game.player0socket.id ? game.player0socket : game.player1socket)
+
+            winner.emit('matchEnd', { message: 'You win !'}) // update scores
+            loser.emit('matchEnd', { message: 'You lost !'}) // update scores
+        }
+    }
+
     disconnect(client: Socket) {
         this.games.forEach(function(game, id, map) {
-            if (game.players[0].id == client.id) {
-                game.players[1].emit('matchEnd', { message: 'You win !'}) // update scores
+            if (game.player0socket.id == client.id) {
+                // game.players[1].emit('matchEnd', { message: 'You win !'}) // update scores
                 // game.players[1].disconnect()
                 // notify spect
-                game.stop()
-                map.delete(id)
+                game.player0socket = null
+                game.pause()
+                // game.stop()
+                // map.delete(id)
                 // return
             }
-            else if (game.players[1].id == client.id) {
-                game.players[0].emit('matchEnd', { message: 'You win !'}) // update scores
+            else if (game.player1socket.id == client.id) {
+                // game.players[0].emit('matchEnd', { message: 'You win !'}) // update scores
                 // game.players[0].disconnect()
                 // notify spect
-                game.stop()
-                map.delete(id)
+                game.player1socket = null
+                game.pause()
+                // game.stop()
+                // map.delete(id)
                 // return
             }
             // else {

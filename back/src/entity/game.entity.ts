@@ -12,10 +12,12 @@ export class Game {
     id: number
 
     loopId: any
-    players: Array<Socket>
+    player0socket: Socket | null = null
+    player1socket: Socket | null = null
     // spectators: Array<Socket>
     balls: Array<Ball>
     room: BroadcastOperator<DefaultEventsMap>
+    is_game_paused: boolean = false
 
     @ManyToOne(() => User, {
         eager: true,
@@ -48,8 +50,8 @@ export class Game {
     }
 
     async start() {
-        this.player0 = this.players[0]['info'] // putting the infos inside a User class to get access to function
-        this.player1 = this.players[1]['info'] //
+        this.player0 = this.player0socket['info'] // putting the infos inside a User class to get access to function
+        this.player1 = this.player1socket['info'] //
         this.room.emit('matchFound', { id: this.id})
         // this.players[1].emit('matchFound', { id: this.id})
         await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side
@@ -60,7 +62,15 @@ export class Game {
         }
         this.balls = new Array
         this.balls.push(new Ball)
-        this.loopId = setInterval(this.tick.bind(this), 1000 / 50)
+        this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
+    }
+
+    pause() { // client is the client that disconnected
+        clearInterval(this.loopId)
+    }
+
+    unpause() {
+        this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
     }
 
     stop() {

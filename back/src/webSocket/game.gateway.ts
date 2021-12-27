@@ -54,18 +54,22 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.queue.push(client)
         if (this.queue.length >= 2) {
             var game: Game = new Game
-            game.players = [this.queue[0], this.queue[1]]
+            game.player0socket = this.queue[0]
+            game.player1socket = this.queue[1]
             this.queue.splice(0, 2)
             game = await this.gamesRepository.save(game)
             var room: BroadcastOperator<DefaultEventsMap> = this.server.to(game.id.toString())
-            game.players[0].join(game.id.toString())
-            game.players[1].join(game.id.toString())
+            game.player0socket.join(game.id.toString())
+            game.player1socket.join(game.id.toString())
             this.gameService.push_game(game, room) //also starting the game
         }
     }
 
-    @SubscribeMessage('leave')
-    async leave(client: Socket) {
+    @SubscribeMessage('forfeit')
+    async leave(client: Socket, info: []) {
+
+        this.gameService.forfeit(client, parseInt(info['id']))
+
         client.disconnect()
     }
 

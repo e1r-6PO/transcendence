@@ -67,7 +67,7 @@ export default Vue.extend({
 
   methods: {
     leave() {
-      socket_game.emit('leave')
+      socket_game.emit('forfeit', { id: this.game_id })
       this.$router.push('/home')
     }
   },
@@ -79,8 +79,7 @@ export default Vue.extend({
         this.player1 = info['player1']
     })
     socket_game.on('matchEnd', (info) => {
-        new Promise(f => setTimeout(f, 1000))
-        console.log('match ended nik saner', info)
+        console.log(info)
         this.$router.push('/home')
     })
     socket_game.on('matchSetup', (info) => {
