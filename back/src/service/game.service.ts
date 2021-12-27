@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { BroadcastOperator, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { Game } from "src/entity/game.entity";
+import { User } from "src/entity/user.entity";
 
 export class GameService {
     games = new Map<number, Game>()
@@ -22,6 +23,7 @@ export class GameService {
         }
         else {
             if (client['info'].id == game.player0.id || client['info'].id == game.player1.id) {
+                client['game'] = game.id
                 if (client['info'].id == game.player0.id) { // twice same condition = shit
                     game.player0socket = client
                 }
@@ -46,40 +48,68 @@ export class GameService {
             var loser: Socket = (client.id == game.player0socket.id ? game.player0socket : game.player1socket)
 
             winner.emit('matchEnd', { message: 'You win !'}) // update scores
-            loser.emit('matchEnd', { message: 'You lost !'}) // update scores
+            loser.emit('matchEnd', { message: 'You lost !'}) // update scores bad things to do
+            // informe everyone
+            this.games.delete(game.id)
+        }
+    }
+
+    forfeit_disconnection(client: Socket, game: Game) {
+        client.emit('matchEnd', { message: 'You win !'}) // update scores same bad thing
+        // inform everyone
+        this.games.delete(game.id)
+    }
+
+    async game_watcher(game: Game) {
+        game.pause()
+
+        if (game.player0socket == null) {
+            var s1 = new Date().getTime() / 1000;
+            while (game.player0socket == null) {
+                if ((new Date().getTime() / 1000) - s1 > 2)
+                    break
+                await new Promise(f => setTimeout(f, 50));
+            }
+            if (game.player0socket != null) { // the player reconnected himself
+                game.unpause()
+            }
+            else { // gone from more than 5 seconds
+                this.forfeit_disconnection(game.player1socket, game)
+                return
+            }
+        }
+        else {
+            var s1 = new Date().getTime() / 1000;
+            while (game.player1socket == null) {
+                if ((new Date().getTime() / 1000) - s1 > 2)
+                    break
+                await new Promise(f => setTimeout(f, 50));
+            }
+            if (game.player1socket != null) { // the player reconnected himself
+                game.unpause()
+            }
+            else { // gone from more than 5 seconds
+                this.forfeit_disconnection(game.player0socket, game)
+                return
+            }
         }
     }
 
     disconnect(client: Socket) {
-        this.games.forEach(function(game, id, map) {
+        var game: Game = this.games.get(client['game'])
+
+        if (game != undefined) {
             if (game.player0socket.id == client.id) {
-                // game.players[1].emit('matchEnd', { message: 'You win !'}) // update scores
-                // game.players[1].disconnect()
-                // notify spect
+
                 game.player0socket = null
-                game.pause()
-                // game.stop()
-                // map.delete(id)
-                // return
+                
+                this.game_watcher(game)
             }
             else if (game.player1socket.id == client.id) {
-                // game.players[0].emit('matchEnd', { message: 'You win !'}) // update scores
-                // game.players[0].disconnect()
-                // notify spect
+
                 game.player1socket = null
-                game.pause()
-                // game.stop()
-                // map.delete(id)
-                // return
+                this.game_watcher(game)
             }
-            // else {
-            //     for (let j = 0; j < game.spectators.length; ++j) {
-            //         if (game.spectators[j].id === client.id) {
-            //             // remove him from spectator
-            //             // return
-            //         }
-            //     }
-            // }
-        })
+        }
     }
 }

@@ -61,16 +61,18 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             var room: BroadcastOperator<DefaultEventsMap> = this.server.to(game.id.toString())
             game.player0socket.join(game.id.toString())
             game.player1socket.join(game.id.toString())
+            game.player0socket['game'] = game.id
+            game.player1socket['game'] = game.id
             this.gameService.push_game(game, room) //also starting the game
         }
     }
 
     @SubscribeMessage('forfeit')
-    async leave(client: Socket, info: []) {
+    async forfeit(client: Socket, info: []) {
 
         this.gameService.forfeit(client, parseInt(info['id']))
 
-        client.disconnect()
+        // client.disconnect()
     }
 
     afterInit(server: Server){
