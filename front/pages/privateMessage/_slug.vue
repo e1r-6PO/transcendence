@@ -1,0 +1,328 @@
+<template>
+<v-container
+  style="overflow-y: hidden !important"
+  class="body"
+  fluid 
+  fill-height
+>
+  <AlertError style="margin-top: 10px" @end="onEnd" :textError="alertText" :state="alert"> {{ alertText }} </AlertError>
+  <v-app-bar
+    color="#181818"
+    height="130"
+    flat
+    fixed
+    clipped-left
+  >
+    <BasicBtn
+      style="margin-top: 80px"
+      content="mdi-forum"
+      v-on:click="channelDrawer = !channelDrawer">
+    </BasicBtn>
+    <!-- <h3 class="neonText" style="color: white; margin-top: 80px">{{ $route.params.slug }}</h3> -->
+    <v-spacer />
+    <BasicBtn
+      style="margin-top: 80px"
+      content="mdi-account-group"
+      v-on:click="userDrawer = !userDrawer">
+    </BasicBtn>
+  </v-app-bar>
+  <v-row style="height: 100%; margin-top: 2.5%">
+
+    <v-navigation-drawer
+      v-model="channelDrawer"
+      app
+      left
+      temporary
+      style="padding-top: 65px"
+      color="#181818"
+    >
+      <ChannelList class="mt-4" :state="true">
+         <v-subheader class="mt-3 mb-8">
+          <BasicBtn content="mdi-close" v-on:click="channelDrawer = !channelDrawer"></BasicBtn>
+          <v-spacer />
+          <CreateChannelBtn @error="activeAlert" class="pr-5 pb-3"/>
+        </v-subheader>
+        <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
+      </ChannelList>
+    </v-navigation-drawer>
+
+    <v-navigation-drawer
+      v-model="userDrawer"
+      app
+      right
+      temporary
+      color="#181818"
+      style="padding-top: 70px"
+    >
+    <v-row align="center" justify="center" class="pl-4 pr-5 pt-7">
+      <!-- <v-col align="center"> -->
+      <ChannelLeaveBtn @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
+      <v-spacer/>
+      <BasicBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></BasicBtn>
+      <!-- </v-col> -->
+    </v-row>
+      <!-- <ChannelUserList :small="true" :refresh="tokenUser" @refreshUser="updateToken" class="mt-4">
+        <v-subheader class="mt-3 mb-8">
+          <ChannelLeaveBtn v-if="isDefaultUser()" @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
+          <ChannelSettings v-if="isOwnerOrAdmin()"
+            :status="me.channelStatus"
+            @error="activeAlert"
+            class="pl-5 pb-3"
+            @refreshUser="updateToken"
+            :refreshToken="tokenUser"
+          >
+          </ChannelSettings>
+          <v-spacer />
+          <BasicBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></BasicBtn>
+         </v-subheader>
+        <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
+      </ChannelUserList> -->
+    </v-navigation-drawer>
+
+    <v-spacer />
+    <v-col cols="12" sm="11">
+      <v-card
+        color="#181818"
+        flat
+        class="pt-4"
+      >
+        <div v-for="(msg, i) in messagesArray"
+          :key="i"
+          class="overflow-y-auto"
+          style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
+        >
+        <div @click="redirectToUserProfile(msg.senderNick)">
+          <v-img
+            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
+            style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
+            width="30"
+            :src="msg.picture" 
+          />
+        </div>
+          <v-card
+            class="bubble"
+            :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
+            :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
+            style="min-width: 70px; max-width: 400px !important; margin-top: 20px"
+          >
+            <v-card-subtitle
+              style="padding-bottom: 0px; color: white"
+              v-text="msg.senderNick"
+              class="text-left"
+            >
+
+            </v-card-subtitle>
+          <v-card-text
+            style="padding-bottom: 0px; padding-right: 55px; color: white"
+            v-text="msg.message"
+          >
+          </v-card-text>
+          <v-card-subtitle
+            style="padding-bottom: 5px; padding-top: 0px; color: white"
+            v-text="formateTime(msg.date)"
+            class="text-right"
+          >
+          </v-card-subtitle>
+          </v-card>
+        </div>
+      </v-card>
+    </v-col>
+    <v-spacer />
+  </v-row>
+  
+  <v-footer app inset color="#181818">
+    <v-text-field
+      v-model="message"
+      class="text-field-nick-neon custom-placeholder-color custom-input-color"
+      style="margin-top: 3%"
+      placeholder="Message"
+      background-color="#181818"
+      color="blue"
+      hide-details
+      filled
+      dense
+      rounded
+      autofocus
+      @keypress.enter="sendMessage"
+    >
+    <template v-slot:append>
+      <v-icon v-if="message.length > 0" @click="clearMessage()" color="#b8a435"> mdi-close-circle </v-icon>
+    </template>
+      <v-icon slot="append-outer" color="#b8a435" class="mr-2"> mdi-send </v-icon>
+    </v-text-field>
+  </v-footer>
+</v-container>
+</template>
+
+<script lang='ts'>
+import Vue from 'vue'
+import { PrivateMessages } from '../../assets/Classes-ts/PrivateMessages'
+import { LightUser, User } from '../../assets/Classes-ts/User'
+import { ChannelUser } from '../../assets/Classes-ts/ChannelUser'
+import { io, Socket } from "socket.io-client";
+import ChannelList from '../../components/channel/ChannelList.vue';
+import ChannelUserList from '../../components/channel/ChannelUserList.vue';
+import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
+import BasicBtn from '../../components/channel/button/BasicBtn.vue';
+import ChannelLeaveBtn from '../../components/channel/ChannelLeaveBtn.vue';
+import AlertError from '../../components/AlertError.vue';
+import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
+import ChannelSettings from '../../components/channel/ChannelSettings.vue'
+
+import socket_chat from '../../plugins/chat.io'
+
+export default Vue.extend({
+  components: { CreateChannelBtn, ChannelList, ChannelUserList, BasicBtn,
+      ChannelLeaveBtn, ChannelSettings, AlertError },
+  middleware: 'login',
+
+  data() {
+    return {
+      message: '',
+      messagesArray: new Array<PrivateMessages>(),
+      usersNick: new Map(),
+      me: new User(),
+      nbMsg: -1,
+      channList: [],
+      userList: new Array<ChannelUser>(),
+      userDrawer: false,
+      channelDrawer: false,
+      userFocus: false,
+      channelFocus: false,
+      createFocus: false,
+      alert: false,
+      alertText: "",
+      tokenUser: 1,
+    }
+  },
+
+  updated() {
+    if (this.nbMsg == this.messagesArray.length || this.nbMsg == -1)
+    {
+      this.scrollToEnd();
+      this.nbMsg = 0;
+    }
+  },
+
+  async mounted() {
+    // const ret = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/access')
+    //   .catch(function (error) {
+    //     return error.response
+    //   })
+    // if (ret.status == 404)
+    //   this.$router.push('/chat?error=' + ret.data.message)
+    // else if (ret.status == 403)
+    //   this.activeAlert(ret.data.message)
+    // else
+    // {
+      socket_chat.connect();
+      // socket_chat.emit('privateMessageToServer', this.$route.params.slug);
+      this.me = await this.$axios.$get('/api/profile/me')
+      this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
+      console.log(this.messagesArray)
+      console.log(this.me)
+      socket_chat.on('privateMessage', (msg: PrivateMessages) => {
+        this.messagesArray.push(msg)
+        this.nbMsg = this.messagesArray.length
+      })
+      // socket_chat.on('refreshUser', (msg: string) => {
+      //   this.tokenUser = -this.tokenUser
+      // })
+    // }
+  },
+
+  methods: {
+    sendMessage(): void {
+      var newMsg = new PrivateMessages()
+      newMsg.sender = this.me
+      newMsg.picture = this.me.picture
+      newMsg.message = this.message
+      newMsg.date = new Date()
+      newMsg.target = new User()
+      this.messagesArray.push(newMsg)
+      socket_chat.emit('privateMessageToServer', this.message, this.$route.params.slug)
+      socket_chat.on('MuteError', (msg: string) => {
+        this.activeAlert(msg)
+      })
+      this.message = ''
+    },
+
+    formateTime(time: Date): string {
+      var newTime: Date = new Date(time)
+      return newTime.getHours() + ':' + (newTime.getMinutes() < 10 ? '0' + newTime.getMinutes() : newTime.getMinutes())
+    },
+
+    isYourMsg(msg: PrivateMessages): boolean {
+      if (this.me.nickName == msg.sender.nickName)
+        return (true)
+      return (false)
+    },
+
+    redirectToUserProfile(userNick: string) {
+      this.$router.push("/users/" + userNick)
+    },
+
+    scrollToEnd() {    	
+      window.scrollTo(0, document.body.scrollHeight);
+    },
+
+    redirectToChannel(channName: string) {
+      this.$router.push('/chat/' + channName)
+    },
+
+    clearMessage() {
+      this.message = ""
+    },
+
+    activeAlert(error: any)
+    {
+        this.alertText = error
+        this.alert = true
+    },
+
+    onEnd() {
+      this.alert = false
+    },
+
+    updateUser() {
+    },
+
+    updateToken() {
+      this.tokenUser += 1
+      socket_chat.emit('refreshUser', this.$route.params.slug)
+    }
+  }
+})
+</script>
+
+<style scoped>
+@import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/chat_bubble.scss';
+
+body {
+  overscroll-behavior: none !important;
+  overflow-y: hidden !important;
+}
+
+.border {
+  border-right: 1px solid grey;
+}
+
+.scrollable {
+  overflow-y: scroll !important;
+}
+
+.neon-button {
+  border: 3px solid #cd78ff !important;
+  box-shadow: inset 0px 0px 20px 0px #a200ff, 0px 0px 20px 0px #a200ff !important;
+}
+
+.neonText {
+  color: #e6ffff;
+  text-shadow:
+    0 0 7px #f27719,
+    0 0 8px #f27719,
+    0 0 9px #f27719 !important;
+}
+
+</style>
