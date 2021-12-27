@@ -84,7 +84,7 @@ export default class ChannelUserList extends Vue {
       this.userList = userListRet.data
   }
 
-  directToUserProfile(userNick: string) {
+  redirectToUserProfile(userNick: string) {
     this.$router.push("/users/" + userNick)
   }
 

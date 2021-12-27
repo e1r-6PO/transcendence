@@ -20,6 +20,7 @@
           v-for="(item, i) in items"
           :key="i"
           :to="item.to"
+          @click="drawer = !drawer"
           router
           exact
           plain
