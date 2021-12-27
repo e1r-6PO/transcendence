@@ -7,7 +7,7 @@ import {
     OnGatewayConnection,
     OnGatewayDisconnect,
 } from "@nestjs/websockets";
-import { Socket, Server } from 'socket.io';
+import { Socket, Server, BroadcastOperator } from 'socket.io';
 import { Logger } from "@nestjs/common";
 import { AdvancedConsoleLogger, Repository } from "typeorm";
 import { JwtService } from '@nestjs/jwt';
@@ -18,6 +18,7 @@ import { User } from "src/entity/user.entity";
 import { Messages } from "src/entity/messages.entity"
 import { Game } from "src/entity/game.entity";
 import { GameService } from "src/service/game.service";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 @WebSocketGateway({
     cors: {
@@ -51,7 +52,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             game.players = [this.queue[0], this.queue[1]]
             this.queue.splice(0, 2)
             game = await this.gamesRepository.save(game)
-            this.gameService.push_game(game) //also starting the game
+            var room: BroadcastOperator<DefaultEventsMap> = this.server.to(game.id.toString())
+            game.players[0].join(game.id.toString())
+            game.players[1].join(game.id.toString())
+            this.gameService.push_game(game, room) //also starting the game
         }
     }
 

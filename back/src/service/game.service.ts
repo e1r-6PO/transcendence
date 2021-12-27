@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { Socket } from "socket.io";
+import { BroadcastOperator, Socket } from "socket.io";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { Game } from "src/entity/game.entity";
 
 export class GameService {
     games: Map<number, Game> = new Map<number, Game>()
 
-    push_game(game: Game) {
-        console.log(game.id)
+    push_game(game: Game, room: BroadcastOperator<DefaultEventsMap>) {
+        game.room = room
         game.start()
         // this.games.push(game)
         this.games.set(game.id, game)
