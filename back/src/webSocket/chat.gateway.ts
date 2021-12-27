@@ -18,6 +18,7 @@ import { Messages } from "src/entity/messages.entity"
 import { Channel } from "src/entity/channel.entity";
 import { ChannelParticipant } from "src/entity/channelParticipant.entity";
 import { IoAdapter } from "@nestjs/platform-socket.io";
+import { PrivateMessage } from "src/entity/privateMessage.entity";
 
 @WebSocketGateway({
     cors: {
@@ -34,6 +35,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private readonly usersRepository : Repository<User>,
         @InjectRepository(Messages)
         private readonly messagesRepository : Repository<Messages>,
+        @InjectRepository(PrivateMessage)
+        private readonly privateMessagesRepository : Repository<PrivateMessage>,
         @InjectRepository(Channel)
         private readonly ChannelsRepository : Repository<Channel>,
         @InjectRepository(ChannelParticipant)
@@ -41,9 +44,44 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       ) {}
 
     count: number = 0;
+    ClientConnected: Map<number, Socket> = new Map()
 
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('ChatGateway');
+
+    @SubscribeMessage('privateMessageToServer')
+    async handlePrivateMessage(client: Socket, av: string): Promise<void>{
+        
+        var newMsg: PrivateMessage = new PrivateMessage;
+        
+        const jwt = client.handshake.headers.cookie
+        .split('; ')
+        .find((cookie: string) => cookie.startsWith('jwt'))
+        if (jwt == null)
+        {
+            client.disconnect()
+            return
+        }
+        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
+
+        var userTarget = await this.usersRepository.findOne({
+            where: { nickName: av[1] }
+        })
+        if (!userTarget)
+            return
+        var socketTarget = this.ClientConnected.get(userTarget.id)
+        newMsg.sender = await this.usersRepository.findOne({
+            where: { id: jwt_decoded['id'] }
+        })
+        newMsg.target = userTarget
+        newMsg.message = av[0]
+        newMsg.picture = newMsg.sender.picture
+        newMsg.date = new Date()
+        if (socketTarget)
+            this.server.to(socketTarget.id).emit("privateMessage", newMsg)
+        this.privateMessagesRepository.save(newMsg)
+
+    }
 
     @SubscribeMessage('msgToServer')
     async handleMessage(client: Socket, av: string): Promise<void>{
@@ -172,7 +210,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             where: {id: jwt_decoded['id']}
         })
         client['info'] = user_data
-        
-        console.log(user_data)
+        this.ClientConnected.set(user_data.id, client)
+        console.log(client['info'])
     }
 }
