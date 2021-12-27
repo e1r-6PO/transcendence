@@ -33,6 +33,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private jwtService : JwtService,
         @InjectRepository(User)
         private readonly usersRepository : Repository<User>,
+        @InjectRepository(Game)
+        private readonly gamesRepository : Repository<Game>,
       ) {}
     gameService: GameService = new GameService
     queue: Socket[] = []

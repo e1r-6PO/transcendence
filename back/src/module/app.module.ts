@@ -22,10 +22,11 @@ import { ChannelModule } from './channel.module';
 import { GameService } from 'src/service/game.service';
 import { PrivateMessage } from 'src/entity/privateMessage.entity';
 import { PrivateMessagesModule } from './privateMessage.module';
+import { Game } from 'src/entity/game.entity';
 
 @Module({
   imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, MessagesModule, ChannelModule,
-    TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage]), FriendsModule, PrivateMessagesModule ],
+    TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage, Game]), FriendsModule, PrivateMessagesModule ],
   controllers: [ AppController ],
   providers: [ AppService, ChatGateway, GameGateway, GameService ],
 })

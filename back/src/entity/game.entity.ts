@@ -1,17 +1,32 @@
 import { Socket } from "socket.io"
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Ball } from "./ball.entity"
 import { User } from "./user.entity"
 
+@Entity()
 export class Game {
 
+    @PrimaryGeneratedColumn()
     id: number
+
     loopId: any
     players: Array<Socket>
     spectators: Array<Socket>
     balls: Array<Ball>
 
+    @ManyToOne(() => User, {
+        eager: true,
+    })
     player0: User
+    @ManyToOne(() => User, {
+        eager: true,
+    })
     player1: User
+
+    @Column()
+    scorep0: number
+    @Column()
+    scorep1: number
 
     tick() {
         for (let i = 0; i < this.balls.length; ++i) {
