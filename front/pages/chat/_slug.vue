@@ -85,14 +85,14 @@
           class="overflow-y-auto"
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
+        <div @click="redirectToUserProfile(msg.senderNick)">
           <v-img
             :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
             style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
             width="30"
-            :src="msg.picture"
-            @click="redirectToUserProfile(msg.senderNick)"
-          >
-          </v-img>
+            :src="msg.picture" 
+          />
+        </div>
           <v-card
             class="bubble"
             :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"

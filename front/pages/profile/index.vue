@@ -35,7 +35,7 @@
       </v-btn>
     </v-avatar>
     </div>
-    <div class="flex-container-editing" justify="center" align="center" style="padding-top: 1%" v-else>
+    <div v-else class="flex-container-editing" justify="center" align="center" style="padding-top: 1%">
       <v-btn
           color="#8124be"
           class="foreground_element cross-item edit-button"
