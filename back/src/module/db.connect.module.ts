@@ -5,6 +5,7 @@ import { Relationship } from 'src/entity/relationship.entity';
 import { User } from 'src/entity/user.entity';
 import { Channel } from 'src/entity/channel.entity';
 import { ChannelParticipant } from 'src/entity/channelParticipant.entity';
+import { PrivateMessage } from 'src/entity/privateMessage.entity';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { ChannelParticipant } from 'src/entity/channelParticipant.entity';
       username: process.env.DBUSER,
       password: process.env.DBPSWD,
       database: 'transcendence',
-      entities: [User, Relationship, Messages, Channel, ChannelParticipant],
+      entities: [User, Relationship, Messages, Channel, ChannelParticipant, PrivateMessage],
       synchronize: true,
     }),
   ],

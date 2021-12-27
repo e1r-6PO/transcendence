@@ -20,10 +20,12 @@ import { GameGateway } from 'src/webSocket/game.gateway';
 import { ChannelParticipant } from 'src/entity/channelParticipant.entity';
 import { ChannelModule } from './channel.module';
 import { GameService } from 'src/service/game.service';
+import { PrivateMessage } from 'src/entity/privateMessage.entity';
+import { PrivateMessagesModule } from './privateMessage.module';
 
 @Module({
   imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, MessagesModule, ChannelModule,
-    TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Channel, ChannelParticipant, Messages]), FriendsModule ],
+    TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage]), FriendsModule, PrivateMessagesModule ],
   controllers: [ AppController ],
   providers: [ AppService, ChatGateway, GameGateway, GameService ],
 })
