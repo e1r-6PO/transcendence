@@ -47,7 +47,11 @@ export default Vue.extend({
         if ((new Date().getTime() / 1000) - s1 > 2)
           break
         await new Promise(f => setTimeout(f, 50));
-      // socket_game.emit('spectate', {})
+      }
+      if (socket_game.connected == false)
+        null// error could not connect
+      else {
+        socket_game.emit('join', { id: this.game_id })
       }
     }
 

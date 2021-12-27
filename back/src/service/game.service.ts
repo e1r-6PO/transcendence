@@ -10,7 +10,22 @@ export class GameService {
         game.room = room
         game.start()
         // this.games.push(game)
+        console.log(game.id)
         this.games.set(game.id, game)
+    }
+
+    join(client: Socket, id: number) { // check if match is done
+        var game: Game = this.games.get(id)
+        console.log(id, this.games, game, this.games.get(id))
+        if (client['info'].id == game.player0.id || client['info'].id == game.player1.id) {
+            game.players.push(client)
+            client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
+            client.join(game.id.toString()) // rejoin the game
+        }
+        else {
+            client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
+            client.join(id.toString()) // join as spectator
+        }
     }
 
     disconnect(client: Socket) {

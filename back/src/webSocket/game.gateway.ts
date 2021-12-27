@@ -44,7 +44,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
 
-    @SubscribeMessage('joinQueue')
+    @SubscribeMessage('join') // to spectate a game or to see a game history
+    async join(client: Socket, info: []) {
+        this.gameService.join(client, info['id'])
+    }
+
+    @SubscribeMessage('joinQueue') // to join the queue
     async joinQueue(client: Socket) {
         this.queue.push(client)
         if (this.queue.length >= 2) {

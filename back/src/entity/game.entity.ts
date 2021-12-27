@@ -43,13 +43,17 @@ export class Game {
         // emit to spec etc...
     }
 
+    matchinfo() {
+        this.room.emit('matchInfo', { id: this.id, player0: this.player0.toLightuser(), player1: this.player1.toLightuser() }) 
+    }
+
     async start() {
         this.player0 = this.players[0]['info'] // putting the infos inside a User class to get access to function
         this.player1 = this.players[1]['info'] //
         this.room.emit('matchFound', { id: this.id})
         // this.players[1].emit('matchFound', { id: this.id})
         await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side
-        this.room.emit('matchInfo', { id: this.id, player0: this.player0.toLightuser(), player1: this.player1.toLightuser() }) 
+        this.matchinfo()
         for (let i: number = 3; i >= 0; --i) {
             this.room.emit('matchSetup', { gameStart: i} ) 
             await new Promise(f => setTimeout(f, 1000)); // countdown
