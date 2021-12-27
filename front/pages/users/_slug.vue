@@ -69,6 +69,9 @@
           </v-btn>
         </div>
       </v-avatar>
+        <v-row v-if="self.id != user.id" justify="end">
+          <BasicBtn @click="redirectToPrivateMessage()" :isText="true" content="Send Message" />
+        </v-row>
       </div>
       <div class="flex-container-editing" style="padding-top: 80px">
         <v-card class="foreground_element card_profile">
@@ -187,6 +190,10 @@ export default class extends Vue {
     async mouseLeaveButton() {
     await new Promise(d => setTimeout(d, 300));
       this.mouseOverButton = false
+  }
+
+  redirectToPrivateMessage() {
+    this.$router.push('/privateMessage/' + this.user.nickName)
   }
 
   getIconStatus(): string {

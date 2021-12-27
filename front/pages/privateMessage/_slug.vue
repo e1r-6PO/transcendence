@@ -18,7 +18,14 @@
       content="mdi-forum"
       v-on:click="channelDrawer = !channelDrawer">
     </BasicBtn>
-    <!-- <h3 class="neonText" style="color: white; margin-top: 80px">{{ $route.params.slug }}</h3> -->
+    <v-spacer />
+    <img v-if="user.picture != ''"
+      :src=user.picture
+      style="margin-top: 80px; margin-right: 5px"
+      class="profile-picture"
+      width="30"
+    />
+    <h3 class="neonText" style="color: white; margin-top: 80px">{{ user.nickName }}</h3>
     <v-spacer />
     <BasicBtn
       style="margin-top: 80px"
@@ -183,8 +190,6 @@ export default Vue.extend({
       usersNick: new Map(),
       me: new User(),
       nbMsg: -1,
-      channList: [],
-      userList: new Array<ChannelUser>(),
       userDrawer: false,
       channelDrawer: false,
       userFocus: false,
@@ -193,6 +198,7 @@ export default Vue.extend({
       alert: false,
       alertText: "",
       tokenUser: 1,
+      user: LightUser,
     }
   },
 
@@ -215,16 +221,17 @@ export default Vue.extend({
     //   this.activeAlert(ret.data.message)
     // else
     // {
-      socket_chat.connect();
-      // socket_chat.emit('privateMessageToServer', this.$route.params.slug);
-      this.me = await this.$axios.$get('/api/profile/me')
-      this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
-      console.log(this.messagesArray)
-      console.log(this.me)
-      socket_chat.on('privateMessage', (msg: PrivateMessages) => {
-        this.messagesArray.push(msg)
-        this.nbMsg = this.messagesArray.length
-      })
+    this.user = await this.$axios.$get('/api/users/' + this.$route.params.slug)
+    socket_chat.connect();
+    // socket_chat.emit('privateMessageToServer', this.$route.params.slug);
+    this.me = await this.$axios.$get('/api/profile/me')
+    this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
+    console.log(this.messagesArray)
+    console.log(this.me)
+    socket_chat.on('privateMessage', (msg: PrivateMessages) => {
+      this.messagesArray.push(msg)
+      this.nbMsg = this.messagesArray.length
+    })
       // socket_chat.on('refreshUser', (msg: string) => {
       //   this.tokenUser = -this.tokenUser
       // })
@@ -323,6 +330,12 @@ body {
     0 0 7px #f27719,
     0 0 8px #f27719,
     0 0 9px #f27719 !important;
+}
+
+.profile-picture {
+  border: 2px solid #a5fafa !important;
+  box-shadow: 0px 0px 10px 0px #63f3f3 !important;
+  border-radius: 100%
 }
 
 </style>
