@@ -50,6 +50,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             var game: Game = new Game
             game.players = [this.queue[0], this.queue[1]]
             this.queue.splice(0, 2)
+            game = await this.gamesRepository.save(game)
             this.gameService.push_game(game) //also starting the game
         }
     }

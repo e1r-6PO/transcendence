@@ -23,9 +23,9 @@ export class Game {
     })
     player1: User
 
-    @Column()
+    @Column( {default: 0} )
     scorep0: number
-    @Column()
+    @Column( {default: 0} )
     scorep1: number
 
     tick() {

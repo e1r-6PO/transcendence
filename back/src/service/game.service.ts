@@ -4,11 +4,9 @@ import { Game } from "src/entity/game.entity";
 
 export class GameService {
     games: Map<number, Game> = new Map<number, Game>()
-    newgameid: number = 0
 
     push_game(game: Game) {
-        game.id = this.newgameid
-        this.newgameid += 1
+        console.log(game.id)
         game.start()
         // this.games.push(game)
         this.games.set(game.id, game)
