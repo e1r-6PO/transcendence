@@ -15,7 +15,7 @@ export class GameService {
         // console.log(game.id, typeof game.id, 24, typeof 24, this.games.get(24), this.games.get(game.id))
     }
 
-    join(client: Socket, id: number) {
+    join(client: Socket, id: number) { // join a running game or checking a past game
         var game: Game = this.games.get(id)
 
         if (game == undefined) { // game is finished
