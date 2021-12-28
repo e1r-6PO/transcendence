@@ -89,6 +89,7 @@
 <script lang='ts'>
 
 import Vue from 'vue'
+import socket_active from '../plugins/active.io'
 
 export default Vue.extend({
 
@@ -131,6 +132,11 @@ export default Vue.extend({
       rightDrawer: false,
       title: 'Tronscendence'
     }
+  },
+
+  async mounted() {
+    if (!socket_active.connected)
+      socket_active.connect()
   },
 
   methods: {
