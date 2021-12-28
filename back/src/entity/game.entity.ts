@@ -45,13 +45,13 @@ export class Game {
             if (score == 0) {
                 this.scorep1++
                 ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].x, this.balls[i].y] })
-                this.balls.slice(i, 1)
+                this.balls.splice(i, 1)
                 this.create_new_ball(1000)
             }
             else if (score == 1) {
                 this.scorep0++
                 ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].x, this.balls[i].y] })
-                this.balls.slice(i, 1)
+                this.balls.splice(i, 1)
                 this.create_new_ball(1000)
             }
             else {
@@ -59,7 +59,6 @@ export class Game {
             }
         }
         this.room.emit('gameInfo', ballsinfo)
-        console.log(this.scorep0, this.scorep1)
     }
 
     matchinfo() {
@@ -76,7 +75,10 @@ export class Game {
             await new Promise(f => setTimeout(f, 1000)); // countdown
         }
         this.balls = new Array
-        this.balls.push(new Ball)
+        let number_of_balls = 1
+        for (let i = 0; i < number_of_balls; ++i)
+            this.create_new_ball(i * 1000)
+
         this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
     }
 
