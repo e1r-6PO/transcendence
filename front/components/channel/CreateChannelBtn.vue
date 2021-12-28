@@ -81,47 +81,47 @@ import { Component, Prop } from 'nuxt-property-decorator'
 @Component
 export default class CreateChannelBtn extends Vue{
 
-      dialog: boolean = false
-      channName: string = ''
-      channPass: string = ''
-      channType: string = ''
-      createFocus: boolean = false
-      typeList: Array<string> = [
-        'Public',
-        'Private',
-        'Protected'
-      ]
+  dialog: boolean = false
+  channName: string = ''
+  channPass: string = ''
+  channType: string = ''
+  createFocus: boolean = false
+  typeList: Array<string> = [
+    'Public',
+    'Private',
+    'Protected'
+  ]
 
-    async createChannel() {
-      this.dialog = false
-      const ret = await this.$axios.$post('/api/chat/' + this.channName + '/create?type=' + this.channType + '&pass=' + this.channPass)
-        .catch(function (error) {
-          return error.response
-        });
-      if (ret.status == 409)
-        this.activeAlert("Channel already exists")
-      else
-        this.$router.push("/chat/" + this.channName)
-    }
+  async createChannel() {
+    this.dialog = false
+    const ret = await this.$axios.$post('/api/chat/' + this.channName + '/create?type=' + this.channType + '&pass=' + this.channPass)
+      .catch(function (error) {
+        return error.response
+      });
+    if (ret.status == 409)
+      this.activeAlert("Channel already exists")
+    else
+      this.$router.push("/chat/" + this.channName)
+  }
 
-    redirectToChannel(channName: string) {
-        this.$router.push('/chat/' + channName)
-    }
+  redirectToChannel(channName: string) {
+      this.$router.push('/chat/' + channName)
+  }
 
-    disableCreate() {
-      if (this.channName == '' || this.channName.length > 20)
-        return true
-      if (this.channType == '')
-        return true
-      if (this.channType == 'Protected' && (this.channPass == '' || this.channPass.length < 5))
-        return true
-      return false
-    }
+  disableCreate() {
+    if (this.channName == '' || this.channName.length > 20)
+      return true
+    if (this.channType == '')
+      return true
+    if (this.channType == 'Protected' && (this.channPass == '' || this.channPass.length < 5))
+      return true
+    return false
+  }
 
-    activeAlert(error: string)
-    {
-      this.$emit('error', error)
-    }
+  activeAlert(error: string)
+  {
+    this.$emit('error', error)
+  }
 }
 </script>
 
