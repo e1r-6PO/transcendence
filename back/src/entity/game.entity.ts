@@ -47,12 +47,18 @@ export class Game {
                 ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].x, this.balls[i].y] })
                 this.balls.splice(i, 1)
                 this.create_new_ball(1000)
+                if (this.scorep1 == 1) {
+                    // this.end_fnct()
+                }
             }
             else if (score == 1) {
                 this.scorep0++
                 ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].x, this.balls[i].y] })
                 this.balls.splice(i, 1)
                 this.create_new_ball(1000)
+                if (this.scorep0 == 1) {
+                    // this.end_fnct()
+                }
             }
             else {
                 ballsinfo.push({ id: i, status: "normal", ball_location: [this.balls[i].x, this.balls[i].y] })
