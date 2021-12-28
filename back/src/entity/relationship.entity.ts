@@ -38,6 +38,7 @@ export class Relationship {
         nickName: this.peer.nickName,
         gameWin: this.peer.gameWin,
         gameLose: this.peer.gameLose,
+        isActive: this.peer.isActive
       },
       status: this.status
     }

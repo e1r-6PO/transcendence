@@ -35,6 +35,7 @@ class LightUser {
     nickName: string;
     gameWin: number;
     gameLose: number;
+    isActive: boolean;
     constructor()
     {
         this.nickName = "";
@@ -42,6 +43,7 @@ class LightUser {
         this.id = 0;
         this.gameWin = 0;
         this.gameLose = 0;
+        this.isActive = false;
     }
 }
 

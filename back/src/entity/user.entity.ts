@@ -30,7 +30,7 @@ export class User {
   @Column({ default: false})
   public isTwoFactorAuthenticationEnabled: boolean;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isActive: boolean;
 
   @Column()
@@ -49,6 +49,7 @@ export class User {
       nickName: this.nickName,
       gameWin: this.gameWin,
       gameLose: this.gameLose,
+      isActive: this.isActive,
     }
   }
 }
