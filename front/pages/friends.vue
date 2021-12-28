@@ -9,8 +9,7 @@
         overlap
         disable
       >
-      <BasicBtn @click="changeSelectedStatus(displayFriend[i - 1])" :width="150" :content="displayFriend[i - 1]" :isText="true">
-      </BasicBtn>
+      <BasicBtn @click="changeSelectedStatus(displayFriend[i - 1])" :width="150" :content="displayFriend[i - 1]" :isText="true" />
       <!-- <v-btn width="200" @click="changeSelectedStatus(displayFriend[i - 1])"> -->
         <!-- {{ displayFriend[i - 1] }} -->
       <!-- </v-btn> -->
@@ -37,7 +36,11 @@
   </div>
     <v-row v-if="filterRelationships != []" justify="space-around" style="padding-top: 20px">
       <v-col justify="center" align="left">
-      <div v-for="relationship in filterRelationships" :key="relationship.id" style="padding-top:30px">
+      <div v-for="relationship in filterRelationships" :key="relationship.id"
+        style="padding-top:30px"
+        v-on:bind="filterRelationships"
+        v-on:change="update"
+      >
         <!-- <p v-if="matchSearch(relationship.peer)"> -->
         <v-card
           class="foreground_element card_profile"
@@ -45,9 +48,13 @@
           justify="center"
         >
         <v-row align="center" justify="start" style="padding-left: 20px; padding-top: 7px">
-            <v-avatar size="40" @click="goToProfile(relationship)">
-          <v-img style="border-radius: 15px" :src="relationship.peer.picture" />
-            </v-avatar>
+          <img
+            width="40"
+            @click="goToProfile(relationship)"
+            style="border-radius: 100% !important;"
+            :class="relationship.peer.isActive == true ? 'profile-picture-active' : 'profile-picture-inActive'"
+            :src="relationship.peer.picture"
+          />
           <v-card-title @click="goToProfile(relationship)" class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</v-card-title>
           <BasicBtn
             v-if="selectedStatus == 'Pending' && relationship.status == status.incomming"
@@ -101,6 +108,7 @@ const All_Friend_Status = {
 
 import Vue from 'vue'
 import { LightUser } from '../assets/Classes-ts/User'
+import socket_active from '../plugins/active.io'
 
 export default Vue.extend({
 
@@ -113,43 +121,71 @@ export default Vue.extend({
       fullRelationships: [{
         id: 0,
         peer: new LightUser(),
-        status: ''
+        status: '',
+        isActive: false
       }],
       filterRelationships: [{
         id: 0,
         peer: new LightUser(),
-        status: ''
+        status: '',
+        isActive: false
       }],
       onlineRelationships: [{
         id: 0,
         peer: new LightUser(),
-        status: ''
+        status: '',
+        isActive: false
       }],
       allRelationships: [{
         id: 0,
         peer: new LightUser(),
-        status: ''
+        status: '',
+        isActive: false
       }],
       pendingRelationships: [{
         id: 0,
         peer: new LightUser(),
-        status: ''
+        status: '',
+        isActive: false
       }],
       blockedRelationships: [{
         id: 0,
         peer: new LightUser(),
-        status: ''
+        status: '',
+        isActive: false
       }],
       selectedStatus: '',
-      displayFriend: ['Online', 'All', 'Pending', 'Blocked']
+      displayFriend: ['Online', 'All', 'Pending', 'Blocked'],
+      activeUser: new Map<number, LightUser>(),
+      update: false
     }
   },
 
   async mounted() {
+    socket_active.on("active", (user: LightUser) => {
+      this.activeUser.set(user.id, user)
+      var find = this.findUser(user)
+      if (find != -1)
+      {
+        this.update = !this.update
+        this.switchState(user.id)
+      }
+    })
+    socket_active.on("inactive", (user: LightUser) => {
+      this.activeUser.delete(user.id)
+      var find = this.findUser(user)
+      if (find != -1)
+      {
+        this.switchState(user.id)
+        this.update = !this.update
+      }
+    })
     this.fullRelationships = await this.$axios.$get('/api/profile/me/friends')
     this.initTab()
     for (var i = 0; i < this.fullRelationships.length; i++)
     {
+      if (this.activeUser.has(this.fullRelationships[i].peer.id))
+        this.fullRelationships[i].peer.isActive = true
       if (this.fullRelationships[i].status == this.status.blocked)
         this.blockedRelationships.push(this.fullRelationships[i])
       else if (this.fullRelationships[i].status == this.status.sent)
@@ -157,9 +193,11 @@ export default Vue.extend({
       else if (this.fullRelationships[i].status == this.status.incomming)
         this.pendingRelationships.push(this.fullRelationships[i])
       else if (this.fullRelationships[i].status == this.status.completed)
+      {
         this.allRelationships.push(this.fullRelationships[i])
-      else if (this.onlineRelationships[i].status == this.status.completed)
-        this.onlineRelationships.push(this.fullRelationships[i])
+        if (this.fullRelationships[i].peer.isActive)
+          this.onlineRelationships.push(this.fullRelationships[i])
+      }
     }
     this.changeSelectedStatus('All')
     this.selectedStatus = 'All'
@@ -255,12 +293,48 @@ export default Vue.extend({
         else if (this.fullRelationships[i].status == this.status.incomming)
           this.pendingRelationships.push(this.fullRelationships[i])
         else if (this.fullRelationships[i].status == this.status.completed)
+        {
           this.allRelationships.push(this.fullRelationships[i])
-      // else if (this.onlineRelationships[i].status == this.status.completed)
-        // this.onlineRelationships.push(this.fullRelationships[i])
+          if (this.fullRelationships[i].peer.isActive)
+           this.onlineRelationships.push(this.fullRelationships[i])
+        }
       }
       this.changeSelectedStatus(this.selectedStatus)
-    }
+    },
+
+    findUser(user: LightUser): number {
+      for (var i = 0; i < this.fullRelationships.length; i++)
+      {
+        if (this.fullRelationships[i].peer.id == user.id)
+          return (i)
+      }
+      return (-1)
+    },
+
+    switchState(userId: number) {
+        var id = this.allRelationships.findIndex(el => el.peer.id == userId)
+        if (id != -1)
+        {
+          this.allRelationships[id].peer.isActive = !this.allRelationships[id].peer.isActive
+          if (this.allRelationships[id].peer.isActive)
+          {
+          console.log(this.allRelationships[id])
+            this.onlineRelationships.push(this.allRelationships[id])
+          console.log(this.onlineRelationships)
+          }
+          else
+          {
+            var onlineId = this.onlineRelationships.findIndex(el => el.peer.id == userId)
+            if (onlineId != -1)
+              this.onlineRelationships.splice(onlineId, 1)
+            this.changeSelectedStatus(this.selectedStatus)
+          }
+        }
+    },
+
+    test() {
+      console.log("catch change")
+    },
   }
 })
 </script>
@@ -284,6 +358,24 @@ export default Vue.extend({
 .friend-button {
   border: 3px solid #e9c8ff !important;
   box-shadow: 0px 0px 15px 3px #9141c7 !important;
+}
+
+.profile-picture {
+  border: 2px solid #a5fafa !important;
+  box-shadow: 0px 0px 10px 0px #63f3f3 !important;
+  border-radius: 100%
+}
+
+.profile-picture-active {
+  border: 2px solid #92d6a6 !important;
+  box-shadow: 0px 0px 10px 1px #03cf41 !important;
+  border-radius: 100%
+}
+
+.profile-picture-inActive {
+  border: 2px solid #b33b3b !important;
+  box-shadow: 0px 0px 10px 1px #aa0909 !important;
+  border-radius: 100%
 }
 
 </style>
