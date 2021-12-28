@@ -43,7 +43,7 @@ export class GameService {
     forfeit(client: Socket, id: number) {
         var game: Game = this.games.get(id) 
 
-        if (game != undefined) {
+        if (game != undefined && (client.id == game.player0socket.id || client.id == game.player1socket.id)) { // to avoid spec ff ing the game
             var winner: Socket = (client.id == game.player0socket.id ? game.player1socket : game.player0socket)
             var loser: Socket = (client.id == game.player0socket.id ? game.player0socket : game.player1socket)
 
