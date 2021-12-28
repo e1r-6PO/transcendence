@@ -26,7 +26,7 @@ export class Ball {
         this.velocity = 1 // must be positive value, distance traveled per tick
     }
 
-    tick() {
+    tick() { // 0 = p0 lost a point, 1 = p1 lost a point -1 = nothing happned
         // const paddle0x = 0 + 40
         // let paddle0y = this.canvas_y / 2
         // const paddle1x = this.canvas_x - 40
@@ -35,6 +35,7 @@ export class Ball {
         this.x += this.velocity * this.xd
         this.y += this.velocity * this.yd
         if (this.x < 0 + this.ball_size) {
+            return 0
             // player 0 lost
             this.xd = directions.positive
             this.x = 0 + this.ball_size
@@ -44,6 +45,7 @@ export class Ball {
             this.y = 0 + this.ball_size
         }
         if (this.x > this.canvas_x - this.ball_size) {
+            return 1
             // player 1 lost
             this.xd = directions.negative
             this.x = this.canvas_x - this.ball_size
@@ -52,5 +54,6 @@ export class Ball {
             this.yd = directions.negative
             this.y = this.canvas_y - this.ball_size
         }
+        return -1
     }
 }

@@ -57,6 +57,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             game.player0socket = this.queue[0]
             game.player1socket = this.queue[1]
             this.queue.splice(0, 2)
+            game.player0 = game.player0socket['info'] // putting the infos inside a User class to get access to function
+            game.player1 = game.player1socket['info'] //
             game = await this.gamesRepository.save(game)
             var room: BroadcastOperator<DefaultEventsMap> = this.server.to(game.id.toString())
             game.player0socket.join(game.id.toString())
@@ -70,7 +72,18 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('forfeit')
     async forfeit(client: Socket, info: []) {
 
-        this.gameService.forfeit(client, parseInt(info['id']))
+        var game: Game = this.gameService.games.get(parseInt(info['id']))
+
+        console.log(client['info'].id, game.player0.id, game.player1.id)
+
+        if (client['info'].id == game.player0.id) {
+            game.player0socket = null
+            this.gameService.endgame(game)
+        }
+        else if (client['info'].id == game.player1.id) {
+            game.player1socket = null
+            this.gameService.endgame(game)
+        }
 
         // client.disconnect()
     }

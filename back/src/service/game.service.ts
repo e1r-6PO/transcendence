@@ -15,14 +15,15 @@ export class GameService {
         // console.log(game.id, typeof game.id, 24, typeof 24, this.games.get(24), this.games.get(game.id))
     }
 
-    join(client: Socket, id: number) { // check if match is done
+    join(client: Socket, id: number) {
         var game: Game = this.games.get(id)
 
         if (game == undefined) { // game is finished
-
+            // emit game is finished
+            // close socket
         }
-        else {
-            if (client['info'].id == game.player0.id || client['info'].id == game.player1.id) {
+        else { // game is running
+            if (client['info'].id == game.player0.id || client['info'].id == game.player1.id) { // the new client is one of the player
                 client['game'] = game.id
                 if (client['info'].id == game.player0.id) { // twice same condition = shit
                     game.player0socket = client
@@ -31,42 +32,34 @@ export class GameService {
                     game.player1socket = client 
                 }
                 client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
-                client.join(game.id.toString()) // rejoin the game
+                client.join(game.id.toString())
             }
-            else {
+            else { // the new client is a spectator
                 client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
-                client.join(id.toString()) // join as spectator
+                client.join(id.toString())
             }
         }
     }
 
-    forfeit(client: Socket, id: number) {
-        var game: Game = this.games.get(id) 
-
-        if (game != undefined && (client.id == game.player0socket.id || client.id == game.player1socket.id)) { // to avoid spec ff ing the game
-            var winner: Socket = (client.id == game.player0socket.id ? game.player1socket : game.player0socket)
-            var loser: Socket = (client.id == game.player0socket.id ? game.player0socket : game.player1socket)
-
-            winner.emit('matchEnd', { message: 'You win !'}) // update scores
-            loser.emit('matchEnd', { message: 'You lost !'}) // update scores bad things to do
-            // informe everyone
-            this.games.delete(game.id)
+    endgame(game: Game) {
+        if (game.player0socket == null || game.scorep1 > game.scorep0) { // player0 dc or p1 won
+            game.room.emit('matchEnd', { winner: game.player1, looser: game.player0 })
         }
-    }
-
-    forfeit_disconnection(client: Socket, game: Game) {
-        client.emit('matchEnd', { message: 'You win !'}) // update scores same bad thing
-        // inform everyone
+        else if (game.player1socket == null || game.scorep0 > game.scorep1) { //player1 dc or p0 won
+            game.room.emit('matchEnd', { winner: game.player0, looser: game.player1 })
+        }
+        game.stop()
         this.games.delete(game.id)
     }
 
-    async game_watcher(game: Game) {
+    // maybe send the socket to watch for ?
+    async game_watcher(game: Game) { // will pause the game and wait for a player reconnection need testing
         game.pause()
 
         if (game.player0socket == null) {
             var s1 = new Date().getTime() / 1000;
             while (game.player0socket == null) {
-                if ((new Date().getTime() / 1000) - s1 > 2)
+                if ((new Date().getTime() / 1000) - s1 > 5) // 5 seconds
                     break
                 await new Promise(f => setTimeout(f, 50));
             }
@@ -74,14 +67,14 @@ export class GameService {
                 game.unpause()
             }
             else { // gone from more than 5 seconds
-                this.forfeit_disconnection(game.player1socket, game)
+                this.endgame(game)
                 return
             }
         }
         else {
             var s1 = new Date().getTime() / 1000;
             while (game.player1socket == null) {
-                if ((new Date().getTime() / 1000) - s1 > 2)
+                if ((new Date().getTime() / 1000) - s1 > 5) // 5 seconds
                     break
                 await new Promise(f => setTimeout(f, 50));
             }
@@ -89,7 +82,7 @@ export class GameService {
                 game.unpause()
             }
             else { // gone from more than 5 seconds
-                this.forfeit_disconnection(game.player0socket, game)
+                this.endgame(game)
                 return
             }
         }

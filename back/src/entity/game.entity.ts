@@ -33,16 +33,33 @@ export class Game {
     @Column( {default: 0} )
     scorep1: number
 
+    async create_new_ball(time: number) {
+        await new Promise(f => setTimeout(f, time));
+        this.balls.push(new Ball)
+    }
+
     tick() {
-        for (let i = 0; i < this.balls.length; ++i) {
-            this.balls[i].tick();
-        }
         let ballsinfo = []
         for (let i = 0; i < this.balls.length; ++i) {
-            ballsinfo.push({ id: i, ball_location: [this.balls[i].x, this.balls[i].y] })
+            var score = this.balls[i].tick();
+            if (score == 0) {
+                this.scorep1++
+                ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].x, this.balls[i].y] })
+                this.balls.slice(i, 1)
+                this.create_new_ball(1000)
+            }
+            else if (score == 1) {
+                this.scorep0++
+                ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].x, this.balls[i].y] })
+                this.balls.slice(i, 1)
+                this.create_new_ball(1000)
+            }
+            else {
+                ballsinfo.push({ id: i, status: "normal", ball_location: [this.balls[i].x, this.balls[i].y] })
+            }
         }
         this.room.emit('gameInfo', ballsinfo)
-        // emit to spec etc...
+        console.log(this.scorep0, this.scorep1)
     }
 
     matchinfo() {
@@ -50,8 +67,6 @@ export class Game {
     }
 
     async start() {
-        this.player0 = this.player0socket['info'] // putting the infos inside a User class to get access to function
-        this.player1 = this.player1socket['info'] //
         this.room.emit('matchFound', { id: this.id})
         // this.players[1].emit('matchFound', { id: this.id})
         await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side

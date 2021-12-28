@@ -34,7 +34,7 @@ export default Vue.extend({
       mapx: 840,
       mapy: 600,
       map: CanvasRenderingContext2D,
-      balls: new Array<Ball>()
+      balls: new Map<number, Ball>()
     }
   },
 
@@ -89,21 +89,27 @@ export default Vue.extend({
       this.map.fillText(info['gameStart'], this.mapx / 2, this.mapy / 2);
     })
     socket_game.on('gameInfo', (info) => {
-      for (let i = 0; i < info.length; ++i) {
-        if(this.balls[i] == undefined) {
-          this.balls.push(new Ball(info[0]['ball_location'][0], info[0]['ball_location'][1]))
-        }
-        else {
-          this.balls[i].x = info[0]['ball_location'][0]
-          this.balls[i].y = info[0]['ball_location'][1]
-        }
-      }
-      // drawing balls
       this.map.clearRect(0, 0, this.mapx, this.mapy);
       this.map.beginPath()
       this.map.fillStyle = 'white'
-      console.log(this.balls[0].x, this.balls[0].y)
-      this.map.rect(this.balls[0].x - 10, this.balls[0].y - 10, 18, 18)
+      for (let i = 0; i < info.length; ++i) {
+        if (this.balls.get(info[i].id) == undefined && info[i].status == "normal") { // create a new ball
+          this.balls.set(info[i].id, new Ball(info[i]['ball_location'][0], info[i]['ball_location'][1]))
+        }
+        if (this.balls.get(info[i].id) == undefined && info[i].status == "erased") { // create a new ball
+          // do nothing
+        }
+        else if (info[i].status == "normal"){
+          this.balls.get(info[i].id).x = info[i].ball_location[0]
+          this.balls.get(info[i].id).y = info[i].ball_location[1]
+          // console.log(this.balls[0].x, this.balls[0].y)
+          this.map.rect(this.balls.get(info[i].id).x - 10, this.balls.get(info[i].id).y - 10, 18, 18)
+        }
+        else if (info[i].status == "erased"){
+          this.balls.delete(info[i].id)
+        }
+      }
+      // drawing balls
       this.map.fill()
     })
   },
