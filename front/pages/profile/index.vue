@@ -11,8 +11,7 @@
       {{ alertText }}
     </v-alert>
   </div>
-  <div justify="center" align="center" style="padding-top: 2%" v-if="!isEditing">
-
+  <!-- <div justify="center" align="center" style="padding-top: 2%" v-if="!isEditing">
     <v-avatar class="overflow-visible" size="128">
       <img v-if="user.picture != ''"
         class="round_card item profile-picture"
@@ -34,8 +33,9 @@
         </v-icon>
       </v-btn>
     </v-avatar>
-    </div>
-    <div v-else class="flex-container-editing" justify="center" align="center" style="padding-top: 1%">
+  </div> -->
+
+    <!-- <div v-else class="flex-container-editing" justify="center" align="center" style="padding-top: 1%">
       <v-btn
           color="#8124be"
           class="foreground_element cross-item edit-button"
@@ -73,8 +73,10 @@
           >
         </v-btn>
       </v-row>
-    </div>
-    <div class="flex-container-editing" style="padding-top: 3%">
+    </div> -->
+    <!-- <ProfileImg :userPicture="this.user.picture" @close_btn="close_btn" @updateState="switchEditing"></ProfileImg> -->
+    <!-- <ProfileUserData :userProvider="this.user.provider" :userNick="nick" @saveChange="saveChange" ></ProfileUserData> -->
+    <!-- <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"
         class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
         v-model="nick"
@@ -113,7 +115,7 @@
           </v-icon>
         </v-card-text>
       </v-card>
-    </div>
+    </div> -->
     <div class="flex-container-row" v-if="!isEditing">
       <v-card class="foreground_element card_game flex-item" margin-top="5%">
         <h1 class="color_win" align="center">Win</h1>
@@ -137,7 +139,7 @@
       >
         disable
       </v-btn>
-    </div>
+  </div>
     <div v-if="this.tfa_status == false">
       <span style="color: #e6ffff">2fa is currently</span>
       <span style="color: red; padding-right: 10px">disabled</span>
@@ -176,7 +178,8 @@ import login from '../../middleware/login'
 import { User } from '../../assets/Classes-ts/User';
 
 @Component({
-  middleware: login
+  middleware: login,
+  // components: { ProfileImg }
 })
 export default class extends Vue {
 
@@ -261,7 +264,7 @@ export default class extends Vue {
       this.$refs.uploader.click()
   }
 
-  async saveChange() {
+  async saveChange(newNick: string) {
     if (this.user.nickName == this.nick && this.selectedFile == null)
       return
     if (this.user.nickName != this.nick) {
