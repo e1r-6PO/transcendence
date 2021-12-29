@@ -54,14 +54,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         game.player1socket = this.queue[1]
         this.queue.splice(0, 2)
         game.id = uuidv4()
-        game.player0 = game.player0socket['info'] // putting the infos inside a User class to get access to function
+        game.player0 = game.player0socket['info'] // putting the infos inside a User class to get access User class function
         game.player1 = game.player1socket['info'] //
         game.player0socket.join(game.id.toString())
         game.player1socket.join(game.id.toString())
         game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
         game.player1socket['game'] = game.id //
         game.room = this.server.to(game.id.toString())
-        this.gameService.push_game(game) //also starting the game
+        this.gameService.push_game(game) //also starting the game via game.start()
     }
 
     @SubscribeMessage('joinQueue') // to join the queue if he is in the queue, kick him
