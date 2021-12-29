@@ -1,3 +1,4 @@
+import { forwardRef, Inject } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { BroadcastOperator, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
@@ -6,39 +7,34 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Repository } from "t
 import { Ball } from "./ball.entity"
 import { User } from "./user.entity"
 
-@Entity()
 export class Game {
 
-    constructor(gameService) {
+    constructor(gameService: GameService, winning_score: number, ball_amount: number) {
         this.gameService = gameService
+        this.ball_amount = ball_amount
+        this.winning_score = winning_score
     }
 
-    @PrimaryGeneratedColumn('uuid')
     id: string
 
     gameService: GameService
-    winning_score: number = 1
+    winning_score: number
     loopId: any
     player0socket: Socket | null = null
     player1socket: Socket | null = null
     // spectators: Array<Socket>
     balls: Array<Ball>
+    ball_amount: number
     room: BroadcastOperator<DefaultEventsMap>
     is_game_paused: boolean = false
 
-    @ManyToOne(() => User, {
-        eager: true,
-    })
     player0: User
-    @ManyToOne(() => User, {
-        eager: true,
-    })
+
     player1: User
 
-    @Column( {default: 0} )
-    scorep0: number
-    @Column( {default: 0} )
-    scorep1: number
+    scorep0: number = 0
+
+    scorep1: number = 0
 
     async create_new_ball(time: number) {
         await new Promise(f => setTimeout(f, time));
@@ -46,6 +42,7 @@ export class Game {
     }
 
     tick() {
+        console.log(this.scorep0, this.scorep1)
         let ballsinfo = []
         for (let i = 0; i < this.balls.length; ++i) {
             var score = this.balls[i].tick();
