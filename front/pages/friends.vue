@@ -331,16 +331,12 @@ export default Vue.extend({
           }
         }
     },
-
-    test() {
-      console.log("catch change")
-    },
   }
 })
 </script>
 
 <style scoped>
-@import '../assets/Classes-scss/main_page.scss';
+@import '../assets/Classes-scss/neon_effects.scss';
 @import '../assets/Classes-scss/main_page.scss';
 .card_profile {
   border: 3px solid #a5fafa !important;
@@ -363,18 +359,6 @@ export default Vue.extend({
 .profile-picture {
   border: 2px solid #a5fafa !important;
   box-shadow: 0px 0px 10px 0px #63f3f3 !important;
-  border-radius: 100%
-}
-
-.profile-picture-active {
-  border: 2px solid #92d6a6 !important;
-  box-shadow: 0px 0px 10px 1px #03cf41 !important;
-  border-radius: 100%
-}
-
-.profile-picture-inActive {
-  border: 2px solid #b33b3b !important;
-  box-shadow: 0px 0px 10px 1px #aa0909 !important;
   border-radius: 100%
 }
 
