@@ -13,6 +13,7 @@ export class ChannelUser {
     this.banTime = new Date();
     this.channelStatus = ChannelStatus.default;
     this.picture = '';
+    this.isActive = false;
   }
 
   id: number;
@@ -30,4 +31,6 @@ export class ChannelUser {
   banTime: Date;
 
   picture: string;
+
+  isActive: boolean;
 }

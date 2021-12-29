@@ -44,7 +44,7 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   async handleDisconnect(client: Socket){
     this.server.emit("inactive", client['info'])
-    console.log("disconnect Active")
+    console.log("disconnect Active HERE")
     this.logger.log(`Client disconnected: ${client.id}`)
     this.usersRepository.update({
       id: client['info'].id } , {

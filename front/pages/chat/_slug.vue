@@ -174,10 +174,8 @@ export default Vue.extend({
     return {
       message: '',
       messagesArray: new Array<String>(),
-      usersNick: new Map(),
       me: new ChannelUser(),
       nbMsg: -1,
-      channList: [],
       userList: new Array<ChannelUser>(),
       userDrawer: false,
       channelDrawer: false,
@@ -239,7 +237,7 @@ export default Vue.extend({
     },
 
     isYourMsg(msg: Messages): boolean {
-      if (this.me.nickName == msg.senderNick)
+      if (this.me.nickName == msg.sender.nickName)
         return (true)
       return (false)
     },

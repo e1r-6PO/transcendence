@@ -40,4 +40,19 @@ export class ChannelParticipant {
 
   @Column()
   banTime: Date;
+
+  toJSON() {
+    return {
+      id: this.user.id,
+      channel: this.channel,
+      nickName: this.user.nickName,
+      picture: 'http://localhost:8000/api/users/' + this.user.id + '/picture',
+      isActive: this.user.isActive,
+      status: this.status,
+      isMute: this.isMute,
+      isBan: this.isBan,
+      muteTime: this.muteTime,
+      banTime: this.banTime,
+    }
+  }
 }

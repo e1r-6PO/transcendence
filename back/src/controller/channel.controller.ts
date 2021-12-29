@@ -90,22 +90,7 @@ export class ChannelController {
     var participantList = await this.channelParticipantsRepository.find({
       where : { channel: channel }
     });
-
-    var usersList = []
-    for (var i = 0; i < participantList.length; i++)
-    {
-      var user: ChannelUser = new ChannelUser()
-      user.nickName = participantList[i].user.nickName
-      user.id = participantList[i].user.id
-      user.channelStatus = participantList[i].status
-      user.isMute = participantList[i].isMute
-      user.muteTime = participantList[i].muteTime
-      user.isBan = participantList[i].isBan
-      user.banTime = participantList[i].banTime
-      user.picture = participantList[i].user.picture
-      usersList.push(user)
-    }
-    return usersList
+    return participantList
   }
 
   @Post(':channName/create')

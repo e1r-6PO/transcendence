@@ -1,3 +1,5 @@
+import { User } from "./User";
+
 export enum ChannAccess {
     PRIVATE = "Private",
     PROTECTED = "Protected",
@@ -6,7 +8,7 @@ export enum ChannAccess {
 
 interface IMessages {
     id: number;
-    senderId: number;
+    sender: User;
     senderNick: string;
     message: string;
     time: Date;
@@ -15,7 +17,7 @@ interface IMessages {
 class Messages {
 
     id: number;
-    senderId: number;
+    sender: User;
     senderNick: string;
     message: string;
     picture: string;
@@ -26,7 +28,7 @@ class Messages {
     constructor(msg?: any)
     {
         this.id = msg && msg.id || 0;
-        this.senderId = msg && msg.senderId || 0;
+        this.sender = msg && msg.sender || 0;
         this.senderNick = msg && msg.senderNick || "";
         this.message = msg && msg.message || "";
         this.time = msg && msg.time || new Date();

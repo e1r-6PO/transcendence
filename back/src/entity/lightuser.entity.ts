@@ -11,4 +11,6 @@ export class LightUser {
   gameWin: number;
 
   gameLose: number;
+
+  isActive: boolean;
 }
