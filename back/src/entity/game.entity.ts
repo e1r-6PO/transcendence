@@ -42,7 +42,6 @@ export class Game {
     }
 
     tick() {
-        console.log(this.scorep0, this.scorep1)
         let ballsinfo = []
         for (let i = 0; i < this.balls.length; ++i) {
             var score = this.balls[i].tick();
