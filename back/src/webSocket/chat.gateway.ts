@@ -75,7 +75,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         })
         newMsg.target = userTarget
         newMsg.message = av[0]
-        newMsg.picture = newMsg.sender.picture
+        newMsg.picture = 'http://localhost:8000/api/users/' + newMsg.sender.id + '/picture'
         newMsg.date = new Date()
         if (socketTarget)
             this.server.to(socketTarget.id).emit("privateMessage", newMsg)

@@ -46,6 +46,7 @@ export class UsersService {
       picture: user.picture,
       gameWin: user.gameWin,
       gameLose: user.gameLose,
+      isActive: user.isActive
     }
     return filtered
   }
