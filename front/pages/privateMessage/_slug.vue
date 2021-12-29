@@ -20,9 +20,11 @@
     </BasicBtn>
     <v-spacer />
     <img v-if="user.picture != ''"
+      v-on:bind="user"
+      v-on:change="updateActive"
       :src=user.picture
       style="margin-top: 80px; margin-right: 5px"
-      class="profile-picture"
+      :class="user.isActive == true ? 'profile-picture-active' : 'profile-picture-inActive'"
       width="30"
     />
     <h3 class="neonText" style="color: white; margin-top: 80px">{{ user.nickName }}</h3>
@@ -62,28 +64,10 @@
       style="padding-top: 70px"
     >
     <v-row align="center" justify="center" class="pl-4 pr-5 pt-7">
-      <!-- <v-col align="center"> -->
       <ChannelLeaveBtn @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
       <v-spacer/>
       <BasicBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></BasicBtn>
-      <!-- </v-col> -->
     </v-row>
-      <!-- <ChannelUserList :small="true" :refresh="tokenUser" @refreshUser="updateToken" class="mt-4">
-        <v-subheader class="mt-3 mb-8">
-          <ChannelLeaveBtn v-if="isDefaultUser()" @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
-          <ChannelSettings v-if="isOwnerOrAdmin()"
-            :status="me.channelStatus"
-            @error="activeAlert"
-            class="pl-5 pb-3"
-            @refreshUser="updateToken"
-            :refreshToken="tokenUser"
-          >
-          </ChannelSettings>
-          <v-spacer />
-          <BasicBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></BasicBtn>
-         </v-subheader>
-        <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
-      </ChannelUserList> -->
     </v-navigation-drawer>
 
     <v-spacer />
@@ -174,9 +158,10 @@ import BasicBtn from '../../components/channel/button/BasicBtn.vue';
 import ChannelLeaveBtn from '../../components/channel/ChannelLeaveBtn.vue';
 import AlertError from '../../components/AlertError.vue';
 import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
-import ChannelSettings from '../../components/channel/ChannelSettings.vue'
+import ChannelSettings from '../../components/channel/ChannelSettings.vue';
 
-import socket_chat from '../../plugins/chat.io'
+import socket_chat from '../../plugins/chat.io';
+import socket_active from '../../plugins/active.io';
 
 export default Vue.extend({
   components: { CreateChannelBtn, ChannelList, ChannelUserList, BasicBtn,
@@ -187,7 +172,6 @@ export default Vue.extend({
     return {
       message: '',
       messagesArray: new Array<PrivateMessages>(),
-      usersNick: new Map(),
       me: new User(),
       nbMsg: -1,
       userDrawer: false,
@@ -198,7 +182,8 @@ export default Vue.extend({
       alert: false,
       alertText: "",
       tokenUser: 1,
-      user: LightUser,
+      user: new LightUser(),
+      updateActive: false,
     }
   },
 
@@ -211,19 +196,13 @@ export default Vue.extend({
   },
 
   async mounted() {
-    // const ret = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/access')
-    //   .catch(function (error) {
-    //     return error.response
-    //   })
-    // if (ret.status == 404)
-    //   this.$router.push('/chat?error=' + ret.data.message)
-    // else if (ret.status == 403)
-    //   this.activeAlert(ret.data.message)
-    // else
-    // {
-    this.user = await this.$axios.$get('/api/users/' + this.$route.params.slug)
+    var ret = await this.$axios.$get('/api/users/' + this.$route.params.slug)
+    this.user = ret
+    console.log("this.user")
+    console.log(this.user)
+    console.log("ret")
+    console.log(ret)
     socket_chat.connect();
-    // socket_chat.emit('privateMessageToServer', this.$route.params.slug);
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
     console.log(this.messagesArray)
@@ -232,10 +211,20 @@ export default Vue.extend({
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
     })
-      // socket_chat.on('refreshUser', (msg: string) => {
-      //   this.tokenUser = -this.tokenUser
-      // })
-    // }
+    socket_active.on("active", (userChange: LightUser) => {
+          if (userChange.id == this.user.id)
+          {
+            this.user.isActive = true        
+            this.updateActive = !this.updateActive
+          }
+      })
+      socket_active.on("inactive", (userChange: LightUser) => {
+          if (userChange.id == this.user.id)
+          {
+            this.user.isActive = false        
+            this.updateActive = !this.updateActive
+          }
+      })
   },
 
   methods: {
@@ -297,7 +286,7 @@ export default Vue.extend({
     updateToken() {
       this.tokenUser += 1
       socket_chat.emit('refreshUser', this.$route.params.slug)
-    }
+    },
   }
 })
 </script>
