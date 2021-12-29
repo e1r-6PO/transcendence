@@ -74,7 +74,7 @@
         </v-btn>
       </v-row>
     </div> -->
-    <!-- <ProfileImg :userPicture="this.user.picture" @close_btn="close_btn" @updateState="switchEditing"></ProfileImg> -->
+    <ProfileNormal :userPicture="this.user.picture" :userEmail="this.user.email" :userProvider="this.user.provider" :userNick="this.user.nickName" @updateState="switchEditing"></ProfileNormal>
     <!-- <ProfileUserData :userProvider="this.user.provider" :userNick="nick" @saveChange="saveChange" ></ProfileUserData> -->
     <!-- <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"

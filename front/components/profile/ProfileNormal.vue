@@ -1,5 +1,5 @@
 <template>
-  <div justify="center" align="center" style="padding-top: 2%" v-if="!Editing">
+  <div justify="center" align="center" style="padding-top: 2%" v-if="!isEditing">
 		<v-avatar class="overflow-visible" size="128">
       <img v-if="userPicture != ''"
         class="round_card item profile-picture"
@@ -22,7 +22,7 @@
       </v-btn>
     </v-avatar>
 
-		<v-card class="foreground_element card_profile"
+		<v-card class="foreground_element card_profile mt-10"
 		
 		>
 			<v-card-text align="center">
@@ -55,12 +55,23 @@ import { Component, Prop, Watch } from 'nuxt-property-decorator';
 import Vue from 'vue'
 import { User } from '../../assets/Classes-ts/User';
 
+@Component
 export default class ProfileNormal extends Vue {
 
 	@Prop({ type: Boolean, default: false })
-	Editing!: boolean
+	isEditing!: boolean
 
-	
+	@Prop({ type: String, default: "" })
+	userPicture!: string
+
+	@Prop({ type: String, default: "" })
+	userProvider!: string
+
+	@Prop({ type: String, default: "" })
+	userNick!: string
+
+	@Prop({ type: String, default: "" })
+	userEmail!: string
 
 	switchEditing() {
 		this.$emit('updateState')
@@ -71,5 +82,40 @@ export default class ProfileNormal extends Vue {
 </script>
 
 <style scoped lang="scss">
+@import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/custom_flexBox.scss';
+
+.round_card {
+  border-radius:100% !important;
+}
+
+.item {
+  align-self: flex-end;
+}
+
+.profile-picture {
+  border: 3px solid #a5fafa !important;
+  box-shadow: 0px 0px 15px 0px #63f3f3 !important;
+}
+
+.edit-button {
+  border: 3px solid #e9c8ff !important;
+  box-shadow: 0px 0px 10px 0px #9141c7 !important;
+}
+
+.card_profile {
+  border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+  min-width: 400px;
+  height: 250px;
+  width: 30%;
+}
+
+.color_text { 
+  z-index: 6;
+  color: #ffffff;
+}
 
 </style>
