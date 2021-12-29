@@ -46,25 +46,25 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('join') // to spectate a game or to see a game history
     async join(client: Socket, info: []) {
-        this.gameService.join(client, parseInt(info['id']))
+        this.gameService.join(client, info['id'])
     }
 
     @SubscribeMessage('joinQueue') // to join the queue if he is in the queue, kick him
     async joinQueue(client: Socket) {
         this.queue.push(client)
         if (this.queue.length >= 2) {
-            var game: Game = new Game
+            var game: Game = new Game(this.gameService)
             game.player0socket = this.queue[0]
             game.player1socket = this.queue[1]
             this.queue.splice(0, 2)
+            game = await this.gamesRepository.save(game)
             game.player0 = game.player0socket['info'] // putting the infos inside a User class to get access to function
             game.player1 = game.player1socket['info'] //
-            game = await this.gamesRepository.save(game)
             var room: BroadcastOperator<DefaultEventsMap> = this.server.to(game.id.toString())
             game.player0socket.join(game.id.toString())
             game.player1socket.join(game.id.toString())
-            game.player0socket['game'] = game.id
-            game.player1socket['game'] = game.id
+            game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
+            game.player1socket['game'] = game.id //
             this.gameService.push_game(game, room) //also starting the game
         }
     }
@@ -72,7 +72,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('forfeit')
     async forfeit(client: Socket, info: []) {
 
-        var game: Game = this.gameService.games.get(parseInt(info['id']))
+        var game: Game = this.gameService.games.get(info['id'])
 
         console.log(client['info'].id, game.player0.id, game.player1.id)
 

@@ -5,7 +5,7 @@ import { Game } from "src/entity/game.entity";
 import { User } from "src/entity/user.entity";
 
 export class GameService {
-    games = new Map<number, Game>()
+    games = new Map<string, Game>()
 
     push_game(game: Game, room: BroadcastOperator<DefaultEventsMap>) {
         game.room = room
@@ -15,7 +15,7 @@ export class GameService {
         // console.log(game.id, typeof game.id, 24, typeof 24, this.games.get(24), this.games.get(game.id))
     }
 
-    join(client: Socket, id: number) { // join a running game or checking a past game
+    join(client: Socket, id: string) { // join a running game or checking a past game
         var game: Game = this.games.get(id)
 
         if (game == undefined) { // game is finished
@@ -42,13 +42,13 @@ export class GameService {
     }
 
     endgame(game: Game) {
+        game.stop()
         if (game.player0socket == null || game.scorep1 > game.scorep0) { // player0 dc or p1 won
-            game.room.emit('matchEnd', { winner: game.player1, looser: game.player0 })
+            game.room.emit('matchEnd', { winner: game.player1.toLightuser(), looser: game.player0.toLightuser() })
         }
         else if (game.player1socket == null || game.scorep0 > game.scorep1) { //player1 dc or p0 won
-            game.room.emit('matchEnd', { winner: game.player0, looser: game.player1 })
+            game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser })
         }
-        game.stop()
         this.games.delete(game.id)
     }
 
