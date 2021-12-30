@@ -1,0 +1,156 @@
+<template>
+  <div justify="center" align="center" style="padding-top: 2%" v-if="!isEditing">
+		<v-avatar class="overflow-visible" size="128">
+      <img v-if="userPicture != ''"
+        class="round_card item profile-picture"
+        :src=userPicture
+      />
+      <v-btn
+        color="#8124be"
+        class="edit-button"
+        fab
+        small
+        @click="switchEditing()"
+        style="z-index: 6"
+        absolute
+        bottom
+        right
+      >
+        <v-icon color="#ffffff">
+          mdi-pencil
+        </v-icon>
+      </v-btn>
+    </v-avatar>
+
+		<v-card class="foreground_element card_profile mt-10"
+			v-if="!isEditing"
+		>
+			<v-card-text align="center">
+				<p class="color_text text-h4 font-weight-medium" align="center">{{ userNick }}</p>
+				<p class="color_text text-h5" align="center">{{ userEmail }}</p>
+				<p v-if="userProvider === 'github'" class="color_text text-h6" align="center">Connected via :</p>
+				<icon-github v-if="userProvider === 'github'"
+						width="50"
+						height="50"
+				/>
+				<p v-if="userProvider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
+				<icon-42 v-if="userProvider === '42'"
+					width="50"
+					height="50"
+				/>
+				<p v-if="userProvider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
+				<v-icon v-if="userProvider === 'google'"
+						color="primary"
+						x-large
+				>
+					mdi-google
+				</v-icon>
+			</v-card-text>
+		</v-card>
+		<div class="flex-container-row mt-10" v-if="!isEditing">
+			<v-card class="foreground_element card_game flex-item" margin-top="5%">
+				<h1 class="color_win" align="center">Win</h1>
+				<h3 class="color_text" align="center">{{ userWins }} </h3>
+			</v-card>
+			<v-card class="foreground_element card_game flex-item" margin-top="5%">
+				<h1 class="color_lose" align="center">Lose</h1>
+				<h3 class="color_text" align="center" justify="center"> {{ userLost }} </h3>
+			</v-card>
+		</div>
+	</div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Watch } from 'nuxt-property-decorator';
+import Vue from 'vue'
+import { User } from '../../assets/Classes-ts/User';
+
+@Component
+export default class ProfileNormal extends Vue {
+
+	@Prop({ type: Boolean, default: false })
+	isEditing!: boolean
+
+	@Prop({ type: String, default: "" })
+	userPicture!: string
+
+	@Prop({ type: String, default: "" })
+	userProvider!: string
+
+	@Prop({ type: String, default: "" })
+	userNick!: string
+
+	@Prop({ type: String, default: "" })
+	userEmail!: string
+
+	@Prop({ type: Number, default: 0 })
+	userWins!: number
+
+	@Prop({ type: Number, default: 0 })
+	userLost!: number
+
+	switchEditing() {
+		this.$emit('updateState')
+	}
+
+}
+
+</script>
+
+<style scoped lang="scss">
+@import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/custom_flexBox.scss';
+
+.round_card {
+  border-radius:100% !important;
+}
+
+.item {
+  align-self: flex-end;
+}
+
+.profile-picture {
+  border: 3px solid #a5fafa !important;
+  box-shadow: 0px 0px 15px 0px #63f3f3 !important;
+}
+
+.edit-button {
+  border: 3px solid #e9c8ff !important;
+  box-shadow: 0px 0px 10px 0px #9141c7 !important;
+}
+
+.card_profile {
+  border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+  min-width: 400px;
+  height: 250px;
+  width: 30%;
+}
+
+.color_text { 
+  z-index: 6;
+  color: #ffffff;
+}
+
+.card_game {
+  border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+  min-width: 260px;
+  width: 275px;
+}
+
+.color_lose {
+  z-index: 6;
+  color: #c7401e;
+}
+
+.color_win {
+  z-index: 6;
+  color: #b8a435; 
+}
+
+</style>
