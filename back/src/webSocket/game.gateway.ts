@@ -8,7 +8,7 @@ import {
     OnGatewayDisconnect,
 } from "@nestjs/websockets";
 import { Socket, Server, BroadcastOperator } from 'socket.io';
-import { Logger } from "@nestjs/common";
+import { forwardRef, Inject, Logger } from "@nestjs/common";
 import { AdvancedConsoleLogger, Repository } from "typeorm";
 import { JwtService } from '@nestjs/jwt';
 import cookieParser from "cookie-parser";
@@ -19,6 +19,7 @@ import { Messages } from "src/entity/messages.entity"
 import { Game } from "src/entity/game.entity";
 import { GameService } from "src/service/game.service";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import {v4 as uuidv4} from 'uuid';
 
 @WebSocketGateway({
     cors: {
@@ -34,10 +35,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private jwtService : JwtService,
         @InjectRepository(User)
         private readonly usersRepository : Repository<User>,
-        @InjectRepository(Game)
-        private readonly gamesRepository : Repository<Game>,
+        private gameService: GameService
       ) {}
-    gameService: GameService = new GameService
     queue: Socket[] = []
     id_to_user = new Map<number, User>();
     
@@ -49,23 +48,27 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.gameService.join(client, info['id'])
     }
 
+    async create_game() {
+        var game: Game = new Game(this.gameService, 1, 1)
+        game.player0socket = this.queue[0]
+        game.player1socket = this.queue[1]
+        this.queue.splice(0, 2)
+        game.id = uuidv4()
+        game.player0 = game.player0socket['info'] // putting the infos inside a User class to get access User class function
+        game.player1 = game.player1socket['info'] //
+        game.player0socket.join(game.id.toString())
+        game.player1socket.join(game.id.toString())
+        game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
+        game.player1socket['game'] = game.id //
+        game.room = this.server.to(game.id.toString())
+        this.gameService.push_game(game) //also starting the game via game.start()
+    }
+
     @SubscribeMessage('joinQueue') // to join the queue if he is in the queue, kick him
     async joinQueue(client: Socket) {
         this.queue.push(client)
         if (this.queue.length >= 2) {
-            var game: Game = new Game(this.gameService)
-            game.player0socket = this.queue[0]
-            game.player1socket = this.queue[1]
-            this.queue.splice(0, 2)
-            game = await this.gamesRepository.save(game)
-            game.player0 = game.player0socket['info'] // putting the infos inside a User class to get access to function
-            game.player1 = game.player1socket['info'] //
-            var room: BroadcastOperator<DefaultEventsMap> = this.server.to(game.id.toString())
-            game.player0socket.join(game.id.toString())
-            game.player1socket.join(game.id.toString())
-            game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
-            game.player1socket['game'] = game.id //
-            this.gameService.push_game(game, room) //also starting the game
+            this.create_game() // await may be needed later on
         }
     }
 

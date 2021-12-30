@@ -26,6 +26,7 @@ export class Ball {
         this.velocity = 1 // must be positive value, distance traveled per tick
     }
 
+    // need to take paddle position as args
     tick() { // 0 = p0 lost a point, 1 = p1 lost a point -1 = nothing happned
         // const paddle0x = 0 + 40
         // let paddle0y = this.canvas_y / 2
