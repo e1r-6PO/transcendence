@@ -86,8 +86,7 @@ export class Game {
             await new Promise(f => setTimeout(f, 1000)); // countdown
         }
         this.balls = new Array
-        let number_of_balls = 1
-        for (let i = 0; i < number_of_balls; ++i)
+        for (let i = 0; i < this.ball_amount; ++i)
             this.create_new_ball(i * 1000)
 
         this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
