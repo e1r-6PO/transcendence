@@ -27,7 +27,6 @@ export class PrivateMessageController {
     var allMessages = await this.MessagePrivateRepository.find({
       where: [{ target: user, sender: userToTalk }, { sender: user, target: userToTalk }]
     })
-    console.log(allMessages)
     return allMessages
   }
 }

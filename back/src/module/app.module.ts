@@ -6,7 +6,6 @@ import { AllMiddleware } from './middleware.module';
 import { DbConnectModule } from './db.connect.module';
 import { ProfileModule } from './profile.module';
 import { CustomJwtModule } from './custom.jwt.module';
-import { MessagesModule } from './messages.module';
 import { UsersModule } from './users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
@@ -24,11 +23,12 @@ import { PrivateMessage } from 'src/entity/privateMessage.entity';
 import { PrivateMessagesModule } from './privateMessage.module';
 import { Game } from 'src/entity/game.entity';
 import { ActiveGateway } from 'src/webSocket/active.gateway';
+import { ChatService } from 'src/service/chat.service';
 
 @Module({
-  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, MessagesModule, ChannelModule,
+  imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, ChannelModule,
     TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage, Game]), FriendsModule, PrivateMessagesModule ],
   controllers: [ AppController ],
-  providers: [ AppService, ChatGateway, GameGateway, ActiveGateway, GameService ],
+  providers: [ AppService, ChatGateway, GameGateway, ActiveGateway, GameService, ChatService ],
 })
 export class AppModule {}

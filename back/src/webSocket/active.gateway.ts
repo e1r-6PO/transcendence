@@ -80,6 +80,6 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       id: user_data.id } , {
         isActive: true
     })
-    console.log(client['info'])
+    // console.log(client['info'])
 }
 }

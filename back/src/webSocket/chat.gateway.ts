@@ -7,10 +7,9 @@ import {
     OnGatewayDisconnect,
 } from "@nestjs/websockets";
 import { Socket, Server } from 'socket.io';
-import { ForbiddenException, Logger } from "@nestjs/common";
-import { AdvancedConsoleLogger, Repository } from "typeorm";
+import { Logger } from "@nestjs/common";
+import { Repository } from "typeorm";
 import { JwtService } from '@nestjs/jwt';
-import cookieParser from "cookie-parser";
 import { AddUserIdMiddleware } from "src/middleware/account.middleware";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/entity/user.entity";
@@ -19,6 +18,7 @@ import { Channel } from "src/entity/channel.entity";
 import { ChannelParticipant } from "src/entity/channelParticipant.entity";
 import { IoAdapter } from "@nestjs/platform-socket.io";
 import { PrivateMessage } from "src/entity/privateMessage.entity";
+import { ChatService } from "src/service/chat.service";
 
 @WebSocketGateway({
     cors: {
@@ -30,7 +30,8 @@ import { PrivateMessage } from "src/entity/privateMessage.entity";
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
     constructor(
-        private jwtService : JwtService,
+        private jwtService: JwtService,
+        private chatService: ChatService,
         @InjectRepository(User)
         private readonly usersRepository : Repository<User>,
         @InjectRepository(Messages)
@@ -54,22 +55,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         
         var newMsg: PrivateMessage = new PrivateMessage;
         
-        const jwt = client.handshake.headers.cookie
-        .split('; ')
-        .find((cookie: string) => cookie.startsWith('jwt'))
-        if (jwt == null)
-        {
-            client.disconnect()
-            return
-        }
+        const jwt = this.chatService.getJwt(client)
         const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
-
         var userTarget = await this.usersRepository.findOne({
             where: { nickName: av[1] }
         })
         if (!userTarget)
             return
-        var socketTarget = this.ClientConnected.get(userTarget.id)
         newMsg.sender = await this.usersRepository.findOne({
             where: { id: jwt_decoded['id'] }
         })
@@ -77,6 +69,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         newMsg.message = av[0]
         newMsg.picture = 'http://localhost:8000/api/users/' + newMsg.sender.id + '/picture'
         newMsg.date = new Date()
+        
+        var socketTarget = this.ClientConnected.get(userTarget.id)
         if (socketTarget)
             this.server.to(socketTarget.id).emit("privateMessage", newMsg)
         this.privateMessagesRepository.save(newMsg)
@@ -87,19 +81,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleMessage(client: Socket, av: string): Promise<void>{
         var newMsg: Messages = new Messages;
 
-        const jwt = client.handshake.headers.cookie
-        .split('; ')
-        .find((cookie: string) => cookie.startsWith('jwt'))
-        if (jwt == null)
-        {
-            client.disconnect()
-            return
-        }
-
         var chan = await this.ChannelsRepository.findOne({
             where: { channName: av[1] }
         })
-        // parse cookies
+
+        const jwt = this.chatService.getJwt(client)
         const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
 
         newMsg.sender = await this.usersRepository.findOne({
@@ -185,6 +171,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     async handleDisconnect(client: Socket){
+        this.ClientConnected.delete(client['info'].id)
         this.count--;
         this.logger.log(`Client disconnected: ${client.id}`)
         console.log('User disconnected, users count: ' + this.count );
@@ -192,19 +179,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     async handleConnection(client: Socket, ...args: any[]){
         
-        const jwt = client.handshake.headers.cookie
-        .split('; ')
-        .find((cookie: string) => cookie.startsWith('jwt'))
-        if (jwt == null)
-        {
-            client.disconnect()
-            return
-        }
+        const jwt = this.chatService.getJwt(client)
+        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
         this.count++;
         console.log('New connection, users count: ' + this.count + ' Socket id: ' + client.id);
         console.log('Socket Namespace: ' + client.nsp.name);
-        // parse cookies
-        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
 
         let user_data = await this.usersRepository.findOne({
             where: {id: jwt_decoded['id']}

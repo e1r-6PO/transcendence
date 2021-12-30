@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ChannelController } from "src/controller/channel.controller";
-import { MessagesController } from "src/controller/messages.controller";
 import { Channel } from "src/entity/channel.entity";
 import { ChannelParticipant } from "src/entity/channelParticipant.entity";
 import { Messages } from "src/entity/messages.entity";
