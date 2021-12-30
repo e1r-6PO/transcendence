@@ -23,7 +23,7 @@
     </v-avatar>
 
 		<v-card class="foreground_element card_profile mt-10"
-		
+			v-if="!isEditing"
 		>
 			<v-card-text align="center">
 				<p class="color_text text-h4 font-weight-medium" align="center">{{ userNick }}</p>
@@ -47,6 +47,16 @@
 				</v-icon>
 			</v-card-text>
 		</v-card>
+		<div class="flex-container-row mt-10" v-if="!isEditing">
+			<v-card class="foreground_element card_game flex-item" margin-top="5%">
+				<h1 class="color_win" align="center">Win</h1>
+				<h3 class="color_text" align="center">{{ userWins }} </h3>
+			</v-card>
+			<v-card class="foreground_element card_game flex-item" margin-top="5%">
+				<h1 class="color_lose" align="center">Lose</h1>
+				<h3 class="color_text" align="center" justify="center"> {{ userLost }} </h3>
+			</v-card>
+		</div>
 	</div>
 </template>
 
@@ -72,6 +82,12 @@ export default class ProfileNormal extends Vue {
 
 	@Prop({ type: String, default: "" })
 	userEmail!: string
+
+	@Prop({ type: Number, default: 0 })
+	userWins!: number
+
+	@Prop({ type: Number, default: 0 })
+	userLost!: number
 
 	switchEditing() {
 		this.$emit('updateState')
@@ -116,6 +132,25 @@ export default class ProfileNormal extends Vue {
 .color_text { 
   z-index: 6;
   color: #ffffff;
+}
+
+.card_game {
+  border: 3px solid #a5fafa !important;
+  box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+  min-width: 260px;
+  width: 275px;
+}
+
+.color_lose {
+  z-index: 6;
+  color: #c7401e;
+}
+
+.color_win {
+  z-index: 6;
+  color: #b8a435; 
 }
 
 </style>

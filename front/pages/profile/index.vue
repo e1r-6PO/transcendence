@@ -74,8 +74,8 @@
         </v-btn>
       </v-row>
     </div> -->
-    <ProfileNormal :userPicture="this.user.picture" :userEmail="this.user.email" :userProvider="this.user.provider" :userNick="this.user.nickName" @updateState="switchEditing"></ProfileNormal>
-    <!-- <ProfileUserData :userProvider="this.user.provider" :userNick="nick" @saveChange="saveChange" ></ProfileUserData> -->
+    <ProfileNormal :isEditing="isEditing" :userPicture="this.user.picture" :userEmail="this.user.email" :userProvider="this.user.provider" :userNick="this.user.nickName" :userWins="this.user.gameWin" :userLost="this.user.gameLose" @updateState="switchEditing" ></ProfileNormal>
+    <ProfileEditing :isEditing="isEditing" :userPicture="this.user.picture" :userNickName="this.user.nickName" @updateState="switchEditing" @updateNick="changeNick" ></ProfileEditing>
     <!-- <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"
         class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
@@ -116,17 +116,17 @@
         </v-card-text>
       </v-card>
     </div> -->
-    <div class="flex-container-row" v-if="!isEditing">
-      <v-card class="foreground_element card_game flex-item" margin-top="5%">
-        <h1 class="color_win" align="center">Win</h1>
-        <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
-      </v-card>
-      <v-card class="foreground_element card_game flex-item" margin-top="5%">
-        <h1 class="color_lose" align="center">Lose</h1>
-        <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
-      </v-card>
-  </div>
-  <div class="flex-container-row" style="padding-top: 3%" justify="center" align="center" v-if="isEditing">
+  <!-- <div class="flex-container-row" v-if="!isEditing">
+    <v-card class="foreground_element card_game flex-item" margin-top="5%">
+      <h1 class="color_win" align="center">Win</h1>
+      <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
+    </v-card>
+    <v-card class="foreground_element card_game flex-item" margin-top="5%">
+      <h1 class="color_lose" align="center">Lose</h1>
+      <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
+    </v-card>
+  </div> -->
+  <!-- <div class="flex-container-row" style="padding-top: 3%" justify="center" align="center" v-if="isEditing">
     <div v-if="this.tfa_status == true">
       <span style="color: #e6ffff">2fa is currently</span>
       <span style="color: #0ADAA8; padding-right: 10px">enabled</span>
@@ -139,7 +139,7 @@
       >
         disable
       </v-btn>
-  </div>
+    </div>
     <div v-if="this.tfa_status == false">
       <span style="color: #e6ffff">2fa is currently</span>
       <span style="color: red; padding-right: 10px">disabled</span>
@@ -165,8 +165,7 @@
     >
       Save
     </v-btn>
-
-  </div>
+  </div> -->
 </v-container>
 </template>
 
@@ -220,11 +219,11 @@ export default class extends Vue {
 
   switchEditing() {
     this.isEditing = !this.isEditing;
+    console.log(this.isEditing)
   }
 
-  close_btn() {
-    this.selectedFile = null
-    this.nick = this.user.nickName
+  changeNick(newNick: string){
+    this.user.nickName = newNick
   }
 
   onFileChanged(e: any) {
@@ -264,7 +263,7 @@ export default class extends Vue {
       this.$refs.uploader.click()
   }
 
-  async saveChange(newNick: string) {
+  async saveChange() {
     if (this.user.nickName == this.nick && this.selectedFile == null)
       return
     if (this.user.nickName != this.nick) {
@@ -323,10 +322,6 @@ export default class extends Vue {
         },5000)
       }
     }
-  }
-
-  is2fa() {
-    return this.tfa_status
   }
 
 }
