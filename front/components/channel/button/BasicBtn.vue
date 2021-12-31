@@ -12,7 +12,7 @@
     v-on:mouseover="btnFocus = true"
     v-on:mouseleave="btnFocus = false"
   >
-    <v-icon :small="smaller" v-if="!isText"> {{content}} </v-icon>
+    <v-icon :size="iconSize" :small="smaller" v-if="!isText"> {{content}} </v-icon>
     <h4 v-else>{{ content }} </h4>
   </v-btn>
 </template>
@@ -43,6 +43,9 @@ export default class CloseBtn extends Vue {
 
   @Prop({ type: String, default: "" })
   color!: String
+
+  @Prop({type: Number, default: 25 })
+  iconSize!: Number
 
   btnFocus: boolean = false
 

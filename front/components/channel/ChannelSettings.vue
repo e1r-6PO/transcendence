@@ -75,10 +75,11 @@
           <AddUserBtn @refreshUser="updateToken" @error="activeAlert" />
         </v-row>
         <ChannelUserList
+          @refreshUser="updateToken"
           :refresh="refreshToken"
           :ownerAction="true"
           :status="status"
-          @refreshUser="updateToken"
+          :meId="meId"
           class="ml-3 mr-3"
           style="background-color: #181818"
         />
@@ -95,6 +96,7 @@
 import { Component, Prop, Vue} from 'nuxt-property-decorator'
 import { ChannelUser, ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser'
 import { ChannAccess } from '../../assets/Classes-ts/Messages'
+import { User } from '../../assets/Classes-ts/User'
 import  AlertError  from '../AlertError.vue'
 import AddUserBtn from './AddUserBtn.vue'
 import ChannelUserList from './ChannelUserList.vue'
@@ -107,6 +109,9 @@ export default class ChannelSettings extends Vue{
 
   @Prop({ type: Number, default: 0})
   refreshToken!: Boolean
+
+  @Prop({ type: Number, default: -1 })
+  meId!: Number
 
   actualAccess: string = ""
   actualPass: string = ""
