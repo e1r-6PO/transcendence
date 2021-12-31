@@ -55,14 +55,21 @@
       color="#181818"
       style="padding-top: 65px"
     >
-      <ChannelUserList :small="true" :refresh="tokenUser" @refreshUser="updateToken" class="mt-4">
+      <ChannelUserList
+        @refreshUser="updateToken"
+        :meId="me.id"
+        :small="true"
+        :refresh="tokenUser"
+        class="mt-4"
+      >
         <v-subheader class="mt-3 mb-8">
           <ChannelLeaveBtn v-if="isDefaultUser()" @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
           <ChannelSettings v-if="isOwnerOrAdmin()"
-            :status="me.channelStatus"
             @error="activeAlert"
-            class="pl-5 pb-3"
             @refreshUser="updateToken"
+            :status="me.channelStatus"
+            :meId="me.id"
+            class="pl-5 pb-3"
             :refreshToken="tokenUser"
           >
           </ChannelSettings>
