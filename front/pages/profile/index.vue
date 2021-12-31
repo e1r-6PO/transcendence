@@ -74,8 +74,8 @@
         </v-btn>
       </v-row>
     </div> -->
-    <ProfileNormal :isEditing="isEditing" :userPicture="this.user.picture" :userEmail="this.user.email" :userProvider="this.user.provider" :userNick="this.user.nickName" :userWins="this.user.gameWin" :userLost="this.user.gameLose" @updateState="switchEditing" ></ProfileNormal>
-    <ProfileEditing :isEditing="isEditing" :userPicture="this.user.picture" :userNickName="this.user.nickName" @updateState="switchEditing" @updateNick="changeNick" ></ProfileEditing>
+    <ProfileNormal :isEditing="isEditing" :userPicture="this.user.picture" :userEmail="this.user.email" :userProvider="this.user.provider" :userNick="this.user.nickName" :userWins="this.user.gameWin" :userLost="this.user.gameLose" :pictureEdited="this.user.pictureEdited" @updateState="switchEditing" ></ProfileNormal>
+    <ProfileEditing :isEditing="isEditing" :userPicture="this.user.picture" :userNickName="this.user.nickName" @updateState="switchEditing" @updateNick="changeNick" @updatePicture="changePicture" ></ProfileEditing>
     <!-- <div class="flex-container-editing" style="padding-top: 3%">
       <v-text-field v-if="isEditing"
         class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
@@ -191,6 +191,7 @@ export default class extends Vue {
   alertCode = false
   alertText = ""
   alertType = "success"
+  pictureEdited = false
 
   async mounted() {
     this.user = await this.$axios.$get('/api/profile/me')
@@ -224,6 +225,12 @@ export default class extends Vue {
 
   changeNick(newNick: string){
     this.user.nickName = newNick
+  }
+
+  changePicture(){
+    console.log(this.pictureEdited)
+    this.pictureEdited = !this.pictureEdited
+    console.log(this.pictureEdited)
   }
 
   onFileChanged(e: any) {
