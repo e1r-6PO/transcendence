@@ -242,7 +242,7 @@ export class ChannelController {
   async changeGrade(@Param('channName') channName, @Query() query, @Req() req: Request)
   {
     if (!query['userName'])
-    throw new ForbiddenException('Missing params')
+      throw new ForbiddenException('Missing params')
     
     var channel = await this.channelService.findChannel(channName)
     
@@ -260,7 +260,7 @@ export class ChannelController {
     })
   }
 
-  @Patch(':channName/:muteOrBan')
+  @Patch(':channName/action/:muteOrBan')
   async muteUser(@Param('channName') channName, @Param('muteOrBan') muteOrBan, @Query() query, @Req() req: Request)
   {
     if (muteOrBan != 'ban' && muteOrBan != 'mute')
@@ -298,4 +298,26 @@ export class ChannelController {
       })
     }
   }
+
+  @Patch(':channName/giveOwner')
+  async giveOwner(@Param('channName') channName, @Query() query, @Req() req: Request)
+  {
+    console.log("COUCOU ICI LE LOOOOOOOOOG")
+    if (!query['userName'])
+      throw new ForbiddenException("Missing params")
+    var channel = await this.channelService.findChannel(channName)
+    var user = await this.channelService.findUserByNick(query['userName'])
+    var owner = await this.channelService.findParticipant(req.cookies['user_id'], channel)
+    if (owner.status != ChannelStatus.owner)
+      throw new ForbiddenException('Only owner can delete user')
+
+    var participant = await this.channelService.findParticipant(user, channel)    
+    this.channelParticipantsRepository.update({
+        channel: channel, user: user
+      }, {
+        status: ChannelStatus.owner
+    })
+    this.channelParticipantsRepository.delete(owner)
+  }
+
 }
