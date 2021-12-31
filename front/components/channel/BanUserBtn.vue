@@ -7,6 +7,7 @@
     <BasicBtn
       v-on:click="ban ? switchBan() : dialog = true"
       :content="ban ? 'mdi-plus' : 'mdi-cancel'"
+      :iconSize="22"
       :smaller="small"
     />
   </template>
@@ -65,7 +66,7 @@ export default class BanUserBtn extends Vue{
   async switchBan() {
     if (!this.ban)
       this.setTime()
-    const ret = await this.$axios.patch('/api/chat/' + this.$route.params.slug + '/ban?userName=' + this.userName + '&time=' + this.banTime)
+    const ret = await this.$axios.patch('/api/chat/' + this.$route.params.slug + '/action/ban?userName=' + this.userName + '&time=' + this.banTime)
       .catch(function(error) {
         return error.response
     })

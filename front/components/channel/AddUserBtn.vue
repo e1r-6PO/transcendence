@@ -6,6 +6,7 @@
       <template v-slot:activator="{ }">
         <BasicBtn
           v-on:click="dialog = true"
+          :iconSize="22"
           content="mdi-account-plus"
           class="mt-4"
         />
@@ -31,7 +32,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <BasicBtn v-on:click="dialog = false" :isText="true" content="Close" />
-          <BasicBtn v-on:click="addUser()" :isText="true" content="Add" />
+          <BasicBtn v-on:click="addUser()" :diasable="userName == ''" :isText="true" content="Add" />
         </v-card-actions>
       </v-card>
     </v-dialog>

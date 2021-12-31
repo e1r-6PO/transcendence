@@ -7,6 +7,7 @@
     <BasicBtn
       v-on:click="mute ? switchMute() : dialog = true"
       :content="mute ? 'mdi-volume-off' : 'mdi-volume-high'"
+      :iconSize="22"
       :smaller="small"
     />
   </template>
@@ -66,7 +67,7 @@ export default class MuteUserBtn extends Vue{
     if (!this.mute)
       this.setTime()
     
-    const ret = await this.$axios.patch('/api/chat/' + this.$route.params.slug + '/mute?userName=' + this.userName + '&time=' + this.muteTime)
+    const ret = await this.$axios.patch('/api/chat/' + this.$route.params.slug + '/action/mute?userName=' + this.userName + '&time=' + this.muteTime)
       .catch(function(error) {
         return error.response
     })
