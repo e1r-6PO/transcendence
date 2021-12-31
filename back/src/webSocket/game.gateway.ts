@@ -61,6 +61,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
         game.player1socket['game'] = game.id //
         game.room = this.server.to(game.id.toString())
+        // this.server.of('/chat').to('room').emit('wsh la miff')
         this.gameService.push_game(game) //also starting the game via game.start()
     }
 
