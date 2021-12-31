@@ -2,6 +2,7 @@
   <BasicBtn
     v-on:click="changeGrade()"
     :content="grade == isAdmin() ? 'mdi-account-arrow-down' : 'mdi-account-arrow-up'"
+    :iconSize="22"
     :smaller="small"
   />
 </template>
@@ -10,6 +11,7 @@
 import { Component, Prop } from 'nuxt-property-decorator';
 import Vue from 'vue'
 import { ChannelUser, ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
+import socket_chat from '../../plugins/chat.io'
 
 @Component
 export default class ChangeGradeUserBtn extends Vue{
@@ -40,7 +42,10 @@ export default class ChangeGradeUserBtn extends Vue{
     else if (ret.status == 404)
       this.$router.push('/chat?error=' + ret.data.message)
     else
-      this.$emit('refreshUser')
+    {
+      socket_chat.emit('refreshUser')
+      socket_chat.emit('switchGrade', this.$route.params.slug, this.userName)
+    }
   }
 
   activeAlert(error: string)

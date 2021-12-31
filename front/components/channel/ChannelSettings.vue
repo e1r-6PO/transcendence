@@ -63,6 +63,7 @@
           </v-container>
         </v-card-text>
       <v-card-actions v-if="status == isOwner()">
+        <LeaveOwnerBtn @error="activeAlert" />
         <v-spacer></v-spacer>
         <BasicBtn @click="dialog = false" :isText="true" content="Close" />
         <BasicBtn :disable="disableSave()" @click="saveSettings()" :isText="true" content="Save" />
@@ -187,6 +188,10 @@ export default class ChannelSettings extends Vue{
   updateToken()
   {
     this.$emit('refreshUser')
+  }
+
+  newOwner(userName: string) {
+    this.$emit('newOwner', userName)
   }
 
   isOwner()

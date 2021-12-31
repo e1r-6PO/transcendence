@@ -2,6 +2,7 @@
   <BasicBtn
     v-on:click="deleteUser()"
     content="mdi-account-minus"
+    :iconSize="22"
     :smaller="small"
   />
 </template>
@@ -9,6 +10,7 @@
 <script lang="ts">
 import { Component, Prop } from 'nuxt-property-decorator';
 import Vue from 'vue'
+import socket_chat from '../../plugins/chat.io'
 
 @Component
 export default class DeleteUserBtn extends Vue{
@@ -29,7 +31,7 @@ export default class DeleteUserBtn extends Vue{
     else if (ret.status == 404)
       this.$router.push('/chat?error=' + ret.data.message)
     else
-      this.$emit('refreshUser')
+      socket_chat.emit('deleteUser', this.$route.params.slug, this.userName)
   }
 
   activeAlert(error: string)
