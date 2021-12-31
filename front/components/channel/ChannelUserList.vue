@@ -1,42 +1,42 @@
 <template>
   <v-list dense>
     <slot> </slot>
-    <v-list-item
+    <div v-for="(user, i) in userList"
       class="neon-button"
       style="border-radius: 15px; margin-top: 10px"
-      v-for="(user, i) in userList"
       :key="`user-${i}`"
       link
-      v-on:mouseover="userFocus = i"
-      v-on:mouseleave="userFocus = -1"
       v-on:change="refreshList()"
       v-on:bind="userList"
-      @click="redirectToUserProfile(user.nickName)"
+
     >
-      <v-list-item-icon style="margin-right: 10px; padding-top: 4px">
-      <v-avatar size="36">
-        <img
-          alt="user"
-          :class="user.isActive == true ? 'profile-picture-active' : 'profile-picture-inActive'"
-          :src="user.picture"
-          v-on:bind="user"
-          v-on:change="updateActive"
+      <ChannelUserCard
+        @clicked="openPreview"
+        @focus="focusCard"
+        @leave="leaveCard"
+        :ownerAction="ownerAction"
+        :status="status"
+        :user="user"
+        :updateActive="updateActive" />
+      <div
+        v-on:mouseover="focusCard(user.id)"
+        v-on:mouseleave="leaveCard(user.id)"
+        align="center"
+        justify="center"
+      >
+        <v-icon
+          @click="openPreview(user.id)"
+          :color="userFocus == user.id ? '#9142c7' : 'white'"
         >
-      </v-avatar>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title v-text="user.nickName" style="font-size: 15px; margin-top: 14px" :style="'color:' + getUserTextColor(i)" />
-        <v-list-item-subtitle v-text="user.status" align="right" class="mt-5" style="font-size: 12px;" :style="'color:' + getUserTextColor(i)" />
-      </v-list-item-content>
-      <v-list-item-icon v-if="ownerAction && isUserOwner() && user.status != isOwner()" class="mt-3">
-        <DeleteUserBtn style="margin-right: 5px" :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
-        <ChangeGradeUserBtn style="margin-right: 5px" :small="small" :grade="user.status" @refreshUser="refreshUser" :userName="user.nickName" />
-      </v-list-item-icon>
-      <v-list-item-icon v-if="ownerAction && isUserOwnerOrAdmin() && user.status != isOwner()" class="mt-3">
-        <MuteUserBtn style="margin-right: 0px" :userName="user.nickName" @refreshUser="refreshUser" :mute="user.isMute" />
-        <BanUserBtn :userName="user.nickName" @refreshUser="refreshUser" :ban="user.isBan" />
-      </v-list-item-icon>
-    </v-list-item>
+          {{ userId == user.id ? 'mdi-menu-up' : 'mdi-menu-down' }}
+        </v-icon>
+      </div>
+      <ProfilePreview v-if="userId == user.id"
+        @closeCard="userId = -1"
+        :user="user"
+        :meId="meId"
+      />
+    </div>
   </v-list>
 </template>
 
@@ -62,11 +62,15 @@ export default class ChannelUserList extends Vue {
 
   @Prop({ type: String, default: ChannelUserStatus.DEFAULT})
   status!: ChannelUserStatus
+
+  @Prop({ type: Number, default: 0 })
+  meId!: Number
   
   userList: Array<ChannelUser> = []
   activeUser: Map<number, LightUser> = new Map()
   userFocus: number = -1
   updateActive: boolean = false
+  userId: number = -1
 
   async mounted() {
     var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
@@ -77,27 +81,16 @@ export default class ChannelUserList extends Vue {
       this.$router.push('/chat')
     else
     {
-      console.log(userListRet.data)
       this.userList = userListRet.data
       socket_active.on("active", (user: LightUser) => {
         this.activeUser.set(user.id, user)
-        // var find = this.findUser(user)
-        // if (find != -1)
-        // {
-          console.log("coucou")
           this.switchState(user, true)
           this.updateActive = !this.updateActive
-        // }
       })
       socket_active.on("inactive", (user: LightUser) => {
-          console.log("au revoir")
         this.activeUser.delete(user.id)
-        // var find = this.findUser(user)
-        // if (find != -1)
-        // {
           this.switchState(user, false)
             this.updateActive = !this.updateActive
-        // }
       })
     }
   }
@@ -115,32 +108,6 @@ export default class ChannelUserList extends Vue {
       this.userList = userListRet.data
   }
 
-  redirectToUserProfile(userNick: string) {
-    this.$router.push("/users/" + userNick)
-  }
-
-  getUserTextColor(i: number): string {
-    if (i == this.userFocus)
-      return '#9142c7'
-    return 'white'
-  }
-
-  refreshUser() {
-    this.$emit('refreshUser')
-  }
-
-  isOwner() {
-    return ChannelUserStatus.OWNER
-  }
-
-  isUserOwnerOrAdmin() {
-    return this.status != ChannelUserStatus.DEFAULT
-  }
-  
-  isUserOwner() {
-    return this.status == ChannelUserStatus.OWNER
-  }
-
   switchState(user: LightUser, state: boolean) {
     for (var i = 0; i < this.userList.length; i++)
     {
@@ -152,6 +119,21 @@ export default class ChannelUserList extends Vue {
         return
       }
     }
+  }
+
+  openPreview(id: number) {
+    if (this.userId == id)
+      this.userId = -1
+    else
+      this.userId = id
+  }
+
+  focusCard(id: number) {
+    this.userFocus = id
+  }
+
+  leaveCard(id: number) {
+    this.userFocus = -1
   }
 }
 </script>
