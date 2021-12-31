@@ -166,6 +166,36 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         }, 200)
     }
 
+    @SubscribeMessage('newOwner')
+    async newOwner(client: Socket, av: string): Promise<void> {
+        let user_data = await this.usersRepository.findOne({
+            where: {nickName: av[1]}
+        })
+        setTimeout(() => {
+            this.server.to(av[0]).emit("newOwner", user_data.id)
+        }, 200)
+    }
+
+    @SubscribeMessage('switchGrade')
+    async switchGrade(client: Socket, av: string): Promise<void> {
+        let user_data = await this.usersRepository.findOne({
+            where: { nickName: av[1] }
+        })
+        setTimeout(() => {
+            this.server.to(av[0]).emit("switchGrade", user_data.id)
+        }, 200)
+    }
+
+    @SubscribeMessage('deleteUser')
+    async deleteUser(client: Socket, av: string): Promise<void> {
+        let user_data = await this.usersRepository.findOne({
+            where: { nickName: av[1] }
+        })
+        setTimeout(() => {
+            this.server.to(av[0]).emit("deleteUser", user_data.id)
+        }, 200)
+    }
+
     afterInit(server: Server){
         this.logger.log('Initialized ChatGateway');
     }
