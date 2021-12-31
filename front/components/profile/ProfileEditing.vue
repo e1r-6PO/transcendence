@@ -20,7 +20,9 @@
 			>
 				<v-img class="background_element"
 					style="border-radius: 100%; position: absolute;"
-					v-if="userPicture != null" v-bind:src="userPicture"
+					v-if="userPicture != null"
+					v-bind:src="userPicture"
+					v-on:change="pictureEdited"
 				/>
 				<v-icon
 					x-large
@@ -119,6 +121,9 @@ export default class ProfileEditing extends Vue {
 	@Prop({ type: String, default: "" })
 	userNickName!: string
 
+	@Prop({ type: Boolean, default: false })
+	pictureEdited!: boolean
+
 	switchEditing() {
 		this.$emit('updateState')
 	}
@@ -163,12 +168,13 @@ export default class ProfileEditing extends Vue {
 				return;
 			}
 			this.selectedFile = e.target.files[0]
+			this.pictureEdited = !this.pictureEdited
 	}
 
 	async saveChange() {
 		if (this.userNickName == this.nick && this.selectedFile == null)
 			return
-		if (this.userNickName != this.nick) {
+		if (this.userNickName != this.nick && this.nick != "") {
 			const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
 				.catch(function (error) {
 						return error.response
