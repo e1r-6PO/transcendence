@@ -1,6 +1,6 @@
 <template>
   <v-btn
-    class="neon-button"
+    :class="getClasse()"
     :small="smaller"
     :disabled="disable"
     :icon="!isText"
@@ -44,6 +44,9 @@ export default class CloseBtn extends Vue {
   @Prop({ type: String, default: "" })
   color!: String
 
+  @Prop({ type: String, default: "" })
+  neonColor!: String
+
   @Prop({type: Number, default: 25 })
   iconSize!: Number
 
@@ -58,6 +61,32 @@ export default class CloseBtn extends Vue {
       return this.width
   }
 
+  getClasse(): string {
+    var classes = ""
+
+    if (this.neonColor == "purple")
+      classes += "neon-button"
+    else if (this.neonColor == "red")
+      classes += "neon-button-red"
+    else if (this.neonColor == "blue")
+      classes += "neon-button-blue"
+    else if (this.neonColor == "yellow")
+      classes += "neon-button-yellow"
+    else if (this.neonColor == "green")
+      classes += "neon-button-green"
+    else if (this.neonColor == "orange")
+      classes += "neon-button-orange"
+    else if (this.neonColor == "pink")
+      classes += "neon-button-pink"
+    else if (this.neonColor == "white")
+      classes += "neon-button-white"
+    else if (this.neonColor == "light-blue")
+      classes += "neon-button-light-blue"
+    else
+      classes += "neon-button"
+    return classes
+  }
+
   getStyle() {
     var style = ""
     
@@ -66,7 +95,28 @@ export default class CloseBtn extends Vue {
     if (this.isText)
       style += "border-radius: 10px;"
     if (this.btnFocus)
-      style += "color: #cd78ff;"
+    {
+      style += "color: "
+      if (this.neonColor == "red")
+        style += "#d61c1c"
+      else if (this.neonColor == "blue")
+        style += "#3c58d3"
+      else if (this.neonColor == "yellow")
+        style += "#fff3b2"
+      else if (this.neonColor == "green")
+        style += "#32c44a"
+      else if (this.neonColor == "orange")
+        style += "#ffc79c"
+      else if (this.neonColor == "pink")
+        style += "#ee8be9"
+      else if (this.neonColor == "white")
+        style += "#ece3e3"
+      else if (this.neonColor == "light-blue")
+        style += "#a5fafa"
+      else
+        style += "#cd78ff"
+      style += ";"
+    }
     else
       style += "color: " + (this.color != "" ? this.color : "#616161") + ";"
     return style
@@ -77,4 +127,5 @@ export default class CloseBtn extends Vue {
 <style>
 @import '../../../assets/Classes-scss/main_page.scss';
 @import '../../../assets/Classes-scss/neon_effects.scss';
+@import '../../../assets/Classes-scss/basicBtn_colors.scss';
 </style>
