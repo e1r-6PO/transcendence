@@ -27,10 +27,11 @@ export default class CloseBtn extends Vue {
   content!: string
 
   @Prop({ type: Boolean, default: false })
-  isText!: boolean
+  isText!: Boolean
+  
 
-  @Prop({ default: false })
-  disable!: boolean
+  @Prop({ type: Boolean, default: false })
+  disable!: Boolean
 
   @Prop({ type: Boolean, default: false})
   smaller!: Boolean

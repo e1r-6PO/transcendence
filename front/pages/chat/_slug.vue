@@ -67,6 +67,7 @@
           <ChannelSettings v-if="isOwnerOrAdmin()"
             @error="activeAlert"
             @refreshUser="updateToken"
+            @newOwner="newOwner"
             :status="me.channelStatus"
             :meId="me.id"
             class="pl-5 pb-3"
@@ -226,6 +227,25 @@ export default Vue.extend({
       socket_chat.on('refreshUser', (msg: string) => {
         this.tokenUser = -this.tokenUser
       })
+      socket_chat.on('newOwner', (ownerId: number) => {
+        console.log(this.me.id)
+        if (ownerId == this.me.id)
+          this.me.channelStatus = ChannelUserStatus.OWNER
+        this.tokenUser = -this.tokenUser
+      })
+      socket_chat.on('switchGrade', (ownerId: number) => {
+        if (ownerId == this.me.id)
+          this.me.channelStatus = this.me.channelStatus == ChannelUserStatus.ADMINISTRATOR ? ChannelUserStatus.DEFAULT : ChannelUserStatus.ADMINISTRATOR;
+        this.tokenUser = -this.tokenUser
+      })
+      socket_chat.on('deleteUser', (ownerId: number) => {
+        console.log("ownerId")
+        console.log(ownerId)
+        if (ownerId == this.me.id)
+          this.$router.push('/chat')
+        else
+          this.tokenUser = -this.tokenUser
+      })
     }
   },
 
@@ -279,6 +299,10 @@ export default Vue.extend({
         this.alert = true
     },
 
+    newOwner(userName: string) {
+      socket_chat.emit('newOwner', this.$route.params.slug, userName)
+    },
+
     onEnd() {
       this.alert = false
     },
@@ -287,7 +311,7 @@ export default Vue.extend({
     },
 
     updateToken() {
-      this.tokenUser += 1
+      this.tokenUser = -this.tokenUser
       socket_chat.emit('refreshUser', this.$route.params.slug)
     }
   }
