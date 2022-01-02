@@ -202,8 +202,8 @@ export class ChannelController {
     var channel = await this.channelService.findChannel(channName)
     
     var owner = await this.channelService.findParticipant(req.cookies['user_id'], channel)
-    if (owner.status != ChannelStatus.owner)
-      throw new ForbiddenException('Only owner can add user')
+    if (owner.status != ChannelStatus.owner && owner.status != ChannelStatus.administrator)
+      throw new ForbiddenException('Only owner/administrator can add user')
     
     var user = await this.channelService.findUserByNick(query['userName'])
       .catch(function(error) {
