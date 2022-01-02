@@ -66,7 +66,7 @@
         <LeaveOwnerBtn @error="activeAlert" />
         <v-spacer></v-spacer>
         <BasicBtn @click="dialog = false" :isText="true" content="Close" />
-        <BasicBtn :disable="disableSave()" @click="saveSettings()" :isText="true" content="Save" />
+        <BasicBtn :disable="disableSave()" @click="saveSettings()" isText content="Save" />
       </v-card-actions>
       <v-divider v-if="status == isOwner()" class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
         <v-row class="justify-center">
@@ -85,6 +85,7 @@
           style="background-color: #181818"
         />
       <v-card-actions v-if="status != isOwner()">
+        <ChannelLeaveBtn @refreshUser="updateToken"/>
         <v-spacer></v-spacer>
         <BasicBtn @click="dialog = false" :isText="true" content="Close" />
       </v-card-actions>

@@ -5,8 +5,8 @@
     :disabled="disable"
     :icon="!isText"
     :text="isText"
-    :width="setWidth()"
-    :height="!isText ? setWidth(): ''"
+    :width="setWidthIcon()"
+    :height="!isText ? setWidthIcon(): setHeightText()"
     :style="getStyle()"
     @click.stop="btnClicked()"
     v-on:mouseover="btnFocus = true"
@@ -29,7 +29,6 @@ export default class CloseBtn extends Vue {
   @Prop({ type: Boolean, default: false })
   isText!: Boolean
   
-
   @Prop({ type: Boolean, default: false })
   disable!: Boolean
 
@@ -38,6 +37,9 @@ export default class CloseBtn extends Vue {
 
   @Prop({ type: Number, default: 0 })
   width!: Number
+  
+  @Prop({ type: Number, default: 0 })
+  height!: Number
 
   @Prop({ type: String, default: "" })
   backgroundColor!: String
@@ -57,9 +59,14 @@ export default class CloseBtn extends Vue {
     this.$emit('click')
   }
 
-  setWidth() {
+  setWidthIcon() {
     if (this.width != 0)
       return this.width
+  }
+
+  setHeightText() {
+    if (this.height != 0)
+      return this.height
   }
 
   getClasse(): string {
