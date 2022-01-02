@@ -20,7 +20,9 @@
 			>
 				<v-img class="background_element"
 					style="border-radius: 100%; position: absolute;"
-					v-if="userPicture != null" v-bind:src="userPicture"
+					v-if="user.picture != null"
+					v-bind:src="user.picture"
+					v-on:change="pictureEdited"
 				/>
 				<v-icon
 					x-large
@@ -83,7 +85,7 @@
 		<div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%">
 			<v-btn v-if="isEditing"
 			class="foreground_element save-item neon-button"
-			:disabled="nick == userNickName && selectedFile == null"
+			:disabled="nick == user.nickname && selectedFile == null"
 			rounded
 			text
 			color="#0ADAA8"
@@ -113,11 +115,11 @@ export default class ProfileEditing extends Vue {
 	@Prop({ type: Boolean, default: false})
 	isEditing!: boolean
 
-	@Prop({ type: String, default: "" })
-	userPicture!: string
+	@Prop({ type: Boolean, default: false })
+	pictureEdited!: boolean
 
-	@Prop({ type: String, default: "" })
-	userNickName!: string
+	@Prop({ type: Object, default: new User() })
+	user!: User
 
 	switchEditing() {
 		this.$emit('updateState')
@@ -125,7 +127,7 @@ export default class ProfileEditing extends Vue {
 
 	close_btn() {
 		this.selectedFile = null
-		this.nick = this.userNickName
+		this.nick = this.user.nickName
 	}
 
 	$refs!: {
@@ -163,12 +165,13 @@ export default class ProfileEditing extends Vue {
 				return;
 			}
 			this.selectedFile = e.target.files[0]
+			this.pictureEdited = !this.pictureEdited
 	}
 
 	async saveChange() {
-		if (this.userNickName == this.nick && this.selectedFile == null)
+		if (this.user.nickName == this.nick && this.selectedFile == null)
 			return
-		if (this.userNickName != this.nick) {
+		if (this.user.nickName != this.nick && this.nick != "") {
 			const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
 				.catch(function (error) {
 						return error.response
@@ -190,11 +193,9 @@ export default class ProfileEditing extends Vue {
 					this.$emit('updateState')
 			}
 		}
-		console.log(this.selectedFile)
 		if (this.selectedFile != null) {
 			var formData = new FormData();
 			formData.append("image", this.selectedFile);
-			// console.log(formData)
 			this.$emit('updatePicture')
 			await this.$axios.$post('api/profile/me/picture', formData, {
 				headers: {
