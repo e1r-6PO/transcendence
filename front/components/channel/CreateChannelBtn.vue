@@ -94,14 +94,17 @@ export default class CreateChannelBtn extends Vue{
 
   async createChannel() {
     this.dialog = false
+    this.formateChannName()
     const ret = await this.$axios.$post('/api/chat/' + this.channName + '/create?type=' + this.channType + '&pass=' + this.channPass)
       .catch(function (error) {
         return error.response
       });
     if (ret.status == 409)
-      this.activeAlert("Channel already exists")
+      this.activeAlert(ret.data.message)
     else
+    {
       this.$router.push("/chat/" + this.channName)
+    }
   }
 
   redirectToChannel(channName: string) {
@@ -116,6 +119,11 @@ export default class CreateChannelBtn extends Vue{
     if (this.channType == 'Protected' && (this.channPass == '' || this.channPass.length < 5))
       return true
     return false
+  }
+
+  formateChannName() {
+    this.channName = this.channName.trim()
+    this.channName = this.channName.replace(/\s\s+/g, ' ');
   }
 
   activeAlert(error: string)
