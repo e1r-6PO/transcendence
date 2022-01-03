@@ -82,14 +82,13 @@
           class="overflow-y-auto"
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
-        <div @click="redirectToUserProfile(msg.senderNick)">
           <v-img
-            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
+            @click="isYourMsg(msg) ? '' : redirectToUserProfile(msg.senderNick)"
+            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0px'"
             style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
             width="30"
             :src="msg.picture" 
           />
-        </div>
           <v-card
             class="bubble"
             :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
@@ -198,15 +197,10 @@ export default Vue.extend({
   async mounted() {
     var ret = await this.$axios.$get('/api/users/' + this.$route.params.slug)
     this.user = ret
-    console.log("this.user")
-    console.log(this.user)
-    console.log("ret")
-    console.log(ret)
     socket_chat.connect();
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
-    console.log(this.messagesArray)
-    console.log(this.me)
+    this.scrollToEnd()
     socket_chat.on('privateMessage', (msg: PrivateMessages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
@@ -255,10 +249,10 @@ export default Vue.extend({
     },
 
     redirectToUserProfile(userNick: string) {
-      this.$router.push("/users/" + userNick)
+      this.$router.push("/users/" + this.$route.params.slug)
     },
 
-    scrollToEnd() {    	
+    scrollToEnd() {   
       window.scrollTo(0, document.body.scrollHeight);
     },
 
