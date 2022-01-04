@@ -20,7 +20,7 @@ export class GameService {
     games = new Map<string, Game>()
 
     push_game(game: Game) {
-        // if (game.type == "ranked")
+        if (game.type == "ranked") // only start game if its ranked (not private)
             game.start()
         // this.games.push(game)
         this.games.set(game.id, game)
@@ -32,7 +32,6 @@ export class GameService {
 
         if (game == undefined) { // game is finished
             // emit game is finished
-            // close socket
         }
         else { // game is running
             if (client['info'].id == game.player0.id || client['info'].id == game.player1.id) { // the new client is one of the player
@@ -43,6 +42,8 @@ export class GameService {
                 else {
                     game.player1socket = client 
                 }
+                if (game.hasStarted == false && game.player0socket != null && game.player1socket != null) // check if private ?
+                    game.start()
                 client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
                 client.join(game.id.toString())
             }
@@ -79,18 +80,22 @@ export class GameService {
     }
 
     // maybe send the socket to watch for ?
-    async game_watcher(game: Game) { // will pause the game and wait for a player reconnection need testing
+    async game_watcher(game: Game, client: Socket) { // will pause the game and wait for a player reconnection need testing
         game.pause()
 
-        if (game.player0socket == null) {
+        var timeout = 10 // 10 seconds
+
+        if (game.player0socket == client) {
+            game.player0socket = null
             var s1 = new Date().getTime() / 1000;
             while (game.player0socket == null) {
-                if ((new Date().getTime() / 1000) - s1 > 5) // 5 seconds
+                if ((new Date().getTime() / 1000) - s1 > timeout)
                     break
                 await new Promise(f => setTimeout(f, 50));
             }
-            if (game.player0socket != null) { // the player reconnected himself
-                game.unpause()
+            if (game.player0socket != null && game.isPaused == true) { // the player reconnected himself
+                if (game.player1socket != null) // unpause only if player1 is connected
+                    game.unpause()
             }
             else { // gone from more than 5 seconds
                 this.endgame(game)
@@ -98,14 +103,16 @@ export class GameService {
             }
         }
         else {
+            game.player1socket = null
             var s1 = new Date().getTime() / 1000;
             while (game.player1socket == null) {
-                if ((new Date().getTime() / 1000) - s1 > 5) // 5 seconds
+                if ((new Date().getTime() / 1000) - s1 > timeout) // 5 seconds
                     break
                 await new Promise(f => setTimeout(f, 50));
             }
-            if (game.player1socket != null) { // the player reconnected himself
-                game.unpause()
+            if (game.player1socket != null && game.isPaused == true) { // the player reconnected himself
+                if (game.player0socket != null) // unpause only if player1 is connected
+                    game.unpause()
             }
             else { // gone from more than 5 seconds
                 this.endgame(game)
@@ -119,15 +126,12 @@ export class GameService {
 
         if (game != undefined) {
             if (game.player0socket.id == client.id) {
-
-                game.player0socket = null
                 
-                this.game_watcher(game)
+                this.game_watcher(game, client)
             }
             else if (game.player1socket.id == client.id) {
 
-                game.player1socket = null
-                this.game_watcher(game)
+                this.game_watcher(game, client)
             }
         }
     }

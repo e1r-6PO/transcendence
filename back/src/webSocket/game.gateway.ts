@@ -121,7 +121,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         var game: Game = this.gameService.games.get(info['id'])
 
-        console.log(client['info'].id, game.player0.id, game.player1.id)
+        if (!game)
+            return
 
         if (client['info'].id == game.player0.id) {
             game.player0socket = null
