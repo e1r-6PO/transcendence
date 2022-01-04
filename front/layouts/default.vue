@@ -144,7 +144,18 @@ export default Vue.extend({
 
   async created() {
     socket_game.on('notificationPrivateGameInvite', (info) => {
+      // you received an invitation to play a private game, accept or deny it
+
+      // socket_game.emit('denyGame', { id: info })
+      // or
+      // socket_game.emit('acceptGame', { id: info })
+    })
+    socket_game.on('privateGameStarting', (info) => {
+      // the other personne accepted the invitation
       this.$router.push('/game/' + info)
+    })
+    socket_game.on('notificationPrivateGameInviteSent', (info) => {
+      // you invited someone to a game and it was successfully sent
     })
   },
 
