@@ -38,7 +38,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         private gameService: GameService
       ) {}
     queue: Socket[] = []
-    id_to_user = new Map<number, User>();
+    id_to_user = new Map<number, Socket>();
     
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('AppGateway');
@@ -54,6 +54,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         game.player1socket = this.queue[1]
         this.queue.splice(0, 2)
         game.id = uuidv4()
+        game.type = "ranked"
         game.player0 = game.player0socket['info'] // putting the infos inside a User class to get access User class function
         game.player1 = game.player1socket['info'] //
         game.player0socket.join(game.id.toString())
@@ -65,11 +66,53 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.gameService.push_game(game) //also starting the game via game.start()
     }
 
+    create_private_game(initiater: Socket, receiver: Socket) {
+        var game: Game = new Game(this.gameService, 1, 1)
+        game.player0socket = initiater
+        game.player1socket = receiver
+        game.id = uuidv4()
+        game.type = "private"
+        game.player0 = initiater['info'] // putting the infos inside a User class to get access User class function
+        game.player1 = receiver['info'] //
+        game.player0socket.join(game.id.toString())
+        game.player1socket.join(game.id.toString())
+        game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
+        game.player1socket['game'] = game.id //
+        game.room = this.server.to(game.id.toString())
+        this.gameService.push_game(game) //also starting the game via game.start()
+
+        return game
+    }
+
+    @SubscribeMessage('newPrivate')
+    async newPrivateGame(client: Socket, arg: any) {
+        var remote = this.id_to_user.get(arg['id'])
+
+        if (remote != undefined) {
+            var game: Game = this.create_private_game(client, remote)
+            client.emit('notificationPrivateGameInvite', game.id)
+            remote.emit('notificationPrivateGameInvite', game.id)
+        }
+        else {
+            // player not found or not connected
+        }
+    }
+
     @SubscribeMessage('joinQueue') // to join the queue if he is in the queue, kick him
     async joinQueue(client: Socket) {
+        if (this.queue.findIndex(clients => clients.id === client.id) != -1)
+            return // dont add him to the queu if he his already inside
         this.queue.push(client)
         if (this.queue.length >= 2) {
             this.create_game() // await may be needed later on
+        }
+    }
+
+    @SubscribeMessage('leaveQueue')
+    async leaveQueue(client: Socket) {
+        var index = this.queue.findIndex(clients => clients.id === client.id)
+        if (index != -1) {
+            this.queue.splice(index, 1)
         }
     }
 
@@ -116,8 +159,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             client.disconnect()
             return
         }
-        this.id_to_user.set(user_data.id, user_data)
         client['info'] = user_data
+        this.id_to_user.set(user_data.id, client)
     }
 
     async handleDisconnect(client: Socket){

@@ -20,7 +20,8 @@ export class GameService {
     games = new Map<string, Game>()
 
     push_game(game: Game) {
-        game.start()
+        // if (game.type == "ranked")
+            game.start()
         // this.games.push(game)
         this.games.set(game.id, game)
         // console.log(game.id, typeof game.id, 24, typeof 24, this.games.get(24), this.games.get(game.id))

@@ -17,6 +17,7 @@ export class Game {
 
     id: string
 
+    type: string
     gameService: GameService
     winning_score: number
     loopId: any

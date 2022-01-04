@@ -90,6 +90,7 @@
 
 import Vue from 'vue'
 import socket_active from '../plugins/active.io'
+import socket_game from '../plugins/game.io'
 
 export default Vue.extend({
 
@@ -137,6 +138,14 @@ export default Vue.extend({
   async mounted() {
     if (!socket_active.connected)
       socket_active.connect()
+    if (!socket_game.connected)
+      socket_game.connect()
+  },
+
+  async created() {
+    socket_game.on('notificationPrivateGameInvite', (info) => {
+      this.$router.push('/game/' + info)
+    })
   },
 
   methods: {
