@@ -42,8 +42,8 @@ export class GameService {
                 else {
                     game.player1socket = client 
                 }
-                if (game.hasStarted == false && game.player0socket != null && game.player1socket != null) // check if private ?
-                    game.start()
+                // if (game.hasStarted == false && game.player0socket != null && game.player1socket != null) // check if private ?
+                //     game.start()
                 client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
                 client.join(game.id.toString())
             }
@@ -67,14 +67,16 @@ export class GameService {
     }
 
     endgame(game: Game) {
-        game.stop()
-        if (game.player0socket == null || game.scorep1 > game.scorep0) { // player0 dc or p1 won
-            game.room.emit('matchEnd', { winner: game.player1.toLightuser(), looser: game.player0.toLightuser() })
-            this.save_game(game)
-        }
-        else if (game.player1socket == null || game.scorep0 > game.scorep1) { //player1 dc or p0 won
-            game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser })
-            this.save_game(game)
+        if (game.hasStarted == true) {
+            game.stop()
+            if (game.player0socket == null || game.scorep1 > game.scorep0) { // player0 dc or p1 won
+                game.room.emit('matchEnd', { winner: game.player1.toLightuser(), looser: game.player0.toLightuser() })
+                this.save_game(game)
+            }
+            else if (game.player1socket == null || game.scorep0 > game.scorep1) { //player1 dc or p0 won
+                game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser })
+                this.save_game(game)
+            }
         }
         this.games.delete(game.id)
     }
@@ -125,13 +127,11 @@ export class GameService {
         var game: Game = this.games.get(client['game'])
 
         if (game != undefined) {
-            if (game.player0socket.id == client.id) {
-                
-                this.game_watcher(game, client)
-            }
-            else if (game.player1socket.id == client.id) {
-
-                this.game_watcher(game, client)
+            if (game.player0socket.id == client.id || game.player1socket.id == client.id) {
+                if (game.hasStarted == true)
+                    this.game_watcher(game, client)
+                else
+                    this.endgame(game)
             }
         }
     }
