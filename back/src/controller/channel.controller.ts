@@ -96,16 +96,20 @@ export class ChannelController {
   @Post(':channName/create')
   async createChannel(@Param('channName') channName, @Req() req: Request): Promise<void>
   {
+    if (!channName[0] || channName[0] == ' ')
+      throw new ConflictException("Channel name can't start with space")
+    channName = this.channelService.formatChannName(channName)
+    if (!this.channelService.checkChannName(channName))
+      throw new ConflictException("Channel name need to have visible character in his name")
+    if (channName.length > 20)
+      throw new ConflictException('Channel name is to long')
     var channel = await this.channelService.findChannel(channName)
       .catch(function(error) {
         return null
       })
     if (channel)
       throw new ConflictException('Channel already exist')
-    
-    if (channName.length > 20)
-      throw new ConflictException('Channel name is to long')
-
+      
     var owner = await this.channelService.findUserById(req.cookies['user_id'])
     if (query['type'] == ChannAccess.PROTECTED && query['pass'].length < 5)
       throw new ConflictException('Pass is to short')
@@ -202,8 +206,8 @@ export class ChannelController {
     var channel = await this.channelService.findChannel(channName)
     
     var owner = await this.channelService.findParticipant(req.cookies['user_id'], channel)
-    if (owner.status != ChannelStatus.owner)
-      throw new ForbiddenException('Only owner can add user')
+    if (owner.status != ChannelStatus.owner && owner.status != ChannelStatus.administrator)
+      throw new ForbiddenException('Only owner/administrator can add user')
     
     var user = await this.channelService.findUserByNick(query['userName'])
       .catch(function(error) {

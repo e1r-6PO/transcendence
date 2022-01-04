@@ -64,29 +64,28 @@ export default Vue.extend({
   methods: {
     async join_matchmaking() {
       this.error_with_server = false
+      if (socket_game.connected == false) {
+        socket_game.connect()
 
-      socket_game.connect()
-
-      var s1 = new Date().getTime() / 1000;
-      while (socket_game.connected == false) {
-        if ((new Date().getTime() / 1000) - s1 > 2)
-          break
-        await new Promise(f => setTimeout(f, 50));
+        var s1 = new Date().getTime() / 1000;
+        while (socket_game.connected == false) {
+          if ((new Date().getTime() / 1000) - s1 > 2) {
+            this.error_with_server = true
+            return
+          }
+          await new Promise(f => setTimeout(f, 50));
+        }
       }
 
       socket_game.emit('joinQueue')
 
-      this.in_queue = socket_game.connected
-
-      if (socket_game.connected == false) {
-        socket_game.disconnect()
-        this.error_with_server = true
-      }
+      this.in_queue = true
     },
 
     async leave_matchmaking() {
-      socket_game.disconnect()
-      this.in_queue = socket_game.connected
+      // socket_game.disconnect()
+      socket_game.emit('leaveQueue')
+      this.in_queue = false
     },
 
     closeAlert() {

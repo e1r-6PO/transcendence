@@ -101,4 +101,17 @@ export class ChannelService {
       where: { user: me }
     })
   }
+
+  checkChannName(channName: string) {
+    for (var i = 0; i < channName.length; i++)
+      if (channName[i] > ' ' && channName[i] <= '~') 
+        return true
+    return false
+  }
+
+  formatChannName(channName: string) {
+    channName = channName.trim()
+    channName = channName.replace(/\s\s+/g, ' ');
+    return channName
+  }
 }

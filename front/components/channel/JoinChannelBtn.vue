@@ -90,12 +90,13 @@ export default class JoinChannelBtn extends Vue{
 
   async tryJoin() {
     this.dialogJoin = false;
+    this.formateChannName()
     const ret = await this.$axios.get('/api/chat/' + this.channName + '/info')
       .catch(function (error) {
         return error.response
       })
     if (ret.status == 403)
-      this.activeAlert("Channel does not exist")
+      this.activeAlert(ret.data.message)
     else if (ret.data.channAccess == ChannAccess.PROTECTED)
       this.dialogPass = true
     else
@@ -124,6 +125,11 @@ export default class JoinChannelBtn extends Vue{
     if (!this.dialogPass && this.channName == '')
       return true
     return false
+  }
+
+  formateChannName() {
+    this.channName = this.channName.trim()
+    this.channName = this.channName.replace(/\s\s+/g, ' ');
   }
   
   activeAlert(error: any)

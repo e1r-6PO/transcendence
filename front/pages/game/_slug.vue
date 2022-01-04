@@ -51,11 +51,13 @@ export default Vue.extend({
         await new Promise(f => setTimeout(f, 50));
       }
       if (socket_game.connected == false)
-        null// error could not connect
+        return // error could not connect
       else {
-        socket_game.emit('join', { id: this.game_id })
+        // socket_game.emit('join', { id: this.game_id })
       }
     }
+
+    socket_game.emit('join', { id: this.game_id })
 
     var m = <HTMLCanvasElement> document.getElementById("map")
     var ctx = m.getContext("2d");
