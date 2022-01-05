@@ -21,6 +21,7 @@ import Vue from 'vue'
 import { LightUser } from '../../assets/Classes-ts/User'
 
 import { Ball } from '../../assets/Classes-ts/Ball'
+import { Player } from '../../assets/Classes-ts/Player'
 
 import socket_game from '../../plugins/game.io'
 
@@ -34,7 +35,8 @@ export default Vue.extend({
       mapx: 840,
       mapy: 600,
       map: CanvasRenderingContext2D,
-      balls: new Map<number, Ball>()
+      balls: new Map<number, Ball>(),
+      paddle1: new Player(20, 300),
     }
   },
 
@@ -49,16 +51,46 @@ export default Vue.extend({
         await new Promise(f => setTimeout(f, 50));
       }
       if (socket_game.connected == false)
-        null// error could not connect
+        return // error could not connect
       else {
-        socket_game.emit('join', { id: this.game_id })
+        // socket_game.emit('join', { id: this.game_id })
       }
     }
+
+    socket_game.emit('join', { id: this.game_id })
 
     var m = <HTMLCanvasElement> document.getElementById("map")
     var ctx = m.getContext("2d");
     this.map = ctx
 
+    //listener keydown
+    window.addEventListener('keydown', (event) => {
+      if (event.key == 'W')
+        console.log('KeyDown: W');
+      else if (event.key == "S")
+        console.log('KeyDown: S')
+      else if (event.key == 'ArrowUp')
+      {
+        console.log('KeyDown: ArrowUp');
+        this.paddle1.moveUp();
+      }
+      else if (event.key == 'ArrowDown')
+      {
+        console.log('KeyDown: ArrowDown');
+        this.paddle1.moveDown();
+      }
+    })
+
+    window.addEventListener('keyup', (event) => {
+      if (event.key == 'W')
+        console.log('KeyUp: W');
+      else if (event.key == "S")
+        console.log('KeyUP: S')
+      else if (event.key == 'ArrowUp')
+        console.log('KeyUp: ArrowUp');
+      else if (event.key == 'ArrowDown')
+        console.log('KeyUp: ArrowDown');
+    })
     // this.balls.push(new Ball(50, 50))
     // this.map.fillStyle = 'white'
     // this.map.rect(0, 0, 10, 10)
@@ -69,11 +101,11 @@ export default Vue.extend({
     leave() {
       socket_game.emit('forfeit', { id: this.game_id })
       this.$router.push('/home')
-    }
+    },
   },
 
   async created() {
-      socket_game.on('matchInfo', (info) => {
+    socket_game.on('matchInfo', (info) => {
         console.log(info)
         this.player0 = info['player0']
         this.player1 = info['player1']
@@ -104,6 +136,8 @@ export default Vue.extend({
           this.balls.get(info[i].id).y = info[i].ball_location[1]
           // console.log(this.balls[0].x, this.balls[0].y)
           this.map.rect(this.balls.get(info[i].id).x - 10, this.balls.get(info[i].id).y - 10, 18, 18)
+          //player1
+          this.map.rect (this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
         }
         else if (info[i].status == "erased"){
           this.balls.delete(info[i].id)

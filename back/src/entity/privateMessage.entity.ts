@@ -27,6 +27,15 @@ export class PrivateMessage {
   })
   target: User;
 
+  @Column({default: 'message'})
+  type: string; // message or game
+
+  @Column({nullable: true, default: null})
+  game_id: string // if type is message -> null
+
+  @Column({nullable: true, default: null})
+  game_state: string // pending, running, 
+
   @Column()
   message: string;
 
