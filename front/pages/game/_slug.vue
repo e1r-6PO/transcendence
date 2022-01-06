@@ -33,7 +33,6 @@ export default Vue.extend({
       player1: LightUser,
       mapx: 840,
       mapy: 600,
-      map: CanvasRenderingContext2D,
       balls: new Map<number, Ball>(),
       paddle1: new Paddle(20, 300),
     }
@@ -57,10 +56,6 @@ export default Vue.extend({
     }
 
     socket_game.emit('join', { id: this.game_id })
-
-    var m = <HTMLCanvasElement> document.getElementById("map")
-    var ctx = m.getContext("2d");
-    this.map = ctx
 
     //listener keydown
     window.addEventListener('keydown', (event) => {
@@ -117,14 +112,22 @@ export default Vue.extend({
     })
     socket_game.on('matchSetup', (info) => {
       console.log(info)
-      this.map.clearRect(0, 0, this.mapx, this.mapy);
-      this.map.fillStyle = 'white'
-      this.map.fillText(info['gameStart'], this.mapx / 2, this.mapy / 2);
+
+      var m = <HTMLCanvasElement> document.getElementById("map")
+      var maptest = <CanvasRenderingContext2D> m.getContext("2d");
+
+      maptest.clearRect(0, 0, this.mapx, this.mapy);
+      maptest.fillStyle = 'white'
+      maptest.fillText(info['gameStart'], this.mapx / 2, this.mapy / 2);
     })
     socket_game.on('gameInfo', (info) => {
-      this.map.clearRect(0, 0, this.mapx, this.mapy);
-      this.map.beginPath()
-      this.map.fillStyle = 'white'
+
+      var m = <HTMLCanvasElement> document.getElementById("map")
+      var maptest = <CanvasRenderingContext2D> m.getContext("2d");
+
+      maptest.clearRect(0, 0, this.mapx, this.mapy);
+      maptest.beginPath()
+      maptest.fillStyle = 'white'
       for (let i = 0; i < info.length; ++i) {
         if (this.balls.get(info[i].id) == undefined && info[i].status == "normal") { // create a new ball
           this.balls.set(info[i].id, new Ball(info[i]['ball_location'][0], info[i]['ball_location'][1]))
@@ -133,19 +136,22 @@ export default Vue.extend({
           // do nothing
         }
         else if (info[i].status == "normal"){
-          this.balls.get(info[i].id).x = info[i].ball_location[0]
-          this.balls.get(info[i].id).y = info[i].ball_location[1]
-          // console.log(this.balls[0].x, this.balls[0].y)
-          this.map.rect(this.balls.get(info[i].id).x - 10, this.balls.get(info[i].id).y - 10, 18, 18)
+          var c_ball = this.balls.get(info[i].id)
+          if (c_ball != undefined) {
+            c_ball.x = info[i].ball_location[0]
+            c_ball.y = info[i].ball_location[1]
+            // console.log(this.balls[0].x, this.balls[0].y)
+            maptest.rect(c_ball.x - 10, c_ball.y - 10, 18, 18)
+          }
         }
         else if (info[i].status == "erased"){
           this.balls.delete(info[i].id)
         }
       }
       //player1
-      this.map.rect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
+      maptest.rect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
       // drawing balls
-      this.map.fill()
+      maptest.fill()
     })
     // socket_game.on('paddleInfo', (info) => {
     //   this.paddle0.x = info[0].x
