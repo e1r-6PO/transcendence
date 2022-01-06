@@ -16,6 +16,8 @@ export class User {
 
   @Column({
     //  unique: true
+    collation: "utf8mb4_bin",
+    charset: "utf8mb4"
   })
   nickName: string;
 
