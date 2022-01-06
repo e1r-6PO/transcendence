@@ -45,7 +45,7 @@ export class PrivateMessage {
   game_id: string // if type is message -> null
 
   @Column({nullable: true, default: null})
-  game_state: string // pending, running, finish
+  game_state: string // pending, running, finish, canceled
 
   @ManyToOne(() => User, {
     eager: true,

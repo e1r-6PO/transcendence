@@ -28,6 +28,18 @@
       width="30"
     />
     <h3 class="neonText" style="color: white; margin-top: 80px">{{ user.nickName }}</h3>
+
+    <v-btn
+      class="foreground_element neon-button"
+      style="margin-top: 80px; margin-left: 5px"
+      rounded
+      text
+      color="#ffffff"
+      @click="initiatePongRequest()"
+    >
+      Play
+    </v-btn>
+
     <v-spacer />
     <BasicBtn
       style="margin-top: 80px"
@@ -82,7 +94,7 @@
           class="overflow-y-auto"
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
-          <div @click="redirectToUserProfile(msg.senderNick)">
+          <div v-if="msg.type == 'message'" @click="redirectToUserProfile(msg.sender.nickName)">
             <v-img
               :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
               style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
@@ -90,48 +102,54 @@
               :src="msg.picture" 
             />
           </div>
+
+          <!-- if the message is a normal message -->
           <v-card
+            v-if="msg.type == 'message'"
+            v-on:click="redirectToGame(msg.game_id)"
             class="bubble"
             :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
             :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
             style="min-width: 70px; max-width: 400px !important; margin-top: 20px"
           >
-
             <v-card-subtitle
               style="padding-bottom: 0px; color: white"
-              v-text="msg.senderNick"
+              v-text="msg.sender.nickName"
               class="text-left"
             >
             </v-card-subtitle>
-
-            <!-- if the message is a normal message -->
             <v-card-text  
-              v-if="msg.type == 'message'"
               style="padding-bottom: 0px; padding-right: 55px; color: white"
               v-text="msg.message"
             >
             </v-card-text>
-
-            <!-- if its a game -->
-            <div v-if="msg.type == 'game'">
-              <BasicBtn v-if="!isYourMsg(msg)" content="mdi-check" v-on:click="acceptGame(msg)"></BasicBtn>
-              <BasicBtn content="mdi-close" v-on:click="denyGame(msg)"></BasicBtn>
-            </div>
-            <!-- <v-card-text
-              v-if="msg.type == 'game'"
-              style="padding-bottom: 0px; padding-right: 55px; color: white"
-              v-text="'wshhhhhhhhhhhh'"
-            >
-            </v-card-text> -->
-
             <v-card-subtitle
               style="padding-bottom: 5px; padding-top: 0px; color: white"
               v-text="formateTime(msg.date)"
               class="text-right"
             >
             </v-card-subtitle>
-
           </v-card>
+
+          <!-- if the message is a game -->
+          <v-card
+            v-if="msg.type == 'game'"
+            class="bubble"
+            :color="getGameColor(msg)"
+            style="margin-top: 20px; float: center !important"
+          >
+            <div v-if="msg.type == 'game'">
+              <BasicBtn v-if="msg.game_state == 'pending' && !isYourMsg(msg)" content="mdi-check" v-on:click="acceptGame(msg)"></BasicBtn>
+              <BasicBtn v-if="msg.game_state == 'pending'" content="mdi-close" v-on:click="denyGame(msg)"></BasicBtn>
+            </div>
+            <v-card-subtitle
+              style="padding-bottom: 5px; padding-top: 0px; color: white"
+              v-text="formateTime(msg.date)"
+              class="text-right"
+            >
+            </v-card-subtitle>
+          </v-card>
+
         </div>
       </v-card>
     </v-col>
@@ -216,18 +234,28 @@ export default Vue.extend({
   async mounted() {
     var ret = await this.$axios.$get('/api/users/' + this.$route.params.slug)
     this.user = ret
-    console.log("this.user")
-    console.log(this.user)
-    console.log("ret")
-    console.log(ret)
+    // console.log("this.user")
+    // console.log(this.user)
+    // console.log("ret")
+    // console.log(ret)
     socket_chat.connect();
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
-    console.log(this.messagesArray)
-    console.log(this.me)
+    // console.log(this.messagesArray)
+    // console.log(this.me)
     socket_chat.on('privateMessage', (msg: PrivateMessages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
+    })
+    socket_game.on('privateMessage', (msg: PrivateMessages) => {
+      this.messagesArray.push(msg)
+      this.nbMsg = this.messagesArray.length
+    })
+    socket_game.on('updateMessage', (msg: PrivateMessages) => {
+      if (msg.type == "game") { // en theorie tout le temps game
+        var c_msg: PrivateMessages = this.messagesArray.find(element => element.id == msg.id)
+        c_msg.game_state = msg.game_state
+      }
     })
     socket_active.on("active", (userChange: LightUser) => {
           if (userChange.id == this.user.id)
@@ -262,6 +290,12 @@ export default Vue.extend({
       this.message = ''
     },
 
+    initiatePongRequest() {
+      if (socket_game.connected == false)
+        socket_game.connect()
+      socket_game.emit('newPrivate', this.user)
+    },
+
     acceptGame(msg: PrivateMessages) {
       socket_game.emit('acceptGame', {id: msg.game_id})
     },
@@ -275,6 +309,17 @@ export default Vue.extend({
       return newTime.getHours() + ':' + (newTime.getMinutes() < 10 ? '0' + newTime.getMinutes() : newTime.getMinutes())
     },
 
+    getGameColor(msg: PrivateMessages) {
+      if (msg.game_state == "pending")
+        return "#FFA500"
+      if (msg.game_state == "finish") {
+        if (msg.winner.id == this.me.id)
+          return "#b8a435"
+        return "#c7401e"
+      }
+      return "#FF0000"
+    },
+
     isYourMsg(msg: PrivateMessages): boolean {
       if (this.me.nickName == msg.sender.nickName)
         return (true)
@@ -283,6 +328,10 @@ export default Vue.extend({
 
     redirectToUserProfile(userNick: string) {
       this.$router.push("/users/" + userNick)
+    },
+
+    redirectToGame(game_id: string) {
+      this.$router.push("/game/" + game_id)
     },
 
     scrollToEnd() {    	
