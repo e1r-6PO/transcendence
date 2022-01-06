@@ -7,6 +7,12 @@ interface IPrivateMessages {
   message: string;
   picture: string;
   date: Date;
+
+  // relative to a game message
+  type: string;
+  game_id: string;
+  game_state: string;
+  winner: User;
 }
 
 class PrivateMessages {
@@ -17,6 +23,10 @@ class PrivateMessages {
   message: string;
   picture: string;
   date: Date;
+  type: string;
+  game_id: string;
+  game_state: string;
+  winner: User;
 
   constructor();
   constructor(msg: IPrivateMessages);
@@ -28,6 +38,10 @@ class PrivateMessages {
       this.message = msg && msg.message || "";
       this.date = msg && msg.time || new Date();
       this.picture = msg && msg.picture || "";
+      this.type = msg && msg.type || "message";
+      this.game_id = msg && msg.game_id || ""
+      this.game_state = msg && msg.game_state || ""
+      this.winner = msg && msg.target || "";
   }
 }
 

@@ -82,38 +82,55 @@
           class="overflow-y-auto"
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
-        <div @click="redirectToUserProfile(msg.senderNick)">
-          <v-img
-            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
-            style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
-            width="30"
-            :src="msg.picture" 
-          />
-        </div>
+          <div @click="redirectToUserProfile(msg.senderNick)">
+            <v-img
+              :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
+              style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
+              width="30"
+              :src="msg.picture" 
+            />
+          </div>
           <v-card
             class="bubble"
             :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
             :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
             style="min-width: 70px; max-width: 400px !important; margin-top: 20px"
           >
+
             <v-card-subtitle
               style="padding-bottom: 0px; color: white"
               v-text="msg.senderNick"
               class="text-left"
             >
-
             </v-card-subtitle>
-          <v-card-text
-            style="padding-bottom: 0px; padding-right: 55px; color: white"
-            v-text="msg.message"
-          >
-          </v-card-text>
-          <v-card-subtitle
-            style="padding-bottom: 5px; padding-top: 0px; color: white"
-            v-text="formateTime(msg.date)"
-            class="text-right"
-          >
-          </v-card-subtitle>
+
+            <!-- if the message is a normal message -->
+            <v-card-text  
+              v-if="msg.type == 'message'"
+              style="padding-bottom: 0px; padding-right: 55px; color: white"
+              v-text="msg.message"
+            >
+            </v-card-text>
+
+            <!-- if its a game -->
+            <div v-if="msg.type == 'game'">
+              <BasicBtn v-if="!isYourMsg(msg)" content="mdi-check" v-on:click="acceptGame(msg)"></BasicBtn>
+              <BasicBtn content="mdi-close" v-on:click="denyGame(msg)"></BasicBtn>
+            </div>
+            <!-- <v-card-text
+              v-if="msg.type == 'game'"
+              style="padding-bottom: 0px; padding-right: 55px; color: white"
+              v-text="'wshhhhhhhhhhhh'"
+            >
+            </v-card-text> -->
+
+            <v-card-subtitle
+              style="padding-bottom: 5px; padding-top: 0px; color: white"
+              v-text="formateTime(msg.date)"
+              class="text-right"
+            >
+            </v-card-subtitle>
+
           </v-card>
         </div>
       </v-card>
@@ -162,6 +179,7 @@ import ChannelSettings from '../../components/channel/ChannelSettings.vue';
 
 import socket_chat from '../../plugins/chat.io';
 import socket_active from '../../plugins/active.io';
+import socket_game from '../../plugins/game.io';
 
 export default Vue.extend({
   components: { CreateChannelBtn, ChannelList, ChannelUserList, BasicBtn,
@@ -235,12 +253,21 @@ export default Vue.extend({
       newMsg.message = this.message
       newMsg.date = new Date()
       newMsg.target = new User()
+      newMsg.type = "message"
       this.messagesArray.push(newMsg)
       socket_chat.emit('privateMessageToServer', this.message, this.$route.params.slug)
       socket_chat.on('MuteError', (msg: string) => {
         this.activeAlert(msg)
       })
       this.message = ''
+    },
+
+    acceptGame(msg: PrivateMessages) {
+      socket_game.emit('acceptGame', {id: msg.game_id})
+    },
+
+    denyGame(msg: PrivateMessages) {
+      socket_game.emit('denyGame', {id: msg.game_id})
     },
 
     formateTime(time: Date): string {

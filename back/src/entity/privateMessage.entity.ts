@@ -27,15 +27,6 @@ export class PrivateMessage {
   })
   target: User;
 
-  @Column({default: 'message'})
-  type: string; // message or game
-
-  @Column({nullable: true, default: null})
-  game_id: string // if type is message -> null
-
-  @Column({nullable: true, default: null})
-  game_state: string // pending, running, 
-
   @Column()
   message: string;
 
@@ -44,4 +35,22 @@ export class PrivateMessage {
 
   @Column()
   date: Date;
+
+  // if the message is a game
+
+  @Column({default: 'message'})
+  type: string; // message or game
+
+  @Column({nullable: true, default: null})
+  game_id: string // if type is message -> null
+
+  @Column({nullable: true, default: null})
+  game_state: string // pending, running, finish
+
+  @ManyToOne(() => User, {
+    eager: true,
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  winner: User;
 }
