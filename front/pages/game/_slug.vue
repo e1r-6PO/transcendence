@@ -123,6 +123,7 @@ export default Vue.extend({
       maptest.fillStyle = 'white'
       maptest.fillText(info['gameStart'], this.mapx / 2, this.mapy / 2);
     })
+
     socket_game.on('gameInfo', (info) => {
 
       var m = <HTMLCanvasElement> document.getElementById("map")
@@ -152,8 +153,8 @@ export default Vue.extend({
         }
       }
       //player1
-      this.map.rect(this.paddle0.x, this.paddle0.y, this.paddle0.width, this.paddle0.height)
-      this.map.rect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
+      maptest.rect(this.paddle0.x, this.paddle0.y, this.paddle0.width, this.paddle0.height)
+      maptest.rect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
       // drawing balls
       maptest.fill()
     })
