@@ -16,4 +16,24 @@ export class Paddle {
 		this.height = 60
 		this.speed = 60
 	}
+
+	moveUp(){
+		console.log(this.y)
+		let res = this.y - this.speed;
+		if (res < 0)
+			this.y = 0;
+		else
+			this.y -= this.speed;
+		console.log(this.y)
+	}
+	
+	moveDown(){
+		console.log(this.y)
+		let res = this.y + this.speed;
+		if (res + this.height > 600)
+			this.y = 600 - this.height;
+		else
+			this.y += this.speed;
+		console.log(this.y)
+	}
 }
