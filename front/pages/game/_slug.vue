@@ -21,12 +21,11 @@ import Vue from 'vue'
 import { LightUser } from '../../assets/Classes-ts/User'
 
 import { Ball } from '../../assets/Classes-ts/Ball'
-import { Player } from '../../assets/Classes-ts/Player'
+import { Paddle } from '../../assets/Classes-ts/Paddle'
 
 import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
-
   data() {
     return {
       game_id: this.$route.params.slug,
@@ -36,7 +35,7 @@ export default Vue.extend({
       mapy: 600,
       map: CanvasRenderingContext2D,
       balls: new Map<number, Ball>(),
-      paddle1: new Player(20, 300),
+      paddle1: new Paddle(20, 300),
     }
   },
 
@@ -73,11 +72,13 @@ export default Vue.extend({
       {
         console.log('KeyDown: ArrowUp');
         this.paddle1.moveUp();
+        //send Update paddle with game_id + mov
       }
       else if (event.key == 'ArrowDown')
       {
         console.log('KeyDown: ArrowDown');
         this.paddle1.moveDown();
+        //send Update paddle with game_id + mov
       }
     })
 
@@ -136,16 +137,22 @@ export default Vue.extend({
           this.balls.get(info[i].id).y = info[i].ball_location[1]
           // console.log(this.balls[0].x, this.balls[0].y)
           this.map.rect(this.balls.get(info[i].id).x - 10, this.balls.get(info[i].id).y - 10, 18, 18)
-          //player1
-          this.map.rect (this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
         }
         else if (info[i].status == "erased"){
           this.balls.delete(info[i].id)
         }
       }
+      //player1
+      this.map.rect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
       // drawing balls
       this.map.fill()
     })
+    // socket_game.on('paddleInfo', (info) => {
+    //   this.paddle0.x = info[0].x
+    //   this.paddle0.y = info[0].y
+    //   this.paddle1.x = info[1].x
+    //   this.paddle1.y = info[1].y
+    // })
   },
   beforeRouteLeave (to, from , next) {
     socket_game.off('matchInfo')

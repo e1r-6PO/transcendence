@@ -4,6 +4,7 @@ import { BroadcastOperator, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { Game } from "src/entity/game.entity";
 import { Match } from "src/entity/match.entity";
+import { PrivateMessage } from "src/entity/privateMessage.entity";
 import { User } from "src/entity/user.entity";
 import { Repository } from "typeorm";
 
@@ -14,7 +15,9 @@ export class GameService {
         private readonly usersRepository : Repository<User>,
         // @Inject(forwardRef(() => Game))
         @InjectRepository(Match)
-        private readonly matchRepository: Repository<Match>
+        private readonly matchRepository: Repository<Match>,
+        @InjectRepository(PrivateMessage)
+        private readonly privateMessageRepository: Repository<PrivateMessage>,
       ) {}
 
     games = new Map<string, Game>()
@@ -72,10 +75,16 @@ export class GameService {
             if (game.player0socket == null || game.scorep1 > game.scorep0) { // player0 dc or p1 won
                 game.room.emit('matchEnd', { winner: game.player1.toLightuser(), looser: game.player0.toLightuser() })
                 this.save_game(game)
+                if (game.type == "private") {
+                  this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "finish", winner: game.player1})
+                }
             }
             else if (game.player1socket == null || game.scorep0 > game.scorep1) { //player1 dc or p0 won
                 game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser })
                 this.save_game(game)
+                if (game.type == "private") {
+                  this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "finish", winner: game.player0})
+                }
             }
         }
         this.games.delete(game.id)
