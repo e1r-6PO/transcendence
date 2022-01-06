@@ -187,20 +187,27 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			// client.disconnect()
 	}
 
-	// @SubscribeMessage('updatePaddle')
-	// async updatePaddle(client: Socket, info: []){ //game id + movement
-	//     var game: Game = this.gameService.games.get(info['id'])
+	@SubscribeMessage('updatePaddle')
+	async updatePaddle(client: Socket, info: []){ //game id + movement
+	    var game: Game = this.gameService.games.get(info['id'])
 
-	//     if (!game)
-	//         return
+	    if (!game)
+	        return
 
-	// 		if (client['info'].id == game.player0.id) {
-	// 			game.paddle0.moveUp() / moveDown()
-	// 		}
-	// 		else if (client['info'].id == game.player1.id) {
-	// 			game.paddle1.moveUp() / moveDown()
-	// 		}
-	// }
+		console.log(info)
+		if (client['info'].id == game.player0.id) {
+			if (info['direction'] == 1)
+				game.paddle0.moveUp()
+			else if (info['direction'] == -1)
+				game.paddle0.moveDown()
+		}
+		else if (client['info'].id == game.player1.id) {
+			if (info['direction'] == 1)
+				game.paddle1.moveUp()
+			else if (info['direction'] == -1)
+				game.paddle1.moveDown()
+		}
+	}
 
 	afterInit(server: Server){
 			this.server = server
