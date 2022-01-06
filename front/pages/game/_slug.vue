@@ -35,7 +35,8 @@ export default Vue.extend({
       mapy: 600,
       map: CanvasRenderingContext2D,
       balls: new Map<number, Ball>(),
-      paddle1: new Paddle(20, 300),
+      paddle0: new Paddle(),
+      paddle1: new Paddle()
     }
   },
 
@@ -71,14 +72,16 @@ export default Vue.extend({
       else if (event.key == 'ArrowUp')
       {
         console.log('KeyDown: ArrowUp');
-        this.paddle1.moveUp();
+        // this.paddle0.moveUp();
         //send Update paddle with game_id + mov
+        socket_game.emit('updatePaddle', { id: this.game_id, direction: 1})
       }
       else if (event.key == 'ArrowDown')
       {
         console.log('KeyDown: ArrowDown');
-        this.paddle1.moveDown();
+        // this.paddle0.moveDown();
         //send Update paddle with game_id + mov
+        socket_game.emit('updatePaddle', { id: this.game_id, direction: -1})
       }
     })
 
@@ -143,16 +146,18 @@ export default Vue.extend({
         }
       }
       //player1
+      this.map.rect(this.paddle0.x, this.paddle0.y, this.paddle0.width, this.paddle0.height)
       this.map.rect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
       // drawing balls
       this.map.fill()
     })
-    // socket_game.on('paddleInfo', (info) => {
-    //   this.paddle0.x = info[0].x
-    //   this.paddle0.y = info[0].y
-    //   this.paddle1.x = info[1].x
-    //   this.paddle1.y = info[1].y
-    // })
+
+    socket_game.on('paddleInfo', (info) => {
+      this.paddle0.x = info['paddle0_location'][0]
+      this.paddle0.y = info['paddle0_location'][1]
+      this.paddle1.x = info['paddle1_location'][0]
+      this.paddle1.y = info['paddle1_location'][1]
+    })
   },
   beforeRouteLeave (to, from , next) {
     socket_game.off('matchInfo')
