@@ -94,16 +94,13 @@
           class="overflow-y-auto"
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
-          <div v-if="msg.type == 'message'" @click="redirectToUserProfile(msg.sender.nickName)">
-            <v-img
-              :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
-              style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
-              width="30"
-              :src="msg.picture" 
-            />
-          </div>
-
-          <!-- if the message is a normal message -->
+          <v-img
+            @click="isYourMsg(msg) ? '' : redirectToUserProfile(msg.senderNick)"
+            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0px'"
+            style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
+            width="30"
+            :src="msg.picture" 
+          />
           <v-card
             v-if="msg.type == 'message'"
             class="bubble"

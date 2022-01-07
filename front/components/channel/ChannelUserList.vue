@@ -1,5 +1,5 @@
 <template>
-  <v-list dense>
+  <v-list v-if="userList.length > 0" dense>
     <slot> </slot>
     <div v-for="(user, i) in userList"
       class="neon-button"
@@ -66,7 +66,7 @@ export default class ChannelUserList extends Vue {
   @Prop({ type: Number, default: 0 })
   meId!: Number
   
-  userList: Array<ChannelUser> = []
+  userList: Array<ChannelUser> = new Array<ChannelUser>()
   activeUser: Map<number, LightUser> = new Map()
   userFocus: number = -1
   updateActive: boolean = false
@@ -77,8 +77,8 @@ export default class ChannelUserList extends Vue {
     .catch(function(error) {
       return error.response
     })
-    if (userListRet.status == 403)
-      this.$router.push('/chat')
+    if (userListRet.status == 403 || userListRet.status == 404)
+      this.$router.push('/chat?error=' + userListRet.data.message)
     else
     {
       this.userList = userListRet.data

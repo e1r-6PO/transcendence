@@ -326,4 +326,17 @@ export class ChannelController {
     this.channelParticipantsRepository.delete(owner)
   }
 
+  @Delete(':channName/delete')
+  async deleteChannel(@Param('channName') channName, @Req() req: Request) {
+    
+    var channel = await this.channelService.findChannel(channName)
+    var user = await this.channelService.findUserById(req.cookies['user_id'])
+    var owner = await this.channelService.findParticipant(user, channel)
+
+    if (owner.status != ChannelStatus.owner)
+      throw new ForbiddenException("Only owner can delete a channel")
+    
+    this.channelsRepository.delete(channel)
+  }
+
 }

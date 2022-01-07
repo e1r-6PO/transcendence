@@ -17,7 +17,7 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <TextField v-model="userName" append_outer_icon="mdi-send" placeholder="User name"/>
+            <TextField v-model="userName" append_outer_icon="mdi-account-plus" placeholder="User name"/>
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -32,6 +32,7 @@
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator';
 import Vue from 'vue'
+import socket_chat from '../../plugins/chat.io'
 
 @Component
 export default class AddUserBtn extends Vue{
@@ -50,7 +51,10 @@ export default class AddUserBtn extends Vue{
     else if (ret.status == 404)
       this.$router.push('/chat?error=' + ret.data.message)
     else
+    {
+      socket_chat.emit("userAdd", this.$route.params.slug, this.userName)
       this.$emit('refreshUser')
+    }
     this.dialog = false
     this.userName = ""
   }

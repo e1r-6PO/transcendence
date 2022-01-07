@@ -1,7 +1,7 @@
 <template>
   <v-alert v-if="state" :textError="textError" :state="state"
     outlined
-    :type=alertType
+    :type="type"
     text
     dismissible
     style="position: absolute; right: 0px; top: 30px; z-index: 12; width: 100%"
@@ -23,8 +23,10 @@ export default class AlertError extends Vue{
   @Prop({ type: String, default: "" })
   textError!: string
 
+  @Prop({ type: String, default: "error" })
+  type!: string
+
   alertCode: boolean = true
-  alertType: string = 'error'
   alert: boolean = false
 
   @Watch('state', { immediate: true })
