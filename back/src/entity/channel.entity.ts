@@ -26,7 +26,8 @@ export class Channel {
     @PrimaryGeneratedColumn()
     id : number;
 
-    @Column()
+    @Column({ default: "", collation: "utf8mb4_bin",
+    charset: "utf8mb4"})
     channName: string;
     
     @Column({ default: '' })

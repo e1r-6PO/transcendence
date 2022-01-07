@@ -35,6 +35,9 @@ export class ChannelController {
     var channel = await this.channelService.findChannel(channName)
     
     var participant = await this.channelService.findParticipant(req.cookies['user_id'], channel)
+      .catch(function(error) {
+        return null
+      })
     if (participant && participant.status == ChannelStatus.owner)
       return { channName: channel.channName, channAccess: channel.channAccess, channPass: channel.channPass }  
     else
@@ -94,7 +97,7 @@ export class ChannelController {
   }
 
   @Post(':channName/create')
-  async createChannel(@Param('channName') channName, @Req() req: Request): Promise<void>
+  async createChannel(@Param('channName') channName, @Query() query, @Req() req: Request): Promise<void>
   {
     if (!channName[0] || channName[0] == ' ')
       throw new ConflictException("Channel name can't start with space")
@@ -306,7 +309,6 @@ export class ChannelController {
   @Patch(':channName/giveOwner')
   async giveOwner(@Param('channName') channName, @Query() query, @Req() req: Request)
   {
-    console.log("COUCOU ICI LE LOOOOOOOOOG")
     if (!query['userName'])
       throw new ForbiddenException("Missing params")
     var channel = await this.channelService.findChannel(channName)
