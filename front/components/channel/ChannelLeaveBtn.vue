@@ -7,6 +7,7 @@
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator'
 import Vue from 'vue'
+import socket_chat from '../../plugins/chat.io'
 
 @Component
 export default class ChannelLeaveBtn extends Vue{
@@ -18,6 +19,7 @@ export default class ChannelLeaveBtn extends Vue{
     this.$axios.post('/api/chat/' + this.$route.params.slug + '/leave')
     this.$router.push('/chat')
     this.$emit("refreshUser")
+    socket_chat.emit('userLeaveChannel', this.$route.params.slug)
   }
 }
 </script>

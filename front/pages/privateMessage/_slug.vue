@@ -94,19 +94,15 @@
           class="overflow-y-auto"
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
-          <div v-if="msg.type == 'message'" @click="redirectToUserProfile(msg.sender.nickName)">
-            <v-img
-              :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
-              style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
-              width="30"
-              :src="msg.picture" 
-            />
-          </div>
-
-          <!-- if the message is a normal message -->
+          <v-img
+            @click="isYourMsg(msg) ? '' : redirectToUserProfile(msg.senderNick)"
+            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0px'"
+            style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
+            width="30"
+            :src="msg.picture" 
+          />
           <v-card
             v-if="msg.type == 'message'"
-            v-on:click="redirectToGame(msg.game_id)"
             class="bubble"
             :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
             :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
@@ -134,6 +130,7 @@
           <!-- if the message is a game -->
           <v-card
             v-if="msg.type == 'game'"
+            v-on:click="redirectToGame(msg.game_id, msg.game_state)"
             class="bubble"
             :color="getGameColor(msg)"
             style="margin-top: 20px; float: center !important"
@@ -234,15 +231,10 @@ export default Vue.extend({
   async mounted() {
     var ret = await this.$axios.$get('/api/users/' + this.$route.params.slug)
     this.user = ret
-    // console.log("this.user")
-    // console.log(this.user)
-    // console.log("ret")
-    // console.log(ret)
     socket_chat.connect();
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
-    // console.log(this.messagesArray)
-    // console.log(this.me)
+    this.scrollToEnd()
     socket_chat.on('privateMessage', (msg: PrivateMessages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
@@ -253,8 +245,11 @@ export default Vue.extend({
     })
     socket_game.on('updateMessage', (msg: PrivateMessages) => {
       if (msg.type == "game") { // en theorie tout le temps game
-        var c_msg: PrivateMessages = this.messagesArray.find(element => element.id == msg.id)
-        c_msg.game_state = msg.game_state
+        var c_msg: PrivateMessages | undefined = this.messagesArray.find(element => element.id == msg.id)
+        if (c_msg != undefined) {
+          c_msg.game_state = msg.game_state
+          c_msg.game_id = msg.game_id
+        }
       }
     })
     socket_active.on("active", (userChange: LightUser) => {
@@ -327,11 +322,14 @@ export default Vue.extend({
     },
 
     redirectToUserProfile(userNick: string) {
-      this.$router.push("/users/" + userNick)
+      this.$router.push("/users/" + this.$route.params.slug)
     },
 
-    redirectToGame(game_id: string) {
-      this.$router.push("/game/" + game_id)
+    redirectToGame(game_id: string, game_state: string) {
+      if (game_state == "canceled")
+        null//raise notification
+      else
+        this.$router.push("/game/" + game_id)
     },
 
     scrollToEnd() {    	

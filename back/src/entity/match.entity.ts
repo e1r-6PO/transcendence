@@ -20,4 +20,9 @@ export class Match {
     scorep0: number
     @Column( {default: 0} )
     scorep1: number
+
+    @ManyToOne(() => User, {
+        eager: true,
+    })
+    winner: User
 }

@@ -96,7 +96,6 @@ export default Vue.extend({
   async created() {
     if (!socket_game.hasListeners('matchFound')) {
     socket_game.on('matchFound', (info) => {
-      console.log('match found')
       this.$router.push('/game/' + info['id'])
     })}
   }

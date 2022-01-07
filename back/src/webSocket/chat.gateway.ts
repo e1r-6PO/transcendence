@@ -13,7 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AddUserIdMiddleware } from "src/middleware/account.middleware";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/entity/user.entity";
-import { Messages } from "src/entity/messages.entity"
+import { Messages, Messages_type } from "src/entity/messages.entity"
 import { Channel } from "src/entity/channel.entity";
 import { ChannelParticipant } from "src/entity/channelParticipant.entity";
 import { IoAdapter } from "@nestjs/platform-socket.io";
@@ -120,44 +120,88 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         newMsg.senderNick = newMsg.sender.nickName;
         newMsg.picture = newMsg.sender.picture;
         newMsg.channel = chan;
+        newMsg.type = Messages_type.default
 
         this.messagesRepository.save(newMsg)
         this.server.to(av[1]).emit('msgToClient', newMsg);
     }
 
     @SubscribeMessage('joinChannel')
-    async joinChannel(client: Socket, channName: string): Promise<void>{
+    async joinChannel(client: Socket, av: any): Promise<void>{
         
         var chan = await this.ChannelsRepository.findOne({
-            where: { channName: channName }
+            where: { channName: av[0] }
         })
         
         var participant = await this.ChannelsParticipantsRepository.findOne({
             where: { user: client['info'], channel: chan }
         })
-        if (!participant)
+        if (participant)
         {
-            client.disconnect()
-            return
+            var tmp = new Date()
+            if (participant.isBan && participant.banTime.getTime() > tmp.getTime())
+            {
+                client.disconnect()
+                return
+            }
+            else
+            {
+                this.ChannelsParticipantsRepository.update({
+                    channel: chan, user: client['info']
+                    }, {
+                    isBan: false, banTime: new Date()
+                })
+            }
         }
-        var tmp = new Date()
-        if (participant.isBan && participant.banTime.getTime() > tmp.getTime())
+        client.join(av[0])
+        if (av[1] && av[1] == "join")
         {
-            client.disconnect()
-            return
+            var servMsg = new Messages()
+
+            servMsg.sender = client['info']
+            servMsg.type = Messages_type.server
+            servMsg.message = "User <" + client['info'].nickName + "> has join the channel."
+            servMsg.channel = chan
+            this.server.to(av[0]).emit("newUser", servMsg)
+            this.messagesRepository.save(servMsg)
         }
-        else
-        {
-            this.ChannelsParticipantsRepository.update({
-                channel: chan, user: client['info']
-                }, {
-                isBan: false, banTime: new Date()
-            })
-        }
-        client.join(channName)
-        this.server.to(channName).emit("refreshUser")
+        this.server.to(av[0]).emit("refreshUser")
         console.log(client.rooms)
         // this.server.emit('ConnectedToChannel', "You are in room " + client.adapter)
+    }
+
+    @SubscribeMessage('userLeaveChannel')
+    async userLeaveChannel(client: Socket, channName: string) {
+      
+      var chan = await this.ChannelsRepository.findOne({
+        where: { channName: channName }
+      })
+
+      var servMsg = new Messages()
+      servMsg.sender = client['info']
+      servMsg.type = Messages_type.server
+      servMsg.message = "User <" + client['info'].nickName + "> has left the channel."
+      servMsg.channel = chan
+      this.server.to(channName).emit("leaveUser", servMsg)
+      this.messagesRepository.save(servMsg)
+    }
+
+    @SubscribeMessage('userAdd')
+    async userAdd(client: Socket, av: any) {
+      
+      if (!av[0] || !av[1])
+        return
+      var chan = await this.ChannelsRepository.findOne({
+        where: { channName: av[0] }
+      })
+
+      var servMsg = new Messages()
+      servMsg.sender = client['info']
+      servMsg.type = Messages_type.server
+      servMsg.message = client['info'].nickName + " has add <" + av[1] + "> in the channel."
+      servMsg.channel = chan
+      this.server.to(av[0]).emit("newUser", servMsg)
+      this.messagesRepository.save(servMsg)
     }
 
     @SubscribeMessage('refreshUser')
@@ -195,6 +239,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         setTimeout(() => {
             this.server.to(av[0]).emit("deleteUser", user_data.id)
         }, 200)
+    }
+
+    @SubscribeMessage('deleteChannel')
+    async deleteChannel(client: Socket, channName: string) {
+        client.to(channName).emit('ChannelDelete', client['info'].nickName);
     }
 
     afterInit(server: Server){

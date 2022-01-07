@@ -63,7 +63,7 @@
         class="mt-4"
       >
         <v-subheader class="mt-3 mb-8">
-          <ChannelLeaveBtn v-if="isDefaultUser()" @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
+          <ChannelLeaveBtn v-if="isDefaultUser()" @refreshUser="updateToken" class="pl-3"> </ChannelLeaveBtn>
           <ChannelSettings v-if="isOwnerOrAdmin()"
             @error="activeAlert"
             @refreshUser="updateToken"
@@ -93,39 +93,47 @@
           class="overflow-y-auto"
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
-        <div @click="redirectToUserProfile(msg.senderNick)">
-          <v-img
-            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
-            style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
-            width="30"
-            :src="msg.picture" 
-          />
-        </div>
-          <v-card
-            class="bubble"
-            :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
-            :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
-            style="min-width: 70px; max-width: 400px !important; margin-top: 20px"
-          >
-            <v-card-subtitle
-              style="padding-bottom: 0px; color: white"
-              v-text="msg.senderNick"
-              class="text-left"
+        <div v-if="isMsgDefault(msg)">
+          <div @click="redirectToUserProfile(msg.senderNick)">
+            <v-img
+              :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
+              style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
+              width="30"
+              :src="msg.picture" 
+            />
+          </div>
+            <v-card
+              class="bubble"
+              :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
+              :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
+              style="min-width: 70px; max-width: 400px !important; margin-top: 20px"
             >
+              <v-card-subtitle
+                style="padding-bottom: 0px; color: white"
+                v-text="msg.senderNick"
+                class="text-left"
+              >
 
-            </v-card-subtitle>
-          <v-card-text
-            style="padding-bottom: 0px; padding-right: 55px; color: white"
-            v-text="msg.message"
-          >
-          </v-card-text>
-          <v-card-subtitle
-            style="padding-bottom: 5px; padding-top: 0px; color: white"
-            v-text="formateTime(msg.time)"
-            class="text-right"
-          >
-          </v-card-subtitle>
+              </v-card-subtitle>
+              <v-card-text
+                style="padding-bottom: 0px; padding-right: 55px; color: white"
+                v-text="msg.message"
+              />
+              <v-card-subtitle
+                style="padding-bottom: 5px; padding-top: 0px; color: white"
+                v-text="formateTime(msg.time)"
+                class="text-right"
+              />
+            </v-card>
+          </div>
+        <div v-if="isMsgServer(msg)">
+          <v-card class="bubble_server" align="center" height="35">
+            <v-card-text
+              class="white--text pt-1"
+              v-text="msg.message"
+            />
           </v-card>
+        </div>
         </div>
       </v-card>
     </v-col>
@@ -133,34 +141,17 @@
   </v-row>
   
   <v-footer app inset color="#181818">
-    <v-text-field
-      v-model="message"
-      class="text-field-nick-neon custom-placeholder-color custom-input-color"
-      style="margin-top: 3%"
-      placeholder="Message"
-      background-color="#181818"
-      color="blue"
-      hide-details
-      filled
-      dense
-      rounded
-      autofocus
-      @keypress.enter="sendMessage"
-    >
-    <template v-slot:append>
-      <v-icon v-if="message.length > 0" @click="clearMessage()" color="#b8a435"> mdi-close-circle </v-icon>
-    </template>
-      <v-icon slot="append-outer" color="#b8a435" class="mr-2"> mdi-send </v-icon>
-    </v-text-field>
+    <TextField @enterPress="sendMessage" v-model="message" append_outer_icon="mdi-send" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
 </template>
 
 <script lang='ts'>
 import Vue from 'vue'
-import { Messages } from '../../assets/Classes-ts/Messages'
+import { Messages, MessagesType } from '../../assets/Classes-ts/Messages'
 import { LightUser, User } from '../../assets/Classes-ts/User'
 import { ChannelUser } from '../../assets/Classes-ts/ChannelUser'
+import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
 import { io, Socket } from "socket.io-client";
 import ChannelList from '../../components/channel/ChannelList.vue';
 import ChannelUserList from '../../components/channel/ChannelUserList.vue';
@@ -168,7 +159,6 @@ import CreateChannelBtn from '../../components/channel/CreateChannelBtn.vue';
 import BasicBtn from '../../components/channel/button/BasicBtn.vue';
 import ChannelLeaveBtn from '../../components/channel/ChannelLeaveBtn.vue';
 import AlertError from '../../components/AlertError.vue';
-import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
 import ChannelSettings from '../../components/channel/ChannelSettings.vue'
 
 import socket_chat from '../../plugins/chat.io'
@@ -181,7 +171,7 @@ export default Vue.extend({
   data() {
     return {
       message: '',
-      messagesArray: new Array<String>(),
+      messagesArray: new Array<Messages>(),
       me: new ChannelUser(),
       nbMsg: -1,
       userList: new Array<ChannelUser>(),
@@ -206,7 +196,9 @@ export default Vue.extend({
 
   async mounted() {
     const ret = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/access')
-      .catch(function (error) {
+      .catch(function (this: any, error) {
+        if (error.response.satus == 404)
+          this.$router.push('/chat?error=' + ret.data.message)
         return error.response
       })
     if (ret.status == 404)
@@ -215,20 +207,30 @@ export default Vue.extend({
       this.activeAlert(ret.data.message)
     else
     {
-      socket_chat.connect();
-      socket_chat.emit('joinChannel', this.$route.params.slug);
+      if (socket_chat.connected == false)
+      {
+        socket_chat.connect();
+        socket_chat.emit('joinChannel', this.$route.params.slug, "");
+      }
       this.me = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/me')
       this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
-      
-      socket_chat.on('msgToClient', (msg: string) => {
+      this.nbMsg = this.messagesArray.length
+      socket_chat.on('msgToClient', (msg: Messages) => {
         this.messagesArray.push(msg)
         this.nbMsg = this.messagesArray.length
       })
       socket_chat.on('refreshUser', (msg: string) => {
         this.tokenUser = -this.tokenUser
       })
+      socket_chat.on('newUser', (servMsg: Messages) => {
+        this.messagesArray.push(servMsg)
+        this.nbMsg = this.messagesArray.length
+      })
+      socket_chat.on('leaveUser', (servMsg: Messages) => {
+        this.messagesArray.push(servMsg)
+        this.nbMsg = this.messagesArray.length
+      })
       socket_chat.on('newOwner', (ownerId: number) => {
-        console.log(this.me.id)
         if (ownerId == this.me.id)
           this.me.channelStatus = ChannelUserStatus.OWNER
         this.tokenUser = -this.tokenUser
@@ -239,18 +241,21 @@ export default Vue.extend({
         this.tokenUser = -this.tokenUser
       })
       socket_chat.on('deleteUser', (ownerId: number) => {
-        console.log("ownerId")
-        console.log(ownerId)
         if (ownerId == this.me.id)
           this.$router.push('/chat')
         else
           this.tokenUser = -this.tokenUser
+      })
+      socket_chat.on('ChannelDelete', (owner: string) => {
+        this.$router.push('/chat?event=' + owner + ' has deleted the channel ' + this.$route.params.slug + '.')
       })
     }
   },
 
   methods: {
     sendMessage(): void {
+      if (this.message.length > 240)
+        return
       var test = socket_chat.emit('msgToServer', this.message, this.$route.params.slug)
       socket_chat.on('MuteError', (msg: string) => {
         this.activeAlert(msg)
@@ -267,6 +272,14 @@ export default Vue.extend({
       if (this.me.nickName == msg.sender.nickName)
         return (true)
       return (false)
+    },
+
+    isMsgDefault(msg: Messages) {
+      return msg.type == MessagesType.DEFAULT
+    },
+
+    isMsgServer(msg: Messages) {
+      return msg.type == MessagesType.SERVER
     },
 
     redirectToUserProfile(userNick: string) {

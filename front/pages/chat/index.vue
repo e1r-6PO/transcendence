@@ -3,7 +3,7 @@
   fluid 
   fill-height
  >
-  <AlertError @end="onEnd" :textError="alertText" :state="alert"></AlertError>
+  <AlertError @end="onEnd" :textError="alertText" :state="alert" :type="alertType"></AlertError>
   <v-row style="height: 100%">
 
     <v-col cols="12" sm="3" class="border">
@@ -17,15 +17,6 @@
       </v-divider>
       
       <ChannelList class="mt-4" :state="true" />
-      <!-- <v-card v-for="(channel, i) in channList" :key="channList[i]"
-        tile
-        @click="redirectToChannel(channel)"
-      >
-        <v-card-text>
-          {{ channel }}
-        </v-card-text>
-        <v-divider></v-divider>
-      </v-card> -->
     </v-col>
 
     <v-col cols="12" sm="6" class="border">
@@ -33,15 +24,6 @@
     </v-col>
 
     <v-col cols="12" sm="3">
-      <!-- <v-card v-for="(channel, i) in channList" :key="channList[i]"
-        tile
-        @click="redirectToChannel(channel)"
-      >
-        <v-card-text>
-          {{ channel }}
-        </v-card-text>
-        <v-divider></v-divider>
-      </v-card> -->
     </v-col>
   </v-row>
 </v-container>
@@ -64,12 +46,17 @@ export default Vue.extend({
     return {
       alertText: "",
       alert: false,
+      alertType: "error",
     }
   },
 
   async mounted() {
     if (this.$route.query['error'] && this.$route.query['error'] != "")
       this.activeAlert(this.$route.query['error'])
+    else if (this.$route.query['success'] && this.$route.query['success'] != "")
+      this.activeSucess(this.$route.query['success'])
+    else if (this.$route.query['event'] && this.$route.query['event'] != "")
+      this.activeEvent(this.$route.query['event'])
   },
 
   methods: {
@@ -78,10 +65,22 @@ export default Vue.extend({
         this.$router.push('/chat/' + channName)
     },
     
-    activeAlert(error: any)
-    {
-        this.alertText = error
-        this.alert = true
+    activeAlert(error: any) {
+      this.alertText = error
+      this.alertType = "error"
+      this.alert = true
+    },
+
+    activeSucess(success: any) {
+      this.alertText = success
+      this.alertType = "success"
+      this.alert = true
+    },
+    
+    activeEvent(success: any) {
+      this.alertText = success
+      this.alertType = "info"
+      this.alert = true
     },
 
     onEnd() {

@@ -29,7 +29,8 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field
+            <TextField v-model="channName" placeholder="Channel name" />
+            <!-- <v-text-field
               placeholder="Channel name"
               v-model="channName"
               class="custom-select-color custom-placeholder-color custom-input-color"
@@ -37,7 +38,7 @@
               rounded
               filled
               dense
-            ></v-text-field>
+            ></v-text-field> -->
             <v-select
               :items="typeList"
               placeholder="Channel type"
@@ -51,7 +52,8 @@
               item-color="yellow"
             >
             </v-select>
-            <v-text-field
+            <TextField v-model="channPass" placeholder="Password" :disable="channType != 'Protected'" />
+            <!-- <v-text-field
               placeholder="Password"
               v-model="channPass"
               class="mt-3 custom-select-color custom-placeholder-color custom-input-color"
@@ -61,7 +63,7 @@
               filled
               dense
               :disabled="channType != 'Protected'"
-            ></v-text-field>
+            ></v-text-field> -->
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -94,11 +96,14 @@ export default class CreateChannelBtn extends Vue{
 
   async createChannel() {
     this.dialog = false
+    console.log("type" + this.channType + " pass: " + this.channPass)
     this.formateChannName()
     const ret = await this.$axios.$post('/api/chat/' + this.channName + '/create?type=' + this.channType + '&pass=' + this.channPass)
       .catch(function (error) {
         return error.response
       });
+    console.log("RET")
+    console.log(ret)
     if (ret.status == 409)
       this.activeAlert(ret.data.message)
     else

@@ -17,16 +17,7 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field
-              v-model="userName"
-              placeholder="User name"
-              class="mt-3 custom-select-color custom-placeholder-color custom-input-color neonText"
-              color="blue"
-              hide-details
-              filled
-              dense
-              rounded
-            ></v-text-field>
+            <TextField v-model="userName" append_outer_icon="mdi-account-plus" placeholder="User name"/>
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -41,6 +32,7 @@
 <script lang="ts">
 import { Component } from 'nuxt-property-decorator';
 import Vue from 'vue'
+import socket_chat from '../../plugins/chat.io'
 
 @Component
 export default class AddUserBtn extends Vue{
@@ -59,7 +51,10 @@ export default class AddUserBtn extends Vue{
     else if (ret.status == 404)
       this.$router.push('/chat?error=' + ret.data.message)
     else
+    {
+      socket_chat.emit("userAdd", this.$route.params.slug, this.userName)
       this.$emit('refreshUser')
+    }
     this.dialog = false
     this.userName = ""
   }
@@ -68,5 +63,15 @@ export default class AddUserBtn extends Vue{
   {
     this.$emit('error', error)
   }
+
+  addInput(text: string) {
+    this.userName = text
+  }
 }
 </script>
+
+<style>
+@import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/neon_effects.scss';
+@import '../../assets/Classes-scss/chat_bubble.scss';
+</style>
