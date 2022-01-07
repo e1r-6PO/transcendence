@@ -135,6 +135,14 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    $route(to, from) {
+      if (from.query.next != null) {
+        this.$router.push(from.query.next)
+      }
+    },
+  },
+
   async mounted() {
     if (!socket_active.connected)
       socket_active.connect()
@@ -152,7 +160,7 @@ export default Vue.extend({
     })
     socket_game.on('privateGameStarting', (info) => {
       // the other personne accepted the invitation
-      this.$router.push('/game/' + info)
+      this.$router.push('/game/' + info + '?next=' + window.location.pathname)
     })
     socket_game.on('notificationPrivateGameInviteSent', (info) => {
       // you invited someone to a game and it was successfully sent
