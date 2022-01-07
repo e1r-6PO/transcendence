@@ -37,7 +37,7 @@
                 <v-select
                   v-model="channAccess"
                   :items="typeList"
-                  class="custom-select-color"
+                  class="custom-select-color custom-placeholder-color custom-input-color text-white"
                   placeholder="Channel type"
                   color="yellow"
                   background-color="#181818"
@@ -47,17 +47,7 @@
                   dense
                   rounded
                 ></v-select>
-                <v-text-field
-                  v-model="channPass"
-                  placeholder="Password"
-                  class="mt-3 custom-select-color custom-placeholder-color custom-input-color neonText"
-                  color="blue"
-                  hide-details
-                  filled
-                  dense
-                  rounded
-                  :disabled="channAccess != 'Protected'"
-                ></v-text-field>
+                <TextField v-model="channPass" :disable="channAccess != 'Protected'" placeholder="Password"/>
               </v-col>
             </v-row>
           </v-container>
@@ -203,7 +193,8 @@ export default class ChannelSettings extends Vue{
 
 </script>
 
-<style>
+<style scoped>
 @import '../../assets/Classes-scss/main_page.scss';
 @import '../../assets/Classes-scss/neon_effects.scss';
+@import '../../assets/Classes-scss/chat_bubble.scss';
 </style>

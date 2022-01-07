@@ -17,16 +17,7 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field
-              v-model="userName"
-              placeholder="User name"
-              class="mt-3 custom-select-color custom-placeholder-color custom-input-color neonText"
-              color="blue"
-              hide-details
-              filled
-              dense
-              rounded
-            ></v-text-field>
+            <TextField v-model="userName" append_outer_icon="mdi-send" placeholder="User name"/>
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -68,5 +59,15 @@ export default class AddUserBtn extends Vue{
   {
     this.$emit('error', error)
   }
+
+  addInput(text: string) {
+    this.userName = text
+  }
 }
 </script>
+
+<style>
+@import '../../assets/Classes-scss/main_page.scss';
+@import '../../assets/Classes-scss/neon_effects.scss';
+@import '../../assets/Classes-scss/chat_bubble.scss';
+</style>
