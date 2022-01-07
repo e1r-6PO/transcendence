@@ -10,7 +10,15 @@
         </v-list-item-action>
         <v-list-item-title  style="color: white">Friend status</v-list-item-title>
       </v-list-item> -->
-
+      <v-list-item align="center" v-if="meId == user.id">
+        <v-list-item-title style="color: white"> Hello It's you </v-list-item-title>
+      </v-list-item>
+      <v-list-item>
+        <v-list-item-action>
+          <BasicBtn @click="redirectToUserProfile(user.nickName)" :iconSize="25" content="mdi-account" />
+        </v-list-item-action>
+        <v-list-item-title  style="color: white">See {{ meId == user.id ? 'your' : '' }} profile</v-list-item-title>
+      </v-list-item>
       <v-list-item v-if="meId != user.id">
         <v-list-item-action>
           <BasicBtn @click="initiatePongRequest()" :iconSize="25" content="mdi-table-tennis" />
@@ -21,22 +29,13 @@
         <v-list-item-action>
           <BasicBtn @click="goToMessage(user.nickName)" :iconSize="20" content="mdi-message" />
         </v-list-item-action>
-        <v-list-item-title  style="color: white">Send Message</v-list-item-title>
-      </v-list-item>
-      <v-list-item align="center" v-if="meId == user.id">
-        <v-list-item-title style="color: white"> Hello It's you </v-list-item-title>
+        <v-list-item-title  style="color: white">Send message</v-list-item-title>
       </v-list-item>
       <v-list-item align="center">
         <v-list-item-title style="color: white">Win 18</v-list-item-title>
         <v-list-item-title style="color: white">Lose 13</v-list-item-title>
       </v-list-item>
     </v-list>
-
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <BasicBtn @click="closeCard()" :isText="true" content="Close" />
-      <BasicBtn @click="redirectToUserProfile(user.nickName)" :isText="true" content="Profile" />
-    </v-card-actions>
   </div>
 </template>
 

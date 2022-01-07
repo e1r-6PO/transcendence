@@ -27,6 +27,9 @@
       <v-card
         style="background-color: #181818"
       > 
+        <div align="end">
+          <BasicBtn @click="dialog = false" content="mdi-close" class="mt-3 mr-3" />
+        </div>
         <v-card-title v-if="status == isOwner()" class="justify-center">
           <p align="center" class="text-h4 white--text">{{ channName }}</p>
         </v-card-title>
@@ -54,8 +57,8 @@
         </v-card-text>
       <v-card-actions v-if="status == isOwner()">
         <LeaveOwnerBtn @error="activeAlert" />
+        <DeleteChannelBtn class="ml-2"/>
         <v-spacer></v-spacer>
-        <BasicBtn @click="dialog = false" :isText="true" content="Close" />
         <BasicBtn :disable="disableSave()" @click="saveSettings()" isText content="Save" />
       </v-card-actions>
       <v-divider v-if="status == isOwner()" class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
@@ -76,8 +79,6 @@
         />
       <v-card-actions v-if="status != isOwner()">
         <ChannelLeaveBtn @refreshUser="updateToken"/>
-        <v-spacer></v-spacer>
-        <BasicBtn @click="dialog = false" :isText="true" content="Close" />
       </v-card-actions>
       </v-card>
     </v-dialog>
@@ -115,7 +116,6 @@ export default class ChannelSettings extends Vue{
     'Private',
     'Protected'
   ]
-  userList: Array<ChannelUser> = []
   dialog: boolean = false
   settingsFocus: boolean = false
   btnFocus: boolean = false
@@ -135,14 +135,6 @@ export default class ChannelSettings extends Vue{
       this.channAccess = ret.data.channAccess
       this.actualPass = ret.data.channPass
     }
-    var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
-    .catch(function(error) {
-      return error.response
-    })
-    if (userListRet.status == 403)
-      this.$router.push('/chat?error=' + userListRet.data.message)
-    else
-      this.userList = userListRet.data
   }
 
   disableSave() {
