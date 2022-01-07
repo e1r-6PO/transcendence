@@ -6,6 +6,11 @@ export enum ChannAccess {
     PUBLIC = "Public"
 }
 
+export enum MessagesType {
+    DEFAULT = "default",
+    SERVER = "server",
+}
+
 interface IMessages {
     id: number;
     sender: User;
@@ -22,6 +27,7 @@ class Messages {
     message: string;
     picture: string;
     time: Date;
+    type: MessagesType;
 
     constructor();
     constructor(msg: IMessages);
@@ -33,6 +39,7 @@ class Messages {
         this.message = msg && msg.message || "";
         this.time = msg && msg.time || new Date();
         this.picture = msg && msg.picture || "";
+        this.type = msg && msg.type || MessagesType.DEFAULT
     }
 }
 

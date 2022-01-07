@@ -2,6 +2,11 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMan
 import { Channel } from "./channel.entity";
 import { User } from "./user.entity";
 
+export enum Messages_type {
+    default = "default",
+    server = "server"
+}
+
 @Entity()
 export class Messages {
     constructor()
@@ -11,6 +16,7 @@ export class Messages {
         this.senderNick = "";
         this.time = new Date();
         this.picture = "";
+        this.type = Messages_type.default;
     }
 
     @PrimaryGeneratedColumn()
@@ -34,6 +40,9 @@ export class Messages {
     @Column()
     picture: string;
 
+    @Column()
+    type: Messages_type;
+
     @ManyToOne(() => Channel, { onDelete: "CASCADE"})
     channel: Channel;
 
@@ -50,7 +59,8 @@ export class Messages {
             message: this.message,
             time: this.time,
             picture: 'http://localhost:8000/api/users/' + this.sender.id + '/picture',
-            channel: this.channel
+            channel: this.channel,
+            type: this.type,
         }
     }
 }
