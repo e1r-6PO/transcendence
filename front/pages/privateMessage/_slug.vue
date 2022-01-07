@@ -106,7 +106,6 @@
           <!-- if the message is a normal message -->
           <v-card
             v-if="msg.type == 'message'"
-            v-on:click="redirectToGame(msg.game_id)"
             class="bubble"
             :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
             :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
@@ -134,6 +133,7 @@
           <!-- if the message is a game -->
           <v-card
             v-if="msg.type == 'game'"
+            v-on:click="redirectToGame(msg.game_id, msg.game_state)"
             class="bubble"
             :color="getGameColor(msg)"
             style="margin-top: 20px; float: center !important"
@@ -251,6 +251,7 @@ export default Vue.extend({
         var c_msg: PrivateMessages | undefined = this.messagesArray.find(element => element.id == msg.id)
         if (c_msg != undefined)
           c_msg.game_state = msg.game_state
+          c_msg.game_id = msg.game_id
       }
     })
     socket_active.on("active", (userChange: LightUser) => {
@@ -326,8 +327,11 @@ export default Vue.extend({
       this.$router.push("/users/" + this.$route.params.slug)
     },
 
-    redirectToGame(game_id: string) {
-      this.$router.push("/game/" + game_id)
+    redirectToGame(game_id: string, game_state: string) {
+      if (game_state == "canceled")
+        null//raise notification
+      else
+        this.$router.push("/game/" + game_id)
     },
 
     scrollToEnd() {    	
