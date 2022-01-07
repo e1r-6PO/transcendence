@@ -196,7 +196,7 @@ export default Vue.extend({
 
   async mounted() {
     const ret = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/access')
-      .catch(function (error) {
+      .catch(function (this: any, error) {
         if (error.response.satus == 404)
           this.$router.push('/chat?error=' + ret.data.message)
         return error.response
@@ -274,11 +274,11 @@ export default Vue.extend({
       return (false)
     },
 
-    isMsgDefault(msg) {
+    isMsgDefault(msg: Messages) {
       return msg.type == MessagesType.DEFAULT
     },
 
-    isMsgServer(msg) {
+    isMsgServer(msg: Messages) {
       return msg.type == MessagesType.SERVER
     },
 

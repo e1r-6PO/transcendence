@@ -77,7 +77,7 @@ export default Vue.extend({
       this.alert = true
     },
     
-    activeEvent(success: string) {
+    activeEvent(success: any) {
       this.alertText = success
       this.alertType = "info"
       this.alert = true
