@@ -17,8 +17,7 @@ export class Game {
 
 	id: string
 
-	isPaused: boolean = false
-	hasStarted: boolean = false
+	status: string = "idle" // idle, paused, started, forfeitp0, forfeitp1
 	type: string
 	gameService: GameService
 	winning_score: number
@@ -29,7 +28,6 @@ export class Game {
 	balls: Array<Ball>
 	ball_amount: number
 	room: BroadcastOperator<DefaultEventsMap>
-	is_game_paused: boolean = false
 
 	player0: User
 	player1: User
@@ -90,7 +88,7 @@ export class Game {
 	}
 
 	async start() {
-		this.hasStarted = true
+		this.status = "started"
 		this.room.emit('matchFound', { id: this.id})
 		// this.players[1].emit('matchFound', { id: this.id})
 		await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side, rly ?
@@ -109,12 +107,12 @@ export class Game {
 	}
 
 	pause() { // client is the client that disconnected
-		this.isPaused = true
+		this.status = "paused"
 		clearInterval(this.loopId)
 	}
 
 	unpause() {
-		this.isPaused = false
+		this.status = "paused"
 		this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
 	}
 

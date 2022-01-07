@@ -57,7 +57,7 @@ export class GameService {
         }
     }
 
-    async save_game(game: Game) {
+    async save_game(game: Game, winner: User) {
         var match: Match = new Match()
 
         match.id = game.id
@@ -65,27 +65,32 @@ export class GameService {
         match.player1 = game.player1
         match.scorep0 = game.scorep0
         match.scorep1 = game.scorep1
+        match.winner = winner
 
         this.matchRepository.save(match)
     }
 
     endgame(game: Game) {
-        if (game.hasStarted == true) {
+        if (game.status != "idle") {
             game.stop()
-            if (game.player0socket == null || game.scorep1 > game.scorep0) { // player0 dc or p1 won
+            if (game.player0socket == null || game.scorep1 > game.scorep0 || game.status == "forfeitp0") { // player0 dc or p1 won
                 game.room.emit('matchEnd', { winner: game.player1.toLightuser(), looser: game.player0.toLightuser() })
-                this.save_game(game)
+                this.save_game(game, game.player1)
                 if (game.type == "private") {
                   this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "finish", winner: game.player1})
                 }
             }
-            else if (game.player1socket == null || game.scorep0 > game.scorep1) { //player1 dc or p0 won
+            else if (game.player1socket == null || game.scorep0 > game.scorep1 || game.status == "forfeitp1") { //player1 dc or p0 won
                 game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser })
-                this.save_game(game)
+                this.save_game(game, game.player0)
                 if (game.type == "private") {
                   this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "finish", winner: game.player0})
                 }
             }
+            if (game.player1socket != null)
+                game.player1socket['game'] = undefined
+            if (game.player0socket != null)
+                game.player0socket['game'] = undefined
         }
         this.games.delete(game.id)
     }
@@ -104,7 +109,7 @@ export class GameService {
                     break
                 await new Promise(f => setTimeout(f, 50));
             }
-            if (game.player0socket != null && game.isPaused == true) { // the player reconnected himself
+            if (game.player0socket != null && game.status == "paused") { // the player reconnected himself
                 if (game.player1socket != null) // unpause only if player1 is connected
                     game.unpause()
             }
@@ -121,7 +126,7 @@ export class GameService {
                     break
                 await new Promise(f => setTimeout(f, 50));
             }
-            if (game.player1socket != null && game.isPaused == true) { // the player reconnected himself
+            if (game.player1socket != null && game.status == "paused") { // the player reconnected himself
                 if (game.player0socket != null) // unpause only if player1 is connected
                     game.unpause()
             }
@@ -137,7 +142,7 @@ export class GameService {
 
         if (game != undefined) {
             if (game.player0socket.id == client.id || game.player1socket.id == client.id) {
-                if (game.hasStarted == true)
+                if (game.status != "idle")
                     this.game_watcher(game, client)
                 else
                     this.endgame(game)
