@@ -76,7 +76,9 @@ export class Game {
 						}
 				}
 				else {
-						ballsinfo.push({ id: i, status: "normal", ball_location: [this.balls[i].x, this.balls[i].y] })
+					this.balls[i].checkPaddleLeft(this.paddle0)
+					this.balls[i].checkPaddleRight(this.paddle1)
+					ballsinfo.push({ id: i, status: "normal", ball_location: [this.balls[i].x, this.balls[i].y] })
 				}
 		}
 		//emit game info & balls info
