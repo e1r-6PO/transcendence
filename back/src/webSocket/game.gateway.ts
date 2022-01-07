@@ -83,8 +83,27 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			// game.player1socket['game'] = game.id //
 			game.room = this.server.to(game.id.toString())
 			this.gameService.push_game(game)
-
+			this.destroyGameIfNotStarted(30000, game.id, initiater, receiver) // wait 30seconds and destroy game if it hasnt started
 			return game
+	}
+
+	async destroyGameIfNotStarted(time: number, game_id: string, client0: Socket, client1: Socket) {
+		await new Promise(f => setTimeout(f, time));
+
+		var game: Game = this.gameService.games.get(game_id)
+
+		if (!game) // game is finished or canceled
+			return
+
+		if (game.hasStarted == false) {
+			var msg: PrivateMessage = await this.privateMessageRepository.findOne({where:{ sender: game.player0, target: game.player1, game_id: game.id }})
+			msg.game_state = "canceled"
+			this.privateMessageRepository.save(msg)
+			game.stop() // useless ?
+			this.gameService.games.delete(game.id)
+			client0.emit('updateMessage', msg)
+			client1.emit('updateMessage', msg)
+		}
 	}
 
 	@SubscribeMessage('newPrivate')
@@ -106,8 +125,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			newMsg.type = "game"
 			newMsg.game_id = game.id
 			newMsg.game_state = "pending"
-			this.privateMessageRepository.save(newMsg)
-			remote.nsp.server._nsps.get('/chat').emit('privateMessage', newMsg)
+			newMsg = await this.privateMessageRepository.save(newMsg)
+			remote.emit('privateMessage', newMsg)
+			client.emit('privateMessage', newMsg)
 			// client.nsp.server._nsps.get('/chat').emit('privateMessage', newMsg)
 		}
 		else {
@@ -140,8 +160,13 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			return
 
 		if (client['info'].id == game.player1.id || client['info'].id == game.player0.id) {
+			var msg: PrivateMessage = await this.privateMessageRepository.findOne({where:{ sender: game.player0, target: game.player1, game_id: game.id }})
+			msg.game_state = "canceled"
+			this.privateMessageRepository.save(msg)
 
-			this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "canceled"})
+			this.id_to_user.get(game.player0.id).emit('updateMessage', msg)
+			this.id_to_user.get(game.player1.id).emit('updateMessage', msg)
+			
 
 			game.stop() // useless ?
 			this.gameService.games.delete(game.id)
@@ -187,20 +212,27 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			// client.disconnect()
 	}
 
-	// @SubscribeMessage('updatePaddle')
-	// async updatePaddle(client: Socket, info: []){ //game id + movement
-	//     var game: Game = this.gameService.games.get(info['id'])
+	@SubscribeMessage('updatePaddle')
+	async updatePaddle(client: Socket, info: []){ //game id + movement
+	    var game: Game = this.gameService.games.get(info['id'])
 
-	//     if (!game)
-	//         return
+	    if (!game)
+	        return
 
-	// 		if (client['info'].id == game.player0.id) {
-	// 			game.paddle0.moveUp() / moveDown()
-	// 		}
-	// 		else if (client['info'].id == game.player1.id) {
-	// 			game.paddle1.moveUp() / moveDown()
-	// 		}
-	// }
+		console.log(info)
+		if (client['info'].id == game.player0.id) {
+			if (info['direction'] == 1)
+				game.paddle0.moveUp()
+			else if (info['direction'] == -1)
+				game.paddle0.moveDown()
+		}
+		else if (client['info'].id == game.player1.id) {
+			if (info['direction'] == 1)
+				game.paddle1.moveUp()
+			else if (info['direction'] == -1)
+				game.paddle1.moveDown()
+		}
+	}
 
 	afterInit(server: Server){
 			this.server = server
