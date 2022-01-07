@@ -29,15 +29,7 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field
-              placeholder="Channel name"
-              v-model="channName"
-              class="custom-select-color custom-placeholder-color custom-input-color"
-              hide-details
-              rounded
-              filled
-              dense
-            ></v-text-field>
+            <TextField v-model="channName" placeholder="Channel name" />
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -77,6 +69,7 @@
 import { Component } from 'nuxt-property-decorator';
 import Vue from 'vue'
 import { ChannAccess } from '../../assets/Classes-ts/Messages'
+import socket_chat from '../../plugins/chat.io'
 
 @Component
 export default class JoinChannelBtn extends Vue{
@@ -95,7 +88,7 @@ export default class JoinChannelBtn extends Vue{
       .catch(function (error) {
         return error.response
       })
-    if (ret.status == 403)
+    if (ret.status == 403 || ret.status == 404)
       this.activeAlert(ret.data.message)
     else if (ret.data.channAccess == ChannAccess.PROTECTED)
       this.dialogPass = true
@@ -118,7 +111,11 @@ export default class JoinChannelBtn extends Vue{
     else if (ret.status == 403)
     this.activeAlert(ret.data['message'])
     else if (ret.status == 201)
+    {
+      socket_chat.connect();
+      socket_chat.emit('joinChannel', this.channName, "join");
       this.$router.push("/chat/" + this.channName)
+    }
   }
 
   disableJoin() {
