@@ -245,8 +245,9 @@ export default Vue.extend({
     })
     socket_game.on('updateMessage', (msg: PrivateMessages) => {
       if (msg.type == "game") { // en theorie tout le temps game
-        var c_msg: PrivateMessages = this.messagesArray.find(element => element.id == msg.id)
-        c_msg.game_state = msg.game_state
+        var c_msg: PrivateMessages | undefined = this.messagesArray.find(element => element.id == msg.id)
+        if (c_msg != undefined)
+          c_msg.game_state = msg.game_state
       }
     })
     socket_active.on("active", (userChange: LightUser) => {
