@@ -55,7 +55,7 @@ export class Game {
 				var score = this.balls[i].tick();
 				if (score == 0) {
 						this.scorep1++
-						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].x, this.balls[i].y] })
+						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].pos.x, this.balls[i].pos.y] })
 						this.balls.splice(i, 1)
 						this.create_new_ball(1000)
 						if (this.scorep1 == this.winning_score) {
@@ -65,7 +65,7 @@ export class Game {
 				}
 				else if (score == 1) {
 						this.scorep0++
-						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].x, this.balls[i].y] })
+						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].pos.x, this.balls[i].pos.y] })
 						this.balls.splice(i, 1)
 						this.create_new_ball(1000)
 						if (this.scorep0 == this.winning_score) {
@@ -76,13 +76,14 @@ export class Game {
 				else {
 					this.balls[i].checkPaddleLeft(this.paddle0)
 					this.balls[i].checkPaddleRight(this.paddle1)
-					ballsinfo.push({ id: i, status: "normal", ball_location: [this.balls[i].x, this.balls[i].y] })
+					ballsinfo.push({ id: i, status: "normal", ball_info: [this.balls[i].pos.x, this.balls[i].pos.y, this.balls[i].size.x, this.balls[i].size.y] })
 				}
 		}
 		//emit game info & balls info
 		this.room.emit('gameInfo', ballsinfo)
 		//emit paddle locations
-		this.room.emit('paddleInfo', {paddle0_location: [this.paddle0.x, this.paddle0.y], paddle1_location:[this.paddle1.x, this.paddle1.y]})
+		this.room.emit('paddleInfo', {paddle0_info: [this.paddle0.pos.x, this.paddle0.pos.y, this.paddle0.size.x, this.paddle0.size.y],
+										paddle1_info:[this.paddle1.pos.x, this.paddle1.pos.y, this.paddle1.size.x, this.paddle1.size.y]})
 	}
 
 	matchinfo() {
