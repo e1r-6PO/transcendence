@@ -105,16 +105,16 @@ export default Vue.extend({
 
   async created() {
     socket_game.on('matchInfo', (info) => {
-        console.log(info)
+        // console.log(info)
         this.player0 = info['player0']
         this.player1 = info['player1']
     })
     socket_game.on('matchEnd', (info) => {
-        console.log(info)
+        // console.log(info)
         this.$router.push('/home')
     })
     socket_game.on('matchSetup', (info) => {
-      console.log(info)
+      // console.log(info)
 
       var m = <HTMLCanvasElement> document.getElementById("map")
       var maptest = <CanvasRenderingContext2D> m.getContext("2d");
@@ -134,7 +134,7 @@ export default Vue.extend({
       maptest.fillStyle = 'white'
       for (let i = 0; i < info.length; ++i) {
         if (this.balls.get(info[i].id) == undefined && info[i].status == "normal") { // create a new ball
-          this.balls.set(info[i].id, new Ball(info[i]['ball_location'][0], info[i]['ball_location'][1]))
+          this.balls.set(info[i].id, new Ball(info[i]['ball_info'][0], info[i]['ball_info'][1], info[i]['ball_info'][2], info[i]['ball_info'][3]))
         }
         if (this.balls.get(info[i].id) == undefined && info[i].status == "erased") { // create a new ball
           // do nothing
@@ -142,10 +142,12 @@ export default Vue.extend({
         else if (info[i].status == "normal"){
           var c_ball = this.balls.get(info[i].id)
           if (c_ball != undefined) {
-            c_ball.x = info[i].ball_location[0]
-            c_ball.y = info[i].ball_location[1]
+            c_ball.x = info[i].ball_info[0]
+            c_ball.y = info[i].ball_info[1]
+            c_ball.width = info[i].ball_info[2]
+            c_ball.height = info[i].ball_info[3]
             // console.log(this.balls[0].x, this.balls[0].y)
-            maptest.rect(c_ball.x - 10, c_ball.y - 10, 18, 18)
+            maptest.rect(c_ball.x, c_ball.y, c_ball.width, c_ball.height)
           }
         }
         else if (info[i].status == "erased"){
@@ -160,10 +162,16 @@ export default Vue.extend({
     })
 
     socket_game.on('paddleInfo', (info) => {
-      this.paddle0.x = info['paddle0_location'][0]
-      this.paddle0.y = info['paddle0_location'][1]
-      this.paddle1.x = info['paddle1_location'][0]
-      this.paddle1.y = info['paddle1_location'][1]
+      this.paddle0.x = info['paddle0_info'][0]
+      this.paddle0.y = info['paddle0_info'][1]
+      this.paddle0.width = info['paddle0_info'][2]
+      this.paddle0.height = info['paddle0_info'][3]
+      this.paddle1.x = info['paddle1_info'][0]
+      this.paddle1.y = info['paddle1_info'][1]
+      this.paddle1.width = info['paddle1_info'][2]
+      this.paddle1.height = info['paddle1_info'][3]
+      console.log(info)
+      // console.log(this.paddle1)
     })
   },
   beforeRouteLeave (to, from , next) {
