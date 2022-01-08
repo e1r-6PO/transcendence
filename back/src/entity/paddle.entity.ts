@@ -1,39 +1,33 @@
-export class Paddle {
+import { Vect, Rect } from './game_utils'
+
+export class Paddle extends Rect{
   canvas_x: number
 	canvas_y: number
-	x: number
-	y: number
-	width: number
-	height: number
-	speed: number
+	speed: Vect
 
 	constructor(x: number, y: number) {
+		super(20, 60)
+		this.pos.x = x
+		this.pos.y = y
 		this.canvas_x = 840 // map width
 		this.canvas_y = 600 // map height
-		this.x = x
-		this.y = y
-		this.width = 15
-		this.height = 60
-		this.speed = 60
+		this.speed = new Vect(0, 35)
+		console.log('Paddle : pos.x = ' + this.pos.x + ' pos.y = ' + this.pos.y + ' size.x = ' + this.size.x + ' size.y = ' + this.size.y + ' top = ' + this.top + ' bot = ' + this.bottom + ' left = ' + this.left + ' right = ' + this.right)
 	}
 
 	moveUp(){
-		console.log(this.y)
-		let res = this.y - this.speed;
+		let res = this.pos.y - this.speed.y;
 		if (res < 0)
-			this.y = 0;
+			this.pos.y = 0;
 		else
-			this.y -= this.speed;
-		console.log(this.y)
+			this.pos.y -= this.speed.y;
 	}
 	
 	moveDown(){
-		console.log(this.y)
-		let res = this.y + this.speed;
-		if (res + this.height > 600)
-			this.y = 600 - this.height;
+		let res = this.pos.y + this.speed.y;
+		if (res + this.size.y > 600)
+			this.pos.y = 600 - this.size.y;
 		else
-			this.y += this.speed;
-		console.log(this.y)
+			this.pos.y += this.speed.y;
 	}
 }
