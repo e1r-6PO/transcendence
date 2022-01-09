@@ -219,8 +219,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	    if (!game)
 	        return
-
-		console.log(info)
 		if (client['info'].id == game.player0.id) {
 			if (info['direction'] == 1)
 				game.paddle0.moveUp()
