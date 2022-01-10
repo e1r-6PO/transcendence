@@ -12,7 +12,7 @@ export class Paddle extends Rect{
 		this.pos.y = y
 		this.canvas_x = 840 // map width
 		this.canvas_y = 600 // map height
-		this.speed = new Vect(0, 35)
+		this.speed = new Vect(0, 15)
 		this.motion = false
 		console.log('Paddle : pos.x = ' + this.pos.x + ' pos.y = ' + this.pos.y + ' size.x = ' + this.size.x + ' size.y = ' + this.size.y + ' top = ' + this.top + ' bot = ' + this.bottom + ' left = ' + this.left + ' right = ' + this.right)
 	}
