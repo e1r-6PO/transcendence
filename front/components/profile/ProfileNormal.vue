@@ -1,10 +1,10 @@
 <template>
-	<div justify="center" align="center" style="padding-top: 2%" v-if="!isEditing">
+	<div justify="center" align="center" style="padding-top: 2%">
 		<v-avatar class="overflow-visible" size="128">
 			<img v-if="user.picture != ''"
 				class="round_card item profile-picture"
-				v-on:change="pictureEdited"
-				:src=user.picture
+				@change="pictureEdited"
+				:src="user.picture"
 			/>
 			<v-btn
 				color="#8124be"
@@ -23,23 +23,19 @@
 			</v-btn>
 		</v-avatar>
 
-		<v-card class="foreground_element card_profile mt-10"
-			v-if="!isEditing"
-		>
+		<v-card class="foreground_element card_profile mt-10">
 			<v-card-text align="center">
 				<p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
 				<p class="color_text text-h5" align="center">{{ user.email }}</p>
-				<p v-if="user.provider === 'github'" class="color_text text-h6" align="center">Connected via :</p>
+				<p class="color_text text-h6" align="center">Connected via :</p>
 				<icon-github v-if="user.provider === 'github'"
-						width="50"
-						height="50"
+					width="50"
+					height="50"
 				/>
-				<p v-if="user.provider === '42'" class="color_text text-h6" align="center"> Connected via :</p>
 				<icon-42 v-if="user.provider === '42'"
 					width="50"
 					height="50"
 				/>
-				<p v-if="user.provider === 'google'" class="color_text text-h6" align="center"> Connected via :</p>
 				<v-icon v-if="user.provider === 'google'"
 						color="primary"
 						x-large
@@ -48,7 +44,7 @@
 				</v-icon>
 			</v-card-text>
 		</v-card>
-		<div class="flex-container-row mt-10" v-if="!isEditing">
+		<div class="flex-container-row mt-10">
 			<v-card class="foreground_element card_game flex-item" margin-top="5%">
 				<h1 class="color_win" align="center">Win</h1>
 				<h3 class="color_text" align="center">{{ user.gameWin }} </h3>
@@ -73,15 +69,11 @@ export default class ProfileNormal extends Vue {
 	user!: User
 
 	@Prop({ type: Boolean, default: false })
-	isEditing!: boolean
-
-	@Prop({ type: Boolean, default: false })
 	pictureEdited!: boolean
 
 	switchEditing() {
 		this.$emit('updateState')
 	}
-
 }
 
 </script>
@@ -90,15 +82,8 @@ export default class ProfileNormal extends Vue {
 @import '../../assets/Classes-scss/main_page.scss';
 @import '../../assets/Classes-scss/custom_flexBox.scss';
 
-.round_card {
-	border-radius:100% !important;
-}
-
-.item {
-	align-self: flex-end;
-}
-
 .profile-picture {
+	border-radius:100% !important;
 	border: 3px solid #a5fafa !important;
 	box-shadow: 0px 0px 15px 0px #63f3f3 !important;
 }

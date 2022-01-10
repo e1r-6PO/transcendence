@@ -39,7 +39,7 @@
     >
       <ChannelList class="mt-4" :state="true">
          <v-subheader class="mt-3 mb-8">
-          <BasicBtn content="mdi-close" v-on:click="channelDrawer = !channelDrawer"></BasicBtn>
+          <BasicBtn v-on:click="channelDrawer = !channelDrawer" :width="40" content="mdi-close" />
           <v-spacer />
           <CreateChannelBtn @error="activeAlert" class="pr-5 pb-3"/>
         </v-subheader>
@@ -75,7 +75,7 @@
           >
           </ChannelSettings>
           <v-spacer />
-          <BasicBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></BasicBtn>
+          <BasicBtn v-on:click="userDrawer = !userDrawer" content="mdi-close" :width="40" />
          </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelUserList>

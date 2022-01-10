@@ -5,23 +5,13 @@
       max-width="500"
       transition="dialog-top-transition"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{}">
         <v-row align="center" justify="center" style="margin-top: 0px">
-          <v-card
-            class="neon-button"
-            color="#181818"
-            style="border-radius: 15px;"
-            link
-            width="100"
-            v-bind="attrs"
-            v-on="on"
-            v-on:mouseover="settingsFocus = true"
-            v-on:mouseleave="settingsFocus = false"
-          >
-            <v-card-text align="center" :class="settingsFocus == true ? 'purple--text text--lighten-1' : 'white--text'"> 
-              <b>Settings </b>
-            </v-card-text>
-          </v-card>
+          <BasicBtn 
+            content="mdi-cog"
+            @click="dialog = !dialog"
+            :width="40"
+          />
         </v-row>
       </template>
       <v-card
