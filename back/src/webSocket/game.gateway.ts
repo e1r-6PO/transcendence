@@ -143,6 +143,20 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (!game)
 			return
 
+		if (game.player0socket['game'] != null) { // tell him that the other is busy
+			var msg: PrivateMessage = await this.privateMessageRepository.findOne({where:{ sender: game.player0, target: game.player1, game_id: game.id }})
+			msg.game_state = "canceled"
+			msg.game_id = ""
+			this.privateMessageRepository.save(msg)
+
+			this.id_to_user.get(game.player0.id).emit('updateMessage', msg)
+			this.id_to_user.get(game.player1.id).emit('updateMessage', msg)
+
+			game.stop() // useless ?
+			this.gameService.games.delete(game.id)
+			return
+		}
+
 		if (client['info'].id == game.player1.id) {
 
 			this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "running"})
@@ -181,8 +195,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('joinQueue') // to join the queue if he is in the queue, kick him
 	async joinQueue(client: Socket) {
 			console.log(this.gameService.games.size)
-			if (this.queue.findIndex(clients => clients.id === client.id) != -1)
-					return // dont add him to the queu if he his already inside
+			if (this.queue.findIndex(clients => clients.id === client.id) != -1 || client['game'] != null)
+					return // dont add him to the queu if he his already inside or if he is in a game
 			this.queue.push(client)
 			if (this.queue.length >= 2) {
 					this.create_game() // await may be needed later on
