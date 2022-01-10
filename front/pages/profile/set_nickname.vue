@@ -1,45 +1,20 @@
 <template>
   <v-container>
-    <div style="padding-top: 3%">
-    <v-alert
-      v-model="alertCode"
-      type="error"
-      text
-      dismissible
-      outlined
-    >
-      This nick is already register
-    </v-alert>
+    <div style="padding-top: 5%">
+      <AlertError @end="alert = false" :textError="alertText" :state="alert" type="error" />
     </div>
     <div class="flex-container-col" style="padding-top: 2%">
-      <p align="center" class="neonText" style="padding-bottom: 1%; font-size:30px">Set your nickname:</p>
-      <v-row justify="center" align="center">
-        <v-text-field
-          class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
-          v-model="nickname"
-          placeholder="Nickname"
-          color="#e6ffff"
-          @keydown.enter="setNick"
-          hide-details
-          filled
-          rounded
-          dense
-          counter="20"
-          ref="nickname_field"
-        >
-        </v-text-field>
-      </v-row>
-      <v-row justify="center" align="center" style="padding-top: 1%">
-        <v-btn 
-          class="foreground_element"
-          :class = '[{"neonText": nickIsValid()}]'
-          text
-          color="#e6ffff"
-          :disabled="nickname.length == 0 || nickname.length > 20"
+      <p align="center" class="neonText" style="font-size:30px">Set your nickname:</p>
+      <TextField @enterPress="setNick()" autofocus width="330" v-model="nickname" placeholder="Nickname" />
+      <v-row align="center" justify="center" class="mt-6">
+        <BasicBtn
+          :neonColor="nickIsValid() ? 'orange' : 'none'"
+          isText
+          content="Complete Registration"
+          :width="250"
           @click="setNick"
-        >
-          Complete Registration
-        </v-btn>
+          :disabled="!nickIsValid()"  
+        />
       </v-row>
     </div>
   </v-container>
@@ -52,6 +27,7 @@ import Vue from 'vue'
 import login from '../../middleware/login'
 
 import Component from 'vue-class-component'
+import { Ref } from 'nuxt-property-decorator';
 
 @Component({
   middleware: login
@@ -59,10 +35,12 @@ import Component from 'vue-class-component'
 export default class extends Vue {
 
   nickname = "";
-  alertCode = false
+  alertText = "This nick is already register";
+  alert = false;
+
+  @Ref() readonly nickname_field!: HTMLInputElement
 
   async mounted() {
-    this.$refs.nickname_field.focus()
     const ret = await this.$axios.$get('api/profile/me/nickname')
 
     if (ret.nickname != "")
@@ -71,13 +49,12 @@ export default class extends Vue {
 
   nickIsValid() {
     var valid = this.nickname != "" && this.nickname.length <= 20
-
-    console.log(valid)
     return valid
   }
 
   async setNick() {
     const nick = this.nickname
+    this.nickname = ""
     const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + nick)
       .catch(function (error) {
         return error.response
@@ -85,11 +62,11 @@ export default class extends Vue {
     if (ret.status == 201)
       this.$router.push('/home')
     else
-      this.alertCode = true
+      this.activeAlert()
   }
-  
-  $refs!: {
-    nickname_field: HTMLFormElement
+
+  activeAlert() {
+    this.alert = true
   }
 }
 </script>
