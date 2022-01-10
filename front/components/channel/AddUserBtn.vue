@@ -14,16 +14,20 @@
       <v-card style="background-color: #181818">
         <v-card-title class="white--text">
           <span class="text-h5">Channel settings</span>
+          <v-spacer />
+        <BasicBtn @click="dialog = false" content="mdi-close" />
         </v-card-title>
-        <v-card-text>
-          <v-container>
-            <TextField v-model="userName" append_outer_icon="mdi-account-plus" placeholder="User name"/>
-          </v-container>
+        <v-card-text class="pt-4 pb-7 pr-8 pl-8">
+          <TextField
+            @enterPress="addUser()"
+            v-model="userName"
+            append_outer_icon="mdi-account-plus"
+            placeholder="User name"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <BasicBtn v-on:click="dialog = false" :isText="true" content="Close" />
-          <BasicBtn v-on:click="addUser()" :diasable="userName == ''" :isText="true" content="Add" />
+          <BasicBtn v-on:click="addUser()" :disable="disableAdd()" :isText="true" content="Add" />
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -37,7 +41,6 @@ import socket_chat from '../../plugins/chat.io'
 @Component
 export default class AddUserBtn extends Vue{
   
-  addFocus: boolean = false
   dialog: boolean = false
   userName: string = ""
 
@@ -59,13 +62,13 @@ export default class AddUserBtn extends Vue{
     this.userName = ""
   }
 
+  disableAdd(): boolean {
+    return this.userName == "" || this.userName.length > 20
+  }
+
   activeAlert(error: string)
   {
     this.$emit('error', error)
-  }
-
-  addInput(text: string) {
-    this.userName = text
   }
 }
 </script>
