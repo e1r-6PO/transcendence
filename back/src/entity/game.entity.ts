@@ -46,7 +46,9 @@ export class Game {
 
 	async create_paddles(){
 		this.paddle0 = new Paddle(20, 300)
+		this.room.emit('paddle0Info', { paddle0_info: [this.paddle0.pos.x, this.paddle0.pos.y, this.paddle0.size.x, this.paddle0.size.y]})
 		this.paddle1 = new Paddle(805, 300)
+		this.room.emit('paddle1Info', { paddle1_info:[this.paddle1.pos.x, this.paddle1.pos.y, this.paddle1.size.x, this.paddle1.size.y]})
 	}
 
 	tick() {
@@ -82,8 +84,10 @@ export class Game {
 		//emit game info & balls info
 		this.room.emit('gameInfo', ballsinfo)
 		//emit paddle locations
-		this.room.emit('paddleInfo', {paddle0_info: [this.paddle0.pos.x, this.paddle0.pos.y, this.paddle0.size.x, this.paddle0.size.y],
-										paddle1_info:[this.paddle1.pos.x, this.paddle1.pos.y, this.paddle1.size.x, this.paddle1.size.y]})
+		if (this.paddle0.motion)
+			this.room.emit('paddle0Info', { paddle0_info: [this.paddle0.pos.x, this.paddle0.pos.y, this.paddle0.size.x, this.paddle0.size.y]})
+		if (this.paddle1.motion)	
+			this.room.emit('paddle1Info', { paddle1_info:[this.paddle1.pos.x, this.paddle1.pos.y, this.paddle1.size.x, this.paddle1.size.y]})
 	}
 
 	matchinfo() {
