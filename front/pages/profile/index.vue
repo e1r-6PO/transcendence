@@ -1,26 +1,15 @@
 <template>
-<v-container fluid>
-  <div style="padding-top: 3%">
-    <v-alert
-      v-model="alertCode"
-      outlined
-      :type=alertType
-      text
-      dismissible
-    >
-      {{ alertText }}
-    </v-alert>
-  </div>
-  <ProfileNormal
-    :isEditing="isEditing"
+<v-container fluid class="mt-9">
+	<AlertError @end="alert = false" :textError="alertText" :type="alertType" :state="alert"/>
+  <ProfileNormal v-if="!isEditing"
     :user="this.user"
     :pictureEdited="pictureEdited"
     @updateState="switchEditing"
   ></ProfileNormal>
-  <ProfileEditing
-    :isEditing="isEditing"
+  <ProfileEditing v-if="isEditing"
     :user="this.user"
     :pictureEdited="pictureEdited"
+    @activeAlert="activeAlert"
     @updateState="switchEditing"
     @updateNick="changeNick"
     @updatePicture="changePicture"
@@ -40,20 +29,18 @@ import { User } from '../../assets/Classes-ts/User';
 })
 export default class extends Vue {
 
-  user : User = new User;
+  user : User = new User();
   isEditing = false
-  isSelecting = false
-  selectedFile: null | Blob = null
-  nick = ""
-  tfa_status = false
-  alertCode = false
+  alert = false
   alertText = ""
   alertType = "success"
   pictureEdited = false
 
   async mounted() {
     this.user = await this.$axios.$get('/api/profile/me')
-    
+      .catch(function(error) {
+        return error.response
+      })
     const ret2fa = await this.$axios.get('/api/auth/2fa/is_enabled')
     .catch(function (error) {
       alert("error in mounted")
@@ -61,19 +48,18 @@ export default class extends Vue {
     })
     
     if (ret2fa.status == 200) {
-      this.tfa_status = ret2fa.data['isTwoFactorAuthenticationEnabled']
-      this.nick = this.user.nickName
       if (this.$route.fullPath.search("2fa=on") != -1)
       {
-        this.alertCode = true
-        this.alertType = "success"
-        this.alertText = "2fa successfully enabled"
-        setTimeout(()=>{
-          this.alertCode=false
-        },5000)
+        this.activeAlert("2fa successfully enabled", "success")
         this.$router.replace('/profile')
       }
     }
+  }
+
+  activeAlert(text: string, type: string) {
+    this.alertText = text
+    this.alertType = type
+    this.alert = true
   }
 
   switchEditing() {
@@ -84,7 +70,7 @@ export default class extends Vue {
     this.user.nickName = newNick
   }
 
-  async changePicture(){
+  changePicture(){
     this.pictureEdited = !this.pictureEdited
   }
 
