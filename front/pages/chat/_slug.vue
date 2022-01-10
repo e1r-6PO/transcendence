@@ -113,7 +113,6 @@
                 v-text="msg.senderNick"
                 class="text-left"
               >
-
               </v-card-subtitle>
               <v-card-text
                 style="padding-bottom: 0px; padding-right: 55px; color: white"
@@ -226,6 +225,10 @@ export default Vue.extend({
         this.messagesArray.push(servMsg)
         this.nbMsg = this.messagesArray.length
       })
+      socket_chat.on('kickUser', (servMsg: Messages) => {
+        this.messagesArray.push(servMsg)
+        this.nbMsg = this.messagesArray.length
+      })
       socket_chat.on('leaveUser', (servMsg: Messages) => {
         this.messagesArray.push(servMsg)
         this.nbMsg = this.messagesArray.length
@@ -240,7 +243,7 @@ export default Vue.extend({
           this.me.channelStatus = this.me.channelStatus == ChannelUserStatus.ADMINISTRATOR ? ChannelUserStatus.DEFAULT : ChannelUserStatus.ADMINISTRATOR;
         this.tokenUser = -this.tokenUser
       })
-      socket_chat.on('deleteUser', (ownerId: number) => {
+      socket_chat.on('kickMe', (ownerId: number) => {
         if (ownerId == this.me.id)
           this.$router.push('/chat')
         else

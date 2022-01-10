@@ -20,6 +20,7 @@
         <v-card-text class="pt-4 pb-7 pr-8 pl-8">
           <TextField
             @enterPress="addUser()"
+            autofocus
             v-model="userName"
             append_outer_icon="mdi-account-plus"
             placeholder="User name"
