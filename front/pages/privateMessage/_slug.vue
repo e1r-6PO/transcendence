@@ -234,7 +234,7 @@ export default Vue.extend({
     socket_chat.connect();
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
-    this.scrollToEnd()
+    this.nbMsg = this.messagesArray.length
     socket_chat.on('privateMessage', (msg: PrivateMessages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
@@ -278,6 +278,7 @@ export default Vue.extend({
       newMsg.target = new User()
       newMsg.type = "message"
       this.messagesArray.push(newMsg)
+      this.nbMsg = this.messagesArray.length
       socket_chat.emit('privateMessageToServer', this.message, this.$route.params.slug)
       socket_chat.on('MuteError', (msg: string) => {
         this.activeAlert(msg)
