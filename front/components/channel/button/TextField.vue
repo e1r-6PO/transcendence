@@ -4,6 +4,7 @@
     :placeholder="placeholder"
     class="mt-3 custom-select-color text-white"
     :class="disable ? 'placeholder-color-disable' : 'placeholder-color'"
+    :style="doStyle()"
     color="blue"
     hide-details
     filled
@@ -30,6 +31,9 @@ export default class TextField extends Vue {
   
   @Prop({ type: String, default: "" })
   placeholder!: String
+
+  @Prop({ default: 0 })
+  width!: Number | String
   
   @Prop({ type: String, default: "" })
   value!: String
@@ -54,9 +58,24 @@ export default class TextField extends Vue {
     this.$emit('enterPress')
   }
 
+  @Watch('value', {immediate: true})
+  valueChange() {
+    this.content = this.value
+  }
+
   clearMessage() {
     this.content = ""
     this.updateValue()
+  }
+
+  doStyle(): string {
+    var style = ""
+
+    if (this.width > 200)
+      style += "width: " + this.width + "px;"
+    else
+      style += "width: 100% !important;"
+    return style
   }
 }
 </script>
