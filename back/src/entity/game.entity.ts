@@ -21,7 +21,7 @@ export class Game {
 	type: string
 	gameService: GameService
 	winning_score: number
-	loopId: any
+	loopId: any = null
 	player0socket: Socket | null = null
 	player1socket: Socket | null = null
 	// spectators: Array<Socket>
@@ -97,13 +97,12 @@ export class Game {
 	async start() {
 		this.player0socket['game'] = this.id // useful for when the client temporarily disconnect midgame (pause the game)
 		this.player1socket['game'] = this.id //
-		this.status = "started"
+		this.status = "setup"
 		this.room.emit('matchFound', { id: this.id})
 		// this.players[1].emit('matchFound', { id: this.id})
 		await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side, rly ?
 		this.matchinfo()
 		for (let i: number = 3; i >= 0; --i) {
-			console.log('ALLLLLLLLLLLLLLLO')
 			this.room.emit('matchSetup', { gameStart: i} ) 
 			await new Promise(f => setTimeout(f, 1000)); // countdown
 		}
@@ -111,20 +110,32 @@ export class Game {
 		for (let i = 0; i < this.ball_amount; ++i)
 			this.create_new_ball(i * 1000)
 		
-		//paddles
+		// paddles
 		this.create_paddles()
-		if (this.status == 'started')
+
+		if (this.player0socket == null || this.player1socket == null) { // prepause the game if one of the player is dc
+			this.status = 'started'
+			this.pause()
+		}
+		else if (this.status == 'setup' && this.loopId == null) { // condtion probably not needed
+			this.status = 'started'
 			this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
+		}
 	}
 
 	pause() { // client is the client that disconnected
-		this.status = "paused"
-		clearInterval(this.loopId)
+		if (this.status == 'started') { //pause only if the game has started
+			this.status = "paused"
+			clearInterval(this.loopId)
+			this.loopId = null
+		}
 	}
 
 	unpause() {
-		this.status = "paused"
-		this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
+		if (this.status == 'paused' && this.loopId == null) {
+			this.status = 'started'
+			this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
+		}
 	}
 
 	stop() {
