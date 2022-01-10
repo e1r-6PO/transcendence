@@ -200,20 +200,20 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('forfeit')
 	async forfeit(client: Socket, info: []) {
 
-			var game: Game = this.gameService.games.get(info['id'])
+		var game: Game = this.gameService.games.get(info['id'])
 
-			if (!game)
-					return
-			
-			if (client['info'].id == game.player0.id) {
-				game.status = "forfeitp0"
-				this.gameService.endgame(game)
-			}
-			else if (client['info'].id == game.player1.id) {
-				game.status = "forfeitp1"
-				this.gameService.endgame(game)
-			}
-			// client.disconnect()
+		if (!game)
+				return
+		
+		if (client['info'].id == game.player0.id) {
+			game.status = "forfeitp0"
+			this.gameService.endgame(game)
+		}
+		else if (client['info'].id == game.player1.id) {
+			game.status = "forfeitp1"
+			this.gameService.endgame(game)
+		}
+		// client.disconnect()
 	}
 
 	@SubscribeMessage('updatePaddle')
@@ -241,8 +241,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	afterInit(server: Server){
-			this.server = server
-			this.logger.log('Init');
+		this.server = server
+		this.logger.log('Init');
 	}
 
 	async handleConnection(client: Socket, ...args: any[]){
@@ -251,8 +251,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			.find((cookie: string) => cookie.startsWith('jwt'))
 			if (jwt == null)
 			{
-					client.disconnect()
-					return
+				client.disconnect()
+				return
 			}
 			// parse cookies
 			const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
@@ -262,8 +262,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			})
 			if (user_data == null || this.id_to_user.has(user_data.id)) // dont allow him to connect in 2 different places + check if exist
 			{
-					client.disconnect()
-					return
+				client.disconnect()
+				return
 			}
 			client['info'] = user_data
 			this.id_to_user.set(user_data.id, client)
@@ -276,10 +276,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				this.id_to_user.delete(client['info'].id)
 			index = this.queue.findIndex(clients => clients.id === client.id)
 			if (index != -1) {
-					this.queue.splice(index, 1)
+				this.queue.splice(index, 1)
 			}
 			else
-					this.gameService.disconnect(client)
+				this.gameService.disconnect(client)
 			// console.log("disconnected: " + client.id)
 	}
 }
