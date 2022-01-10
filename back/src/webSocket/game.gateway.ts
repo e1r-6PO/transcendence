@@ -224,12 +224,16 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				game.paddle0.moveUp()
 			else if (info['direction'] == -1)
 				game.paddle0.moveDown()
+			else if (info['direction'] == 0)
+				game.paddle0.stopMoving()
 		}
 		else if (client['info'].id == game.player1.id) {
 			if (info['direction'] == 1)
 				game.paddle1.moveUp()
 			else if (info['direction'] == -1)
 				game.paddle1.moveDown()
+			else if (info['direction'] == 0)
+				game.paddle1.stopMoving()
 		}
 	}
 

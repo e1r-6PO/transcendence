@@ -1,9 +1,10 @@
 import { Vect, Rect } from './game_utils'
 
 export class Paddle extends Rect{
-  canvas_x: number
+  	canvas_x: number
 	canvas_y: number
 	speed: Vect
+	motion: boolean
 
 	constructor(x: number, y: number) {
 		super(20, 60)
@@ -12,6 +13,7 @@ export class Paddle extends Rect{
 		this.canvas_x = 840 // map width
 		this.canvas_y = 600 // map height
 		this.speed = new Vect(0, 35)
+		this.motion = false
 		console.log('Paddle : pos.x = ' + this.pos.x + ' pos.y = ' + this.pos.y + ' size.x = ' + this.size.x + ' size.y = ' + this.size.y + ' top = ' + this.top + ' bot = ' + this.bottom + ' left = ' + this.left + ' right = ' + this.right)
 	}
 
@@ -21,13 +23,19 @@ export class Paddle extends Rect{
 			this.pos.y = 0;
 		else
 			this.pos.y -= this.speed.y;
+		this.motion = true
 	}
 	
 	moveDown(){
-		let res = this.pos.y + this.speed.y;
+		let res = this.pos.y + this.speed.y
 		if (res + this.size.y > 600)
-			this.pos.y = 600 - this.size.y;
+			this.pos.y = 600 - this.size.y
 		else
-			this.pos.y += this.speed.y;
+			this.pos.y += this.speed.y
+		this.motion = true
+	}
+
+	stopMoving(){
+		this.motion = false
 	}
 }

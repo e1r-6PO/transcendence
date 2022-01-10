@@ -67,16 +67,12 @@ export default Vue.extend({
       else if (event.key == 'ArrowUp')
       {
         console.log('KeyDown: ArrowUp');
-        // this.paddle0.moveUp();
-        //send Update paddle with game_id + mov
-        socket_game.emit('updatePaddle', { id: this.game_id, direction: 1})
+        socket_game.emit('updatePaddle', { id: this.game_id, direction: 1 })
       }
       else if (event.key == 'ArrowDown')
       {
         console.log('KeyDown: ArrowDown');
-        // this.paddle0.moveDown();
-        //send Update paddle with game_id + mov
-        socket_game.emit('updatePaddle', { id: this.game_id, direction: -1})
+        socket_game.emit('updatePaddle', { id: this.game_id, direction: -1 })
       }
     })
 
@@ -86,9 +82,16 @@ export default Vue.extend({
       else if (event.key == "S")
         console.log('KeyUP: S')
       else if (event.key == 'ArrowUp')
+      {
         console.log('KeyUp: ArrowUp');
+        socket_game.emit('updatePaddle', { id: this.game_id, direction: 0 })
+      }
       else if (event.key == 'ArrowDown')
+      {
         console.log('KeyUp: ArrowDown');
+        socket_game.emit('updatePaddle', { id: this.game_id, direction: 0 })
+
+      }
     })
     // this.balls.push(new Ball(50, 50))
     // this.map.fillStyle = 'white'
@@ -161,17 +164,20 @@ export default Vue.extend({
       maptest.fill()
     })
 
-    socket_game.on('paddleInfo', (info) => {
+    socket_game.on('paddle0Info', (info) => {
       this.paddle0.x = info['paddle0_info'][0]
       this.paddle0.y = info['paddle0_info'][1]
       this.paddle0.width = info['paddle0_info'][2]
       this.paddle0.height = info['paddle0_info'][3]
+      console.log(info)
+    })
+
+    socket_game.on('paddle1Info', (info) => {
       this.paddle1.x = info['paddle1_info'][0]
       this.paddle1.y = info['paddle1_info'][1]
       this.paddle1.width = info['paddle1_info'][2]
       this.paddle1.height = info['paddle1_info'][3]
       console.log(info)
-      // console.log(this.paddle1)
     })
   },
   beforeRouteLeave (to, from , next) {
