@@ -71,6 +71,7 @@ export class GameService {
     }
 
     endgame(game: Game) {
+        console.log('deleting')
         if (game.status != "idle") {
             game.stop()
             if (game.player0socket == null || game.scorep1 > game.scorep0 || game.status == "forfeitp0") { // player0 dc or p1 won

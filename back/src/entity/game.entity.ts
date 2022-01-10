@@ -91,22 +91,26 @@ export class Game {
 	}
 
 	async start() {
+		this.player0socket['game'] = this.id // useful for when the client temporarily disconnect midgame (pause the game)
+		this.player1socket['game'] = this.id //
 		this.status = "started"
 		this.room.emit('matchFound', { id: this.id})
 		// this.players[1].emit('matchFound', { id: this.id})
 		await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side, rly ?
 		this.matchinfo()
 		for (let i: number = 3; i >= 0; --i) {
-				this.room.emit('matchSetup', { gameStart: i} ) 
-				await new Promise(f => setTimeout(f, 1000)); // countdown
+			console.log('ALLLLLLLLLLLLLLLO')
+			this.room.emit('matchSetup', { gameStart: i} ) 
+			await new Promise(f => setTimeout(f, 1000)); // countdown
 		}
 		this.balls = new Array
 		for (let i = 0; i < this.ball_amount; ++i)
-				this.create_new_ball(i * 1000)
+			this.create_new_ball(i * 1000)
 		
 		//paddles
 		this.create_paddles()
-		this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
+		if (this.status == 'started')
+			this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
 	}
 
 	pause() { // client is the client that disconnected

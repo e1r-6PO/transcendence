@@ -62,8 +62,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			game.player1 = game.player1socket['info'] //
 			game.player0socket.join(game.id.toString())
 			game.player1socket.join(game.id.toString())
-			game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
-			game.player1socket['game'] = game.id //
+			// game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
+			// game.player1socket['game'] = game.id //
 			game.room = this.server.to(game.id.toString())
 			// this.server.of('/chat').to('room').emit('wsh la miff')
 			this.gameService.push_game(game) //also starting the game via game.start()
@@ -79,7 +79,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			game.player1 = receiver['info'] //
 			game.player0socket.join(game.id.toString())
 			// game.player1socket.join(game.id.toString())
-			game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
+			// game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
 			// game.player1socket['game'] = game.id //
 			game.room = this.server.to(game.id.toString())
 			this.gameService.push_game(game)
@@ -265,7 +265,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async handleDisconnect(client: Socket){
 			var index: number
 
-			this.id_to_user.delete(client['info'].id)
+			if (client['info'].id != undefined)
+				this.id_to_user.delete(client['info'].id)
 			index = this.queue.findIndex(clients => clients.id === client.id)
 			if (index != -1) {
 					this.queue.splice(index, 1)
