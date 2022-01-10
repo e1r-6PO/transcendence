@@ -233,12 +233,25 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('deleteUser')
     async deleteUser(client: Socket, av: string): Promise<void> {
+    
+        if (!av[0] || !av[1])
+        return
+        var chan = await this.ChannelsRepository.findOne({
+            where: { channName: av[0] }
+        })
         let user_data = await this.usersRepository.findOne({
             where: { nickName: av[1] }
         })
+        var servMsg = new Messages()
+        servMsg.sender = client['info']
+        servMsg.type = Messages_type.server
+        servMsg.message = client['info'].nickName + " has kick <" + av[1] + "> of the channel."
+        servMsg.channel = chan
+        this.server.to(av[0]).emit("kickUser", servMsg)
         setTimeout(() => {
-            this.server.to(av[0]).emit("deleteUser", user_data.id)
+            this.server.to(av[0]).emit("kickMe", user_data.id)
         }, 200)
+        this.messagesRepository.save(servMsg)
     }
 
     @SubscribeMessage('deleteChannel')
