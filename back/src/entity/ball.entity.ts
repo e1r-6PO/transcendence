@@ -37,9 +37,10 @@ export class Ball extends Rect {
 			// const paddle1x = this.canvas_x - 40
 			// let paddle1y = this.canvas_y / 2
 			if (this.speed.x === 0 && this.speed.y === 0) {
-				this.speed.x = 10 * (Math.random() > .5 ? 1 : -1);
-				this.speed.y = 10 * (Math.random() * 2 - 1);
-				this.speed.len = 12;
+				this.speed.x = 7 * (Math.random() > .5 ? 1 : -1);
+				this.speed.y = 7 * (Math.random() * 2 - 1);
+				this.speed.len = 8;
+				console.log('BallSpeed: ' + this.speed.x + " " + this.speed.y)
 			}
 
 			this.pos.x += this.speed.x
@@ -48,20 +49,20 @@ export class Ball extends Rect {
 			if (this.left < 0) {
 				// return 0
 				// player 0 lost
-				this.speed.x = -this.speed.x
+				this.speed.x *= -1
 			}
 			if (this.right > this.canvas_x) {
 				// return 1
 				// player 1 lost
-				this.speed.x = -this.speed.x
+				this.speed.x *= -1
 			}
 
 			if (this.top < 0) {
-				this.speed.y = -this.speed.y
+				this.speed.y *= -1
 			}
 			if (this.bottom > this.canvas_y) {
-				this.speed.y = -this.speed.y
-			}
+				this.speed.y *= -1
+        	}
 			// if (this.speed.y < 0 && this.top < 0 ||
 			// 	this.speed.y > 0 && this.bottom > this.canvas_y) {
 			// 	this.speed.y = -this.speed.y;
@@ -73,8 +74,8 @@ export class Ball extends Rect {
 
 	checkPaddleLeft(p: Paddle){
 		// console.log('LEFT: Before Collision: ' + this.x + this.xd)
-		if (p.right > this.left && p.left < this.right && 
-			p.top < this.bottom && p.bottom > this.top)
+		if (p.right > this.left && p.left < this.right
+			&& p.top + p.size.x < this.bottom - this.size.x && p.bottom + p.size.x > this.top - this.size.x)
 		{
 			this.speed.x *= -1
 		}
@@ -83,8 +84,8 @@ export class Ball extends Rect {
 
 	checkPaddleRight(p: Paddle){
 		// console.log('RIGTHT Before Collision: ' + this.x + this.xd)
-		if (p.left < this.right && p.right > this.left &&
-			p.top < this.bottom && p.bottom > this.top)
+		if (p.left < this.right && p.right > this.left
+			&& p.top + p.size.x < this.bottom - this.size.x && p.bottom + p.size.x > this.top - this.size.x)
 		{
 			this.speed.x *= -1
 		}

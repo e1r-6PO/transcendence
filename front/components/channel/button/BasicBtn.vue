@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "nuxt-property-decorator";
+import { Component, Prop, Vue, Watch } from "nuxt-property-decorator";
 
 @Component
 export default class CloseBtn extends Vue {
@@ -69,9 +69,15 @@ export default class CloseBtn extends Vue {
       return this.height
   }
 
+  @Watch('disable', {immediate: true})
   getClasse(): string {
     var classes = ""
 
+    if (this.disable)
+    {
+      this.btnFocus = false
+      return "neon-button"
+    }
     if (this.neonColor == "purple")
       classes += "neon-button"
     else if (this.neonColor == "red")
@@ -90,6 +96,8 @@ export default class CloseBtn extends Vue {
       classes += "neon-button-white"
     else if (this.neonColor == "light-blue")
       classes += "neon-button-light-blue"
+    else if (this.neonColor == 'none')
+      classes += ""
     else
       classes += "neon-button"
     return classes
@@ -102,7 +110,7 @@ export default class CloseBtn extends Vue {
       style += "background-color: " + this.backgroundColor + ";"
     if (this.isText)
       style += "border-radius: 10px;"
-    if (this.btnFocus)
+    if (this.btnFocus && !this.disable && this.color == "")
     {
       style += "color: "
       if (this.neonColor == "red")
@@ -121,6 +129,8 @@ export default class CloseBtn extends Vue {
         style += "#ece3e3"
       else if (this.neonColor == "light-blue")
         style += "#a5fafa"
+      else if (this.neonColor == 'none')
+        style += "grey"
       else
         style += "#cd78ff"
       style += ";"
