@@ -1,28 +1,22 @@
 <template>
-	<div v-if="isEditing" class="flex-container-editing" justify="center" align="center" style="padding-top: 1%">
-		<v-btn
-			color="#8124be"
-			class="foreground_element cross-item edit-button"
-			fab
-			small
-			@click="switchEditing(); close_btn()"
-		>
-			<v-icon color="error" v-if="isEditing" >
-				mdi-close
-			</v-icon>
-		</v-btn>
+	<div justify="center" align="center" style="padding-top: 1%">
+		<v-row justify="end" class="mr-3 pb-4">
+			<BasicBtn @click="switchEditing(); close_btn()"  content="mdi-close" />
+		</v-row>
 		<v-row align="center" justify="center">
-			<v-btn v-if="isEditing"
+			<v-btn
 				class="text-none foreground_element btn_camera"
 				:loading="isSelecting"
 				@click="onButtonClick"
 				color="#333333"
 			>
-				<v-img class="background_element"
-					style="border-radius: 100%; position: absolute;"
-					v-if="user.picture != null"
-					v-bind:src="user.picture"
-					v-on:change="pictureEdited"
+				<v-img v-if="user.picture != null"
+					@change="pictureEdited"
+					:src="url != '' ? url : user.picture"
+					class="background_element"
+					style="border-radius: 100%"
+					height="200px"
+					width="200px"
 				/>
 				<v-icon
 					x-large
@@ -39,61 +33,27 @@
 				>
 			</v-btn>
 		</v-row>
-		<div class="flex-container-editing" style="padding-top: 3%">
-			<v-text-field v-if="isEditing"
-				class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color"
-				v-model="nick"
-				placeholder="Nickname"
-				color="#e6ffff"
-				hide-details
-				filled
-				rounded
-				dense
-				counter="20"
-				@keydown.enter="saveChange"
-			>
-			</v-text-field>
-			</div>
-			<div class="flex-container-row" style="padding-top: 3%" justify="center" align="center" v-if="isEditing">
-				<div v-if="this.tfa_status == true">
-					<span style="color: #e6ffff">2fa is currently</span>
-					<span style="color: #0ADAA8; padding-right: 10px">enabled</span>
-					<v-btn
-						class="neon-button"
-						rounded
-						text
-						color="red"
-						@click="change2fa"
-					>
-						disable
-					</v-btn>
-				</div>
-				<div v-if="this.tfa_status == false">
+			<TextField @enterPress="saveChange" v-model="nick" autofocus placeholder="Nickname" width="330" class="mt-10" />
+			<div class="pt-8" justify="center" align="center">
 				<span style="color: #e6ffff">2fa is currently</span>
-				<span style="color: red; padding-right: 10px">disabled</span>
-				<v-btn
-					class="neon-button"
-					rounded
-					text
-					color="#0ADAA8"
+				<span style="color: #0ADAA8; padding-right: 10px"> {{ is2faEnable() ? 'disable' : 'enable' }} </span>
+				<BasicBtn
+					style="border-radius: 30px"
+					isText
+					:content="is2faEnable() ? 'disable' : 'enable'"
+					:color="is2faEnable() ? 'red': '#0ADAA8'"
 					@click="change2fa"
-				>
-					enable
-				</v-btn>
-			</div>
+				/>
 		</div>
-		<div class="flex-container-editing" justify="center" align="center" style="padding-top: 3%">
-			<v-btn v-if="isEditing"
-			class="foreground_element save-item neon-button"
-			:disabled="nick == user.nickname && selectedFile == null"
-			rounded
-			text
+		<BasicBtn
+			class="mt-6"
+			style="border-radius: 30px"
+			isText
+			content="Save"
 			color="#0ADAA8"
+			:disable="disableSave()"
 			@click="saveChange"
-			>
-				Save
-			</v-btn>
-		</div>
+		/>
 	</div>
 </template>
 
@@ -105,15 +65,10 @@ import { User } from '../../assets/Classes-ts/User';
 @Component
 export default class ProfileEditing extends Vue {
 	isSelecting = false
-	alertCode = false
-	alertText = ""
-	alertType = "success"
 	selectedFile: null | Blob = null
 	nick = ""
 	tfa_status = false
-
-	@Prop({ type: Boolean, default: false})
-	isEditing!: boolean
+	url = ""
 
 	@Prop({ type: Boolean, default: false })
 	pictureEdited!: boolean
@@ -125,10 +80,24 @@ export default class ProfileEditing extends Vue {
 		this.$emit('updateState')
 	}
 
+	is2faEnable(): boolean {
+		return this.user.isTwoFactorAuthenticationEnabled
+	}
+
+	disableSave(): boolean {
+		if ((this.nick == this.user.nickName || this.nick == "") && this.selectedFile == null)
+			return true
+		return false
+	}
+
 	close_btn() {
 		this.selectedFile = null
 		this.nick = this.user.nickName
 	}
+
+	activeAlert(text: string, type: string) {
+		this.$emit('activeAlert', text, type)
+  }
 
 	$refs!: {
 		uploader: HTMLFormElement
@@ -144,28 +113,19 @@ export default class ProfileEditing extends Vue {
 
 	onFileChanged(e: any) {
 		if (!e.target.files[0]) {
-				e.preventDefault();
-				this.alertType = "error"
-				this.alertText = "No file chosen"
-				this.alertCode = true
-				setTimeout(()=>{
-					this.alertCode=false
-				},5000)
-				return;
-			}
+			e.preventDefault();
+			this.activeAlert("No file chosen", "error")
+			return;
+		}
 			
-			if (e.target.files[0].size > 1000000) {
-				e.preventDefault();
-				this.alertText = "File too big (> 1MB)"
-				this.alertType = "error"
-				this.alertCode = true
-				setTimeout(()=>{
-					this.alertCode=false
-				},5000)
-				return;
-			}
-			this.selectedFile = e.target.files[0]
-			this.pictureEdited = !this.pictureEdited
+		if (e.target.files[0].size > 1000000) {
+			e.preventDefault();
+			this.activeAlert("File too big (> 1MB)", "error")
+			return;
+		}
+		this.selectedFile = e.target.files[0]
+		this.url = URL.createObjectURL(e.target.files[0])
+		this.$emit('updatePicture')
 	}
 
 	async saveChange() {
@@ -178,19 +138,13 @@ export default class ProfileEditing extends Vue {
 				});
 			if (ret.status == 409)
 			{
-				this.alertText = "Nick is alredy taken" 
-				this.alertType = "error"
-				this.alertCode = true
-				setTimeout(()=>{
-					this.alertCode = false
-				},5000)
+				this.activeAlert("Nick is alredy taken", "error")
 				return
 			}
 			else
 			{
 				this.$emit('updateNick', this.nick)
-				if (this.isEditing == true)
-					this.$emit('updateState')
+				this.$emit('updateState')
 			}
 		}
 		if (this.selectedFile != null) {
@@ -202,30 +156,26 @@ export default class ProfileEditing extends Vue {
 					'Content-Type': 'multipart/form-data'
 				}
 			})
-			if (this.isEditing == true)
-				this.$emit('updateState')
+			this.$emit('updateState')
 			this.selectedFile = null
+			this.url = ""
 		}
 	}
 
 	async change2fa() {
-		if (this.tfa_status == false)
+		if (this.user.isTwoFactorAuthenticationEnabled == false)
 			this.$router.push("/profile/2fa")
 		else
 		{
 			const qr = await this.$axios.post('/api/auth/2fa/turn-off')
 			.catch(function (error) {
-				alert("Cant turn off 2fa")
 				return error.response
 			});
-			if (qr.status == 201) {
-				this.tfa_status = false
-				this.alertType = "warning"
-				this.alertText = "2fa successfully disabled"
-				this.alertCode = true
-				setTimeout(()=>{
-					this.alertCode=false
-				},5000)
+			if (qr.status == 403)
+				this.activeAlert("Cant turn off 2fa", "error")
+			else if (qr.status == 201) {
+				this.user.isTwoFactorAuthenticationEnabled = false
+				this.activeAlert("2fa successfully disabled", "warning")
 			}
 		}
 	}
@@ -238,31 +188,6 @@ export default class ProfileEditing extends Vue {
 @import '../../assets/Classes-scss/main_page.scss';
 @import '../../assets/Classes-scss/custom_flexBox.scss';
 
-.round_card {
-	border-radius:100% !important;
-}
-
-.item {
-	align-self: flex-end;
-}
-
-.profile-picture {
-	border: 3px solid #a5fafa !important;
-	box-shadow: 0px 0px 15px 0px #63f3f3 !important;
-}
-
-.cross-item {
-	margin-left: 90%;
-	margin-bottom: 2%;
-	border: 3px solid #cd78ff !important;
-	box-shadow: 0px 0px 25px 0px #a200ff !important;
-}
-
-.edit-button {
-	border: 3px solid #e9c8ff !important;
-	box-shadow: 0px 0px 10px 0px #9141c7 !important;
-}
-
 .btn_camera {
 	border-radius: 100%!important;
 	box-shadow: 0px 0px 20px 0px rgba(31, 31, 50, 0.89);
@@ -272,16 +197,5 @@ export default class ProfileEditing extends Vue {
 	min-height: 200px;
 	height: 200px;
 }
-
-.card_profile {
-	border: 3px solid #a5fafa !important;
-	box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
-	border-radius: 15px !important;
-	background-color: #181818 !important;
-	min-width: 400px;
-	height: 250px;
-	width: 30%;
-}
-
 
 </style>
