@@ -62,8 +62,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			game.player1 = game.player1socket['info'] //
 			game.player0socket.join(game.id.toString())
 			game.player1socket.join(game.id.toString())
-			game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
-			game.player1socket['game'] = game.id //
+			// game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
+			// game.player1socket['game'] = game.id //
 			game.room = this.server.to(game.id.toString())
 			// this.server.of('/chat').to('room').emit('wsh la miff')
 			this.gameService.push_game(game) //also starting the game via game.start()
@@ -79,7 +79,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			game.player1 = receiver['info'] //
 			game.player0socket.join(game.id.toString())
 			// game.player1socket.join(game.id.toString())
-			game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
+			// game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
 			// game.player1socket['game'] = game.id //
 			game.room = this.server.to(game.id.toString())
 			this.gameService.push_game(game)
@@ -143,12 +143,29 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (!game)
 			return
 
+		if (game.player0socket['game'] != null) { // tell him that the other is busy
+			var msg: PrivateMessage = await this.privateMessageRepository.findOne({where:{ sender: game.player0, target: game.player1, game_id: game.id }})
+			msg.game_state = "canceled"
+			msg.game_id = ""
+			this.privateMessageRepository.save(msg)
+
+			this.id_to_user.get(game.player0.id).emit('updateMessage', msg)
+			this.id_to_user.get(game.player1.id).emit('updateMessage', msg)
+
+			game.stop() // useless ?
+			this.gameService.games.delete(game.id)
+			return
+		}
+
 		if (client['info'].id == game.player1.id) {
 
 			this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "running"})
 
-			client.emit('privateGameStarting', arg['id'])
+			// client.emit('privateGameStarting', arg['id'])
+			game.player1socket = client
+			game.player1socket.join(game.id.toString())
 			game.player0socket.emit('privateGameStarting', arg['id'])
+			game.player1socket.emit('privateGameStarting', arg['id'])
 			game.start()
 		}
 	}
@@ -178,8 +195,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('joinQueue') // to join the queue if he is in the queue, kick him
 	async joinQueue(client: Socket) {
 			console.log(this.gameService.games.size)
-			if (this.queue.findIndex(clients => clients.id === client.id) != -1)
-					return // dont add him to the queu if he his already inside
+			if (this.queue.findIndex(clients => clients.id === client.id) != -1 || client['game'] != null)
+					return // dont add him to the queu if he his already inside or if he is in a game
 			this.queue.push(client)
 			if (this.queue.length >= 2) {
 					this.create_game() // await may be needed later on
@@ -197,20 +214,20 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('forfeit')
 	async forfeit(client: Socket, info: []) {
 
-			var game: Game = this.gameService.games.get(info['id'])
+		var game: Game = this.gameService.games.get(info['id'])
 
-			if (!game)
-					return
-			
-			if (client['info'].id == game.player0.id) {
-				game.status = "forfeitp0"
-				this.gameService.endgame(game)
-			}
-			else if (client['info'].id == game.player1.id) {
-				game.status = "forfeitp1"
-				this.gameService.endgame(game)
-			}
-			// client.disconnect()
+		if (!game)
+				return
+		
+		if (client['info'].id == game.player0.id) {
+			game.status = "forfeitp0"
+			this.gameService.endgame(game)
+		}
+		else if (client['info'].id == game.player1.id) {
+			game.status = "forfeitp1"
+			this.gameService.endgame(game)
+		}
+		// client.disconnect()
 	}
 
 	@SubscribeMessage('updatePaddle')
@@ -238,8 +255,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	afterInit(server: Server){
-			this.server = server
-			this.logger.log('Init');
+		this.server = server
+		this.logger.log('Init');
 	}
 
 	async handleConnection(client: Socket, ...args: any[]){
@@ -248,8 +265,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			.find((cookie: string) => cookie.startsWith('jwt'))
 			if (jwt == null)
 			{
-					client.disconnect()
-					return
+				client.disconnect()
+				return
 			}
 			// parse cookies
 			const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
@@ -259,8 +276,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			})
 			if (user_data == null || this.id_to_user.has(user_data.id)) // dont allow him to connect in 2 different places + check if exist
 			{
-					client.disconnect()
-					return
+				client.disconnect()
+				return
 			}
 			client['info'] = user_data
 			this.id_to_user.set(user_data.id, client)
@@ -269,13 +286,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async handleDisconnect(client: Socket){
 			var index: number
 
-			this.id_to_user.delete(client['info'].id)
+			if (client['info'].id != undefined)
+				this.id_to_user.delete(client['info'].id)
 			index = this.queue.findIndex(clients => clients.id === client.id)
 			if (index != -1) {
-					this.queue.splice(index, 1)
+				this.queue.splice(index, 1)
 			}
 			else
-					this.gameService.disconnect(client)
+				this.gameService.disconnect(client)
 			// console.log("disconnected: " + client.id)
 	}
 }

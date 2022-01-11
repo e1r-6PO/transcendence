@@ -135,14 +135,6 @@ export default Vue.extend({
     }
   },
 
-  watch: {
-    $route(to, from) {
-      if (from.query.next != null) {
-        this.$router.push(from.query.next)
-      }
-    },
-  },
-
   async mounted() {
     if (!socket_active.connected)
       socket_active.connect()

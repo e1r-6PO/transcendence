@@ -92,6 +92,7 @@ export class GameService {
             if (game.player0socket != null)
                 game.player0socket['game'] = undefined
         }
+        game.status = 'end'
         this.games.delete(game.id)
     }
 
@@ -109,7 +110,7 @@ export class GameService {
                     break
                 await new Promise(f => setTimeout(f, 50));
             }
-            if (game.player0socket != null && game.status == "paused") { // the player reconnected himself
+            if (game.player0socket != null && (game.status == "paused" || game.status == "setup")) { // the player reconnected himself
                 if (game.player1socket != null) // unpause only if player1 is connected
                     game.unpause()
             }
@@ -126,7 +127,7 @@ export class GameService {
                     break
                 await new Promise(f => setTimeout(f, 50));
             }
-            if (game.player1socket != null && game.status == "paused") { // the player reconnected himself
+            if (game.player1socket != null && (game.status == "paused" || game.status == "setup")) { // the player reconnected himself
                 if (game.player0socket != null) // unpause only if player1 is connected
                     game.unpause()
             }

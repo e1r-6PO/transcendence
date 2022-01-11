@@ -12,8 +12,6 @@ export class Ball extends Rect {
 	canvas_y: number
 	// x: number
 	// y: number
-	xd: number
-	yd: number
 	// ball_size: number
 	speed: Vect
 
@@ -24,10 +22,10 @@ export class Ball extends Rect {
 		this.canvas_y = 600 // map height
 		this.pos.x = this.canvas_x / 2, // middle of the map x
 		this.pos.y = this.canvas_y / 2, // middle of the map y
-		this.xd = Math.floor(Math.random() * 2) == 0 ? directions.negative : directions.positive // random x directions
-		this.yd = Math.floor(Math.random() * 2) == 0 ? directions.negative : directions.positive // random y directions
 		// this.ball_size = 18 / 2 // size in pixel in front, useful for the ball not to go in the edge in front
-		this.speed = new Vect() // must be positive value, distance traveled per tick
+		this.speed = new Vect(0, 0) // must be positive value, distance traveled per tick
+		console.log(this.speed)
+		console.log('Ball : pos.x = ' + this.pos.x + ' pos.y = ' + this.pos.y + ' size.x = ' + this.size.x + ' size.y = ' + this.size.y + ' top = ' + this.top + ' bot = ' + this.bottom + ' left = ' + this.left + ' right = ' + this.right)
 	}
 
 	// need to take paddle position as args
@@ -36,13 +34,6 @@ export class Ball extends Rect {
 			// let paddle0y = this.canvas_y / 2
 			// const paddle1x = this.canvas_x - 40
 			// let paddle1y = this.canvas_y / 2
-			if (this.speed.x === 0 && this.speed.y === 0) {
-				this.speed.x = 7 * (Math.random() > .5 ? 1 : -1);
-				this.speed.y = 7 * (Math.random() * 2 - 1);
-				this.speed.len = 8;
-				console.log('BallSpeed: ' + this.speed.x + " " + this.speed.y)
-			}
-
 			this.pos.x += this.speed.x
 			this.pos.y += this.speed.y
 
@@ -57,10 +48,10 @@ export class Ball extends Rect {
 				this.speed.x *= -1
 			}
 
-			if (this.top < 0) {
+			if (this.top < 0 - this.size.x / 5) {
 				this.speed.y *= -1
 			}
-			if (this.bottom > this.canvas_y) {
+			if (this.bottom  > this.canvas_y - this.size.x / 6) {
 				this.speed.y *= -1
         	}
 			// if (this.speed.y < 0 && this.top < 0 ||
@@ -74,9 +65,12 @@ export class Ball extends Rect {
 
 	checkPaddleLeft(p: Paddle){
 		// console.log('LEFT: Before Collision: ' + this.x + this.xd)
-		if (p.right > this.left && p.left < this.right
-			&& p.top + p.size.x < this.bottom - this.size.x && p.bottom + p.size.x > this.top - this.size.x)
+		if (this.left - this.size.x <= p.right && this.right + this.size.x >= p.right &&
+			p.top + p.size.x < this.bottom - this.size.x && p.bottom + p.size.x > this.top - this.size.x)
 		{
+			let collision = p.pos.y - this.pos.y + 30
+			this.speed.y = collision * .2
+			console.log("PaddleLef: " + collision)
 			this.speed.x *= -1
 		}
 		// console.log('LEFT After Collision: ' + this.x + this.xd)
@@ -84,9 +78,13 @@ export class Ball extends Rect {
 
 	checkPaddleRight(p: Paddle){
 		// console.log('RIGTHT Before Collision: ' + this.x + this.xd)
-		if (p.left < this.right && p.right > this.left
+		if (this.right >= p.left && this.left <= p.right
 			&& p.top + p.size.x < this.bottom - this.size.x && p.bottom + p.size.x > this.top - this.size.x)
 		{
+			//ok sa touche
+			let collision = p.pos.y - this.pos.y + 30
+			this.speed.y = collision * .2
+			console.log("PaddleRight: " + collision)
 			this.speed.x *= -1
 		}
 		// console.log('RIGHT After Collision: ' + this.x + this.xd)

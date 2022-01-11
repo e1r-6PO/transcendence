@@ -1,12 +1,13 @@
 <template>
 <v-container>
+  <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
   <div>
     <v-btn
     class="foreground_element neon-button"
     rounded
     text
     color="#ffffff"
-    @click="leave()"
+    @click="forfeit()"
     >
       forfeit
     </v-btn>
@@ -28,6 +29,9 @@ import socket_game from '../../plugins/game.io'
 export default Vue.extend({
   data() {
     return {
+      alertText: "",
+      alert: false,
+      alertType: "error",
       game_id: this.$route.params.slug,
       player0: LightUser,
       player1: LightUser,
@@ -100,9 +104,14 @@ export default Vue.extend({
   },
 
   methods: {
-    leave() {
+    forfeit() {
       socket_game.emit('forfeit', { id: this.game_id })
-      this.$router.push('/home')
+      const urlParams = new URLSearchParams(window.location.search);
+      const myParam = urlParams.get('next');
+      if (myParam != null)
+        this.$router.push(myParam)
+      else
+        this.$router.push('/home')
     },
   },
 
@@ -112,9 +121,24 @@ export default Vue.extend({
         this.player0 = info['player0']
         this.player1 = info['player1']
     })
-    socket_game.on('matchEnd', (info) => {
+    socket_game.on('matchEnd', async (info) => {
+        socket_game.off('matchInfo')
+        socket_game.off('matchEnd')
+        socket_game.off('matchSetup')
+        socket_game.off('gameInfo')
         // console.log(info)
-        this.$router.push('/home')
+        const urlParams = new URLSearchParams(window.location.search);
+        const myParam = urlParams.get('next');
+        if (myParam != null)
+          var next = myParam
+        else
+          var next = '/home'
+        this.alert = true
+        for (let i: number = 3; i >= 0; --i) {
+          this.alertText = "Returning to " + next + ' in ' + i
+          await new Promise(f => setTimeout(f, 1000))  // countdown
+        }
+        this.$router.push(next)
     })
     socket_game.on('matchSetup', (info) => {
       // console.log(info)
@@ -180,6 +204,7 @@ export default Vue.extend({
       console.log(info)
     })
   },
+
   beforeRouteLeave (to, from , next) {
     socket_game.off('matchInfo')
     socket_game.off('matchEnd')
