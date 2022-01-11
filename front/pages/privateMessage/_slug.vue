@@ -154,25 +154,7 @@
   </v-row>
   
   <v-footer app inset color="#181818">
-    <v-text-field
-      v-model="message"
-      class="text-field-nick-neon custom-placeholder-color custom-input-color"
-      style="margin-top: 3%"
-      placeholder="Message"
-      background-color="#181818"
-      color="blue"
-      hide-details
-      filled
-      dense
-      rounded
-      autofocus
-      @keypress.enter="sendMessage"
-    >
-    <template v-slot:append>
-      <v-icon v-if="message.length > 0" @click="clearMessage()" color="#b8a435"> mdi-close-circle </v-icon>
-    </template>
-      <v-icon slot="append-outer" color="#b8a435" class="mr-2"> mdi-send </v-icon>
-    </v-text-field>
+    <TextField @enterPress="sendMessage" v-model="message" append_outer_icon="mdi-send" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
 </template>
