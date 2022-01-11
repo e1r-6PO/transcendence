@@ -93,6 +93,7 @@ export default class TextField extends Vue {
 }
 
 .placeholder-color input::placeholder {
-  color: #efffffdd !important;
+  color: #efffff !important;
+  opacity: 0.65;
 }
 </style>
