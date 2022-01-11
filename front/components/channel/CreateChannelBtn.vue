@@ -3,40 +3,26 @@
     <v-dialog
       v-model="dialog"
       max-width="600px"
+      content-class="custom-dialog-card-shadow"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{}">
         <v-row align="center" justify="center" style="margin-top: 0px">
-          <v-card
-            class="neon-button"
-            color="#181818"
-            style="border-radius: 15px;"
-            link
-            width="100"
-            v-bind="attrs"
-            v-on="on"
-            v-on:mouseover="createFocus = true"
-            v-on:mouseleave="createFocus = false"
-          >
-            <v-card-text align="center" :class="createFocus == true ? 'purple--text text--lighten-1' : 'white--text'"> 
-              <b>Create +</b>
-            </v-card-text>
-          </v-card>
+          <BasicBtn @click="dialog = true" isText :width="120" :height="40" content="Create +" />
         </v-row>
       </template>
-      <v-card class="neon_card2">
+      <v-card class="dialog_card">
         <v-card-title class="white--text justify-center">
           <span class="text-h5">Channel settings</span>
+          <v-spacer />
+          <BasicBtn @click="dialog = false" content="mdi-close" neonColor="red" />
         </v-card-title>
-        <v-card-text>
-          <v-container>
+        <v-card-text class="pt-4 pb-6 pl-8 pr-8">
             <TextField v-model="channName" placeholder="Channel name" />
             <Select v-model="channType" placeholder="Channel type" :itemsList="typeList" />
             <TextField v-model="channPass" placeholder="Password" :disable="channType != 'Protected'" />
-          </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <BasicBtn @click="dialog = false" :isText="true" content="Close" />
           <BasicBtn @click="createChannel()" :isText="true" content="Create" :disable="disableCreate()" />
         </v-card-actions>
       </v-card>
@@ -64,7 +50,6 @@ export default class CreateChannelBtn extends Vue{
 
   async createChannel() {
     this.dialog = false
-    console.log("type" + this.channType + " pass: " + this.channPass)
     this.formateChannName()
     const ret = await this.$axios.$post('/api/chat/' + this.channName + '/create?type=' + this.channType + '&pass=' + this.channPass)
       .catch(function (error) {
@@ -107,20 +92,5 @@ export default class CreateChannelBtn extends Vue{
 <style scoped>
 @import '../../assets/Classes-scss/main_page.scss';
 @import '../../assets/Classes-scss/neon_effects.scss';
-
-.neon_card2 {
-  /* border: 3px solid #a5fafa !important;
-  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 0px 0px #0affff !important; */
-  background-color: #181818 !important;
-}
-
-
-.theme--light.v-list {
-  background-color: #181818 !important;
-}
-
-.custom-placeholder-color2 >>> .v-text-field__slot ::placeholder {
-  color: #e6ffff !important;
-}
 
 </style>

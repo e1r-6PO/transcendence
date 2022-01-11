@@ -4,12 +4,6 @@
     <v-list
       style="background-color: rgba(24, 24, 24, 0) !important; border-radius: 18px; z-index: 0"
     >
-      <!-- <v-list-item>
-        <v-list-item-action>
-          <BasicBtn :iconSize="25" content="mdi-account-multiple" />
-        </v-list-item-action>
-        <v-list-item-title  style="color: white">Friend status</v-list-item-title>
-      </v-list-item> -->
       <v-list-item align="center" v-if="meId == user.id">
         <v-list-item-title style="color: white"> Hello It's you </v-list-item-title>
       </v-list-item>

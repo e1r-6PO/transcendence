@@ -2,6 +2,7 @@
    <v-dialog
       v-model="dialog"
       max-width="600px"
+      content-class="custom-dialog-card-shadow"
     >
       <template v-slot:activator="{ }">
         <BasicBtn
@@ -11,11 +12,11 @@
           class="mt-4"
         />
       </template>
-      <v-card style="background-color: #181818">
+      <v-card class="dialog_card">
         <v-card-title class="white--text">
           <span class="text-h5">Channel settings</span>
           <v-spacer />
-        <BasicBtn @click="dialog = false" content="mdi-close" />
+        <BasicBtn @click="dialog = false" content="mdi-close" neonColor="red"/>
         </v-card-title>
         <v-card-text class="pt-4 pb-7 pr-8 pl-8">
           <TextField

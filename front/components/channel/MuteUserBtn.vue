@@ -2,6 +2,7 @@
   <v-dialog
     v-model="dialog"
     max-width="600px"
+    content-class="custom-dialog-card-shadow"
   >
   <template v-slot:activator="{ }">
     <BasicBtn
@@ -11,30 +12,17 @@
       :smaller="small"
     />
   </template>
-    <v-card style="background-color: #181818">
+    <v-card class="dialog_card">
       <v-card-title class="white--text">
         <span class="text-h5">Mute time</span>
+        <v-spacer />
+        <BasicBtn v-on:click="closeMuteDialog()" content="mdi-close" neonColor="red" />
       </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-select
-            v-model="timeChoose"
-            :items="timeList"
-            class="custom-select-color"
-            placeholder="Channel type"
-            color="yellow"
-            background-color="#181818"
-            item-color="yellow"
-            hide-details
-            filled
-            dense
-            rounded
-          />
-        </v-container>
+      <v-card-text class="pt-4 pb-6 pl-8 pr-8">
+        <Select :itemsList="timeList" v-model="timeChoose" placeholder="Mute time" />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <BasicBtn v-on:click="dialog = false" :isText="true" content="Close" />
         <BasicBtn v-on:click="switchMute()" :isText="true" content="Comfirm" :disable="timeChoose == ''" />
       </v-card-actions>
     </v-card>
@@ -63,6 +51,10 @@ export default class MuteUserBtn extends Vue{
   timeChoose: string = ""
   timeList: Array<string> = ['1 minute', '10 minutes', '1 hours', '6 hours', '12 hours', '1 day', '3 day', '1 week', '1 month', '6 month', '1 year']
   
+  mounted() {
+    console.log(this.timeChoose)
+  }
+
   async switchMute() {
     if (!this.mute)
       this.setTime()
@@ -133,6 +125,11 @@ export default class MuteUserBtn extends Vue{
       this.muteTime.setMonth(this.muteTime.getMonth() + value)
     if (type == 'year')
       this.muteTime.setFullYear(this.muteTime.getFullYear() + value)
+  }
+
+  closeMuteDialog() {
+    this.timeChoose = ""
+    this.dialog = false
   }
 
   activeAlert(error: string)

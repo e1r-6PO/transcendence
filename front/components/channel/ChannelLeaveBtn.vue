@@ -12,9 +12,6 @@ import socket_chat from '../../plugins/chat.io'
 @Component
 export default class ChannelLeaveBtn extends Vue{
   
-  dialog: boolean = false
-  btnFocus: boolean = false
-
   leaveChannel() {
     this.$axios.post('/api/chat/' + this.$route.params.slug + '/leave')
     this.$router.push('/chat')

@@ -2,6 +2,7 @@
   <v-dialog
     v-model="dialog"
     max-width="600px"
+    content-class="custom-dialog-card-shadow"
   >
   <template v-slot:activator="{ }">
     <BasicBtn
@@ -11,30 +12,17 @@
       :smaller="small"
     />
   </template>
-    <v-card style="background-color: #181818">
+    <v-card class="dialog_card">
       <v-card-title class="white--text">
         <span class="text-h5">ban time</span>
+        <v-spacer />
+        <BasicBtn v-on:click="dialog = false" content="mdi-close" neonColor="red" />
       </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-select
-            v-model="timeChoose"
-            :items="timeList"
-            class="custom-select-color"
-            placeholder="Channel type"
-            color="yellow"
-            background-color="#181818"
-            item-color="yellow"
-            hide-details
-            filled
-            dense
-            rounded
-          />
-        </v-container>
+      <v-card-text class="pt-4 pb-6 pl-8 pr-8">
+        <Select :itemsList="timeList" v-model="timeChoose" placeholder="Ban time" />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <BasicBtn v-on:click="dialog = false" :isText="true" content="Close" />
         <BasicBtn v-on:click="switchBan()" :isText="true" content="Comfirm" :disable="timeChoose == ''" />
       </v-card-actions>
     </v-card>
@@ -75,8 +63,10 @@ export default class BanUserBtn extends Vue{
     else if (ret.status == 404)
       this.$router.push('/chat?error=' + ret.data.message)
     else
+    {
+      console.log("refresh")
       this.$emit('refreshUser')
-    this.dialog = false
+    }this.dialog = false
     this.timeChoose = ""
   }
 

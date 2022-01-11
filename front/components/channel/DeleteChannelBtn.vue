@@ -4,8 +4,9 @@
   <v-dialog
     v-model="dialog"
     max-width="290"
+    content-class="custom-dialog-card-shadow"
   >
-    <v-card style="background-color: #181818">
+    <v-card class="dialog_card">
       <v-card-title class="text-h5 white--text">
         Are you sure you want delete the channel ?
       </v-card-title>

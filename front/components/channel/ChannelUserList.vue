@@ -14,6 +14,7 @@
         @clicked="openPreview"
         @focus="focusCard"
         @leave="leaveCard"
+        @refreshUser="refreshUser"
         :ownerAction="ownerAction"
         :status="status"
         :user="user"
@@ -134,6 +135,10 @@ export default class ChannelUserList extends Vue {
 
   leaveCard(id: number) {
     this.userFocus = -1
+  }
+
+  refreshUser() {
+    this.$emit("refreshUser")
   }
 }
 </script>
