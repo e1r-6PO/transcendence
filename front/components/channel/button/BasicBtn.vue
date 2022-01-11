@@ -1,5 +1,6 @@
 <template>
   <v-btn
+    id="basicBtn"
     :class="getClasse()"
     :small="smaller"
     :disabled="disable"
@@ -135,15 +136,24 @@ export default class CloseBtn extends Vue {
         style += "#cd78ff"
       style += ";"
     }
+    else if (this.disable)
+      style += "color: " + (this.color != "" ? this.color : "#b6b6b6") + ";"
     else
-      style += "color: " + (this.color != "" ? this.color : "#616161") + ";"
+      style += "color: " + (this.color != "" ? this.color :  "#b6b6b6") + ";"
+
     return style
   }
 }
 </script>
 
-<style>
+<style scoped>
 @import '../../../assets/Classes-scss/main_page.scss';
 @import '../../../assets/Classes-scss/neon_effects.scss';
 @import '../../../assets/Classes-scss/basicBtn_colors.scss';
+
+.theme--light.v-btn.v-btn--disabled { 
+  color: #b6b6b6aa !important;
+  opacity: 0.4;
+}
+
 </style>
