@@ -41,7 +41,14 @@ export class Game {
 
 	async create_new_ball(time: number) {
 		await new Promise(f => setTimeout(f, time));
-		this.balls.push(new Ball)
+		let new_ball = new Ball()
+		if (new_ball.speed.x === 0 && new_ball.speed.y === 0) {
+			new_ball.speed.x = 1.5 * (Math.random() > .5 ? 1 : -1);
+			new_ball.speed.y = 1.5 * (Math.random() * 2 - 1);
+			// new_ball.speed.len = 8;
+			console.log('BallSpeed: ' + new_ball.speed.x + " " + new_ball.speed.y)
+		}
+		this.balls.push(new_ball)
 	}
 
 	async create_paddles(){
@@ -102,10 +109,7 @@ export class Game {
 		// this.players[1].emit('matchFound', { id: this.id})
 		await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side, rly ?
 		this.matchinfo()
-		for (let i: number = 3; i >= 0; --i) {
-			this.room.emit('matchSetup', { gameStart: i} ) 
-			await new Promise(f => setTimeout(f, 1000)); // countdown
-		}
+
 		this.balls = new Array
 		for (let i = 0; i < this.ball_amount; ++i)
 			this.create_new_ball(i * 1000)
@@ -113,13 +117,18 @@ export class Game {
 		// paddles
 		this.create_paddles()
 
+		for (let i: number = 3; i >= 0; --i) {
+			this.room.emit('matchSetup', { gameStart: i} ) 
+			await new Promise(f => setTimeout(f, 1000)); // countdown
+		}
+
 		if (this.player0socket == null || this.player1socket == null) { // prepause the game if one of the player is dc
 			this.status = 'started'
 			this.pause()
 		}
 		else if (this.status == 'setup' && this.loopId == null) { // condtion probably not needed
 			this.status = 'started'
-			this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
+			this.loopId = setInterval(this.tick.bind(this), 1000 / 30)
 		}
 	}
 
