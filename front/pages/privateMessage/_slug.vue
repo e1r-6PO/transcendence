@@ -59,7 +59,7 @@
     >
       <ChannelList class="mt-4" :state="true">
          <v-subheader class="mt-3 mb-8">
-          <BasicBtn content="mdi-close" v-on:click="channelDrawer = !channelDrawer"></BasicBtn>
+          <BasicBtn content="mdi-close" neonColor="red" @click="channelDrawer = !channelDrawer"></BasicBtn>
           <v-spacer />
           <CreateChannelBtn @error="activeAlert" class="pr-5 pb-3"/>
         </v-subheader>
@@ -78,7 +78,7 @@
     <v-row align="center" justify="center" class="pl-4 pr-5 pt-7">
       <ChannelLeaveBtn @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
       <v-spacer/>
-      <BasicBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></BasicBtn>
+      <BasicBtn content="mdi-close" neonColor="red" @click="userDrawer = !userDrawer"></BasicBtn>
     </v-row>
     </v-navigation-drawer>
 
@@ -235,11 +235,15 @@ export default Vue.extend({
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
     this.nbMsg = this.messagesArray.length
-    socket_chat.on('privateMessage', (msg: PrivateMessages) => {
-      this.messagesArray.push(msg)
-      this.nbMsg = this.messagesArray.length
+    
+    socket_chat.on("privateMessage", (msg: PrivateMessages) => {
+      if (msg.sender.nickName == this.$route.params.slug)
+      {
+        this.messagesArray.push(msg)
+        this.nbMsg = this.messagesArray.length
+      }
     })
-    socket_game.on('privateMessage', (msg: PrivateMessages) => {
+    socket_game.on("privateMessage", (msg: PrivateMessages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
     })
@@ -279,7 +283,7 @@ export default Vue.extend({
       newMsg.type = "message"
       this.messagesArray.push(newMsg)
       this.nbMsg = this.messagesArray.length
-      socket_chat.emit('privateMessageToServer', this.message, this.$route.params.slug)
+      socket_chat.emit('privateMessageToServer', this.$route.params.slug, this.me.nickName, this.message)
       socket_chat.on('MuteError', (msg: string) => {
         this.activeAlert(msg)
       })
