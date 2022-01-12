@@ -51,6 +51,7 @@
           :ownerAction="true"
           :status="status"
           :meId="meId"
+          widthCard="90"
           class="ml-3 mr-3 dialog_card"
         />
       <v-card-actions v-if="status != isOwner()">

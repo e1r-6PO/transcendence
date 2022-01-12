@@ -6,9 +6,10 @@
   >
   <template v-slot:activator="{ }">
     <BasicBtn
-      v-on:click="ban ? switchBan() : dialog = true"
+      width="30"
+      @click="ban ? switchBan() : dialog = true"
       :content="ban ? 'mdi-plus' : 'mdi-cancel'"
-      :iconSize="22"
+      :iconSize="18"
       :smaller="small"
     />
   </template>

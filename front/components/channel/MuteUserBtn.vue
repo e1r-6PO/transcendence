@@ -6,9 +6,10 @@
   >
   <template v-slot:activator="{ }">
     <BasicBtn
-      v-on:click="mute ? switchMute() : dialog = true"
+      @click="mute ? switchMute() : dialog = true"
+      width="30"
       :content="mute ? 'mdi-volume-off' : 'mdi-volume-high'"
-      :iconSize="22"
+      :iconSize="18"
       :smaller="small"
     />
   </template>
