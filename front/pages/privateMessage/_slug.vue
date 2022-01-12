@@ -19,14 +19,7 @@
       v-on:click="channelDrawer = !channelDrawer">
     </BasicBtn>
     <v-spacer />
-    <img v-if="user.picture != ''"
-      v-on:bind="user"
-      v-on:change="updateActive"
-      :src=user.picture
-      style="margin-top: 80px; margin-right: 5px"
-      :class="user.isActive == true ? 'profile-picture-active' : 'profile-picture-inActive'"
-      width="30"
-    />
+    <ProfilePicture @click="redirectToUserProfile" :src="user.picture" :isActive="user.isActive" size="42" style="margin-top: 80px; margin-right: 5px"/>
     <h3 class="neonText" style="color: white; margin-top: 80px">{{ user.nickName }}</h3>
 
     <v-btn
@@ -94,12 +87,11 @@
           class="overflow-y-auto"
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
-          <v-img
-            @click="isYourMsg(msg) ? '' : redirectToUserProfile(msg.senderNick)"
-            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0px'"
+         <ProfilePicture
+            :src="msg.picture"
+            size="30"
+            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0px' : 'float: left; margin-right: 20px !important; left: -10px'"
             style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
-            width="30"
-            :src="msg.picture" 
           />
           <v-card
             v-if="msg.type == 'message'"
@@ -308,7 +300,7 @@ export default Vue.extend({
       return (false)
     },
 
-    redirectToUserProfile(userNick: string) {
+    redirectToUserProfile() {
       this.$router.push("/users/" + this.$route.params.slug)
     },
 

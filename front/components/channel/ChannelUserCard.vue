@@ -5,15 +5,7 @@
     v-on:mouseleave="leave()"
   >
       <v-list-item-icon style="margin-right: 10px; padding-top: 4px">
-      <v-avatar size="36">
-        <img
-          alt="user"
-          :class="user.isActive == true ? 'profile-picture-active' : 'profile-picture-inActive'"
-          :src="user.picture"
-          v-on:bind="user"
-          v-on:change="updateActive"
-        >
-      </v-avatar>
+        <ProfilePicture :src="user.picture" :isActive="user.isActive" disable size="42"/>
       </v-list-item-icon>
       <v-list-item-content class="pb-0">
         <v-list-item-title v-text="user.nickName" style="font-size: 15px; margin-top: 14px" :style="'color:' + getUserTextColor()" />

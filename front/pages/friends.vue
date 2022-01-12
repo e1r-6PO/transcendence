@@ -9,87 +9,47 @@
         overlap
         disable
       >
-      <BasicBtn @click="changeSelectedStatus(displayFriend[i - 1])" :width="150" :content="displayFriend[i - 1]" :isText="true" />
-      <!-- <v-btn width="200" @click="changeSelectedStatus(displayFriend[i - 1])"> -->
-        <!-- {{ displayFriend[i - 1] }} -->
-      <!-- </v-btn> -->
+        <BasicBtn @click="changeSelectedStatus(displayFriend[i - 1])" :width="150" :content="displayFriend[i - 1]" :isText="true" />
       </v-badge>
     </p>
   </v-row>
   <div align="center" style="padding-top: 30px">
-  <v-text-field
-    class="foreground_element text-field-nick-neon custom-placeholder-color custom-input-color neonTextYellow"
-    placeholder="Nickname"
-    color="#e6ffff"
-    v-model="search_string"
-    prepend-inner-icon="mdi-magnify"
-    hide-details
-    filled
-    rounded
-    dense
-    @input="filter()"
-    counter="20"
-    width=50
-    ref="nickname_field"
-  >
-  </v-text-field>
+    <TextField @input="filter()" v-model="search_string" width="340" autofocus placeholder="Nickname" prepend_inner_icon="mdi-magnify" />
   </div>
     <v-row v-if="filterRelationships != []" justify="space-around" style="padding-top: 20px">
       <v-col justify="center" align="left">
-      <div v-for="relationship in filterRelationships" :key="relationship.id"
-        style="padding-top:30px"
-        v-on:bind="filterRelationships"
-        v-on:change="update"
-      >
-        <!-- <p v-if="matchSearch(relationship.peer)"> -->
-        <v-card
-          class="foreground_element card_profile"
-          align="left"
-          justify="center"
+        <div v-for="relationship in filterRelationships" :key="relationship.id"
+          style="padding-top:30px"
+          v-on:bind="filterRelationships"
+          v-on:change="update"
         >
-        <v-row align="center" justify="start" style="padding-left: 20px; padding-top: 7px">
-          <img
-            width="40"
-            @click="goToProfile(relationship)"
-            style="border-radius: 100% !important;"
-            :class="relationship.peer.isActive == true ? 'profile-picture-active' : 'profile-picture-inActive'"
-            :src="relationship.peer.picture"
-          />
-          <v-card-title @click="goToProfile(relationship)" class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</v-card-title>
-          <BasicBtn
-            v-if="selectedStatus == 'Pending' && relationship.status == status.incomming"
-            style="position: absolute; bottom: -20px; right: 58px"
-            @click="edit_friend(relationship, true)"
-            :width="40"
-            content="mdi-account-remove"
-            color="black"
-            backgroundColor="#18124be0"
-          />
-          <BasicBtn
-            style="position: absolute; bottom: -20px; right: 13px"
-            @click="edit_friend(relationship, false)"
-            :width="40"
-            :content="getStatusIcon(relationship)"
-            color="black"
-            backgroundColor="#18124be0"
-          />
-          <!-- <v-btn
-            color="#8124be"
-            class="friend-button"
-            fab
-            small
-            @click="edit_friend(relationship)"
-            absolute
-            bottom
-            right
+          <v-card
+            class="foreground_element card_profile"
+            align="left"
+            justify="center"
           >
-            <v-icon>
-              {{ getStatusIcon(relationship) }}
-            </v-icon>
-          </v-btn> -->
-        </v-row>
-        </v-card>
-        <!-- </p> -->
+            <v-row align="center" justify="start" style="padding-left: 20px; padding-top: 7px">
+              <ProfilePicture @click="goToProfile(relationship)" :src="relationship.peer.picture" :isActive="relationship.peer.isActive" />
+              <v-card-title @click="goToProfile(relationship)" class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</v-card-title>
+              <BasicBtn
+                v-if="selectedStatus == 'Pending' && relationship.status == status.incomming"
+                style="position: absolute; bottom: -20px; right: 58px"
+                @click="edit_friend(relationship, true)"
+                :width="40"
+                content="mdi-account-remove"
+                color="black"
+                backgroundColor="#18124be0"
+              />
+              <BasicBtn
+                style="position: absolute; bottom: -20px; right: 13px"
+                @click="edit_friend(relationship, false)"
+                :width="40"
+                :content="getStatusIcon(relationship)"
+                color="black"
+                backgroundColor="#18124be0"
+              />
+            </v-row>
+          </v-card>
         </div>
       </v-col>
     </v-row>
@@ -340,7 +300,8 @@ export default Vue.extend({
 @import '../assets/Classes-scss/main_page.scss';
 .card_profile {
   border: 3px solid #a5fafa !important;
-  box-shadow: 0px 0px 40px 0px #0affff !important;
+	box-shadow: inset 0px 0px 20px 0px #0affff, 0px 0px 20px 0px #0affff !important;
+  /* box-shadow: 0px 0px 40px 0px #0affff !important; */
   border-radius: 15px !important;
   background-color: #181818 !important;
   height: 60px;
@@ -354,12 +315,6 @@ export default Vue.extend({
 .friend-button {
   border: 3px solid #e9c8ff !important;
   box-shadow: 0px 0px 15px 3px #9141c7 !important;
-}
-
-.profile-picture {
-  border: 2px solid #a5fafa !important;
-  box-shadow: 0px 0px 10px 0px #63f3f3 !important;
-  border-radius: 100%
 }
 
 </style>

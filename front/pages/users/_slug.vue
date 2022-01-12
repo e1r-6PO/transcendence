@@ -2,10 +2,7 @@
   <v-container fluid>
     <div justify="center" align="center" style="padding-top: 5%">
       <v-avatar class="overflow-visible" size="128">
-        <img v-if="user.picture != ''"
-          class="round_card item profile-picture"
-          :src=user.picture
-        />
+			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="130" />
         <v-btn v-if="self.id != user.id"
           color="#8124be"
           class="friend-button"

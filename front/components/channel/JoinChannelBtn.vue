@@ -15,7 +15,7 @@
         <v-card-title class="white--text justify-center">
           <span class="text-h5">Channel name</span>
           <v-spacer />
-          <BasicBtn @click="dialogJoin = false" neonColor="purple" color="red" content="mdi-close" />
+          <BasicBtn @click="dialogPass = false" content="mdi-close" neonColor="red" />
         </v-card-title>
         <v-card-text>
           <v-container>
