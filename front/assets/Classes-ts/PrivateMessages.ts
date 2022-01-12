@@ -6,7 +6,7 @@ interface IPrivateMessages {
   sender: User;
   message: string;
   picture: string;
-  date: Date;
+  time: Date;
 
   // relative to a game message
   type: string;
@@ -19,10 +19,11 @@ class PrivateMessages {
 
   id: number;
   sender: User;
+  senderNick: string;
   target: User;
   message: string;
   picture: string;
-  date: Date;
+  time: Date;
   type: string;
   game_id: string;
   game_state: string;
@@ -36,12 +37,13 @@ class PrivateMessages {
       this.sender = msg && msg.sender || 0;
       this.target = msg && msg.target || "";
       this.message = msg && msg.message || "";
-      this.date = msg && msg.time || new Date();
+      this.time = msg && msg.time || new Date();
       this.picture = msg && msg.picture || "";
       this.type = msg && msg.type || "message";
       this.game_id = msg && msg.game_id || ""
       this.game_state = msg && msg.game_state || ""
       this.winner = msg && msg.target || "";
+      this.senderNick = msg && msg.senderNick || ""
   }
 }
 

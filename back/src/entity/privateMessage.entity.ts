@@ -53,4 +53,25 @@ export class PrivateMessage {
     nullable: true,
   })
   winner: User;
+
+  toJSON() {
+    return {
+        id: this.id,
+        sender: {
+            id: this.sender.id,
+            picture: 'http://localhost:8000/api/users/' + this.sender.id + '/picture',
+            nickName: this.sender.nickName,
+            isActive: this.sender.isActive
+        },
+        senderNick: this.sender.nickName,
+        message: this.message,
+        time: this.date,
+        picture: 'http://localhost:8000/api/users/' + this.sender.id + '/picture',
+        target: this.target,
+        type: this.type,
+        game_id: this.game_id,
+        game_state: this.game_state,
+        winner: this.winner
+    }
+}
 }
