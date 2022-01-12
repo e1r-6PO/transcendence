@@ -18,8 +18,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - front',
-    title: 'front',
+    titleTemplate: '%s - Tronscendance',
+    title: 'Tronscendance',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -85,7 +85,7 @@ export default {
       dark: false,
       themes: {
         dark: {
-          primary: '#f28482',
+          primary: '#ff0000',
           accent: '#f28482',
           secondary: '#f28482',
           info: '#f28482',
