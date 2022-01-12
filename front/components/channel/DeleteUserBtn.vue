@@ -1,8 +1,9 @@
 <template>
   <BasicBtn
-    v-on:click="deleteUser()"
+    @click="deleteUser()"
     content="mdi-account-minus"
-    :iconSize="22"
+    width="35"
+    :iconSize="18"
     :smaller="small"
   />
 </template>

@@ -1,11 +1,7 @@
 <template>
 	<div justify="center" align="center" style="padding-top: 2%">
 		<v-avatar class="overflow-visible" size="128">
-			<img v-if="user.picture != ''"
-				class="round_card item profile-picture"
-				@change="pictureEdited"
-				:src="user.picture"
-			/>
+			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="140" />
 			<v-btn
 				color="#8124be"
 				class="edit-button"

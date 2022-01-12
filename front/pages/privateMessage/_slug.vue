@@ -19,14 +19,7 @@
       v-on:click="channelDrawer = !channelDrawer">
     </BasicBtn>
     <v-spacer />
-    <img v-if="user.picture != ''"
-      v-on:bind="user"
-      v-on:change="updateActive"
-      :src=user.picture
-      style="margin-top: 80px; margin-right: 5px"
-      :class="user.isActive == true ? 'profile-picture-active' : 'profile-picture-inActive'"
-      width="30"
-    />
+    <ProfilePicture @click="redirectToUserProfile" :src="user.picture" :isActive="user.isActive" size="42" style="margin-top: 80px; margin-right: 5px"/>
     <h3 class="neonText" style="color: white; margin-top: 80px">{{ user.nickName }}</h3>
 
     <v-btn
@@ -59,7 +52,7 @@
     >
       <ChannelList class="mt-4" :state="true">
          <v-subheader class="mt-3 mb-8">
-          <BasicBtn content="mdi-close" v-on:click="channelDrawer = !channelDrawer"></BasicBtn>
+          <BasicBtn content="mdi-close" neonColor="red" @click="channelDrawer = !channelDrawer"></BasicBtn>
           <v-spacer />
           <CreateChannelBtn @error="activeAlert" class="pr-5 pb-3"/>
         </v-subheader>
@@ -78,7 +71,7 @@
     <v-row align="center" justify="center" class="pl-4 pr-5 pt-7">
       <ChannelLeaveBtn @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
       <v-spacer/>
-      <BasicBtn content="mdi-close" v-on:click="userDrawer = !userDrawer"></BasicBtn>
+      <BasicBtn content="mdi-close" neonColor="red" @click="userDrawer = !userDrawer"></BasicBtn>
     </v-row>
     </v-navigation-drawer>
 
@@ -94,38 +87,15 @@
           class="overflow-y-auto"
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
-          <v-img
-            @click="isYourMsg(msg) ? '' : redirectToUserProfile(msg.senderNick)"
-            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0px'"
+         <ProfilePicture
+            @click="redirectToUserProfile"
+            size="30"
+            :src="msg.picture"
+            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0px' : 'float: left; margin-right: 20px !important; left: -10px'"
             style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
-            width="30"
-            :src="msg.picture" 
           />
-          <v-card
-            v-if="msg.type == 'message'"
-            class="bubble"
-            :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
-            :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
-            style="min-width: 70px; max-width: 400px !important; margin-top: 20px"
-          >
-            <v-card-subtitle
-              style="padding-bottom: 0px; color: white"
-              v-text="msg.sender.nickName"
-              class="text-left"
-            >
-            </v-card-subtitle>
-            <v-card-text  
-              style="padding-bottom: 0px; padding-right: 55px; color: white"
-              v-text="msg.message"
-            >
-            </v-card-text>
-            <v-card-subtitle
-              style="padding-bottom: 5px; padding-top: 0px; color: white"
-              v-text="formateTime(msg.date)"
-              class="text-right"
-            >
-            </v-card-subtitle>
-          </v-card>
+          <OtherBubbleMsg v-if="!isYourMsg(msg)" :msg="msg"/>
+          <MyBubbleMsg v-else :msg="msg" />
 
           <!-- if the message is a game -->
           <v-card
@@ -154,25 +124,7 @@
   </v-row>
   
   <v-footer app inset color="#181818">
-    <v-text-field
-      v-model="message"
-      class="text-field-nick-neon custom-placeholder-color custom-input-color"
-      style="margin-top: 3%"
-      placeholder="Message"
-      background-color="#181818"
-      color="blue"
-      hide-details
-      filled
-      dense
-      rounded
-      autofocus
-      @keypress.enter="sendMessage"
-    >
-    <template v-slot:append>
-      <v-icon v-if="message.length > 0" @click="clearMessage()" color="#b8a435"> mdi-close-circle </v-icon>
-    </template>
-      <v-icon slot="append-outer" color="#b8a435" class="mr-2"> mdi-send </v-icon>
-    </v-text-field>
+    <TextField @enterPress="sendMessage" v-model="message" append_outer_icon="mdi-send" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
 </template>
@@ -235,11 +187,15 @@ export default Vue.extend({
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
     this.nbMsg = this.messagesArray.length
-    socket_chat.on('privateMessage', (msg: PrivateMessages) => {
-      this.messagesArray.push(msg)
-      this.nbMsg = this.messagesArray.length
+    
+    socket_chat.on("privateMessage", (msg: PrivateMessages) => {
+      if (msg.sender.nickName == this.$route.params.slug)
+      {
+        this.messagesArray.push(msg)
+        this.nbMsg = this.messagesArray.length
+      }
     })
-    socket_game.on('privateMessage', (msg: PrivateMessages) => {
+    socket_game.on("privateMessage", (msg: PrivateMessages) => {
       this.messagesArray.push(msg)
       this.nbMsg = this.messagesArray.length
     })
@@ -274,12 +230,12 @@ export default Vue.extend({
       newMsg.sender = this.me
       newMsg.picture = this.me.picture
       newMsg.message = this.message
-      newMsg.date = new Date()
+      newMsg.time = new Date()
       newMsg.target = new User()
       newMsg.type = "message"
       this.messagesArray.push(newMsg)
       this.nbMsg = this.messagesArray.length
-      socket_chat.emit('privateMessageToServer', this.message, this.$route.params.slug)
+      socket_chat.emit('privateMessageToServer', this.$route.params.slug, this.me.nickName, this.message)
       socket_chat.on('MuteError', (msg: string) => {
         this.activeAlert(msg)
       })
@@ -322,7 +278,7 @@ export default Vue.extend({
       return (false)
     },
 
-    redirectToUserProfile(userNick: string) {
+    redirectToUserProfile() {
       this.$router.push("/users/" + this.$route.params.slug)
     },
 

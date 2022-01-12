@@ -2,6 +2,7 @@
   <v-dialog
     v-model="dialog"
     max-width="600px"
+    content-class="custom-dialog-card-shadow"
   >
     <template v-slot:activator="{ }">
       <BasicBtn
@@ -11,24 +12,15 @@
         neonColor="red"
       />
     </template>
-    <v-card style="background-color: #181818">
+    <v-card class="dialog_card">
       <v-card-title class="white--text">
         <p class="mt-4 text-h5">Choose the new Owner of the channel</p>
         <v-spacer />
-        <BasicBtn v-on:click="dialog = false" content="mdi-close" />
+        <BasicBtn v-on:click="dialog = false" content="mdi-close" neonColor="red" />
       </v-card-title>
       <v-card-text>
         <v-container>
-          <v-text-field
-            v-model="userName"
-            placeholder="User name"
-            class="mt-3 custom-select-color custom-placeholder-color custom-input-color neonText"
-            color="blue"
-            hide-details
-            filled
-            dense
-            rounded
-          ></v-text-field>
+          <TextField @enterPress="giveOwner()" v-model="userName" placeholder="User name" />
         </v-container>
       </v-card-text>
       <v-card-actions>

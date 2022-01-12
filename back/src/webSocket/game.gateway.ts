@@ -286,7 +286,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async handleDisconnect(client: Socket){
 			var index: number
 
-			if (client['info'].id != undefined)
+			if (client['info'] != undefined && client['info'].id != undefined)
 				this.id_to_user.delete(client['info'].id)
 			index = this.queue.findIndex(clients => clients.id === client.id)
 			if (index != -1) {

@@ -24,12 +24,14 @@ import { LightUser } from '../../assets/Classes-ts/User'
 
 import { Ball } from '../../assets/Classes-ts/Ball'
 import { Paddle } from '../../assets/Classes-ts/Paddle'
+import { Match } from '../../assets/Classes-ts/Match'
 
 import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
   data() {
     return {
+      match_res: Match,
       alertText: "",
       alert: false,
       alertType: "error",
@@ -117,6 +119,10 @@ export default Vue.extend({
   },
 
   async created() {
+    socket_game.on('oldGame', async (info: null) => {
+      this.match_res = await this.$axios.$get('/api/games/' + this.game_id)
+      // do something
+    })
     socket_game.on('matchInfo', (info) => {
         // console.log(info)
         this.player0 = info['player0']

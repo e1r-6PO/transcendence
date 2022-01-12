@@ -3,38 +3,27 @@
     <v-dialog
       v-model="dialogJoin"
       max-width="600px"
+      content-class="custom-dialog-card-shadow"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{}">
         <v-row align="center" justify="center" style="margin-top: 10px; margin-bottom: 20px">
-        <v-card
-          class="neon-button"
-          color="#181818"
-          width="100"
-          style="border-radius: 15px;"
-          link
-          v-bind="attrs"
-          v-on="on"
-          v-on:mouseover="joinFocus = true"
-          v-on:mouseleave="joinFocus = false"
-        >
-        <v-card-text align="center" :class="joinFocus == true ? 'purple--text text--lighten-1' : 'white--text'"> 
-          <b>Join</b>
-        </v-card-text>
-      </v-card>
+        
+        <BasicBtn @click="dialogJoin = true" isText content="Join" :width="120" :height="40"/>
         </v-row>
       </template>
-      <v-card class="neon_card">
+      <v-card class="dialog_card">
         <v-card-title class="white--text justify-center">
           <span class="text-h5">Channel name</span>
+          <v-spacer />
+          <BasicBtn @click="dialogJoin = false" content="mdi-close" neonColor="red" />
         </v-card-title>
         <v-card-text>
           <v-container>
-            <TextField v-model="channName" placeholder="Channel name" />
+            <TextField  @enterPress="tryJoin()" autofocus v-model="channName" placeholder="Channel name" />
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <BasicBtn @click="dialogJoin = false" :isText="true" content="Close" />
           <BasicBtn :isText="true" content="Join" @click="tryJoin()" :disable="disableJoin()" />
         </v-card-actions>
       </v-card>
@@ -42,22 +31,21 @@
     <v-dialog
       v-model="dialogPass"
       max-width="600px"
+      content-class="custom-dialog-card-shadow"
     >
-      <v-card>
+      <v-card class="dialog_card">
         <v-card-title>
-          <span class="text-h5">Channel password</span>
+          <span class="text-h5 white--text">Channel password</span>
+          <v-spacer />
+          <BasicBtn @click="dialogPass = false" content="mdi-close" neonColor="red" />
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field
-              label="Channel Password"
-              v-model="channPass"
-            ></v-text-field>
+            <TextField @enterPress="joinChannel()" autofocus v-model="channPass" placeholder="Channel Password"/>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <BasicBtn @click="dialogPass = false" :isText="true" content="Close" />
           <BasicBtn @click="joinChannel()" :isText="true" content="Join" :disable="disableJoin()" />
         </v-card-actions>
       </v-card>
@@ -121,6 +109,8 @@ export default class JoinChannelBtn extends Vue{
   disableJoin() {
     if (!this.dialogPass && this.channName == '')
       return true
+    if (this.dialogPass && this.channPass == '')
+      return true
     return false
   }
 
@@ -140,9 +130,4 @@ export default class JoinChannelBtn extends Vue{
 @import '../../assets/Classes-scss/main_page.scss';
 @import '../../assets/Classes-scss/neon_effects.scss';
 
-.neon_card {
-  border: 3px solid #a5fafa !important;
-  box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 0px 0px #0affff !important;
-  background-color: #262e2e !important;
-}
 </style>

@@ -39,7 +39,7 @@
     >
       <ChannelList class="mt-4" :state="true">
          <v-subheader class="mt-3 mb-8">
-          <BasicBtn v-on:click="channelDrawer = !channelDrawer" :width="40" content="mdi-close" />
+          <BasicBtn v-on:click="channelDrawer = !channelDrawer" :width="40" neonColor="red" content="mdi-close" />
           <v-spacer />
           <CreateChannelBtn @error="activeAlert" class="pr-5 pb-3"/>
         </v-subheader>
@@ -75,7 +75,7 @@
           >
           </ChannelSettings>
           <v-spacer />
-          <BasicBtn v-on:click="userDrawer = !userDrawer" content="mdi-close" :width="40" />
+          <BasicBtn v-on:click="userDrawer = !userDrawer" content="mdi-close" neonColor="red" :width="40" />
          </v-subheader>
         <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       </ChannelUserList>
@@ -86,7 +86,7 @@
       <v-card
         color="#181818"
         flat
-        class="pt-4"
+        style="padding-top: 35px"
       >
         <div v-for="(msg, i) in messagesArray"
           :key="i"
@@ -94,37 +94,16 @@
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
         <div v-if="isMsgDefault(msg)">
-          <div @click="redirectToUserProfile(msg.senderNick)">
-            <v-img
-              :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0' : 'float: left; margin-right: 20px !important; left: 0'"
-              style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
-              width="30"
-              :src="msg.picture" 
-            />
-          </div>
-            <v-card
-              class="bubble"
-              :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
-              :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
-              style="min-width: 70px; max-width: 400px !important; margin-top: 20px"
-            >
-              <v-card-subtitle
-                style="padding-bottom: 0px; color: white"
-                v-text="msg.senderNick"
-                class="text-left"
-              >
-              </v-card-subtitle>
-              <v-card-text
-                style="padding-bottom: 0px; padding-right: 55px; color: white"
-                v-text="msg.message"
-              />
-              <v-card-subtitle
-                style="padding-bottom: 5px; padding-top: 0px; color: white"
-                v-text="formateTime(msg.time)"
-                class="text-right"
-              />
-            </v-card>
-          </div>
+          <ProfilePicture
+            @click="redirectToUserProfile(msg.senderNick)"
+            size="30"
+            :src="msg.picture"
+            :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0px' : 'float: left; margin-right: 20px !important; left: -10px'"
+            style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
+          />
+          <OtherBubbleMsg v-if="!isYourMsg(msg)" :msg="msg"/>
+          <MyBubbleMsg v-else :msg="msg" />
+        </div>
         <div v-if="isMsgServer(msg)">
           <v-card class="bubble_server" align="center" height="35">
             <v-card-text

@@ -1,8 +1,9 @@
 <template>
   <BasicBtn
-    v-on:click="changeGrade()"
+    @click="changeGrade()"
+    width="30"
     :content="grade == isAdmin() ? 'mdi-account-arrow-down' : 'mdi-account-arrow-up'"
-    :iconSize="22"
+    :iconSize="18"
     :smaller="small"
   />
 </template>

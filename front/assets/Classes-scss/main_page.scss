@@ -27,10 +27,6 @@
   box-shadow: inset 0px 0px 20px 0px #b8a435, 0px 0px 20px 0px #b8a435 !important;
 }
 
-.custom-select-placeholder-color >>> .v-select__slot ::placeholder {
-  color: #e6ffff !important;
-}
-
 .text-field-nick-neon {
   color: #b8a435;
  /* text-shadow:
@@ -41,5 +37,9 @@
   min-width: 250px;
   width: 340px;
   border: 3px solid #fff3b2 !important;
-  box-shadow: inset 0px 0px 20px 0px #b8a435, 0px 0px 20px 0px #b8a435 !important;
+  box-shadow: inset 0px 0px 18px 0px #b8a435, 0px 0px 18px 0px #b8a435 !important;
+}
+
+.dialog_card {
+  background-color: #252525 !important;
 }

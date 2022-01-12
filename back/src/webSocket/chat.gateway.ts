@@ -53,12 +53,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('privateMessageToServer')
     async handlePrivateMessage(client: Socket, av: string): Promise<void>{
         
+        const dest = av[0]
+        const sender = av[1]
+        const msg = av[2]
+
         var newMsg: PrivateMessage = new PrivateMessage;
         
         const jwt = this.chatService.getJwt(client)
         const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
         var userTarget = await this.usersRepository.findOne({
-            where: { nickName: av[1] }
+            where: { nickName: dest }
         })
         if (!userTarget)
             return
@@ -66,7 +70,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             where: { id: jwt_decoded['id'] }
         })
         newMsg.target = userTarget
-        newMsg.message = av[0]
+        newMsg.message = msg
         newMsg.picture = 'http://localhost:8000/api/users/' + newMsg.sender.id + '/picture'
         newMsg.date = new Date()
         

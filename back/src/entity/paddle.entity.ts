@@ -28,8 +28,8 @@ export class Paddle extends Rect{
 	
 	moveDown(){
 		let res = this.pos.y + this.speed.y
-		if (res + this.size.y > 600)
-			this.pos.y = 600 - this.size.y
+		if (res > 600)
+			this.pos.y = 600
 		else
 			this.pos.y += this.speed.y
 		this.motion = true

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'nuxt-property-decorator'
+import { Component, Prop, Watch } from 'nuxt-property-decorator'
 import Vue from 'vue'
 
 @Component
@@ -39,24 +39,30 @@ export default class Select extends Vue {
 
   content: String = this.value
 
+  @Watch('value')
+  watchValue() {
+    this.content = this.value
+  }
+
   updateValue() {
     this.$emit('input', this.content)
   }
-  
+
   test() {
     console.log(this.itemsList)
   }
 }
 </script>
 
-<style scoped>
+<style>
+
 .theme--light.v-list {
   background-color: #181818 !important;
 }
 
-.custom-placeholder-color2 >>> .v-text-field__slot ::placeholder {
+.custom-select-placeholder-color .v-select__slot ::placeholder {
   color: #e6ffff !important;
+  opacity: 0.65;
 }
 
-</style>
 </style>

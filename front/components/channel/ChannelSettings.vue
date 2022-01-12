@@ -3,6 +3,7 @@
     <v-dialog
       v-model="dialog"
       max-width="500"
+      content-class="custom-dialog-card-shadow"
       transition="dialog-top-transition"
     >
       <template v-slot:activator="{}">
@@ -14,11 +15,9 @@
           />
         </v-row>
       </template>
-      <v-card
-        style="background-color: #181818"
-      > 
+      <v-card class="dialog_card"> 
         <div align="end">
-          <BasicBtn @click="dialog = false" content="mdi-close" class="mt-3 mr-3" />
+          <BasicBtn @click="dialog = false" content="mdi-close" neonColor="red" class="mt-3 mr-3" />
         </div>
         <v-card-title v-if="status == isOwner()" class="justify-center">
           <p align="center" class="text-h4 white--text">{{ channName }}</p>
@@ -27,19 +26,7 @@
           <v-container>
             <v-row>
               <v-col>
-                <v-select
-                  v-model="channAccess"
-                  :items="typeList"
-                  class="custom-select-color custom-placeholder-color custom-input-color text-white"
-                  placeholder="Channel type"
-                  color="yellow"
-                  background-color="#181818"
-                  item-color="yellow"
-                  hide-details
-                  filled
-                  dense
-                  rounded
-                ></v-select>
+                <Select :itemsList="typeList" v-model="channAccess" placeholder="Channel type" />
                 <TextField v-model="channPass" :disable="channAccess != 'Protected'" placeholder="Password"/>
               </v-col>
             </v-row>
@@ -64,8 +51,8 @@
           :ownerAction="true"
           :status="status"
           :meId="meId"
-          class="ml-3 mr-3"
-          style="background-color: #181818"
+          widthCard="90"
+          class="ml-3 mr-3 dialog_card"
         />
       <v-card-actions v-if="status != isOwner()">
         <ChannelLeaveBtn @refreshUser="updateToken"/>
@@ -122,7 +109,6 @@ export default class ChannelSettings extends Vue{
     else
     {
       this.actualAccess = ret.data.channAccess
-      this.channAccess = ret.data.channAccess
       this.actualPass = ret.data.channPass
     }
   }
