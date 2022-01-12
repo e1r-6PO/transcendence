@@ -25,4 +25,15 @@ export class Match {
         eager: true,
     })
     winner: User
+
+    toSafeFormat() {
+        return {
+            id: this.id,
+            player0: this.player0.toLightuser(),
+            player1: this.player1.toLightuser(),
+            scorep0: this.scorep0,
+            scorep1: this.scorep1,
+            winner: this.winner.toLightuser()
+        }
+    }
 }
