@@ -10,12 +10,12 @@
       clipped
       stateless
     >
-      <div style="display: flex ; flex-direction: column;" justify-content="space-around">
+      <div style="display: flex ; flex-direction: column;">
         <v-btn
           depressed
-          class="title_color neonText no-uppercase"
+          class="title_color neonText no-uppercase pt-5"
           color="white"
-          style="margin-top: 10px"
+          style="margin-top: 10px; justify-content: start !important"
           x-large
           v-for="(item, i) in items"
           :key="i"
@@ -26,10 +26,10 @@
           plain
           text
         >
-          <v-icon left>
+          <v-icon style="margin-left: 20px">
             {{ item.icon }}
           </v-icon>
-            {{ item.title }}
+          <span style="margin-left: 20px">{{ item.title }}</span>
         </v-btn>
       </div>
     </v-navigation-drawer>
