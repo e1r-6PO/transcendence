@@ -13,6 +13,7 @@
     </v-btn>
   </div>
   <canvas id="map" width="840" height="600"></canvas>
+  
 </v-container>
 </template>
 
@@ -182,8 +183,17 @@ export default Vue.extend({
         }
       }
       //player1
-      maptest.rect(this.paddle0.x, this.paddle0.y, this.paddle0.width, this.paddle0.height)
-      maptest.rect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
+      maptest.fillStyle = 'darkgreen'
+      maptest.shadowColor = 'lime';
+      maptest.shadowBlur = 8;
+      maptest.fillRect(this.paddle0.x, this.paddle0.y, this.paddle0.width, this.paddle0.height)
+      
+      maptest.fillStyle = 'darkred'
+      maptest.shadowColor = 'red';
+      maptest.shadowBlur = 8;
+      maptest.fillRect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
+      
+      maptest.fillStyle = 'yellow'
       // drawing balls
       maptest.fill()
     })
