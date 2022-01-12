@@ -95,34 +95,15 @@
         >
         <div v-if="isMsgDefault(msg)">
           <ProfilePicture
-            :src="msg.picture"
+            @click="redirectToUserProfile(msg.senderNick)"
             size="30"
+            :src="msg.picture"
             :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0px' : 'float: left; margin-right: 20px !important; left: -10px'"
             style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
           />
-          <v-card
-            class="bubble"
-            :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
-            :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
-            style="min-width: 70px; max-width: 400px !important; margin-top: 20px; margin-bottom: 5px"
-          >
-            <v-card-subtitle
-              style="padding-bottom: 0px; color: white"
-              v-text="msg.senderNick"
-              class="text-left"
-            >
-            </v-card-subtitle>
-            <v-card-text
-              style="padding-bottom: 0px; padding-right: 55px; color: white"
-              v-text="msg.message"
-            />
-            <v-card-subtitle
-              style="padding-bottom: 5px; padding-top: 0px; color: white"
-              v-text="formateTime(msg.time)"
-              class="text-right"
-            />
-          </v-card>
-          </div>
+          <OtherBubbleMsg v-if="!isYourMsg(msg)" :msg="msg"/>
+          <MyBubbleMsg v-else :msg="msg" />
+        </div>
         <div v-if="isMsgServer(msg)">
           <v-card class="bubble_server" align="center" height="35">
             <v-card-text

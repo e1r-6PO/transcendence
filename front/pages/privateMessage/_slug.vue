@@ -88,36 +88,14 @@
           style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
          <ProfilePicture
-            :src="msg.picture"
+            @click="redirectToUserProfile"
             size="30"
+            :src="msg.picture"
             :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0px' : 'float: left; margin-right: 20px !important; left: -10px'"
             style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
           />
-          <v-card
-            v-if="msg.type == 'message'"
-            class="bubble"
-            :class="isYourMsg(msg) ? 'bubble bubble_right' : 'bubble bubble_left'"
-            :color="isYourMsg(msg) ? '#1982FC' : '#ffffff'"
-            style="min-width: 70px; max-width: 400px !important; margin-top: 20px"
-          >
-            <v-card-subtitle
-              style="padding-bottom: 0px; color: white"
-              v-text="msg.sender.nickName"
-              class="text-left"
-            >
-            </v-card-subtitle>
-            <v-card-text  
-              style="padding-bottom: 0px; padding-right: 55px; color: white"
-              v-text="msg.message"
-            >
-            </v-card-text>
-            <v-card-subtitle
-              style="padding-bottom: 5px; padding-top: 0px; color: white"
-              v-text="formateTime(msg.date)"
-              class="text-right"
-            >
-            </v-card-subtitle>
-          </v-card>
+          <OtherBubbleMsg v-if="!isYourMsg(msg)" :msg="msg"/>
+          <MyBubbleMsg v-else :msg="msg" />
 
           <!-- if the message is a game -->
           <v-card
@@ -252,7 +230,7 @@ export default Vue.extend({
       newMsg.sender = this.me
       newMsg.picture = this.me.picture
       newMsg.message = this.message
-      newMsg.date = new Date()
+      newMsg.time = new Date()
       newMsg.target = new User()
       newMsg.type = "message"
       this.messagesArray.push(newMsg)
