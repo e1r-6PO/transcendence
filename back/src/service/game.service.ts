@@ -34,7 +34,7 @@ export class GameService {
         var game: Game = this.games.get(id)
 
         if (game == undefined) { // game is finished
-            // emit game is finished
+            client.emit('oldGame')// emit game is finished
         }
         else { // game is running
             if (client['info'].id == game.player0.id || client['info'].id == game.player1.id) { // the new client is one of the player
