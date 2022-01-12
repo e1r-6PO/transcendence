@@ -26,10 +26,11 @@ import { ActiveGateway } from 'src/webSocket/active.gateway';
 import { ChatService } from 'src/service/chat.service';
 
 import { Match } from 'src/entity/match.entity';
+import { MatchsModule } from './matchs.module';
 
 @Module({
   imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, ChannelModule,
-    TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage, Match]), FriendsModule, PrivateMessagesModule ],
+    TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage, Match]), FriendsModule, PrivateMessagesModule, MatchsModule ],
   controllers: [ AppController ],
   providers: [ AppService, ChatGateway, GameGateway, ActiveGateway, GameService, ChatService ],
 })
