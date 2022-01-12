@@ -20,16 +20,7 @@
       </v-card-title>
       <v-card-text>
         <v-container>
-          <v-text-field
-            v-model="userName"
-            placeholder="User name"
-            class="mt-3 custom-select-color custom-placeholder-color custom-input-color neonText"
-            color="blue"
-            hide-details
-            filled
-            dense
-            rounded
-          ></v-text-field>
+          <TextField @enterPress="giveOwner()" v-model="userName" placeholder="User name" />
         </v-container>
       </v-card-text>
       <v-card-actions>
