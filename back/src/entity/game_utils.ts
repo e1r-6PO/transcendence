@@ -45,4 +45,13 @@ export class Rect
     {
         return this.pos.y + this.size.y / 2;
     }
+    get topLeftx()
+    {
+        return this.left
+    }
+    get topLefty()
+    {
+        return this.top
+    }
+
 }

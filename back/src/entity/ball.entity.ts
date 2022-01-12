@@ -20,8 +20,8 @@ export class Ball extends Rect {
 		super(10, 10)
 		this.canvas_x = 840 // map width
 		this.canvas_y = 600 // map height
-		this.pos.x = this.canvas_x / 2, // middle of the map x
-		this.pos.y = this.canvas_y / 2, // middle of the map y
+		this.pos.x = this.canvas_x / 2 - this.size.x / 2, // middle of the map x
+		this.pos.y = this.canvas_y / 2 - this.size.y / 2 + 39, // middle of the map y
 		// this.ball_size = 18 / 2 // size in pixel in front, useful for the ball not to go in the edge in front
 		this.speed = new Vect(0, 0) // must be positive value, distance traveled per tick
 		console.log(this.speed)
@@ -37,21 +37,21 @@ export class Ball extends Rect {
 			this.pos.x += this.speed.x
 			this.pos.y += this.speed.y
 
-			if (this.left < 0) {
+			if (this.left < 0 + this.size.x / 2) {
 				// return 0
 				// player 0 lost
 				this.speed.x *= -1
 			}
-			if (this.right > this.canvas_x) {
+			if (this.right > this.canvas_x - this.size.x / 2) {
 				// return 1
 				// player 1 lost
 				this.speed.x *= -1
 			}
 
-			if (this.top < 0 - this.size.x / 5) {
+			if (this.top < 0 + this.size.x / 2) {
 				this.speed.y *= -1
 			}
-			if (this.bottom  > this.canvas_y - this.size.x / 6) {
+			if (this.bottom > this.canvas_y - this.size.x / 2) {
 				this.speed.y *= -1
         	}
 			// if (this.speed.y < 0 && this.top < 0 ||
@@ -64,29 +64,20 @@ export class Ball extends Rect {
 	}
 
 	checkPaddleLeft(p: Paddle){
-		// console.log('LEFT: Before Collision: ' + this.x + this.xd)
-		if (this.left - this.size.x <= p.right && this.right + this.size.x >= p.right &&
-			p.top + p.size.x < this.bottom - this.size.x && p.bottom + p.size.x > this.top - this.size.x)
-		{
-			let collision = p.pos.y - this.pos.y + 30
-			this.speed.y = collision * .2
-			console.log("PaddleLef: " + collision)
-			this.speed.x *= -1
+		if (p.left < this.right && p.right > this.left &&
+            p.top < this.bottom && p.bottom > this.top) {
+            this.speed.x *= -1.08;
+			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
+			this.speed.y = pos * 10 // (10 is arbitrary)
 		}
-		// console.log('LEFT After Collision: ' + this.x + this.xd)
 	}
 
 	checkPaddleRight(p: Paddle){
-		// console.log('RIGTHT Before Collision: ' + this.x + this.xd)
-		if (this.right >= p.left && this.left <= p.right
-			&& p.top + p.size.x < this.bottom - this.size.x && p.bottom + p.size.x > this.top - this.size.x)
-		{
-			//ok sa touche
-			let collision = p.pos.y - this.pos.y + 30
-			this.speed.y = collision * .2
-			console.log("PaddleRight: " + collision)
-			this.speed.x *= -1
-		}
-		// console.log('RIGHT After Collision: ' + this.x + this.xd)
+		if (p.left < this.right && p.right > this.left &&
+            p.top < this.bottom && p.bottom > this.top) {
+            this.speed.x *= -1.08;
+			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
+			this.speed.y = pos * 10 // (10 is arbitrary)
+        }
 	}
 }

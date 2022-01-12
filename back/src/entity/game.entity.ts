@@ -1,5 +1,6 @@
 import { forwardRef, Inject } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
+import { timeout } from "rxjs"
 import { BroadcastOperator, Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import { GameService } from "src/service/game.service"
@@ -28,6 +29,7 @@ export class Game {
 	balls: Array<Ball>
 	ball_amount: number
 	room: BroadcastOperator<DefaultEventsMap>
+	tickSpeed = 1000 / 32
 
 	player0: User
 	player1: User
@@ -42,20 +44,20 @@ export class Game {
 	async create_new_ball(time: number) {
 		await new Promise(f => setTimeout(f, time));
 		let new_ball = new Ball()
-		if (new_ball.speed.x === 0 && new_ball.speed.y === 0) {
-			new_ball.speed.x = 1.5 * (Math.random() > .5 ? 1 : -1);
-			new_ball.speed.y = 1.5 * (Math.random() * 2 - 1);
-			// new_ball.speed.len = 8;
-			console.log('BallSpeed: ' + new_ball.speed.x + " " + new_ball.speed.y)
-		}
+							// for x: 48 tickspeed -> 4 is a great speed (48 -> 1.5 for y) 
+		console.log((1000 / this.tickSpeed) / 12)
+		new_ball.speed.x = 12 / ((1000 / this.tickSpeed) / 12) * (Math.random() > .5 ? 1 : -1);
+		new_ball.speed.y = ((1000 / this.tickSpeed) / 32) * (Math.random() * 2 - 1);
+		// new_ball.speed.len = 8;
+		console.log('BallSpeed: ' + new_ball.speed.x + " " + new_ball.speed.y)
 		this.balls.push(new_ball)
 	}
 
 	async create_paddles(){
-		this.paddle0 = new Paddle(20, 300)
-		this.room.emit('paddle0Info', { paddle0_info: [this.paddle0.pos.x, this.paddle0.pos.y, this.paddle0.size.x, this.paddle0.size.y]})
-		this.paddle1 = new Paddle(805, 300)
-		this.room.emit('paddle1Info', { paddle1_info:[this.paddle1.pos.x, this.paddle1.pos.y, this.paddle1.size.x, this.paddle1.size.y]})
+		this.paddle0 = new Paddle(30, 300)
+		this.room.emit('paddle0Info', { paddle0_info: [this.paddle0.topLeftx, this.paddle0.topLefty, this.paddle0.size.x, this.paddle0.size.y]})
+		this.paddle1 = new Paddle(810, 300)
+		this.room.emit('paddle1Info', { paddle1_info:[this.paddle1.topLeftx, this.paddle1.topLefty, this.paddle1.size.x, this.paddle1.size.y]})
 	}
 
 	tick() {
@@ -64,7 +66,7 @@ export class Game {
 				var score = this.balls[i].tick();
 				if (score == 0) {
 						this.scorep1++
-						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].pos.x, this.balls[i].pos.y] })
+						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].topLeftx, this.balls[i].topLefty] })
 						this.balls.splice(i, 1)
 						this.create_new_ball(1000)
 						if (this.scorep1 == this.winning_score) {
@@ -74,7 +76,7 @@ export class Game {
 				}
 				else if (score == 1) {
 						this.scorep0++
-						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].pos.x, this.balls[i].pos.y] })
+						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].topLeftx, this.balls[i].topLefty] })
 						this.balls.splice(i, 1)
 						this.create_new_ball(1000)
 						if (this.scorep0 == this.winning_score) {
@@ -85,16 +87,16 @@ export class Game {
 				else {
 					this.balls[i].checkPaddleLeft(this.paddle0)
 					this.balls[i].checkPaddleRight(this.paddle1)
-					ballsinfo.push({ id: i, status: "normal", ball_info: [this.balls[i].pos.x, this.balls[i].pos.y, this.balls[i].size.x, this.balls[i].size.y] })
+					ballsinfo.push({ id: i, status: "normal", ball_info: [this.balls[i].topLeftx, this.balls[i].topLefty, this.balls[i].size.x, this.balls[i].size.y] })
 				}
 		}
 		//emit game info & balls info
 		this.room.emit('gameInfo', ballsinfo)
 		//emit paddle locations
 		if (this.paddle0.motion)
-			this.room.emit('paddle0Info', { paddle0_info: [this.paddle0.pos.x, this.paddle0.pos.y, this.paddle0.size.x, this.paddle0.size.y]})
-		if (this.paddle1.motion)	
-			this.room.emit('paddle1Info', { paddle1_info:[this.paddle1.pos.x, this.paddle1.pos.y, this.paddle1.size.x, this.paddle1.size.y]})
+			this.room.emit('paddle0Info', { paddle0_info: [this.paddle0.topLeftx, this.paddle0.topLefty, this.paddle0.size.x, this.paddle0.size.y]})
+		if (this.paddle1.motion)
+			this.room.emit('paddle1Info', { paddle1_info:[this.paddle1.topLeftx, this.paddle1.topLefty, this.paddle1.size.x, this.paddle1.size.y]})
 	}
 
 	matchinfo() {
@@ -117,10 +119,10 @@ export class Game {
 		// paddles
 		this.create_paddles()
 
-		for (let i: number = 3; i >= 0; --i) {
-			this.room.emit('matchSetup', { gameStart: i} ) 
-			await new Promise(f => setTimeout(f, 1000)); // countdown
-		}
+		// for (let i: number = 3; i >= 0; --i) {
+		// 	this.room.emit('matchSetup', { gameStart: i} ) 
+		// 	await new Promise(f => setTimeout(f, 1000)); // countdown
+		// }
 
 		if (this.player0socket == null || this.player1socket == null) { // prepause the game if one of the player is dc
 			this.status = 'started'
@@ -128,7 +130,7 @@ export class Game {
 		}
 		else if (this.status == 'setup' && this.loopId == null) { // condtion probably not needed
 			this.status = 'started'
-			this.loopId = setInterval(this.tick.bind(this), 1000 / 30)
+			this.loopId = setInterval(this.tick.bind(this), this.tickSpeed)
 		}
 	}
 
@@ -143,7 +145,7 @@ export class Game {
 	unpause() {
 		if (this.status == 'paused' && this.loopId == null) {
 			this.status = 'started'
-			this.loopId = setInterval(this.tick.bind(this), 1000 / 20)
+			this.loopId = setInterval(this.tick.bind(this), this.tickSpeed)
 		}
 	}
 
