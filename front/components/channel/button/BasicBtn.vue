@@ -36,8 +36,8 @@ export default class CloseBtn extends Vue {
   @Prop({ type: Boolean, default: false})
   smaller!: Boolean
 
-  @Prop({ type: Number, default: 0 })
-  width!: Number
+  @Prop({ default: 0 })
+  width!: Number | String
   
   @Prop({ type: Number, default: 0 })
   height!: Number

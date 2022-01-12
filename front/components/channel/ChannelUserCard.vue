@@ -8,8 +8,8 @@
         <ProfilePicture :src="user.picture" :isActive="user.isActive" disable size="42"/>
       </v-list-item-icon>
       <v-list-item-content class="pb-0">
-        <v-list-item-title v-text="user.nickName" style="font-size: 15px; margin-top: 14px" :style="'color:' + getUserTextColor()" />
-        <v-list-item-subtitle v-text="user.status" align="right" class="mt-5" style="font-size: 12px;" :style="'color:' + getUserTextColor()" />
+        <v-list-item-title v-text="user.nickName" align="start" style="font-size: 15px; margin-top: 14px" :style="'color:' + getUserTextColor()" class="mb-7" />
+        <v-list-item-subtitle v-text="user.status" align="right" style="font-size: 12px; position: absolute; bottom: -15px; right: 20px" :style="'color:' + getUserTextColor()" />
       </v-list-item-content>
       <v-list-item-icon v-if="ownerAction && isUserOwner() && user.status != isOwner()" class="mt-3">
         <DeleteUserBtn style="margin-right: 5px" :small="small" @refreshUser="refreshUser" :userName="user.nickName" />

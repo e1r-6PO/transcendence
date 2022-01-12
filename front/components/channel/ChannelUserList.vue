@@ -1,14 +1,15 @@
 <template>
-  <v-list v-if="userList.length > 0" dense>
+  <v-list v-if="userList.length > 0" dense align="center">
     <slot> </slot>
     <div v-for="(user, i) in userList"
-      class="neon-button"
-      style="border-radius: 15px; margin-top: 10px"
+      class="neon-button "
+      style="border-radius: 15px; margin-top: 10px;"
+      :style="widthCard > 0 ? 'width: ' + widthCard + '%': ''"
+      justify="center"
       :key="`user-${i}`"
       link
       v-on:change="refreshList()"
       v-on:bind="userList"
-
     >
       <ChannelUserCard
         @clicked="openPreview"
@@ -18,7 +19,8 @@
         :ownerAction="ownerAction"
         :status="status"
         :user="user"
-        :updateActive="updateActive" />
+        :updateActive="updateActive"
+      />
       <div
         v-on:mouseover="focusCard(user.id)"
         v-on:mouseleave="leaveCard(user.id)"
@@ -66,6 +68,9 @@ export default class ChannelUserList extends Vue {
 
   @Prop({ type: Number, default: 0 })
   meId!: Number
+
+  @Prop({ default: 0 })
+  widthCard!: Number | String
   
   userList: Array<ChannelUser> = new Array<ChannelUser>()
   activeUser: Map<number, LightUser> = new Map()
