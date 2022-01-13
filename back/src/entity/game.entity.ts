@@ -29,7 +29,7 @@ export class Game {
 	balls: Array<Ball>
 	ball_amount: number
 	room: BroadcastOperator<DefaultEventsMap>
-	tickSpeed = 1000 / 32
+	tickSpeed = 1000 / 48
 
 	player0: User
 	player1: User
@@ -44,10 +44,9 @@ export class Game {
 	async create_new_ball(time: number) {
 		await new Promise(f => setTimeout(f, time));
 		let new_ball = new Ball()
-							// for x: 48 tickspeed -> 4 is a great speed (48 -> 1.5 for y) 
-		console.log((1000 / this.tickSpeed) / 12)
-		new_ball.speed.x = 12 / ((1000 / this.tickSpeed) / 12) * (Math.random() > .5 ? 1 : -1);
-		new_ball.speed.y = ((1000 / this.tickSpeed) / 32) * (Math.random() * 2 - 1);
+							// for x: 48 tickspeed -> 4 is a great speed (48 -> 2 for y) 
+		new_ball.speed.x = 16 / ((1000 / this.tickSpeed) / 12) * (Math.random() > .5 ? 1 : -1);
+		new_ball.speed.y = 8 / ((1000 / this.tickSpeed) / 12) * (Math.random() * 2 - 1);
 		// new_ball.speed.len = 8;
 		console.log('BallSpeed: ' + new_ball.speed.x + " " + new_ball.speed.y)
 		this.balls.push(new_ball)

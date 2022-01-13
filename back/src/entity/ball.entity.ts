@@ -17,11 +17,11 @@ export class Ball extends Rect {
 
 	constructor()
 	{
-		super(10, 10)
+		super(15, 15)
 		this.canvas_x = 840 // map width
 		this.canvas_y = 600 // map height
 		this.pos.x = this.canvas_x / 2 - this.size.x / 2, // middle of the map x
-		this.pos.y = this.canvas_y / 2 - this.size.y / 2 + 39, // middle of the map y
+		this.pos.y = this.canvas_y / 2 - this.size.y / 2, // middle of the map y
 		// this.ball_size = 18 / 2 // size in pixel in front, useful for the ball not to go in the edge in front
 		this.speed = new Vect(0, 0) // must be positive value, distance traveled per tick
 		console.log(this.speed)
@@ -66,7 +66,7 @@ export class Ball extends Rect {
 	checkPaddleLeft(p: Paddle){
 		if (p.left < this.right && p.right > this.left &&
             p.top < this.bottom && p.bottom > this.top) {
-            this.speed.x *= -1.08;
+            this.speed.x *= -1.0;
 			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
 			this.speed.y = pos * 10 // (10 is arbitrary)
 		}
@@ -75,7 +75,7 @@ export class Ball extends Rect {
 	checkPaddleRight(p: Paddle){
 		if (p.left < this.right && p.right > this.left &&
             p.top < this.bottom && p.bottom > this.top) {
-            this.speed.x *= -1.08;
+            this.speed.x *= -1.0;
 			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
 			this.speed.y = pos * 10 // (10 is arbitrary)
         }
