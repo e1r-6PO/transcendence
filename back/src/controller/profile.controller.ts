@@ -66,10 +66,10 @@ export class ProfileController {
   @Post('me/paddleColor')
   @UseGuards(HasNickGuard)
   changepaddlecolor(@Req() request: Request, @Query('color') color: string) {
-    var colorlist = [ 'red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink' ]
+    var colorlist = [ ['red'], 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink' ]
 
     if (!colorlist.find(acolor => acolor == color))
-      throw ForbiddenException
+      throw new ForbiddenException()
     this.profileService.changepaddle(request, color)
   }
 

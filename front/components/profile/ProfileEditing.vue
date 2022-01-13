@@ -1,7 +1,7 @@
 <template>
 	<div justify="center" align="center" style="padding-top: 1%">
 		<v-row justify="end" class="mr-3 pb-4">
-			<BasicBtn @click="switchEditing(); close_btn()"  content="mdi-close" />
+			<BasicBtn @click="switchEditing(); close_btn()" content="mdi-close" neonColor="red" />
 		</v-row>
 		<v-row align="center" justify="center">
 			<v-btn
@@ -33,18 +33,19 @@
 				>
 			</v-btn>
 		</v-row>
-			<TextField @enterPress="saveChange" v-model="nick" autofocus placeholder="Nickname" width="330" class="mt-10" />
-			<div class="pt-8" justify="center" align="center">
-				<span style="color: #e6ffff">2fa is currently</span>
-				<span style="color: #0ADAA8; padding-right: 10px"> {{ is2faEnable() ? 'disable' : 'enable' }} </span>
-				<BasicBtn
-					style="border-radius: 30px"
-					isText
-					:content="is2faEnable() ? 'disable' : 'enable'"
-					:color="is2faEnable() ? 'red': '#0ADAA8'"
-					@click="change2fa"
-				/>
+		<TextField @enterPress="saveChange" v-model="nick" autofocus placeholder="Nickname" width="330" class="mt-10" />
+		<div class="pt-8" justify="center" align="center">
+			<span style="color: #e6ffff">2fa is currently</span>
+			<span style="padding-right: 10px" :style="is2faEnable() ? 'color: #0ADAA8' : 'color: red'"> {{ is2faEnable() ? 'enable' : 'disable' }} </span>
+			<BasicBtn
+				style="border-radius: 30px"
+				isText
+				:content="is2faEnable() ? 'disable' : 'enable'"
+				:color="is2faEnable() ? 'red': '#0ADAA8'"
+				@click="change2fa"
+			/>
 		</div>
+		<ChangePaddleBtn @error="activeAlert" :neonColor="user.paddleColor" v-model="selectedPaddleColor"/>
 		<BasicBtn
 			class="mt-6"
 			style="border-radius: 30px"
@@ -64,17 +65,19 @@ import { User } from '../../assets/Classes-ts/User';
 
 @Component
 export default class ProfileEditing extends Vue {
-	isSelecting = false
-	selectedFile: null | Blob = null
-	nick = ""
-	tfa_status = false
-	url = ""
 
 	@Prop({ type: Boolean, default: false })
 	pictureEdited!: boolean
 
 	@Prop({ type: Object, default: new User() })
 	user!: User
+
+	isSelecting = false
+	selectedFile: null | Blob = null
+	nick = ""
+	tfa_status = false
+	url = ""
+	selectedPaddleColor = this.user.paddleColor
 
 	switchEditing() {
 		this.$emit('updateState')
@@ -85,7 +88,7 @@ export default class ProfileEditing extends Vue {
 	}
 
 	disableSave(): boolean {
-		if ((this.nick == this.user.nickName || this.nick == "") && this.selectedFile == null)
+		if ((this.nick == this.user.nickName || this.nick == "") && this.selectedFile == null && this.selectedPaddleColor == this.user.paddleColor)
 			return true
 		return false
 	}
@@ -129,8 +132,13 @@ export default class ProfileEditing extends Vue {
 	}
 
 	async saveChange() {
-		if (this.user.nickName == this.nick && this.selectedFile == null)
+		if (this.user.nickName == this.nick && this.selectedFile == null && this.user.paddleColor != this.selectedPaddleColor)
 			return
+		if (this.user.paddleColor != this.selectedPaddleColor) {
+			this.$axios.post('/api/profile/me/paddleColor?color=' + this.selectedPaddleColor)
+			this.user.paddleColor = this.selectedPaddleColor
+			this.$emit('updateState')
+		}
 		if (this.user.nickName != this.nick && this.nick != "") {
 			const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
 				.catch(function (error) {
