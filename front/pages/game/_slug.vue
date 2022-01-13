@@ -165,7 +165,6 @@ export default Vue.extend({
 
       maptest.clearRect(0, 0, this.mapx, this.mapy);
       maptest.beginPath()
-      maptest.fillStyle = 'white'
       for (let i = 0; i < info.length; ++i) {
         if (this.balls.get(info[i].id) == undefined && info[i].status == "normal") { // create a new ball
           this.balls.set(info[i].id, new Ball(info[i]['ball_info'][0], info[i]['ball_info'][1], info[i]['ball_info'][2], info[i]['ball_info'][3]))
@@ -181,7 +180,20 @@ export default Vue.extend({
             c_ball.width = info[i].ball_info[2]
             c_ball.height = info[i].ball_info[3]
             // console.log(this.balls[0].x, this.balls[0].y)
-            maptest.rect(c_ball.x, c_ball.y, c_ball.width, c_ball.height)
+            // maptest.fillRect(c_ball.x, c_ball.y, c_ball.width, c_ball.height)
+            maptest.fillStyle = '#a5fafa' // ballcolors
+            maptest.shadowColor = '#0affff';  // ballcolors
+            // maptest.beginPath()
+            maptest.arc(c_ball.x + c_ball.width / 2, c_ball.y + c_ball.height / 2, c_ball.width / 2, 0, Math.PI * 2)
+            // maptest.clip()
+            maptest.fill()
+            maptest.beginPath()
+            maptest.fillStyle = '#000000' // ballcolors
+            maptest.shadowColor = '#000000';  // ballcolors
+            maptest.arc(c_ball.x + c_ball.width / 2, c_ball.y + c_ball.height / 2, c_ball.width / 4, 0, Math.PI * 2)
+            maptest.fill()
+            // maptest.clip()
+
           }
         }
         else if (info[i].status == "erased"){
@@ -189,8 +201,8 @@ export default Vue.extend({
         }
       }
       //player1
-      maptest.fillStyle = 'darkgreen'
-      maptest.shadowColor = 'lime';
+      maptest.fillStyle = '#ff7b1c';
+      maptest.shadowColor = '#ff7b1c';
       maptest.shadowBlur = 8;
       maptest.fillRect(this.paddle0.x, this.paddle0.y, this.paddle0.width, this.paddle0.height)
       
@@ -201,7 +213,7 @@ export default Vue.extend({
       
       maptest.fillStyle = 'yellow'
       // drawing balls
-      maptest.fill()
+      // maptest.fill()
     })
 
     socket_game.on('paddle0Info', (info) => {
