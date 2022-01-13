@@ -28,7 +28,7 @@
                 :content="color"
                 isText
                 :neonColor="color"
-                :width="color == selectedColor ? '500px' : '10px'"
+                :width="color == selectedColor ? '500px' : '90px'"
               >
               </BasicBtn>
             </v-row>
