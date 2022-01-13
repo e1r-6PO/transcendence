@@ -41,6 +41,9 @@ export class User {
   @Column()
   gameLose: number;
 
+  @Column({default: "cyan"})
+  paddleColor: string;
+
   @OneToMany(() => ChannelParticipant, channelParticipant => channelParticipant.user, { cascade: true })
   channelParticipant: ChannelParticipant[];
 
@@ -52,6 +55,7 @@ export class User {
       gameWin: this.gameWin,
       gameLose: this.gameLose,
       isActive: this.isActive,
+      paddleColor: this.paddleColor
     }
   }
 }

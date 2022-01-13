@@ -4,6 +4,7 @@ import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm'
 import { JwtService } from '@nestjs/jwt';
 import { existsSync } from 'fs'
+import { Request } from 'express'
 
 @Injectable()
 export class ProfileService {
@@ -33,6 +34,11 @@ export class ProfileService {
       }
     );
     return { "nickname": user.nickName }
+  }
+
+  async changepaddle(request: Request, color: string) {
+    this.usersRepository.update({id: request.cookies['user_id']}, { paddleColor: color })
+    return { "message" : "success" }
   }
 
   async set_nickname(request, nick : string) {
