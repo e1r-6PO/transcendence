@@ -126,6 +126,8 @@ export default Vue.extend({
         // console.log(info)
         this.player0 = info['player0']
         this.player1 = info['player1']
+        this.paddle0.color = this.player0.paddleColor
+        this.paddle1.color = this.player1.paddleColor
     })
 
     socket_game.on('matchEnd', async (info) => {

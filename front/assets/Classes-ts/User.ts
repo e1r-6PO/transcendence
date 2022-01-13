@@ -38,6 +38,7 @@ class LightUser {
     gameWin: number;
     gameLose: number;
     isActive: boolean;
+    paddleColor: string;
     constructor()
     {
         this.nickName = "";
@@ -46,6 +47,7 @@ class LightUser {
         this.gameWin = 0;
         this.gameLose = 0;
         this.isActive = false;
+        this.paddleColor = ""
     }
 }
 
