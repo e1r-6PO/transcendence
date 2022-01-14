@@ -1,5 +1,6 @@
 import { Controller, Get, Param, UseGuards } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { classToPlain, plainToClass } from "class-transformer";
 import { Match } from "src/entity/match.entity";
 import { User } from "src/entity/user.entity";
 import { TwoFaGuard, ValidTokenGuard } from "src/guards/account.guards";
@@ -15,12 +16,24 @@ export class LeaderboardController {
     ) {}
     @Get()
     async getlb() {
-        return await this.connection
+        var dbret = await this.connection
         .getRepository(User)
         .createQueryBuilder('ranking')
         .select('*')
         .addSelect('RANK () OVER (ORDER BY gameWin DESC) as "rank"')
+        .limit(50)
         .execute()
+
+        var ret = new Array
+
+        dbret.forEach(element => {
+            var newel = classToPlain((plainToClass(User, element).toLightuser()))
+            newel.rank = element.rank
+            ret.push(newel)
+        });
+
+        // realuser.forEach((element: User) => { element.toLightuser() })
+        return ret
     }
 
     // BEEEEEEEEEEEEEEURK
