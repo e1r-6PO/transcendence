@@ -42,33 +42,20 @@
       style="z-index: 10"
       clipped-left
     >
-      <v-app-bar-nav-icon class="open-menu" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon class="open-menu mt-3" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="title neonText" v-text="title" />
       <v-spacer />
       <div style="padding-right: 15px">
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
-            <v-text-field
-              style="z-index: 10"
-              class="text-field_search custom-placeholder-color custom-input-color neonText"
-              placeholder="Search"
-              color="#e6ffff"
-              v-model="search"
-              hide-details
-              dense
-              filled
-              rounded
-              prepend-inner-icon="mdi-magnify"
-              @keydown.enter="searchbar"
-            >
-            </v-text-field>
+            <TextField @enterPress="searchbar" v-model="search" neonColor="orange" prepend_inner_icon="mdi-magnify" placeholder="Search" />
           </v-col>
         </v-row>
       </div>
       <v-btn
         icon
         href="/api/auth/logout"
-        class="logout-btn"
+        class="logout-btn mt-3"
         :color="exitFocus == true ? '#ffc79c' : 'black'"
         v-on:mouseover="exitFocus = true"
         v-on:mouseleave="exitFocus = false"
