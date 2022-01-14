@@ -62,26 +62,26 @@ export class Game {
 	tick() {
 		let ballsinfo = []
 		for (let i = 0; i < this.balls.length; ++i) {
-				var score = this.balls[i].tick();
-				if (score == 0) {
+				var tick_result: {} = this.balls[i].tick();
+				if (tick_result['status'] == 'p1+1') {
 						this.scorep1++
-						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].topLeftx, this.balls[i].topLefty] })
-						this.balls.splice(i, 1)
-						this.create_new_ball(1000)
 						if (this.scorep1 == this.winning_score) {
-								this.gameService.endgame(this)
-								return
+							this.gameService.endgame(this)
+							return
 						}
-				}
-				else if (score == 1) {
-						this.scorep0++
 						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].topLeftx, this.balls[i].topLefty] })
 						this.balls.splice(i, 1)
 						this.create_new_ball(1000)
+				}
+				else if (tick_result['status'] == 'p0+1') {
+						this.scorep0++
 						if (this.scorep0 == this.winning_score) {
-								this.gameService.endgame(this)
-								return
+							this.gameService.endgame(this)
+							return
 						}
+						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].topLeftx, this.balls[i].topLefty] })
+						this.balls.splice(i, 1)
+						this.create_new_ball(1000)
 				}
 				else {
 					this.balls[i].checkPaddleLeft(this.paddle0)
@@ -99,7 +99,11 @@ export class Game {
 	}
 
 	matchinfo() {
-		this.room.emit('matchInfo', { id: this.id, player0: this.player0.toLightuser(), player1: this.player1.toLightuser() }) 
+		this.room.emit('matchInfo', {
+			id: this.id,
+			player0: this.player0.toLightuser(),
+			player1: this.player1.toLightuser()
+		})
 	}
 
 	async start() {

@@ -30,54 +30,45 @@ export class Ball extends Rect {
 
 	// need to take paddle position as args
 	tick() { // 0 = p0 lost a point, 1 = p1 lost a point -1 = nothing happned
-			// const paddle0x = 0 + 40
-			// let paddle0y = this.canvas_y / 2
-			// const paddle1x = this.canvas_x - 40
-			// let paddle1y = this.canvas_y / 2
-			this.pos.x += this.speed.x
-			this.pos.y += this.speed.y
+		this.pos.x += this.speed.x
+		this.pos.y += this.speed.y
 
-			if (this.left < 0 + this.size.x / 2) {
-				// return 0
-				// player 0 lost
-				this.speed.x *= -1
-			}
-			if (this.right > this.canvas_x - this.size.x / 2) {
-				// return 1
-				// player 1 lost
-				this.speed.x *= -1
-			}
+		if (this.left < 0 + this.size.x / 2) {
+			// return { status: 'p1+1'}
+			// player 0 lost
+			this.speed.x *= -1
+		}
+		if (this.right > this.canvas_x - this.size.x / 2) {
+			// return { status: 'p0+1'}
+			// player 1 lost
+			this.speed.x *= -1
+		}
 
-			if (this.top < 0 + this.size.x / 2) {
-				this.speed.y *= -1
-			}
-			if (this.bottom > this.canvas_y - this.size.x / 2) {
-				this.speed.y *= -1
-        	}
-			// if (this.speed.y < 0 && this.top < 0 ||
-			// 	this.speed.y > 0 && this.bottom > this.canvas_y) {
-			// 	this.speed.y = -this.speed.y;
-			// }
+		if (this.top < 0 + this.size.x / 2) {
+			this.speed.y *= -1
+		}
+		if (this.bottom > this.canvas_y - this.size.x / 2) {
+			this.speed.y *= -1
+		}
 
-			//collision paddle6 
-			return -1
+		return { status: ''}
 	}
 
 	checkPaddleLeft(p: Paddle){
 		if (p.left < this.right && p.right > this.left &&
             p.top < this.bottom && p.bottom > this.top) {
-            this.speed.x *= -1.0;
+            this.speed.x *= -1.05;
 			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
-			this.speed.y = pos * 10 // (10 is arbitrary)
+			this.speed.y = pos * 6 // (10 is arbitrary)
 		}
 	}
 
 	checkPaddleRight(p: Paddle){
 		if (p.left < this.right && p.right > this.left &&
             p.top < this.bottom && p.bottom > this.top) {
-            this.speed.x *= -1.0;
+            this.speed.x *= -1.05;
 			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
-			this.speed.y = pos * 10 // (10 is arbitrary)
+			this.speed.y = pos * 6 // (10 is arbitrary)
         }
 	}
 }
