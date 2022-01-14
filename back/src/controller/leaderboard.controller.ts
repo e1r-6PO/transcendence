@@ -26,6 +26,17 @@ export class LeaderboardController {
     // BEEEEEEEEEEEEEEURK
     @Get(':id')
     async getrank(@Param('id') id) {
-        return (await this.getlb()).find((user: User) => user.id == id)
+        return parseInt((await this.connection
+        .getRepository(User)
+        .createQueryBuilder('ranking')
+        .select('*')
+        .from(subQuery => {
+            return subQuery
+              .select('*')
+              .addSelect('RANK () OVER (ORDER BY gameWin DESC)', 'rank')
+              .from(User, 'user')
+          }, 'user')
+        .where('user.id = :id', { id })
+        .getRawOne()).rank)
     }
 }

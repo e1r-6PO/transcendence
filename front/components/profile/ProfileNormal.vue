@@ -1,5 +1,17 @@
 <template>
 	<div justify="center" align="center" style="padding-top: 2%">
+		<v-btn
+			color="#8124be"
+			class="rank-card overflow-visible"
+			absolute
+			small
+			@click="gotoleaderboard()"
+			style="left: 25%; top: 120px; width: 200px; height: 50px"
+		>
+			<v-icon color="#ffffff">
+				Rank:  {{ rank }}
+			</v-icon>
+		</v-btn>
 		<v-avatar class="overflow-visible" size="128">
 			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="140" />
 			<v-btn
@@ -67,8 +79,15 @@ export default class ProfileNormal extends Vue {
 	@Prop({ type: Boolean, default: false })
 	pictureEdited!: boolean
 
+	@Prop({ type: Number, default: false })
+	rank!: number
+
 	switchEditing() {
 		this.$emit('updateState')
+	}
+
+	gotoleaderboard() {
+		this.$router.push('/leaderboard')
 	}
 }
 
@@ -102,6 +121,11 @@ export default class ProfileNormal extends Vue {
 .color_text { 
 	z-index: 6;
 	color: #ffffff;
+}
+
+.rank-card {
+	border: 3px solid #fff7c8 !important;
+	box-shadow: 0px 0px 10px 0px #ffdc17 !important;
 }
 
 .card_game {

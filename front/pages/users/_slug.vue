@@ -1,6 +1,18 @@
 <template>
   <v-container fluid>
     <div justify="center" align="center" style="padding-top: 5%">
+      <v-btn
+        color="#8124be"
+        class="rank-card overflow-visible"
+        absolute
+        small
+        @click="gotoleaderboard()"
+        style="left: 25%; top: 120px; width: 200px; height: 50px"
+      >
+        <v-icon color="#ffffff">
+          Rank:  {{ rank }}
+        </v-icon>
+      </v-btn>
       <v-avatar class="overflow-visible" size="128">
 			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="130" />
         <v-btn v-if="self.id != user.id"
@@ -115,12 +127,14 @@ export default class extends Vue {
   self : User = new User
   mouseOverButton = false
   mouseOverFriendOption = false
+  rank = 0
 
   async mounted() {
     const { params: { slug } } = this.$route
 
     this.self = await this.$axios.$get('/api/profile/me')
     this.user = await this.$axios.$get('/api/users/' + slug)
+    this.rank = await this.$axios.$get('/api/leaderboard/' + this.user.id)
     this.friendStatus = (await this.$axios.$get('/api/friends/' + this.user.id)).status
     console.log(this.friendStatus)
   }
@@ -237,6 +251,11 @@ export default class extends Vue {
 .color_text { 
   z-index: 6;
   color: #ffffff;
+}
+
+.rank-card {
+	border: 3px solid #fff7c8 !important;
+	box-shadow: 0px 0px 10px 0px #ffdc17 !important;
 }
 
 .round_card {
