@@ -86,7 +86,7 @@ export class Game {
 				else {
 					this.balls[i].checkPaddleLeft(this.paddle0)
 					this.balls[i].checkPaddleRight(this.paddle1)
-					ballsinfo.push({ id: i, status: "normal", ball_info: [this.balls[i].topLeftx, this.balls[i].topLefty, this.balls[i].size.x, this.balls[i].size.y] })
+					ballsinfo.push({ id: i, status: "normal", ball_info: [this.balls[i].topLeftx, this.balls[i].topLefty, this.balls[i].size.x, this.balls[i].size.y, this.balls[i].collision] })
 				}
 		}
 		//emit game info & balls info
