@@ -68,7 +68,8 @@ export default Vue.extend({
     }
     this.m = document.getElementById("map")
     this.maptest = this.m.getContext("2d")
-
+    this.particles = new Array
+    
     socket_game.emit('join', { id: this.game_id })
     //Keydown listener
     window.addEventListener('keydown', (event) => {
@@ -187,6 +188,15 @@ export default Vue.extend({
 
             //draw Ball
             //if coll in ball
+            if (info[i].ball_info[4] == true)
+            {
+              for(let i = 0; i < 10; i++)
+              {
+                let p_x = (c_ball.x > this.mapx - 50) ? c_ball.x + c_ball.width / 2 : c_ball.x
+                let p_y = (c_ball.y > this.mapy - 50) ? c_ball.y + c_ball.height / 2 : c_ball.y
+                this.particles.push(new Particle(p_x, p_y, 2, 'a5fafa'))
+              }
+            }
             c_ball.draw(this.maptest)
           }
         }
@@ -208,7 +218,17 @@ export default Vue.extend({
       this.maptest.shadowColor = 'red';
       this.maptest.shadowBlur = 8;
       this.maptest.fillRect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)  
-      this.maptest.closePath()    
+      this.maptest.closePath()
+
+      // this.particles[0].update(this.maptest)
+      this.particles.forEach((particle : Particle, index : number) => {
+        // console.log(particle)
+        particle.update(this.maptest)
+        // particle.doNothing()
+        if (particle.ttl == 0){
+          this.particles.splice(index, 1)
+        }
+      });
     })
 
     socket_game.on('paddle0Info', (info) => {
