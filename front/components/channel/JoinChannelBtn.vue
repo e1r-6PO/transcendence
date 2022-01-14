@@ -100,7 +100,8 @@ export default class JoinChannelBtn extends Vue{
     this.activeAlert(ret.data['message'])
     else if (ret.status == 201)
     {
-      socket_chat.connect();
+      if (socket_chat.connected == false)
+        socket_chat.connect();
       socket_chat.emit('joinChannel', this.channName, "join");
       this.$router.push("/chat/" + this.channName)
     }

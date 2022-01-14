@@ -6,24 +6,23 @@
   <AlertError @end="onEnd" :textError="alertText" :state="alert" :type="alertType"></AlertError>
   <v-row style="height: 100%">
 
-    <v-col cols="12" sm="3" class="border">
+    <v-col cols="12" sm="3" md="2" class="border">
+      <h3 align="center" justify="center" class="white--text pb-3 pt-3 neonText"> Your channels </h3>
+    <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       <CreateChannelBtn @error="activeAlert" class="pb-2"/>
       <JoinChannelBtn @error="activeAlert" />
-      <v-divider
-        class="side-bar" 
-        color="#ffa768"
-        style="margin-bottom: 14.5px; max-height: 5px; height: 3px"
-      >
-      </v-divider>
-      
-      <ChannelList class="mt-4" :state="true" />
+
+     
+    <v-divider class="mt-4 mb-6 divider" style="border-color: #f27719;"> </v-divider>
+      <ChannelList :state="true" />
     </v-col>
 
-    <v-col cols="12" sm="6" class="border">
+    <v-col cols="12" sm="5" md="7" class="border">
 
     </v-col>
 
-    <v-col cols="12" sm="3">
+    <v-col cols="12" sm="4" md="3">
+      <ConnectedFriends />
     </v-col>
   </v-row>
 </v-container>
@@ -38,17 +37,17 @@ import JoinChannelBtn from '../../components/channel/JoinChannelBtn.vue';
 import ChannelList from '../../components/channel/ChannelList.vue';
 import AlertError from '../../components/AlertError.vue';
 
-export default Vue.extend({
-  components: { CreateChannelBtn, JoinChannelBtn, ChannelList },
-  middleware: 'login',
+import { Component } from 'nuxt-property-decorator';
 
-  data() {
-    return {
-      alertText: "",
-      alert: false,
-      alertType: "error",
-    }
-  },
+@Component({
+  // components: { CreateChannelBtn, JoinChannelBtn, ChannelList },
+  middleware: 'login',
+})
+export default class extends Vue {
+
+  alertText = ""
+  alert = false
+  alertType = "error"
 
   async mounted() {
     if (this.$route.query['error'] && this.$route.query['error'] != "")
@@ -57,37 +56,37 @@ export default Vue.extend({
       this.activeSucess(this.$route.query['success'])
     else if (this.$route.query['event'] && this.$route.query['event'] != "")
       this.activeEvent(this.$route.query['event'])
-  },
-
-  methods: {
+  }
 
     redirectToChannel(channName: string) {
         this.$router.push('/chat/' + channName)
-    },
+    }
     
     activeAlert(error: any) {
       this.alertText = error
       this.alertType = "error"
       this.alert = true
-    },
+      this.$router.replace('/chat')
+    }
 
     activeSucess(success: any) {
       this.alertText = success
       this.alertType = "success"
       this.alert = true
-    },
+      this.$router.replace('/chat')
+    }
     
     activeEvent(success: any) {
       this.alertText = success
       this.alertType = "info"
       this.alert = true
-    },
+      this.$router.replace('/chat')
+    }
 
     onEnd() {
       this.alert = false
     }
-  },
-})
+}
 </script>
 
 <style scoped>

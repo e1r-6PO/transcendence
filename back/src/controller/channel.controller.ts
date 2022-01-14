@@ -12,6 +12,7 @@ import { ChannelService } from 'src/service/channel.service';
 import { Friend_Status, Relationship } from 'src/entity/relationship.entity';
 import { ChannelUser } from 'src/entity/channelUser.entity';
 import { start } from 'repl';
+import { Messages, Messages_type } from 'src/entity/messages.entity';
 // import { ChannelGuard } from 'src/guards/.channel.guards';
 
 @Controller('api/chat')
@@ -25,6 +26,8 @@ export class ChannelController {
     private readonly channelsRepository: Repository<Channel>,
     @InjectRepository(ChannelParticipant)
     private readonly channelParticipantsRepository: Repository<ChannelParticipant>,
+    @InjectRepository(Messages)
+    private readonly messagesRepository: Repository<Messages>,
     @InjectRepository(Relationship)
     private readonly relationShipRepository: Repository<Relationship>
   ) {}
@@ -38,8 +41,13 @@ export class ChannelController {
       .catch(function(error) {
         return null
       })
+    
+    var totalUser = await this.channelParticipantsRepository.find({
+      where: { channel: channel }
+    })
+    
     if (participant && participant.status == ChannelStatus.owner)
-      return { channName: channel.channName, channAccess: channel.channAccess, channPass: channel.channPass }  
+      return { channName: channel.channName, channAccess: channel.channAccess, channPass: channel.channPass, totalUser: totalUser.length }  
     else
       return { channName: channel.channName, channAccess: channel.channAccess, channPass: "" }
   }
@@ -136,6 +144,14 @@ export class ChannelController {
     channel.channelParticipant = [participant]
     channel = await this.channelsRepository.save(channel)
     participant.channel = channel
+
+    var servMsg = new Messages()
+
+    servMsg.sender = owner
+    servMsg.type = Messages_type.server
+    servMsg.message = "User <" + owner.nickName + "> has created the channel."
+    servMsg.channel = channel
+    this.messagesRepository.save(servMsg)
     this.channelParticipantsRepository.save(participant)
   }
 
@@ -147,6 +163,9 @@ export class ChannelController {
     var participant = await this.channelService.isParticipantexist(req.cookies['user_id'], channel)
     if (participant != null)
       throw new ConflictException('Already in channel')
+    
+    if (channel.channAccess == ChannAccess.PRIVATE)
+      throw new ForbiddenException(channel.channName + ' is a private channel, nobody can join it')
     
     var isMatch = null
     if (channel.channAccess == ChannAccess.PROTECTED && pass != "")

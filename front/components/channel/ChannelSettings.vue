@@ -33,7 +33,7 @@
           </v-container>
         </v-card-text>
       <v-card-actions v-if="status == isOwner()">
-        <LeaveOwnerBtn @error="activeAlert" />
+        <LeaveOwnerBtn v-if="totalUser > 1" @error="activeAlert" />
         <DeleteChannelBtn class="ml-2"/>
         <v-spacer></v-spacer>
         <BasicBtn :disable="disableSave()" @click="saveSettings()" isText content="Save" />
@@ -96,6 +96,7 @@ export default class ChannelSettings extends Vue{
   dialog: boolean = false
   settingsFocus: boolean = false
   btnFocus: boolean = false
+  totalUser: number = 1
 
   async mounted() {
     var ret = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/info')
@@ -110,6 +111,7 @@ export default class ChannelSettings extends Vue{
     {
       this.actualAccess = ret.data.channAccess
       this.actualPass = ret.data.channPass
+      this.totalUser = ret.data.totalUser
     }
   }
 
