@@ -68,6 +68,14 @@ export class GameService {
         match.winner = winner
 
         this.matchRepository.save(match)
+        if (winner.id == game.player0.id) {
+            this.usersRepository.increment({id: game.player0.id}, "gameWin", 1)
+            this.usersRepository.increment({id: game.player1.id}, "gameLose", 1)
+        }
+        else {
+            this.usersRepository.increment({id: game.player0.id}, "gameLose", 1)
+            this.usersRepository.increment({id: game.player1.id}, "gameWin", 1)
+        }
     }
 
     endgame(game: Game) {

@@ -125,8 +125,8 @@ export default Vue.extend({
         },
         {
           icon: 'mdi-ladder',
-          title: 'Scoreboard',
-          to: '/scoreboard'
+          title: 'Leaderboard',
+          to: '/leaderboard'
         }
       ],
       right: true,

@@ -29,7 +29,7 @@ export class Game {
 	balls: Array<Ball>
 	ball_amount: number
 	room: BroadcastOperator<DefaultEventsMap>
-	tickSpeed = 1000 / 32
+	tickSpeed = 1000 / 48
 
 	player0: User
 	player1: User
@@ -44,10 +44,9 @@ export class Game {
 	async create_new_ball(time: number) {
 		await new Promise(f => setTimeout(f, time));
 		let new_ball = new Ball()
-							// for x: 48 tickspeed -> 4 is a great speed (48 -> 1.5 for y) 
-		console.log((1000 / this.tickSpeed) / 12)
-		new_ball.speed.x = 12 / ((1000 / this.tickSpeed) / 12) * (Math.random() > .5 ? 1 : -1);
-		new_ball.speed.y = ((1000 / this.tickSpeed) / 32) * (Math.random() * 2 - 1);
+							// for x: 48 tickspeed -> 4 is a great speed (48 -> 2 for y) 
+		new_ball.speed.x = 16 / ((1000 / this.tickSpeed) / 12) * (Math.random() > .5 ? 1 : -1);
+		new_ball.speed.y = 8 / ((1000 / this.tickSpeed) / 12) * (Math.random() * 2 - 1);
 		// new_ball.speed.len = 8;
 		console.log('BallSpeed: ' + new_ball.speed.x + " " + new_ball.speed.y)
 		this.balls.push(new_ball)
@@ -63,31 +62,31 @@ export class Game {
 	tick() {
 		let ballsinfo = []
 		for (let i = 0; i < this.balls.length; ++i) {
-				var score = this.balls[i].tick();
-				if (score == 0) {
+				var tick_result: {} = this.balls[i].tick();
+				if (tick_result['status'] == 'p1+1') {
 						this.scorep1++
-						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].topLeftx, this.balls[i].topLefty] })
-						this.balls.splice(i, 1)
-						this.create_new_ball(1000)
 						if (this.scorep1 == this.winning_score) {
-								this.gameService.endgame(this)
-								return
+							this.gameService.endgame(this)
+							return
 						}
-				}
-				else if (score == 1) {
-						this.scorep0++
 						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].topLeftx, this.balls[i].topLefty] })
 						this.balls.splice(i, 1)
 						this.create_new_ball(1000)
+				}
+				else if (tick_result['status'] == 'p0+1') {
+						this.scorep0++
 						if (this.scorep0 == this.winning_score) {
-								this.gameService.endgame(this)
-								return
+							this.gameService.endgame(this)
+							return
 						}
+						ballsinfo.push({ id: i, status: "erased", ball_location: [this.balls[i].topLeftx, this.balls[i].topLefty] })
+						this.balls.splice(i, 1)
+						this.create_new_ball(1000)
 				}
 				else {
 					this.balls[i].checkPaddleLeft(this.paddle0)
 					this.balls[i].checkPaddleRight(this.paddle1)
-					ballsinfo.push({ id: i, status: "normal", ball_info: [this.balls[i].topLeftx, this.balls[i].topLefty, this.balls[i].size.x, this.balls[i].size.y] })
+					ballsinfo.push({ id: i, status: "normal", ball_info: [this.balls[i].topLeftx, this.balls[i].topLefty, this.balls[i].size.x, this.balls[i].size.y, this.balls[i].collision] })
 				}
 		}
 		//emit game info & balls info
@@ -100,7 +99,11 @@ export class Game {
 	}
 
 	matchinfo() {
-		this.room.emit('matchInfo', { id: this.id, player0: this.player0.toLightuser(), player1: this.player1.toLightuser() }) 
+		this.room.emit('matchInfo', {
+			id: this.id,
+			player0: this.player0.toLightuser(),
+			player1: this.player1.toLightuser()
+		})
 	}
 
 	async start() {

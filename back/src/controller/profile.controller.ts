@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query, Res, HttpCode, UseInterceptors, UploadedFile, UseGuards, ForbiddenException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -62,6 +62,16 @@ export class ProfileController {
       .toFile('../data/users/' + request.cookies['user_id'] + '.png')
     fs.unlinkSync(file.path)
     return true
+  }
+
+  @Post('me/paddleColor')
+  @UseGuards(HasNickGuard)
+  changepaddlecolor(@Req() request: Request, @Query('color') color: string) {
+    var colorlist = [ ['red'], 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink' ]
+
+    if (!colorlist.find(acolor => acolor == color))
+      throw new ForbiddenException()
+    this.profileService.changepaddle(request, color)
   }
 
   @Get('me/picture')

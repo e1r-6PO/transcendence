@@ -52,7 +52,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async create_game() {
-			var game: Game = new Game(this.gameService, 1, 1)
+			var game: Game = new Game(this.gameService, 5, 1)
 			game.player0socket = this.queue[0]
 			game.player1socket = this.queue[1]
 			this.queue.splice(0, 2)

@@ -40,15 +40,7 @@ export class UsersService {
     if (existsSync('../data/users/' + user.id + '.png'))
       user.picture = 'http://localhost:8000/api/users/' + user.id + '/picture'
     
-    var filtered : LightUser = {
-      id: user.id,
-      nickName: user.nickName,
-      picture: user.picture,
-      gameWin: user.gameWin,
-      gameLose: user.gameLose,
-      isActive: user.isActive
-    }
-    return filtered
+    return user.toLightuser()
   }
 
   async search(nick: string) {

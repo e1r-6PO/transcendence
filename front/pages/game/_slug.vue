@@ -24,8 +24,9 @@ import { LightUser } from '../../assets/Classes-ts/User'
 
 import { Ball } from '../../assets/Classes-ts/Ball'
 import { Paddle } from '../../assets/Classes-ts/Paddle'
+import { Particle } from '../../assets/Classes-ts/Particle'
 import { Match } from '../../assets/Classes-ts/Match'
-
+import { gsap } from 'gsap'
 import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
@@ -36,13 +37,16 @@ export default Vue.extend({
       alert: false,
       alertType: "error",
       game_id: this.$route.params.slug,
-      player0: LightUser,
-      player1: LightUser,
+      player0: new LightUser(),
+      player1: new LightUser(),
       mapx: 840,
       mapy: 600,
       balls: new Map<number, Ball>(),
       paddle0: new Paddle(),
-      paddle1: new Paddle()
+      paddle1: new Paddle(),
+      m : Object(),
+      maptest : Object(),
+      particles: [Particle]
     }
   },
 
@@ -59,13 +63,15 @@ export default Vue.extend({
       if (socket_game.connected == false)
         return // error could not connect
       else {
-        // socket_game.emit('join', { id: this.game_id })
+      
       }
     }
-
+    this.m = document.getElementById("map")
+    this.maptest = this.m.getContext("2d")
+    this.particles = new Array
+    
     socket_game.emit('join', { id: this.game_id })
-
-    //listener keydown
+    //Keydown listener
     window.addEventListener('keydown', (event) => {
       if (event.key == 'W')
         console.log('KeyDown: W');
@@ -82,7 +88,7 @@ export default Vue.extend({
         socket_game.emit('updatePaddle', { id: this.game_id, direction: -1 })
       }
     })
-
+    //Keyup listener
     window.addEventListener('keyup', (event) => {
       if (event.key == 'W')
         console.log('KeyUp: W');
@@ -100,10 +106,6 @@ export default Vue.extend({
 
       }
     })
-    // this.balls.push(new Ball(50, 50))
-    // this.map.fillStyle = 'white'
-    // this.map.rect(0, 0, 10, 10)
-    // this.map.fill()
   },
 
   methods: {
@@ -121,13 +123,16 @@ export default Vue.extend({
   async created() {
     socket_game.on('oldGame', async (info: null) => {
       this.match_res = await this.$axios.$get('/api/games/' + this.game_id)
-      // do something
     })
+
     socket_game.on('matchInfo', (info) => {
         // console.log(info)
         this.player0 = info['player0']
         this.player1 = info['player1']
+        this.paddle0.color = this.player0.paddleColor
+        this.paddle1.color = this.player1.paddleColor
     })
+
     socket_game.on('matchEnd', async (info) => {
         socket_game.off('matchInfo')
         socket_game.off('matchEnd')
@@ -147,9 +152,8 @@ export default Vue.extend({
         }
         this.$router.push(next)
     })
-    socket_game.on('matchSetup', (info) => {
-      // console.log(info)
 
+    socket_game.on('matchSetup', (info) => {
       var m = <HTMLCanvasElement> document.getElementById("map")
       var maptest = <CanvasRenderingContext2D> m.getContext("2d");
 
@@ -159,13 +163,14 @@ export default Vue.extend({
     })
 
     socket_game.on('gameInfo', (info) => {
+      this.m = <HTMLCanvasElement> document.getElementById("map")
+      this.maptest = <CanvasRenderingContext2D> this.m.getContext("2d");
 
-      var m = <HTMLCanvasElement> document.getElementById("map")
-      var maptest = <CanvasRenderingContext2D> m.getContext("2d");
-
-      maptest.clearRect(0, 0, this.mapx, this.mapy);
-      maptest.beginPath()
-      maptest.fillStyle = 'white'
+      this.maptest.shadowColor = 'black'
+      this.maptest.shadowBlur = 0;
+      this.maptest.fillStyle = 'black'
+      this.maptest.fillStyle = 'rgba(0, 0, 0, 0.1)'
+      this.maptest.fillRect(0, 0, this.mapx, this.mapy);
       for (let i = 0; i < info.length; ++i) {
         if (this.balls.get(info[i].id) == undefined && info[i].status == "normal") { // create a new ball
           this.balls.set(info[i].id, new Ball(info[i]['ball_info'][0], info[i]['ball_info'][1], info[i]['ball_info'][2], info[i]['ball_info'][3]))
@@ -180,28 +185,50 @@ export default Vue.extend({
             c_ball.y = info[i].ball_info[1]
             c_ball.width = info[i].ball_info[2]
             c_ball.height = info[i].ball_info[3]
-            // console.log(this.balls[0].x, this.balls[0].y)
-            maptest.rect(c_ball.x, c_ball.y, c_ball.width, c_ball.height)
+
+            //draw Ball
+            //if coll in ball
+            if (info[i].ball_info[4] == true)
+            {
+              for(let i = 0; i < 10; i++)
+              {
+                let p_x = (c_ball.x > this.mapx - 50) ? c_ball.x + c_ball.width / 2 : c_ball.x
+                let p_y = (c_ball.y > this.mapy - 50) ? c_ball.y + c_ball.height / 2 : c_ball.y
+                this.particles.push(new Particle(p_x, p_y, 2, 'a5fafa'))
+              }
+            }
+            c_ball.draw(this.maptest)
           }
         }
         else if (info[i].status == "erased"){
           this.balls.delete(info[i].id)
         }
       }
-      //player1
-      maptest.fillStyle = 'darkgreen'
-      maptest.shadowColor = 'lime';
-      maptest.shadowBlur = 8;
-      maptest.fillRect(this.paddle0.x, this.paddle0.y, this.paddle0.width, this.paddle0.height)
+      //draw player left
+      this.maptest.beginPath()
+      this.maptest.fillStyle = '#ff7b1c';
+      this.maptest.shadowColor = '#ff7b1c';
+      this.maptest.shadowBlur = 8;
+      this.maptest.fillRect(this.paddle0.x, this.paddle0.y, this.paddle0.width, this.paddle0.height)
+      this.maptest.closePath()
       
-      maptest.fillStyle = 'darkred'
-      maptest.shadowColor = 'red';
-      maptest.shadowBlur = 8;
-      maptest.fillRect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)
-      
-      maptest.fillStyle = 'yellow'
-      // drawing balls
-      maptest.fill()
+      //draw player right
+      this.maptest.beginPath()
+      this.maptest.fillStyle = 'darkred'
+      this.maptest.shadowColor = 'red';
+      this.maptest.shadowBlur = 8;
+      this.maptest.fillRect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)  
+      this.maptest.closePath()
+
+      // this.particles[0].update(this.maptest)
+      this.particles.forEach((particle : Particle, index : number) => {
+        // console.log(particle)
+        particle.update(this.maptest)
+        // particle.doNothing()
+        if (particle.ttl == 0){
+          this.particles.splice(index, 1)
+        }
+      });
     })
 
     socket_game.on('paddle0Info', (info) => {

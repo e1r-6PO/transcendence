@@ -95,7 +95,7 @@ export default class CloseBtn extends Vue {
       classes += "neon-button-pink"
     else if (this.neonColor == "white")
       classes += "neon-button-white"
-    else if (this.neonColor == "light-blue")
+    else if (this.neonColor == "light-blue" || this.neonColor == "cyan")
       classes += "neon-button-light-blue"
     else if (this.neonColor == 'none')
       classes += ""
@@ -128,7 +128,7 @@ export default class CloseBtn extends Vue {
         style += "#ee8be9"
       else if (this.neonColor == "white")
         style += "#ece3e3"
-      else if (this.neonColor == "light-blue")
+      else if (this.neonColor == "light-blue" || this.neonColor == "cyan")
         style += "#a5fafa"
       else if (this.neonColor == 'none')
         style += "grey"
