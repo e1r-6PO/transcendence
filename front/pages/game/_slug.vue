@@ -24,6 +24,7 @@ import { LightUser } from '../../assets/Classes-ts/User'
 
 import { Ball } from '../../assets/Classes-ts/Ball'
 import { Paddle } from '../../assets/Classes-ts/Paddle'
+import { Particle } from '../../assets/Classes-ts/Particle'
 import { Match } from '../../assets/Classes-ts/Match'
 import { gsap } from 'gsap'
 import socket_game from '../../plugins/game.io'
@@ -44,7 +45,8 @@ export default Vue.extend({
       paddle0: new Paddle(),
       paddle1: new Paddle(),
       m : Object(),
-      maptest : Object()
+      maptest : Object(),
+      particles: [Particle]
     }
   },
 
@@ -160,7 +162,6 @@ export default Vue.extend({
     })
 
     socket_game.on('gameInfo', (info) => {
-
       this.m = <HTMLCanvasElement> document.getElementById("map")
       this.maptest = <CanvasRenderingContext2D> this.m.getContext("2d");
 
@@ -185,6 +186,7 @@ export default Vue.extend({
             c_ball.height = info[i].ball_info[3]
 
             //draw Ball
+            //if coll in ball
             c_ball.draw(this.maptest)
           }
         }
