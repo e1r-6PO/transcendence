@@ -3,6 +3,7 @@ import { User } from './user.entity'
 import { Messages } from './messages.entity'
 import { ChannelParticipant } from "./channelParticipant.entity";
 import { type } from "os";
+import { LightChannel } from "./lightChannel.entity";
 
 export enum ChannType {
     CHANNEL = "channel",
@@ -44,4 +45,15 @@ export class Channel {
 
     @OneToMany(() => Messages, messages => messages.channel)
     messages: Messages[];
+
+    toLightChannel() {
+        var light: LightChannel = new LightChannel()
+
+        light.channAccess = this.channAccess
+        light.channName = this.channName
+        light.channPass = this.channPass
+        light.channType = this.channType
+        light.id = this.id
+        return light
+    }
 }

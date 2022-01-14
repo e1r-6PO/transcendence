@@ -2,7 +2,7 @@
   <BasicBtn
     @click="deleteUser()"
     content="mdi-account-minus"
-    width="35"
+    width="30"
     :iconSize="18"
     :smaller="small"
   />

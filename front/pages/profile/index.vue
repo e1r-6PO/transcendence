@@ -4,6 +4,7 @@
   <ProfileNormal v-if="!isEditing"
     :user="this.user"
     :pictureEdited="pictureEdited"
+    :rank="rank"
     @updateState="switchEditing"
   ></ProfileNormal>
   <ProfileEditing v-if="isEditing"
@@ -35,12 +36,16 @@ export default class extends Vue {
   alertText = ""
   alertType = "success"
   pictureEdited = false
+  rank = 0
 
   async mounted() {
     this.user = await this.$axios.$get('/api/profile/me')
       .catch(function(error) {
         return error.response
       })
+
+    this.rank = await this.$axios.$get('/api/leaderboard/' + this.user.id)
+
     const ret2fa = await this.$axios.get('/api/auth/2fa/is_enabled')
     .catch(function (error) {
       alert("error in mounted")

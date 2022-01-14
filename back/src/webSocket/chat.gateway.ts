@@ -193,11 +193,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('userAdd')
     async userAdd(client: Socket, av: any) {
       
-      if (!av[0] || !av[1])
-        return
-      var chan = await this.ChannelsRepository.findOne({
-        where: { channName: av[0] }
-      })
+			if (!av[0] || !av[1])
+					return
+			var chan = await this.ChannelsRepository.findOne({
+					where: { channName: av[0] }
+			})
+
+			let user_data = await this.usersRepository.findOne({
+					where: { nickName: av[1] }
+			})
 
       var servMsg = new Messages()
       servMsg.sender = client['info']
@@ -205,6 +209,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       servMsg.message = client['info'].nickName + " has add <" + av[1] + "> in the channel."
       servMsg.channel = chan
       this.server.to(av[0]).emit("newUser", servMsg)
+      setTimeout(() => {
+				var socketTarget = this.ClientConnected.get(user_data.id)
+        if (socketTarget)
+            this.server.to(socketTarget.id).emit("addMe", user_data.id, chan.toLightChannel())
+			}, 200)
       this.messagesRepository.save(servMsg)
     }
 
@@ -253,8 +262,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         servMsg.channel = chan
         this.server.to(av[0]).emit("kickUser", servMsg)
         setTimeout(() => {
-            this.server.to(av[0]).emit("kickMe", user_data.id)
-        }, 200)
+            this.server.to(av[0]).emit("kickMe", user_data.id, chan.channName)
+            var socketTarget = this.ClientConnected.get(user_data.id)
+            if (socketTarget)
+                this.server.to(socketTarget.id).emit("kickMe", user_data.id, chan.channName)
+    }, 200)
         this.messagesRepository.save(servMsg)
     }
 
@@ -282,6 +294,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         console.log('New connection, users count: ' + this.count + ' Socket id: ' + client.id);
         console.log('Socket Namespace: ' + client.nsp.name);
 
+        console.log("COUCOU JE SUIS CONNECTé")
         let user_data = await this.usersRepository.findOne({
             where: {id: jwt_decoded['id']}
         })

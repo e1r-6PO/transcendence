@@ -2,8 +2,8 @@
   <v-text-field
     v-model="content"
     :placeholder="placeholder"
-    class="mt-3 custom-select-color text-white input-custom"
-    :class="disable ? 'placeholder-color-disable' : 'placeholder-color'"
+    class="mt-3 text-white input-custom"
+    :class="doClasses()"
     :style="doStyle()"
     color="blue"
     hide-details
@@ -18,8 +18,8 @@
     <template v-slot:append v-if="content != ''">
       <v-icon @click="clearMessage()" color="#b8a435"> mdi-close-circle </v-icon>
     </template>
-    <v-icon v-if="append_outer_icon != '' " slot="append-outer" @click="sendClick" color="#b8a435" class="mr-5"> {{ append_outer_icon }} </v-icon>
-    <v-icon v-if="prepend_inner_icon != ''" slot="prepend-inner" @click="sendClick" color="#b8a435"> {{ prepend_inner_icon }} </v-icon>
+    <v-icon v-if="append_outer_icon != '' " slot="append-outer" @click="sendClick" :color="neonColor" class="mr-5"> {{ append_outer_icon }} </v-icon>
+    <v-icon v-if="prepend_inner_icon != ''" slot="prepend-inner" @click="sendClick" :color="neonColor"> {{ prepend_inner_icon }} </v-icon>
   </v-text-field>
 </template>
 
@@ -51,6 +51,9 @@ export default class TextField extends Vue {
   @Prop({ type: String, default: '' })
   prepend_inner_icon!: String
 
+  @Prop({ type: String, default: "yellow" })
+  neonColor!: String
+
   content: String = this.value
 
   updateValue() {
@@ -72,6 +75,14 @@ export default class TextField extends Vue {
     this.updateValue()
   }
 
+  doClasses(): string {
+    var classes = ""
+
+    classes += "custom-select-color-" + this.neonColor + " "
+    classes += (this.disable ? 'placeholder-color-disable ' : 'placeholder-color ')
+    return classes
+  }
+
   doStyle(): string {
     var style = ""
 
@@ -87,6 +98,7 @@ export default class TextField extends Vue {
 
 <style>
 @import '../../../assets/Classes-scss/main_page.scss';
+@import '../../../assets/Classes-scss/textfield_colors.scss';
 @import '../../../assets/Classes-scss/neon_effects.scss';
 
 .text-white input {
