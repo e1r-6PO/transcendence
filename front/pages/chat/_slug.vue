@@ -222,8 +222,8 @@ export default Vue.extend({
           this.me.channelStatus = this.me.channelStatus == ChannelUserStatus.ADMINISTRATOR ? ChannelUserStatus.DEFAULT : ChannelUserStatus.ADMINISTRATOR;
         this.tokenUser = -this.tokenUser
       })
-      socket_chat.on('kickMe', (ownerId: number) => {
-        if (ownerId == this.me.id)
+      socket_chat.on('kickMe', (userId: number, channName: string) => {
+        if (userId == this.me.id)
           this.$router.push('/chat')
         else
           this.tokenUser = -this.tokenUser
