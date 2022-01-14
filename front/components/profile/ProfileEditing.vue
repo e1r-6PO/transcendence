@@ -60,6 +60,7 @@
 
 <script lang="ts">
 import { Component, Prop, Watch } from 'nuxt-property-decorator';
+import socket_game from '../../plugins/game.io'
 import Vue from 'vue'
 import { User } from '../../assets/Classes-ts/User';
 
@@ -168,6 +169,7 @@ export default class ProfileEditing extends Vue {
 			this.selectedFile = null
 			this.url = ""
 		}
+		socket_game.emit('updateUser', this.user)
 	}
 
 	async change2fa() {

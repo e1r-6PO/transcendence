@@ -27,10 +27,12 @@ import { ChatService } from 'src/service/chat.service';
 
 import { Match } from 'src/entity/match.entity';
 import { MatchsModule } from './matchs.module';
+import { LeaderboardModule } from './leaderboard.module';
 
 @Module({
   imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, ChannelModule,
-    TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage, Match]), FriendsModule, PrivateMessagesModule, MatchsModule ],
+    TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage, Match]), FriendsModule, PrivateMessagesModule, MatchsModule,
+    LeaderboardModule ],
   controllers: [ AppController ],
   providers: [ AppService, ChatGateway, GameGateway, ActiveGateway, GameService, ChatService ],
 })

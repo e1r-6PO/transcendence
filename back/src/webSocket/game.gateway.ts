@@ -254,6 +254,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		}
 	}
 
+	@SubscribeMessage('updateUser')
+	async updateUser(client: Socket, info: []){
+		var socket = this.id_to_user.get(client['info'].id)
+		socket['info'].paddleColor = info['paddleColor']
+		socket['info'].nickName = info['nickName']
+		this.id_to_user[client['info'].id] = socket
+	}
+
 	afterInit(server: Server){
 		this.server = server
 		this.logger.log('Init');

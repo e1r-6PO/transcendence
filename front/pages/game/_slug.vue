@@ -46,7 +46,8 @@ export default Vue.extend({
       paddle1: new Paddle(),
       m : Object(),
       maptest : Object(),
-      particles: [Particle]
+      particles: [Particle],
+      updatePage: false
     }
   },
 
@@ -126,7 +127,6 @@ export default Vue.extend({
     })
 
     socket_game.on('matchInfo', (info) => {
-        // console.log(info)
         this.player0 = info['player0']
         this.player1 = info['player1']
         this.paddle0.color = this.player0.paddleColor
@@ -138,7 +138,6 @@ export default Vue.extend({
         socket_game.off('matchEnd')
         socket_game.off('matchSetup')
         socket_game.off('gameInfo')
-        // console.log(info)
         const urlParams = new URLSearchParams(window.location.search);
         const myParam = urlParams.get('next');
         if (myParam != null)
@@ -168,8 +167,7 @@ export default Vue.extend({
 
       this.maptest.shadowColor = 'black'
       this.maptest.shadowBlur = 0;
-      this.maptest.fillStyle = 'black'
-      this.maptest.fillStyle = 'rgba(0, 0, 0, 0.1)'
+      this.maptest.fillStyle = 'rgba(0, 0, 0, 0.25)'
       this.maptest.fillRect(0, 0, this.mapx, this.mapy);
       for (let i = 0; i < info.length; ++i) {
         if (this.balls.get(info[i].id) == undefined && info[i].status == "normal") { // create a new ball
@@ -205,26 +203,13 @@ export default Vue.extend({
         }
       }
       //draw player left
-      this.maptest.beginPath()
-      this.maptest.fillStyle = '#ff7b1c';
-      this.maptest.shadowColor = '#ff7b1c';
-      this.maptest.shadowBlur = 8;
-      this.maptest.fillRect(this.paddle0.x, this.paddle0.y, this.paddle0.width, this.paddle0.height)
-      this.maptest.closePath()
+      this.paddle0.draw(this.maptest) 
       
       //draw player right
-      this.maptest.beginPath()
-      this.maptest.fillStyle = 'darkred'
-      this.maptest.shadowColor = 'red';
-      this.maptest.shadowBlur = 8;
-      this.maptest.fillRect(this.paddle1.x, this.paddle1.y, this.paddle1.width, this.paddle1.height)  
-      this.maptest.closePath()
+      this.paddle1.draw(this.maptest)
 
-      // this.particles[0].update(this.maptest)
       this.particles.forEach((particle : Particle, index : number) => {
-        // console.log(particle)
         particle.update(this.maptest)
-        // particle.doNothing()
         if (particle.ttl == 0){
           this.particles.splice(index, 1)
         }
@@ -236,7 +221,6 @@ export default Vue.extend({
       this.paddle0.y = info['paddle0_info'][1]
       this.paddle0.width = info['paddle0_info'][2]
       this.paddle0.height = info['paddle0_info'][3]
-      console.log(info)
     })
 
     socket_game.on('paddle1Info', (info) => {
@@ -244,7 +228,6 @@ export default Vue.extend({
       this.paddle1.y = info['paddle1_info'][1]
       this.paddle1.width = info['paddle1_info'][2]
       this.paddle1.height = info['paddle1_info'][3]
-      console.log(info)
     })
   },
 
