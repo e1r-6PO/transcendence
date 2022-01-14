@@ -7,10 +7,8 @@ class Particle{
 	y: number
 	radius: number
 	color: string
-	velocity = { x: randomIntFromRange(-5, 5), y: randomIntFromRange(-15, 15)}
-	friction = 0.8
-	gravity = 1
-	ttl = 100
+	velocity = { x: randomIntFromRange(-2, 2), y: randomIntFromRange(-2, 2)}
+	ttl = 30
 
 	constructor(x: number, y: number, r: number, c: string){
 		this.x = x
