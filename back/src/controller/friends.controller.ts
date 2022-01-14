@@ -1,13 +1,15 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Query, Req } from "@nestjs/common";
+import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Request, request } from "express";
 import { identity } from "rxjs";
 import { Friend_Status, Relationship } from "src/entity/relationship.entity";
+import { TwoFaGuard, ValidTokenGuard } from "src/guards/account.guards";
 import { FriendsService } from "src/service/friends.service";
 import { UsersService } from "src/service/users.service";
 import { Repository } from "typeorm";
 
 @Controller('api/friends')
+@UseGuards(ValidTokenGuard, TwoFaGuard)
 export class FriendsController {
   constructor(
     private readonly usersService : UsersService,
