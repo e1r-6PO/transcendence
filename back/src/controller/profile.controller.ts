@@ -6,6 +6,7 @@ import { Request, Response } from 'express'
 import { fstat } from 'fs';
 import multer, { diskStorage, memoryStorage } from 'multer';
 import { extname } from 'path/posix';
+import { LightChannel } from 'src/entity/lightChannel.entity';
 import { Relationship } from 'src/entity/relationship.entity';
 import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.guards';
 import { ImageUpload } from 'src/middleware/image.upload.middleware';
@@ -86,9 +87,9 @@ export class ProfileController {
 
     var participantList = await this.channelService.findUserChannels(me)
 
-    var channList: Array<String> = []
+    var channList: Array<LightChannel> = []
     for (var i = 0; i < participantList.length; i++)
-      channList.push(participantList[i].channel.channName)
-    return channList
+      channList.push(participantList[i].channel.toLightChannel())
+    return { "channel": channList }
   }
 }
