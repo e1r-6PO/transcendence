@@ -190,6 +190,8 @@ export default Vue.extend({
         socket_chat.connect();
         socket_chat.emit('joinChannel', this.$route.params.slug, "");
       }
+      else
+        socket_chat.emit('joinChannel', this.$route.params.slug, "");
       this.me = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/me')
       this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
       this.nbMsg = this.messagesArray.length
