@@ -268,16 +268,25 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async handleConnection(client: Socket, ...args: any[]){
-			const jwt = client.handshake.headers.cookie
-			.split('; ')
-			.find((cookie: string) => cookie.startsWith('jwt'))
-			if (jwt == null)
-			{
-				client.disconnect()
-				return
+			var jwt: any
+			try {
+				const cookies = client.handshake.headers.cookie
+				if (!cookies)
+					throw 'no jwt'
+				const sCookies = cookies.split('; ')
+				if (!sCookies)
+					throw 'no jwt'
+				jwt = sCookies.find((cookie: string) => cookie.startsWith('jwt'))
+				if (!jwt)
+					throw 'no jwt'
+				jwt = jwt.split('=')[1]
+				if (!jwt)
+					throw 'no jwt'
+				await this.jwtService.verifyAsync(jwt)
 			}
-			// parse cookies
-			const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
+			catch (e) { client.disconnect(); return }
+
+			const jwt_decoded = this.jwtService.decode(jwt)
 
 			let user_data: User = await this.usersRepository.findOne({
 					where: {id: jwt_decoded['id']}
@@ -294,14 +303,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async handleDisconnect(client: Socket){
 			var index: number
 
+			// console.log(client['info'])
 			if (client['info'] != undefined && client['info'].id != undefined)
 				this.id_to_user.delete(client['info'].id)
 			index = this.queue.findIndex(clients => clients.id === client.id)
 			if (index != -1) {
 				this.queue.splice(index, 1)
 			}
-			else
-				this.gameService.disconnect(client)
+			this.gameService.disconnect(client)
 			// console.log("disconnected: " + client.id)
 	}
 }

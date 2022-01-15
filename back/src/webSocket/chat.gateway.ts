@@ -59,8 +59,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         var newMsg: PrivateMessage = new PrivateMessage;
         
-        const jwt = this.chatService.getJwt(client)
-        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
+        const jwt = await this.chatService.getJwt(client)
+        if (!jwt)
+            return
+        const jwt_decoded = this.jwtService.decode(jwt)
         var userTarget = await this.usersRepository.findOne({
             where: { nickName: dest }
         })
@@ -90,8 +92,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             where: { channName: av[1] }
         })
 
-        const jwt = this.chatService.getJwt(client)
-        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
+        const jwt = await this.chatService.getJwt(client)
+        if (!jwt)
+            return
+        const jwt_decoded = this.jwtService.decode(jwt)
 
         newMsg.sender = await this.usersRepository.findOne({
             where: { id: jwt_decoded['id'] }
@@ -288,8 +292,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     async handleConnection(client: Socket, ...args: any[]){
         
-        const jwt = this.chatService.getJwt(client)
-        const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
+        const jwt = await this.chatService.getJwt(client)
+        if (!jwt)
+            return
+        const jwt_decoded = this.jwtService.decode(jwt)
         this.count++;
         console.log('New connection, users count: ' + this.count + ' Socket id: ' + client.id);
         console.log('Socket Namespace: ' + client.nsp.name);

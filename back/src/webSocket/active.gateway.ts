@@ -46,10 +46,12 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.server.emit("inactive", client['info'])
     console.log("disconnect Active HERE")
     this.logger.log(`Client disconnected: ${client.id}`)
-    this.usersRepository.update({
-      id: client['info'].id } , {
-        isActive: false
-    })
+    if (client['info'] != undefined && client['info'].id != undefined) {
+      this.usersRepository.update({
+        id: client['info'].id } , {
+          isActive: false
+      })
+    }
   }
 
   afterInit(server: Server){
@@ -57,18 +59,26 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   async handleConnection(client: Socket, ...args: any[]){
-        
-    const jwt = client.handshake.headers.cookie
-    .split('; ')
-    .find((cookie: string) => cookie.startsWith('jwt'))
-    if (jwt == null)
-    {
-        client.disconnect()
-        return
+    var jwt: any
+    try {
+      const cookies = client.handshake.headers.cookie
+      if (!cookies)
+        throw 'no jwt'
+      const sCookies = cookies.split('; ')
+      if (!sCookies)
+        throw 'no jwt'
+      jwt = sCookies.find((cookie: string) => cookie.startsWith('jwt'))
+      if (!jwt)
+        throw 'no jwt'
+			jwt = jwt.split('=')[1]
+			if (!jwt)
+				throw 'no jwt'
+      await this.jwtService.verifyAsync(jwt)
     }
+    catch (e) { client.disconnect(); return }
     console.log('Socket Namespace: ' + client.nsp.name);
     // parse cookies
-    const jwt_decoded = this.jwtService.decode(jwt.split('=')[1])
+    const jwt_decoded = this.jwtService.decode(jwt)
 
     let user_data = await this.usersRepository.findOne({
         where: {id: jwt_decoded['id']}
