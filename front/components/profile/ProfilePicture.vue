@@ -29,8 +29,8 @@ export default class ProfilePicture extends Vue {
   @Prop({ type: String, default: "" })
   src!: String
 
-  @Prop({ type: Boolean, default: null})
-  isActive!: Boolean
+  @Prop({ default: false })
+  isActive!: Boolean | Number
 
   @Prop({ type: Boolean, default: false})
   disable!: Boolean
@@ -43,7 +43,7 @@ export default class ProfilePicture extends Vue {
     if (this.neonColor != "")
       classes = "profile-picture-" + this.neonColor
     else if (this.isActive != null)
-      classes = this.isActive == true ? 'profile-picture-green' : 'profile-picture-red'
+      classes = this.isActive ? 'profile-picture-green' : 'profile-picture-red'
     return classes
   }
 
