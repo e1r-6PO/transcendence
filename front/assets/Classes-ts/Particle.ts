@@ -7,6 +7,7 @@ class Particle{
 	y: number
 	radius: number
 	color: string
+	shadowColor: string
 	velocity = { x: randomIntFromRange(-2, 2), y: randomIntFromRange(-2, 2)}
 	ttl = 30
 
@@ -15,12 +16,23 @@ class Particle{
 		this.y = y
 		this.radius = r
 		this.color = c
+		this.shadowColor = c
 	}
 
 	draw(maptest: CanvasRenderingContext2D){
 		maptest.beginPath()
-		maptest.fillStyle = '#a5fafa' // ballcolors
-		maptest.shadowColor = '#0affff';  // ballcolors
+		maptest.fillStyle = this.color
+        if (this.color == 'purple')
+            this.shadowColor = 'rebeccapurple'
+        else if (this.color == 'yellow')
+            this.shadowColor = 'goldenrod'
+        else if (this.color == 'pink')
+            this.shadowColor = 'darkviolet'
+        else
+            this.shadowColor = 'dark' + this.color
+        maptest.shadowColor = this.shadowColor
+		maptest.fillStyle = this.color // ballcolors
+		maptest.shadowColor = this.shadowColor  // ballcolors
 		maptest.arc(this.x + this.radius, this.y + this.radius, this.radius, 0, Math.PI * 2, false)
 		maptest.fill()
 		maptest.closePath()

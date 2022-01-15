@@ -6,12 +6,12 @@ class Paddle {
 	color: string
 	shadowColor: string
 
-    constructor (){
+    constructor (c: string){
 			this.x = 0
 			this.y = 0
 			this.width = 0
 			this.height = 0
-			this.color = ""
+			this.color = c
 			this.shadowColor = ""
     }
 	

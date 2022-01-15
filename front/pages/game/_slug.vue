@@ -2,7 +2,7 @@
 <v-container>
   <v-row>
     <v-col align="center" style="padding-top: 20%">
-      <ProfilePicture :src="player0.picture" neonColor="light-blue" :size="130" />
+      <ProfilePicture :src="player0.picture" :neonColor="player0.paddleColor" :size="130" />
       <v-card-title class="text-h5 font-weight-medium" style="color: #ffffff;">{{player0.nickName}}</v-card-title>
     </v-col>
     <v-col>
@@ -16,7 +16,7 @@
       </div>
     </v-col>
     <v-col align="center" style="padding-top: 20%">
-      <ProfilePicture :src="player1.picture" neonColor="light-blue" align="right" :size="130" />
+      <ProfilePicture :src="player1.picture" disble :neonColor="player1.paddleColor" align="right" :size="130" />
       <v-card-title class="text-h5 font-weight-medium" style="color: #ffffff;">{{player1.nickName}}</v-card-title>
     </v-col>
   </v-row>
@@ -50,8 +50,8 @@ export default Vue.extend({
       mapx: 840,
       mapy: 600,
       balls: new Map<number, Ball>(),
-      paddle0: new Paddle(),
-      paddle1: new Paddle(),
+      paddle0: Paddle,
+      paddle1: Paddle,
       m : Object(),
       maptest : Object(),
       particles: [Particle],
@@ -140,8 +140,8 @@ export default Vue.extend({
     socket_game.on('matchInfo', (info) => {
         this.player0 = info['player0']
         this.player1 = info['player1']
-        this.paddle0.color = this.player0.paddleColor
-        this.paddle1.color = this.player1.paddleColor
+        this.paddle0 = new Paddle(this.player0.paddleColor)
+        this.paddle1 = new Paddle(this.player1.paddleColor)
     })
 
     socket_game.on('matchEnd', async (info) => {
@@ -194,16 +194,16 @@ export default Vue.extend({
             c_ball.y = info[i].ball_info[1]
             c_ball.width = info[i].ball_info[2]
             c_ball.height = info[i].ball_info[3]
-
+            c_ball.color = info[i].ball_info[5]
             //draw Ball
             //if coll in ball
-            if (info[i].ball_info[4] == true)
+            if (info[i].ball_info[4] > 0)
             {
               for(let i = 0; i < 10; i++)
               {
                 let p_x = (c_ball.x > this.mapx - 50) ? c_ball.x + c_ball.width / 2 : c_ball.x
                 let p_y = (c_ball.y > this.mapy - 50) ? c_ball.y + c_ball.height / 2 : c_ball.y
-                this.particles.push(new Particle(p_x, p_y, 2, 'a5fafa'))
+                this.particles.push(new Particle(p_x, p_y, 2, c_ball.color))
               }
             }
             c_ball.draw(this.maptest)
