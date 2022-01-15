@@ -11,22 +11,17 @@
     >
       <v-card
         class="foreground_element card_profile"
-        align="left"
-        justify="center"
+        height="60"
       >
-        <v-row align="center" justify="start" style="padding-left: 20px; padding-top: 7px">
+        <v-row align="center"  style="padding-left: 20px; padding-top: 7px">
           <LeaderboardRank :rank="user.rank" :absolute="false"/>
           <ProfilePicture @click="goToProfile(user)" :src="user.picture" :isActive="user.isActive" />
           <v-card-title @click="goToProfile(user)" class="color_text text-h5 font-weight-medium" align="center">{{user.nickName}}</v-card-title>
-          <v-card-text class="color_text text-h5 font-weight-medium text-right">W: {{ user.gameWin }} L: {{ user.gameLose }}</v-card-text>
-          <!-- <BasicBtn
-            style="position: absolute; bottom: -20px; right: 13px"
-            @click="edit_friend(relationship, false)"
-            :width="40"
-            :content="getStatusIcon(relationship)"
-            color="black"
-            backgroundColor="#18124be0"
-          /> -->
+          <v-spacer />
+          <v-card-subtitle class="white--text text-left pr-10 font-italic">
+            <span class=" font-weight-regular" style="color: #b8a435">W: {{ user.gameWin }} /</span>
+            <span style="color: #c7401e">L: {{ user.gameLose }}</span>
+          </v-card-subtitle>
         </v-row>
       </v-card>
     </div>
@@ -36,28 +31,37 @@
 
 <script lang='ts'>
 
+import { Component } from 'nuxt-property-decorator'
 import Vue from 'vue'
 import { LightUser } from '../assets/Classes-ts/User'
 
-export default Vue.extend({
+import socket_active from '../plugins/active.io'
 
-  data() {
-    return {
-      leaderboard: [LightUser],
-    }
-  },
+@Component({})
+export default class extends Vue {
+
+  leaderboard: Array<LightUser> = new Array<LightUser>()
 
   async mounted() {
     this.leaderboard = await this.$axios.$get('/api/leaderboard')
-  },
 
-  methods: {
-    goToProfile(user: any)
-    {
-      this.$router.push('/users/' + user.nickName)
-    },
-  },
-})
+    socket_active.on("active", (user: LightUser) => {
+      var find = this.leaderboard.findIndex((el) => el.id == user.id)
+      if (find != -1)
+        this.leaderboard[find].isActive = true
+    })
+    socket_active.on("inactive", (user: LightUser) => {
+      var find = this.leaderboard.findIndex((el) => el.id == user.id)
+      if (find != -1)
+        this.leaderboard[find].isActive = false
+    })
+  }
+
+  goToProfile(user: any)
+  {
+    this.$router.push('/users/' + user.nickName)
+  }
+}
 
 </script>
 
@@ -70,8 +74,8 @@ export default Vue.extend({
   /* box-shadow: 0px 0px 40px 0px #0affff !important; */
   border-radius: 15px !important;
   background-color: #181818 !important;
-  height: 60px;
-  width: 100%;
+  /* height: 60px; */
+  /* width: 100%; */
 }
 
 .color_text { 
