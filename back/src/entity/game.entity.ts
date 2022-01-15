@@ -48,14 +48,13 @@ export class Game {
 		new_ball.speed.x = 16 / ((1000 / this.tickSpeed) / 12) * (Math.random() > .5 ? 1 : -1);
 		new_ball.speed.y = 8 / ((1000 / this.tickSpeed) / 12) * (Math.random() * 2 - 1);
 		// new_ball.speed.len = 8;
-		console.log('BallSpeed: ' + new_ball.speed.x + " " + new_ball.speed.y)
 		this.balls.push(new_ball)
 	}
 
 	async create_paddles(){
-		this.paddle0 = new Paddle(30, 300)
+		this.paddle0 = new Paddle(30, 300, this.player0.paddleColor)
 		this.room.emit('paddle0Info', { paddle0_info: [this.paddle0.topLeftx, this.paddle0.topLefty, this.paddle0.size.x, this.paddle0.size.y]})
-		this.paddle1 = new Paddle(810, 300)
+		this.paddle1 = new Paddle(810, 300, this.player1.paddleColor)
 		this.room.emit('paddle1Info', { paddle1_info:[this.paddle1.topLeftx, this.paddle1.topLefty, this.paddle1.size.x, this.paddle1.size.y]})
 	}
 
@@ -86,7 +85,8 @@ export class Game {
 				else {
 					this.balls[i].checkPaddleLeft(this.paddle0)
 					this.balls[i].checkPaddleRight(this.paddle1)
-					ballsinfo.push({ id: i, status: "normal", ball_info: [this.balls[i].topLeftx, this.balls[i].topLefty, this.balls[i].size.x, this.balls[i].size.y, this.balls[i].collision] })
+					ballsinfo.push({ id: i, status: "normal", ball_info: [this.balls[i].topLeftx, this.balls[i].topLefty,
+								this.balls[i].size.x, this.balls[i].size.y, this.balls[i].collision, this.balls[i].color] })
 				}
 		}
 		//emit game info & balls info
