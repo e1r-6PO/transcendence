@@ -4,6 +4,7 @@
     :class="getClasse()"
     :small="smaller"
     :disabled="disable"
+    :icon="!isText"
     :text="isText"
     :rounded="rounded"
     :width="setWidthIcon()"
