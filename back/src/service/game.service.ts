@@ -47,11 +47,11 @@ export class GameService {
                 }
                 // if (game.hasStarted == false && game.player0socket != null && game.player1socket != null) // check if private ?
                 //     game.start()
-                client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
+                game.sendGameInfoTo(client)
                 client.join(game.id.toString())
             }
             else { // the new client is a spectator
-                client.emit('matchInfo', { id: game.id, player0: game.player0.toLightuser(), player1: game.player1.toLightuser() }) 
+                game.sendGameInfoTo(client)
                 client.join(id.toString())
             }
         }

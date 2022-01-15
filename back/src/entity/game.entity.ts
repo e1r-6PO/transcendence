@@ -106,6 +106,16 @@ export class Game {
 		})
 	}
 
+	sendGameInfoTo(client: Socket) {
+		client.emit('matchInfo', {
+			id: this.id,
+			player0: this.player0.toLightuser(),
+			player1: this.player1.toLightuser()
+		})
+		client.emit('paddle0Info', { paddle0_info: [this.paddle0.topLeftx, this.paddle0.topLefty, this.paddle0.size.x, this.paddle0.size.y]})
+		client.emit('paddle1Info', { paddle1_info:[this.paddle1.topLeftx, this.paddle1.topLefty, this.paddle1.size.x, this.paddle1.size.y]})
+	}
+
 	async start() {
 		this.player0socket['game'] = this.id // useful for when the client temporarily disconnect midgame (pause the game)
 		this.player1socket['game'] = this.id //

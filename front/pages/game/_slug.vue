@@ -1,26 +1,32 @@
 <template>
 <v-container>
-  <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
-  <div>
-    <v-btn
-    class="foreground_element neon-button"
-    rounded
-    text
-    color="#ffffff"
-    @click="forfeit()"
-    >
-      forfeit
-    </v-btn>
-  </div>
-  <canvas id="map" width="840" height="600"></canvas>
-  
+  <v-row>
+    <v-col align="center" style="padding-top: 20%">
+      <ProfilePicture :src="player0.picture" neonColor="light-blue" :size="130" />
+      <v-card-title class="text-h5 font-weight-medium" style="color: #ffffff;">{{player0.nickName}}</v-card-title>
+    </v-col>
+    <v-col>
+      <div justify="center" align="center" style="padding-top: 20px;">
+        <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
+        <div style="padding-bottom: 25px">
+          <BasicBtn v-if="matchStatus == 'running' && (me.id == player0.id || me.id == player1.id)" content="forfeit" @click="forfeit" :isText="true" color="#ffffff" class="foreground_element"/>
+        </div>
+
+        <canvas id="map" width="840" height="600"></canvas>
+      </div>
+    </v-col>
+    <v-col align="center" style="padding-top: 20%">
+      <ProfilePicture :src="player1.picture" neonColor="light-blue" align="right" :size="130" />
+      <v-card-title class="text-h5 font-weight-medium" style="color: #ffffff;">{{player1.nickName}}</v-card-title>
+    </v-col>
+  </v-row>
 </v-container>
 </template>
 
 <script lang="ts">
 
 import Vue from 'vue'
-import { LightUser } from '../../assets/Classes-ts/User'
+import { LightUser, User } from '../../assets/Classes-ts/User'
 
 import { Ball } from '../../assets/Classes-ts/Ball'
 import { Paddle } from '../../assets/Classes-ts/Paddle'
@@ -33,10 +39,12 @@ export default Vue.extend({
   data() {
     return {
       match_res: Match,
+      matchStatus: "",
       alertText: "",
       alert: false,
       alertType: "error",
       game_id: this.$route.params.slug,
+      me: User,
       player0: new LightUser(),
       player1: new LightUser(),
       mapx: 840,
@@ -52,6 +60,8 @@ export default Vue.extend({
   },
 
   async mounted() {
+    this.$axios.$get('/api/profile/me').then(data => this.me = data)
+    this.matchStatus = "running"
     if (socket_game.connected == false) {
       // check if game has ended
       socket_game.connect()
@@ -123,6 +133,7 @@ export default Vue.extend({
 
   async created() {
     socket_game.on('oldGame', async (info: null) => {
+      this.matchStatus = 'finished'
       this.match_res = await this.$axios.$get('/api/games/' + this.game_id)
     })
 

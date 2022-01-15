@@ -4,8 +4,8 @@
     :class="getClasse()"
     :small="smaller"
     :disabled="disable"
-    :icon="!isText"
     :text="isText"
+    :rounded="rounded"
     :width="setWidthIcon()"
     :height="!isText ? setWidthIcon(): setHeightText()"
     :style="getStyle()"
@@ -44,6 +44,9 @@ export default class CloseBtn extends Vue {
 
   @Prop({ type: String, default: "" })
   backgroundColor!: String
+
+  @Prop({ type: Boolean, default: false })
+  rounded!: boolean
 
   @Prop({ type: String, default: "" })
   color!: String
