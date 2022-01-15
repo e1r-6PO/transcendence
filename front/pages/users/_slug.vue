@@ -1,18 +1,7 @@
 <template>
   <v-container fluid>
     <div justify="center" align="center" style="padding-top: 5%">
-      <v-btn
-        color="#8124be"
-        class="rank-card overflow-visible"
-        absolute
-        small
-        @click="gotoleaderboard()"
-        style="left: 25%; top: 120px; width: 200px; height: 50px"
-      >
-        <v-icon color="#ffffff">
-          Rank:  {{ rank }}
-        </v-icon>
-      </v-btn>
+      <LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + rank" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
       <v-avatar class="overflow-visible" size="128">
 			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="130" />
         <v-btn v-if="self.id != user.id"
@@ -188,6 +177,10 @@ export default class extends Vue {
     this.friendStatus = this.status.null
     this.mouseOverFriendOption = false
   }
+
+	gotoleaderboard() {
+		this.$router.push('/leaderboard')
+	}
 
   $refs!: {
     uploader: HTMLFormElement

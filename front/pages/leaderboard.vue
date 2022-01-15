@@ -1,12 +1,13 @@
 <template>
 <v-container>
 	<div justify="center" align="center" style="padding-top: 20px">
-		<TextField v-model="filterStr" placeholder="Filter" width="330" class="mt-10" />
+		<v-card-text class="color_text text-h5 font-weight-medium">
+      🏆 Leaderboard 🏆
+    </v-card-text>
 
-    <div v-for="relationship in relationships" :key="relationship.id"
-      style="padding-top:30px"
-      v-on:bind="relationships"
-      v-on:change="update"
+    <div v-for="user in leaderboard" :key="user.id"
+      style="padding-top:10px"
+      v-on:bind="leaderboard"
     >
       <v-card
         class="foreground_element card_profile"
@@ -14,17 +15,10 @@
         justify="center"
       >
         <v-row align="center" justify="start" style="padding-left: 20px; padding-top: 7px">
-          <ProfilePicture @click="goToProfile(relationship)" :src="relationship.peer.picture" :isActive="relationship.peer.isActive" />
-          <v-card-title @click="goToProfile(relationship)" class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</v-card-title>
-          <BasicBtn
-            v-if="selectedStatus == 'Pending' && relationship.status == status.incomming"
-            style="position: absolute; bottom: -20px; right: 58px"
-            @click="edit_friend(relationship, true)"
-            :width="40"
-            content="mdi-account-remove"
-            color="black"
-            backgroundColor="#18124be0"
-          />
+          <LeaderboardRank :rank="user.rank" :absolute="false"/>
+          <ProfilePicture @click="goToProfile(user)" :src="user.picture" :isActive="user.isActive" />
+          <v-card-title @click="goToProfile(user)" class="color_text text-h5 font-weight-medium" align="center">{{user.nickName}}</v-card-title>
+          <v-card-text class="color_text text-h5 font-weight-medium text-right">W: {{ user.gameWin }} L: {{ user.gameLose }}</v-card-text>
           <!-- <BasicBtn
             style="position: absolute; bottom: -20px; right: 13px"
             @click="edit_friend(relationship, false)"
@@ -49,41 +43,18 @@ export default Vue.extend({
 
   data() {
     return {
-      relationships: [{
-        id: 0,
-        peer: new LightUser(),
-        status: '',
-        isActive: false
-      }],
-      selectedStatus: '',
-      filterStr: '',
-      update: false,
+      leaderboard: [LightUser],
     }
   },
 
   async mounted() {
-    this.relationships = await this.$axios.$get('/api/leaderboard')
-    console.log(this.relationships)
+    this.leaderboard = await this.$axios.$get('/api/leaderboard')
   },
 
   methods: {
-    goToProfile(relationship: any)
+    goToProfile(user: any)
     {
-      this.$router.push('/users/' + relationship.peer.nickName)
-    },
-
-    getStatusIcon(relationship : any) : string
-    {
-        if (relationship.status == this.status.completed)
-          return ('mdi-account-minus')
-        else if (relationship.status == this.status.blocked)
-          return ('mdi-lock-open-variant')
-        else if (relationship.status == this.status.sent)
-          return ('mdi-account-remove')
-        else if (relationship.status == this.status.incomming)
-          return ('mdi-account-plus')
-        else
-          return ('mdi-account-minus')
+      this.$router.push('/users/' + user.nickName)
     },
   },
 })
