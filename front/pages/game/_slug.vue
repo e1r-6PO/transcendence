@@ -50,11 +50,11 @@ export default Vue.extend({
       mapx: 840,
       mapy: 600,
       balls: new Map<number, Ball>(),
-      paddle0: Paddle,
-      paddle1: Paddle,
+      paddle0: Object(),
+      paddle1: Object(),
       m : Object(),
       maptest : Object(),
-      particles: [Particle],
+      particles: [Object()],
       updatePage: false
     }
   },
