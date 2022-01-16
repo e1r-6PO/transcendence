@@ -1,26 +1,26 @@
 <template>
-<v-container>
-  <v-row>
-    <v-col align="center" style="padding-top: 20%">
-      <ProfilePicture :src="player0.picture" :neonColor="player0.paddleColor" :size="130" />
-      <v-card-title class="text-h5 font-weight-medium" style="color: #ffffff;">{{player0.nickName}}</v-card-title>
+<div>
+  <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
+  <v-row justify="center">
+    <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 200px">
+      <ProfilePicture :src="player0.picture" :neonColor="player0.paddleColor" size="100" />
+      <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{player0.nickName}}</p>
     </v-col>
-    <v-col>
-      <div justify="center" align="center" style="padding-top: 20px;">
-        <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
-        <div style="padding-bottom: 25px">
-          <BasicBtn v-if="matchStatus == 'running' && (me.id == player0.id || me.id == player1.id)" content="forfeit" @click="forfeit" :isText="true" color="#ffffff" class="foreground_element"/>
-        </div>
 
-        <canvas id="map" width="840" height="600"></canvas>
+    <v-col cols="6">
+      <div justify="center" align="center" class="pt-10 pb-10">
+        <BasicBtn v-if="matchStatus == 'running' && (me.id == player0.id || me.id == player1.id) && alert == false" content="forfeit" @click="forfeit" :isText="true" color="#ffffff" class="foreground_element"/>
       </div>
+      <canvas id="map" width="840" height="600"></canvas>
     </v-col>
-    <v-col align="center" style="padding-top: 20%">
-      <ProfilePicture :src="player1.picture" disble :neonColor="player1.paddleColor" align="right" :size="130" />
-      <v-card-title class="text-h5 font-weight-medium" style="color: #ffffff;">{{player1.nickName}}</v-card-title>
+
+    <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 200px">
+      <!-- style="padding-top: 30%" -->
+      <ProfilePicture :src="player1.picture" disble :neonColor="player1.paddleColor" size="100" />
+      <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{player1.nickName}}</p>
     </v-col>
   </v-row>
-</v-container>
+</div>
 </template>
 
 <script lang="ts">
@@ -32,7 +32,7 @@ import { Ball } from '../../assets/Classes-ts/Ball'
 import { Paddle } from '../../assets/Classes-ts/Paddle'
 import { Particle } from '../../assets/Classes-ts/Particle'
 import { Match } from '../../assets/Classes-ts/Match'
-import { gsap } from 'gsap'
+// import { gsap } from 'gsap'
 import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
@@ -257,8 +257,8 @@ export default Vue.extend({
 @import '../../assets/Classes-scss/main_page.scss';
 
 #map {
-  width: 150;
-  height: 150;
+  width: 100%;
+  height: 80%;
   border: 1px solid white;
 }
 </style>
