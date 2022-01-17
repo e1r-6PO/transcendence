@@ -56,8 +56,6 @@ import { Component, Prop } from 'nuxt-property-decorator';
 import Vue from 'vue'
 import { LightUser } from '../assets/Classes-ts/User';
 import socket_game from '../plugins/game.io'
-import VueSlider from 'vue-slider-component'
-import 'vue-slider-component/theme/default.css'
 
 @Component
 export default class PrivateGameBtn extends Vue{
