@@ -22,16 +22,11 @@
     <ProfilePicture @click="redirectToUserProfile" :src="user.picture" :isActive="user.isActive" size="42" style="margin-top: 80px; margin-right: 5px"/>
     <h3 class="neonText" style="color: white; margin-top: 80px">{{ user.nickName }}</h3>
 
-    <v-btn
-      class="foreground_element neon-button"
+    <private-game-btn
       style="margin-top: 80px; margin-left: 5px"
-      rounded
-      text
-      color="#ffffff"
-      @click="initiatePongRequest()"
-    >
-      Play
-    </v-btn>
+      @error="activeAlert" 
+      :user="user"
+    />
 
     <v-spacer />
     <BasicBtn
@@ -91,11 +86,12 @@
             @click="redirectToUserProfile"
             size="30"
             :src="msg.picture"
+            v-if="msg.type == 'default'"
             :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0px' : 'float: left; margin-right: 20px !important; left: -10px'"
             style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
           />
-          <OtherBubbleMsg v-if="!isYourMsg(msg)" :msg="msg"/>
-          <MyBubbleMsg v-else :msg="msg" />
+          <OtherBubbleMsg v-if="!isYourMsg(msg) && msg.type != 'game'" :msg="msg"/>
+          <MyBubbleMsg v-else-if="msg.type != 'game'" :msg="msg" />
 
           <!-- if the message is a game -->
           <v-card
@@ -181,8 +177,7 @@ export default Vue.extend({
   },
 
   async mounted() {
-    var ret = await this.$axios.$get('/api/users/' + this.$route.params.slug)
-    this.user = ret
+    this.user = await this.$axios.$get('/api/users/' + this.$route.params.slug)
     socket_chat.connect();
     this.me = await this.$axios.$get('/api/profile/me')
     this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
