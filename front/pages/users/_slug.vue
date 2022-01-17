@@ -1,94 +1,95 @@
 <template>
-  <v-container fluid>
-    <div justify="center" align="center" style="padding-top: 5%">
-      <LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + rank" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
-      <v-avatar class="overflow-visible" size="128">
-			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="130" />
-        <v-btn v-if="self.id != user.id"
-          color="#8124be"
+<v-container fluid>
+  <div justify="center" align="center" style="padding-top: 0%">
+    <LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + rank" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
+    <v-avatar class="overflow-visible" size="128">
+      <ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="130" />
+      <v-btn v-if="self.id != user.id"
+        color="#8124be"
+        class="friend-button"
+        fab
+        small
+        @click="mouseOverFriendOption = !mouseOverFriendOption"
+        style="z-index: 6"
+        absolute
+        bottom
+        right
+      >
+        <v-icon :color="getIconStatus() == 'mdi-account-cancel' ? 'black' : getIconStatus() == 'mdi-account-check' ? 'green' : 'yellow'">            
+          {{ getIconStatus() }}
+        </v-icon>
+      </v-btn>
+      <div v-if="mouseOverFriendOption == true"
+        @mouseleave="mouseLeaveFriendOption()"
+        style="z-index: 7; position: absolute; right: -56px; top: 108px; flex-direction: column; width: 80px"
+        color="#ffffff"
+        flat
+      >
+        <v-btn v-if="friendStatus == status.null || friendStatus == status.completed"
+          @click="friendStatus == status.null ? addFriend() : deleteFriend()"
           class="friend-button"
-          fab
-          small
-          @click="mouseOverFriendOption = !mouseOverFriendOption"
-          style="z-index: 6"
-          absolute
-          bottom
-          right
+          color="#8124be"
+          height="40"
         >
-          <v-icon :color="getIconStatus() == 'mdi-account-cancel' ? 'black' : getIconStatus() == 'mdi-account-check' ? 'green' : 'yellow'">            
-            {{ getIconStatus() }}
+          <v-icon :color="friendStatus == status.null ? 'green' : 'red'">
+            {{ friendStatus == status.null ? 'mdi-account-plus' : 'mdi-account-minus'}}
           </v-icon>
         </v-btn>
-        <div v-if="mouseOverFriendOption == true"
-          @mouseleave="mouseLeaveFriendOption()"
-          style="z-index: 7; position: absolute; right: -56px; top: 108px; flex-direction: column; width: 80px"
-          color="#ffffff"
-          flat
+        <v-btn v-if="friendStatus == status.incomming"
+          color="#8124be"
+          class="friend-button"
+          @click="acceptFriendRequest()"
+          height="40"
         >
-          <v-btn v-if="friendStatus == status.null || friendStatus == status.completed"
-            @click="friendStatus == status.null ? addFriend() : deleteFriend()"
-            class="friend-button"
-            color="#8124be"
-            height="40"
-          >
-            <v-icon :color="friendStatus == status.null ? 'green' : 'red'">
-              {{ friendStatus == status.null ? 'mdi-account-plus' : 'mdi-account-minus'}}
-            </v-icon>
-          </v-btn>
-          <v-btn v-if="friendStatus == status.incomming"
-            color="#8124be"
-            class="friend-button"
-            @click="acceptFriendRequest()"
-            height="40"
-          >
-            <v-icon color="green">
-              mdi-account-check
-            </v-icon>
-          </v-btn>
-          <v-btn v-if="friendStatus == status.incomming || friendStatus == status.sent"
-            color="#8124be"
-            class="friend-button"
-            @click="denyFriendRequest()"
-            height="40"
-          >
-            <v-icon color="red">
-                mdi-account-remove
-            </v-icon>
-          </v-btn>
-          <v-btn
-            color="#8124be"
-            @click="friendStatus != status.blocked ? blockUser() : unblockUser()"
-            class="friend-button"
-            height="40"
-          >
-            <v-icon :color="friendStatus != status.blocked ? 'black' : 'green'">
-              {{ friendStatus != status.blocked ? 'mdi-account-cancel' : 'mdi-lock-open-variant' }}
-            </v-icon>
-          </v-btn>
-        </div>
-      </v-avatar>
-        <v-row v-if="self.id != user.id" justify="end">
-          <BasicBtn @click="redirectToPrivateMessage()" :isText="true" content="Send Message" />
-        </v-row>
+          <v-icon color="green">
+            mdi-account-check
+          </v-icon>
+        </v-btn>
+        <v-btn v-if="friendStatus == status.incomming || friendStatus == status.sent"
+          color="#8124be"
+          class="friend-button"
+          @click="denyFriendRequest()"
+          height="40"
+        >
+          <v-icon color="red">
+              mdi-account-remove
+          </v-icon>
+        </v-btn>
+        <v-btn
+          color="#8124be"
+          @click="friendStatus != status.blocked ? blockUser() : unblockUser()"
+          class="friend-button"
+          height="40"
+        >
+          <v-icon :color="friendStatus != status.blocked ? 'black' : 'green'">
+            {{ friendStatus != status.blocked ? 'mdi-account-cancel' : 'mdi-lock-open-variant' }}
+          </v-icon>
+        </v-btn>
       </div>
-      <div class="flex-container-editing" style="padding-top: 80px">
-        <v-card class="foreground_element card_profile">
-          <v-card-text align="center">
-            <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
-          </v-card-text>
-        </v-card>
-      </div>
-      <div class="flex-container-row">
-        <v-card class="foreground_element card_game flex-item" margin-top="5%">
-          <h1 class="color_win" align="center">Win</h1>
-          <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
-        </v-card>
-        <v-card class="foreground_element card_game flex-item" margin-top="5%">
-          <h1 class="color_lose" align="center">Lose</h1>
-          <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
-        </v-card>
-    </div>
-  </v-container>
+    </v-avatar>
+    <v-row v-if="self.id != user.id" justify="end">
+      <BasicBtn @click="redirectToPrivateMessage()" :isText="true" content="Send Message" />
+    </v-row>
+  </div>
+  <div class="flex-container-editing" style="padding-top: 80px">
+    <v-card class="foreground_element card_profile">
+      <v-card-text align="center">
+        <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
+      </v-card-text>
+    </v-card>
+  </div>
+  <div class="flex-container-row">
+    <v-card class="foreground_element card_game flex-item" margin-top="5%">
+      <h1 class="color_win" align="center">Win</h1>
+      <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
+    </v-card>
+    <v-card class="foreground_element card_game flex-item" margin-top="5%">
+      <h1 class="color_lose" align="center">Lose</h1>
+      <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
+    </v-card>
+  </div>
+  <GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user"/>
+</v-container>
 </template>
 
 <script lang="ts">
@@ -117,6 +118,7 @@ export default class extends Vue {
   mouseOverButton = false
   mouseOverFriendOption = false
   rank = 0
+  matchHistory = Array
 
   async mounted() {
     const { params: { slug } } = this.$route
@@ -125,6 +127,7 @@ export default class extends Vue {
     this.user = await this.$axios.$get('/api/users/' + slug)
     this.rank = await this.$axios.$get('/api/leaderboard/' + this.user.id)
     this.friendStatus = (await this.$axios.$get('/api/friends/' + this.user.id)).status
+    this.matchHistory = await this.$axios.$get('/api/users/' + this.user.id + '/matchs')
     console.log(this.friendStatus)
   }
 

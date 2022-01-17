@@ -1,58 +1,31 @@
 <template>
-	<div justify="center" align="center">
-		<LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + rank" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
-		<v-avatar class="overflow-visible" size="128">
-			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="140" />
-			<v-btn
-				color="#8124be"
-				class="edit-button"
-				fab
-				small
-				@click="switchEditing()"
-				style="z-index: 6"
-				absolute
-				bottom
-				right
-			>
-				<v-icon color="#ffffff">
-					mdi-pencil
-				</v-icon>
-			</v-btn>
-		</v-avatar>
-
-		<v-card class="foreground_element card_profile mt-10">
-			<v-card-text align="center">
-				<p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
-				<p class="color_text text-h5" align="center">{{ user.email }}</p>
-				<p class="color_text text-h6" align="center">Connected via :</p>
-				<icon-github v-if="user.provider === 'github'"
-					width="50"
-					height="50"
-				/>
-				<icon-42 v-if="user.provider === '42'"
-					width="50"
-					height="50"
-				/>
-				<v-icon v-if="user.provider === 'google'"
-						color="primary"
-						x-large
-				>
-					mdi-google
-				</v-icon>
-			</v-card-text>
-		</v-card>
-		<div class="flex-container-row mt-10" style="margin-bottom: 1%">
-			<v-card class="foreground_element card_game flex-item" margin-top="5%">
-				<h1 class="color_win" align="center">Win</h1>
-				<h3 class="color_text" align="center">{{ user.gameWin }} </h3>
-			</v-card>
-			<v-card class="foreground_element card_game flex-item" margin-top="5%">
-				<h1 class="color_lose" align="center">Lose</h1>
-				<h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
-			</v-card>
-		</div>
-    <GameHistory :matchHistory="matchHistory" :user="user"/>
-	</div>
+  <div>
+    <v-card-text class="color_text text-h5 font-weight-medium">
+      Game history
+    </v-card-text>
+    <div v-for="match in matchHistory" :key="match.id"
+    style="padding-top:10px"
+    v-on:bind="matchHistory"
+    >
+      <v-card
+        class="foreground_element"
+        :class="isProfileWinner(match) ? 'card_gameWin' : 'card_gameLose'"
+        @click="goToGame(match)"
+        height="60"
+      >
+        <v-row align="center"  style="padding-left: 20px; padding-top: 7px">
+          <ProfilePicture @click="goToProfile(getOpenent(match))" :src="getOpenent(match).picture" :isActive="getOpenent(match).isActive" />
+          <v-card-title @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium" align="center">{{getOpenent(match).nickName}}</v-card-title>
+          <v-spacer />
+          <v-card-subtitle class="white--text text-left pr-10 font-italic">
+            <span style="padding-right: 50px"> {{ thistimeSince(match.date) }} ago</span>
+            <span class="font-weight-regular" style="color: #ffffff">{{ getSelfScore(match) }} /</span>
+            <span style="color: #ffffff">{{ getOpenentScore(match) }}</span>
+          </v-card-subtitle>
+        </v-row>
+      </v-card>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -63,27 +36,13 @@ import { LightUser, User } from '../../assets/Classes-ts/User';
 import timeSince from '../../plugins/timeSince'
 
 @Component
-export default class ProfileNormal extends Vue {
+export default class GameHistory extends Vue {
 
   @Prop({ type: Array, default: Array })
   matchHistory!: Array<Match>
 
 	@Prop({ type: Object, default: new User() })
 	user!: User
-
-	@Prop({ type: Boolean, default: false })
-	pictureEdited!: boolean
-
-	@Prop({ type: Number, default: false })
-	rank!: number
-
-	switchEditing() {
-		this.$emit('updateState')
-	}
-
-	gotoleaderboard() {
-		this.$router.push('/leaderboard')
-	}
 
   goToGame(match: Match) {
     this.$router.push('/game/' + match.id)
