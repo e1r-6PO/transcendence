@@ -4,13 +4,14 @@ import { LightUser, User } from "./User"
 
 class Match {
 
-    constructor(id: string, player0: LightUser, player1: LightUser, scorep0: number, scorep1: number, winner: LightUser) {
+    constructor(id: string, player0: LightUser, player1: LightUser, scorep0: number, scorep1: number, winner: LightUser, date: Date) {
         this.id = id
         this.player0 = player0
         this.player1 = player1
         this.scorep0 = scorep0
         this.scorep1 = scorep1
         this.winner = winner
+        this.date = date
     }
 
     id: string
@@ -19,5 +20,6 @@ class Match {
     scorep0: number
     scorep1: number
     winner: LightUser
+    date: Date
 }
 export { Match }

@@ -1,10 +1,11 @@
 <template>
-<v-container fluid class="mt-9">
+<v-container fluid class="mt-0">
 	<AlertError @end="alert = false" :textError="alertText" :type="alertType" :state="alert"/>
   <ProfileNormal v-if="!isEditing"
     :user="this.user"
     :pictureEdited="pictureEdited"
     :rank="rank"
+    :matchHistory="matchHistory"
     @updateState="switchEditing"
   ></ProfileNormal>
   <ProfileEditing v-if="isEditing"
@@ -24,6 +25,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import login from '../../middleware/login'
 import { User } from '../../assets/Classes-ts/User';
+import { Match } from '../../assets/Classes-ts/Match';
 
 @Component({
   middleware: login,
@@ -37,6 +39,7 @@ export default class extends Vue {
   alertType = "success"
   pictureEdited = false
   rank = 0
+  matchHistory: Array<Match> = new Array
 
   async mounted() {
     this.user = await this.$axios.$get('/api/profile/me')
@@ -45,6 +48,8 @@ export default class extends Vue {
       })
 
     this.rank = await this.$axios.$get('/api/leaderboard/' + this.user.id)
+
+    this.matchHistory = await this.$axios.$get('/api/users/' + this.user.id + '/matchs')
 
     const ret2fa = await this.$axios.get('/api/auth/2fa/is_enabled')
     .catch(function (error) {
