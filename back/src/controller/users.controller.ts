@@ -32,6 +32,11 @@ export class UsersController {
     return res.sendFile(id + '.png', { root: '../data/users' });
   }
 
+  @Get(':id/matchs')
+  getmatchhistory(@Param('id') id) {
+    return this.userService.getMatchHistory(id)
+  }
+
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateUserDto: User) {

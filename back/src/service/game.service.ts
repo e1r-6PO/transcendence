@@ -66,6 +66,7 @@ export class GameService {
         match.scorep0 = game.scorep0
         match.scorep1 = game.scorep1
         match.winner = winner
+        match.date = new Date()
 
         this.matchRepository.save(match)
         if (winner.id == game.player0.id) {

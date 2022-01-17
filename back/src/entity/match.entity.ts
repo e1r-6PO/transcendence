@@ -1,3 +1,4 @@
+import { Type } from "class-transformer"
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Repository } from "typeorm"
 import { User } from "./user.entity"
 
@@ -7,10 +8,13 @@ export class Match {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
+    @Type(() => User)
     @ManyToOne(() => User, {
         eager: true,
     })
     player0: User
+
+    @Type(() => User)
     @ManyToOne(() => User, {
         eager: true,
     })
@@ -21,10 +25,14 @@ export class Match {
     @Column( {default: 0} )
     scorep1: number
 
+    @Type(() => User)
     @ManyToOne(() => User, {
         eager: true,
     })
     winner: User
+
+    @Column()
+    date: Date
 
     toSafeFormat() {
         return {
@@ -33,7 +41,8 @@ export class Match {
             player1: this.player1.toLightuser(),
             scorep0: this.scorep0,
             scorep1: this.scorep1,
-            winner: this.winner.toLightuser()
+            winner: this.winner.toLightuser(),
+            date: this.date
         }
     }
 }

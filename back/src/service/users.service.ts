@@ -1,18 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
-import { Like, Repository } from 'typeorm'
+import { Connection, Like, Repository } from 'typeorm'
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { existsSync } from 'fs';
 import { LightUser } from 'src/entity/lightuser.entity';
+import { Match } from 'src/entity/match.entity';
+import { classToPlain, plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private jwtService : JwtService
+    private jwtService : JwtService,
+    private connection: Connection
   ) {}
 
   async findOne(hint: string | number) {
@@ -24,14 +27,6 @@ export class UsersService {
         }
       );
     }
-    // else if (typeof hint === "number") {
-    //   var user = await this.usersRepository.findOne(
-    //     { where:
-    //       { id: hint }
-    //     }
-    //   );
-    // }
-
 
     if (!user)
       throw new NotFoundException
@@ -65,6 +60,29 @@ export class UsersService {
       }
     );
     return user;
+  }
+
+  async getMatchHistory(id: number) {
+    var dbret = await this.connection
+    .getRepository(Match)
+    .createQueryBuilder('matchs')
+    .where('player0Id = :id', { id })
+    .orWhere('player1Id = :id', { id })
+    .leftJoinAndSelect('matchs.player0', 'player0')
+    .leftJoinAndSelect('matchs.player1', 'player1')
+    .leftJoinAndSelect('matchs.winner', 'winner')
+    .orderBy('matchs.date', 'DESC')
+    .limit(50)
+    .getMany()
+
+    var ret = new Array
+
+    dbret.forEach(element => {
+      var newel = plainToClass(Match, element).toSafeFormat()
+
+      ret.push(newel)
+    });
+    return ret
   }
 
   async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
