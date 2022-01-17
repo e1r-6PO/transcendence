@@ -61,7 +61,7 @@
 import { Component } from 'nuxt-property-decorator'
 import Vue from 'vue'
 import { LightUser } from '../assets/Classes-ts/User'
-import { Friendship } from '../assets/Classes-ts/friendship'
+import { Friendship } from '../assets/Classes-ts/Friendship'
 
 import socket_active from '../plugins/active.io'
 
