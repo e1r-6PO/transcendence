@@ -32,11 +32,9 @@ export class LeaderboardController {
             ret.push(newel)
         });
 
-        // realuser.forEach((element: User) => { element.toLightuser() })
         return ret
     }
 
-    // BEEEEEEEEEEEEEEURK
     @Get(':id')
     async getrank(@Param('id') id) {
         return parseInt((await this.connection
