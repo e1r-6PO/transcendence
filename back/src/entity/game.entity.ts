@@ -20,7 +20,7 @@ export class Game {
 	id: string
 
 	status: string = "idle" // idle, paused, started, forfeitp0, forfeitp1
-	type: string
+	type: string // private, ranked
 	gameService: GameService
 	winning_score: number
 	loopId: any = null
@@ -124,7 +124,8 @@ export class Game {
 		this.player0socket['game'] = this.id // useful for when the client temporarily disconnect midgame (pause the game)
 		this.player1socket['game'] = this.id //
 		this.status = "setup"
-		this.room.emit('matchFound', { id: this.id})
+		if (this.type == 'ranked')
+			this.room.emit('matchFound', { id: this.id})
 		// this.players[1].emit('matchFound', { id: this.id})
 		await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side, rly ?
 		this.matchinfo()
