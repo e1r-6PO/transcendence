@@ -15,6 +15,12 @@ export class Game {
 		this.ball_amount = ball_amount
 		this.winning_score = winning_score
 		this.paddleSize = paddleSize
+
+		this.mod = JSON.stringify({
+			ballAmount: this.ball_amount,
+			pointsToWin: this.winning_score,
+			paddleSize: this.paddleSize
+		})
 	}
 
 	id: string
@@ -32,6 +38,8 @@ export class Game {
 	paddleSize: number
 	room: BroadcastOperator<DefaultEventsMap>
 	tickSpeed = 1000 / 48
+
+	mod: string
 
 	player0: User
 	player1: User
@@ -123,6 +131,7 @@ export class Game {
 	async start() {
 		this.player0socket['game'] = this.id // useful for when the client temporarily disconnect midgame (pause the game)
 		this.player1socket['game'] = this.id //
+		// formatted string to store modifiers
 		this.status = "setup"
 		if (this.type == 'ranked')
 			this.room.emit('matchFound', { id: this.id})

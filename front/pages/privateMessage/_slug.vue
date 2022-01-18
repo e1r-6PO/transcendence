@@ -107,6 +107,10 @@
               <BasicBtn v-if="msg.game_state == 'pending' && !isYourMsg(msg)" content="mdi-check" v-on:click="acceptGame(msg)"></BasicBtn>
               <BasicBtn v-if="msg.game_state == 'pending'" content="mdi-close" v-on:click="denyGame(msg)"></BasicBtn>
             </div>
+            <v-card-text
+              style="padding-bottom: 0px; padding-right: 55px; color: white"
+              v-text="msg.message"
+            />
             <v-card-subtitle
               style="padding-bottom: 5px; padding-top: 0px; color: white"
               v-text="formateTime(msg.time)"

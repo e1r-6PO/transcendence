@@ -31,6 +31,9 @@ export class Match {
     })
     winner: User
 
+    @Column({ default: "" })
+    mod: string
+
     @Column()
     date: Date
 
@@ -42,6 +45,7 @@ export class Match {
             scorep0: this.scorep0,
             scorep1: this.scorep1,
             winner: this.winner.toLightuser(),
+            mod: this.mod,
             date: this.date
         }
     }
