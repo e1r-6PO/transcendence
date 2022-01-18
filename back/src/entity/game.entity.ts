@@ -10,10 +10,11 @@ import { Paddle } from "./paddle.entity"
 import { User } from "./user.entity"
 
 export class Game {
-	constructor(gameService: GameService, winning_score: number, ball_amount: number) {
+	constructor(gameService: GameService, winning_score: number, ball_amount: number, paddleSize: number) {
 		this.gameService = gameService
 		this.ball_amount = ball_amount
 		this.winning_score = winning_score
+		this.paddleSize = paddleSize
 	}
 
 	id: string
@@ -28,6 +29,7 @@ export class Game {
 	// spectators: Array<Socket>
 	balls: Array<Ball>
 	ball_amount: number
+	paddleSize: number
 	room: BroadcastOperator<DefaultEventsMap>
 	tickSpeed = 1000 / 48
 
@@ -52,9 +54,9 @@ export class Game {
 	}
 
 	async create_paddles(){
-		this.paddle0 = new Paddle(30, 300, this.player0.paddleColor)
+		this.paddle0 = new Paddle(30, 300, this.player0.paddleColor, this.paddleSize * 5, this.paddleSize * 15)
 		this.room.emit('paddle0Info', { paddle0_info: [this.paddle0.topLeftx, this.paddle0.topLefty, this.paddle0.size.x, this.paddle0.size.y]})
-		this.paddle1 = new Paddle(810, 300, this.player1.paddleColor)
+		this.paddle1 = new Paddle(810, 300, this.player1.paddleColor, this.paddleSize * 5, this.paddleSize * 15)
 		this.room.emit('paddle1Info', { paddle1_info:[this.paddle1.topLeftx, this.paddle1.topLefty, this.paddle1.size.x, this.paddle1.size.y]})
 	}
 
@@ -62,7 +64,6 @@ export class Game {
 		let ballsinfo = []
 		for (let i = 0; i < this.balls.length; ++i) {
 				var tick_result: {} = this.balls[i].tick();
-				console.log(tick_result)
 				if (tick_result == 'p1+1') {
 						this.scorep1++
 						this.room.emit('score_p1', this.scorep1)
