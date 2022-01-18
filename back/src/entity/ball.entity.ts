@@ -37,13 +37,13 @@ export class Ball extends Rect {
 			this.pos.y += this.speed.y
 			this.collision = 0
 			if (this.left < 0 + this.size.x / 2) {
-				// return 0
+				return 'p1+1'
 				// player 0 lost
 				this.speed.x *= -1
 				this.collision = 1
 			}
 			if (this.right > this.canvas_x - this.size.x / 2) {
-				// return 1
+				return 'p0+1'
 				// player 1 lost
 				this.speed.x *= -1
 				this.collision = 1

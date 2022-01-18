@@ -5,6 +5,7 @@
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 200px">
       <ProfilePicture :src="player0.picture" :neonColor="player0.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{player0.nickName}}</p>
+      <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{ score_p0 }}</p>
     </v-col>
 
     <v-col cols="6">
@@ -18,6 +19,7 @@
       <!-- style="padding-top: 30%" -->
       <ProfilePicture :src="player1.picture" disble :neonColor="player1.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{player1.nickName}}</p>
+      <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{ score_p1 }}</p>
     </v-col>
   </v-row>
 </div>
@@ -55,7 +57,9 @@ export default Vue.extend({
       m : Object(),
       maptest : Object(),
       particles: [Object()],
-      updatePage: false
+      updatePage: false,
+      score_p0: 0,
+      score_p1: 0
     }
   },
 
@@ -239,6 +243,14 @@ export default Vue.extend({
       this.paddle1.y = info['paddle1_info'][1]
       this.paddle1.width = info['paddle1_info'][2]
       this.paddle1.height = info['paddle1_info'][3]
+    })
+
+    socket_game.on('score_p0', (info) => {
+      this.score_p0++
+    })
+
+    socket_game.on('score_p1', (info) => {
+      this.score_p1++
     })
   },
 

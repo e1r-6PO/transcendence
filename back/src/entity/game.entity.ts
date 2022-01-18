@@ -62,8 +62,10 @@ export class Game {
 		let ballsinfo = []
 		for (let i = 0; i < this.balls.length; ++i) {
 				var tick_result: {} = this.balls[i].tick();
-				if (tick_result['status'] == 'p1+1') {
+				console.log(tick_result)
+				if (tick_result == 'p1+1') {
 						this.scorep1++
+						this.room.emit('score_p1', this.scorep1)
 						if (this.scorep1 == this.winning_score) {
 							this.gameService.endgame(this)
 							return
@@ -72,8 +74,9 @@ export class Game {
 						this.balls.splice(i, 1)
 						this.create_new_ball(1000)
 				}
-				else if (tick_result['status'] == 'p0+1') {
+				else if (tick_result == 'p0+1') {
 						this.scorep0++
+						this.room.emit('score_p0', this.scorep0)
 						if (this.scorep0 == this.winning_score) {
 							this.gameService.endgame(this)
 							return
