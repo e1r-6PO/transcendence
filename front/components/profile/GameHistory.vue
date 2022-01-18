@@ -115,8 +115,8 @@ export default class GameHistory extends Vue {
 }
 
 .card_gameWin {
-	border: 3px solid #b8a435 !important;
-	box-shadow: inset 0px 0px 500px 20px #b8a435, 0px 0px 40px 0px #b8a435 !important;
+	border: 3px solid #f7e687 !important;
+	box-shadow: inset 0px 0px 500px 20px #b8a435, 0px 0px 40px 5px #b8a435 !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
 	min-width: 400px;
@@ -125,8 +125,8 @@ export default class GameHistory extends Vue {
 }
 
 .card_gameLose {
-	border: 3px solid #c7401e !important;
-	box-shadow: inset 0px 0px 500px 20px #c7401e, 0px 0px 40px 0px #c7401e !important;
+	border: 3px solid #ff997d !important;
+	box-shadow: inset 0px 0px 500px 20px #c7401e, 0px 0px 40px 5px #c7401e !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
 	min-width: 400px;

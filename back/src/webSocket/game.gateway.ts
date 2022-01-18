@@ -48,43 +48,45 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('join') // to spectate a game or to see a game history
 	async join(client: Socket, info: []) {
-			this.gameService.join(client, info['id'])
+		this.gameService.join(client, info['id'])
 	}
 
 	async create_game() {
-			var game: Game = new Game(this.gameService, 5, 1)
-			game.player0socket = this.queue[0]
-			game.player1socket = this.queue[1]
-			this.queue.splice(0, 2)
-			game.id = uuidv4()
-			game.type = "ranked"
-			game.player0 = game.player0socket['info'] // putting the infos inside a User class to get access User class function
-			game.player1 = game.player1socket['info'] //
-			game.player0socket.join(game.id.toString())
-			game.player1socket.join(game.id.toString())
-			// game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
-			// game.player1socket['game'] = game.id //
-			game.room = this.server.to(game.id.toString())
-			// this.server.of('/chat').to('room').emit('wsh la miff')
-			this.gameService.push_game(game) //also starting the game via game.start()
+		var game: Game = new Game(this.gameService, 5, 1)
+		game.player0socket = this.queue[0]
+		game.player1socket = this.queue[1]
+		this.queue.splice(0, 2)
+		game.id = uuidv4()
+		game.type = "ranked"
+		game.player0 = game.player0socket['info'] // putting the infos inside a User class to get access User class function
+		game.player1 = game.player1socket['info'] //
+		game.player0socket.join(game.id.toString())
+		game.player1socket.join(game.id.toString())
+		// game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
+		// game.player1socket['game'] = game.id //
+		game.room = this.server.to(game.id.toString())
+		// this.server.of('/chat').to('room').emit('wsh la miff')
+		this.gameService.push_game(game) //also starting the game via game.start()
 	}
 
-	create_private_game(initiater: Socket, receiver: Socket) {
-			var game: Game = new Game(this.gameService, 1, 1)
-			game.player0socket = initiater
-			// game.player1socket = receiver
-			game.id = uuidv4()
-			game.type = "private"
-			game.player0 = initiater['info'] // putting the infos inside a User class to get access User class function
-			game.player1 = receiver['info'] //
-			game.player0socket.join(game.id.toString())
-			// game.player1socket.join(game.id.toString())
-			// game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
-			// game.player1socket['game'] = game.id //
-			game.room = this.server.to(game.id.toString())
-			this.gameService.push_game(game)
-			this.destroyGameIfNotStarted(30000, game.id, initiater, receiver) // wait 30seconds and destroy game if it hasnt started
-			return game
+	create_private_game(initiater: Socket, receiver: Socket, arg: any) {
+		if (arg.ballNumber < 1 || arg.ballNumber > 9 || arg.pointsToWin < 1 || arg.pointsToWin > 50 || arg.paddleSize < 1 || arg.paddleSize > 9)
+			return null
+		var game: Game = new Game(this.gameService, arg.pointsToWin, arg.ballNumber)
+		game.player0socket = initiater
+		// game.player1socket = receiver
+		game.id = uuidv4()
+		game.type = "private"
+		game.player0 = initiater['info'] // putting the infos inside a User class to get access User class function
+		game.player1 = receiver['info'] //
+		game.player0socket.join(game.id.toString())
+		// game.player1socket.join(game.id.toString())
+		// game.player0socket['game'] = game.id // useful for when the client temporarily disconnect midgame (pause the game)
+		// game.player1socket['game'] = game.id //
+		game.room = this.server.to(game.id.toString())
+		this.gameService.push_game(game)
+		this.destroyGameIfNotStarted(30000, game.id, initiater, receiver) // wait 30seconds and destroy game if it hasnt started
+		return game
 	}
 
 	async destroyGameIfNotStarted(time: number, game_id: string, client0: Socket, client1: Socket) {
@@ -109,10 +111,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('newPrivate')
 	async newPrivateGame(client: Socket, arg: any) {
-		var remote = this.id_to_user.get(arg['id'])
+		var remote = this.id_to_user.get(arg.user.id)
 
 		if (remote != undefined && remote.id != client.id) {
-			var game: Game = this.create_private_game(client, remote)
+			var game: Game = this.create_private_game(client, remote, arg)
+			if (!game)	//because user submitted bad input
+				return
 			client.emit('notificationPrivateGameInviteSent', game.id)
 			remote.emit('notificationPrivateGameInvite', game.id)
 
