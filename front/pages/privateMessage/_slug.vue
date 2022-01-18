@@ -90,6 +90,8 @@
             :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0px' : 'float: left; margin-right: 20px !important; left: -10px'"
             style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
           />
+
+          <!-- if the message is a normal message -->
           <OtherBubbleMsg v-if="!isYourMsg(msg) && msg.type != 'game'" :msg="msg"/>
           <MyBubbleMsg v-else-if="msg.type != 'game'" :msg="msg" />
 
@@ -107,9 +109,10 @@
             </div>
             <v-card-subtitle
               style="padding-bottom: 5px; padding-top: 0px; color: white"
-              v-text="formateTime(msg.date)"
+              v-text="formateTime(msg.time)"
               class="text-right"
             >
+            <!-- no clue why tf its msg.time and not msg.date but okay i guess -->
             </v-card-subtitle>
           </v-card>
 
