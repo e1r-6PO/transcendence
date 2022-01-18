@@ -13,7 +13,7 @@
         @click="goToGame(match)"
         height="60"
       >
-        <v-row align="center"  style="padding-left: 20px; padding-top: 7px">
+        <v-row align="center" style="padding-left: 20px; padding-top: 7px">
           <ProfilePicture @click="goToProfile(getOpenent(match))" :src="getOpenent(match).picture" :isActive="getOpenent(match).isActive" />
           <v-card-title @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium" align="center">{{getOpenent(match).nickName}}</v-card-title>
           <v-spacer />
@@ -24,6 +24,21 @@
           </v-card-subtitle>
         </v-row>
       </v-card>
+    </div>
+    <div
+      style="padding-top:10px"
+    >
+      <v-btn
+        class="foreground_element neon-button"
+        style="margin-top: 0px; margin-left: 15px"
+        rounded
+        text
+        color="#ffffff"
+        @click="fetchMoreGames()"
+        v-if="fetchBtnEnable"
+      >
+        fetch more
+      </v-btn>
     </div>
   </div>
 </template>
@@ -38,11 +53,24 @@ import timeSince from '../../plugins/timeSince'
 @Component
 export default class GameHistory extends Vue {
 
-  @Prop({ type: Array, default: Array })
-  matchHistory!: Array<Match>
-
 	@Prop({ type: Object, default: new User() })
 	user!: User
+
+  matchHistory: Array<Match> = new Array
+
+  fetchBtnEnable: boolean = true
+
+  async mounted() {
+    this.matchHistory = await this.$axios.$get('/api/users/' + this.user.id + '/matchs')
+  }
+
+  async fetchMoreGames() {
+    var ret: Array<Match> = await this.$axios.$get('/api/users/' + this.user.id + '/matchs?page=' + this.matchHistory.length)
+    this.matchHistory = this.matchHistory.concat(ret)
+
+    if (ret.length == 0)
+      this.fetchBtnEnable = false
+  }
 
   goToGame(match: Match) {
     this.$router.push('/game/' + match.id)

@@ -33,8 +33,8 @@ export class UsersController {
   }
 
   @Get(':id/matchs')
-  getmatchhistory(@Param('id') id) {
-    return this.userService.getMatchHistory(id)
+  getmatchhistory(@Param('id') id, @Query('page') page: number) {
+    return this.userService.getMatchHistory(id, (page == null ? 0 : page))
   }
 
 

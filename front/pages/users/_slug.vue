@@ -88,7 +88,7 @@
       <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
     </v-card>
   </div>
-  <GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user"/>
+  <GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user" v-if="user.id != 0"/>
 </v-container>
 </template>
 

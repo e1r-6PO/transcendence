@@ -1,11 +1,12 @@
 <template>
 <v-container fluid class="mt-0">
 	<AlertError @end="alert = false" :textError="alertText" :type="alertType" :state="alert"/>
-  <ProfileNormal v-if="!isEditing"
+  <ProfileNormal v-if="!isEditing && user"
     :user="this.user"
     :pictureEdited="pictureEdited"
     :rank="rank"
     :matchHistory="matchHistory"
+    @fetchMoreGames="fetchMoreGames()"
     @updateState="switchEditing"
   ></ProfileNormal>
   <ProfileEditing v-if="isEditing"
@@ -32,7 +33,7 @@ import { Match } from '../../assets/Classes-ts/Match';
 })
 export default class extends Vue {
 
-  user : User = new User();
+  user : User = null;
   isEditing = false
   alert = false
   alertText = ""
@@ -64,6 +65,10 @@ export default class extends Vue {
         this.$router.replace('/profile')
       }
     }
+  }
+
+  async fetchMoreGames() {
+    this.matchHistory.push(await this.$axios.$get('/api/users/' + this.user.id + '/matchs?page=' + this.matchHistory.length))
   }
 
   activeAlert(text: string, type: string) {
