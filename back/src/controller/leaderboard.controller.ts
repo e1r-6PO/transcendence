@@ -20,7 +20,7 @@ export class LeaderboardController {
         .getRepository(User)
         .createQueryBuilder('ranking')
         .select('*')
-        .addSelect('RANK () OVER (ORDER BY gameWin DESC) as "rank"')
+        .addSelect('RANK () OVER (ORDER BY elo DESC) as "rank"')
         .limit(50)
         .execute()
 
@@ -44,7 +44,7 @@ export class LeaderboardController {
         .from(subQuery => {
             return subQuery
               .select('*')
-              .addSelect('RANK () OVER (ORDER BY gameWin DESC)', 'rank')
+              .addSelect('RANK () OVER (ORDER BY elo DESC)', 'rank')
               .from(User, 'user')
           }, 'user')
         .where('user.id = :id', { id })
