@@ -2,6 +2,7 @@
 <v-container fluid>
   <div justify="center" align="center" style="padding-top: 0%">
     <LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + rank" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
+    <LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + user.elo" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
     <v-avatar class="overflow-visible" size="128">
       <ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="130" />
       <v-btn v-if="self.id != user.id"
@@ -128,7 +129,10 @@ export default class extends Vue {
     this.rank = await this.$axios.$get('/api/leaderboard/' + this.user.id)
     this.friendStatus = (await this.$axios.$get('/api/friends/' + this.user.id)).status
     this.matchHistory = await this.$axios.$get('/api/users/' + this.user.id + '/matchs')
+
     console.log(this.friendStatus)
+
+    this.user.elo = parseFloat(parseFloat(this.user.elo as any).toFixed(2)) // truncate the elo to 2 digit
   }
 
   async friend() {

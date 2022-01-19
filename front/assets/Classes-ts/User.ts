@@ -9,6 +9,7 @@ class User {
     twoFactorAuthenticationSecret: string;
     isTwoFactorAuthenticationEnabled: boolean;
     isActive: boolean;
+    elo: number;
     gameWin: number;
     gameLose: number;
     paddleColor: string;
@@ -24,6 +25,7 @@ class User {
         this.provider_id = "";
         this.twoFactorAuthenticationSecret = "";
         this.isTwoFactorAuthenticationEnabled = false;
+        this.elo = 0;
         this.isActive = false;
         this.gameWin = 0;
         this.gameLose = 0;
@@ -35,6 +37,7 @@ class LightUser {
     id: number;
     picture: string;
     nickName: string;
+    elo: number;
     gameWin: number;
     gameLose: number;
     isActive: boolean;
@@ -44,6 +47,7 @@ class LightUser {
         this.nickName = "";
         this.picture = "";
         this.id = 0;
+        this.elo = 0;
         this.gameWin = 0;
         this.gameLose = 0;
         this.isActive = false;

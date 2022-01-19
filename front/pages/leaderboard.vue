@@ -18,6 +18,7 @@
           <ProfilePicture @click="goToProfile(user)" :src="user.picture" :isActive="user.isActive" />
           <v-card-title @click="goToProfile(user)" class="color_text text-h5 font-weight-medium" align="center">{{user.nickName}}</v-card-title>
           <v-spacer />
+          <LeaderboardRank :rank="user.elo" :absolute="false"/>
           <v-card-subtitle class="white--text text-left pr-10 font-italic">
             <span class=" font-weight-regular" style="color: #b8a435">W: {{ user.gameWin }} /</span>
             <span style="color: #c7401e">L: {{ user.gameLose }}</span>
@@ -44,6 +45,8 @@ export default class extends Vue {
 
   async mounted() {
     this.leaderboard = await this.$axios.$get('/api/leaderboard')
+
+    this.leaderboard.forEach(user => user.elo = parseFloat(parseFloat(user.elo as any).toFixed(2)))
 
     socket_active.on("active", (user: LightUser) => {
       var find = this.leaderboard.findIndex((el) => el.id == user.id)

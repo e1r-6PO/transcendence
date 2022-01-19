@@ -1,6 +1,7 @@
 <template>
 	<div justify="center" align="center">
 		<LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + rank" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
+		<LeaderboardRank @click="gotoleaderboard" :rank="'rating: ' + user.elo" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
 		<v-avatar class="overflow-visible" size="128">
 			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="140" />
 			<v-btn
@@ -76,6 +77,10 @@ export default class ProfileNormal extends Vue {
 
 	@Prop({ type: Number, default: false })
 	rank!: number
+
+	async mounted() {
+		this.user.elo = parseFloat(parseFloat(this.user.elo as any).toFixed(2))
+	}
 
 	switchEditing() {
 		this.$emit('updateState')
