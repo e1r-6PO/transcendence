@@ -7,8 +7,8 @@ export class Paddle extends Rect{
 	motion: boolean
 	color: string
 
-	constructor(x: number, y: number, c: string) {
-		super(20, 60)
+	constructor(x: number, y: number, c: string, width: number, height: number) {
+		super(20, height)
 		this.pos.x = x
 		this.pos.y = y
 		this.canvas_x = 840 // map width

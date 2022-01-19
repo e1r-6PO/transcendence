@@ -38,7 +38,7 @@
           <v-card-title class="white--text justify-left" style="padding-left: 0px; padding-bottom: 0px">
             Paddle size:
           </v-card-title>
-          <v-slider :min="1" :max="9" color="#0affff" track-color="#f27719" ticks="always" :tick-labels="tickLabel" dark v-model="paddleSize"></v-slider>
+          <v-slider :min="1" :max="15" color="#0affff" track-color="#f27719" ticks="always" :tick-labels="tickLabel" dark v-model="paddleSize"></v-slider>
 
         </v-card-text>
 

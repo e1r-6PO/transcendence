@@ -52,7 +52,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	async create_game() {
-		var game: Game = new Game(this.gameService, 5, 1)
+		var game: Game = new Game(this.gameService, 5, 1, 4)
 		game.player0socket = this.queue[0]
 		game.player1socket = this.queue[1]
 		this.queue.splice(0, 2)
@@ -70,9 +70,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	create_private_game(initiater: Socket, receiver: Socket, arg: any) {
-		if (arg.ballNumber < 1 || arg.ballNumber > 9 || arg.pointsToWin < 1 || arg.pointsToWin > 50 || arg.paddleSize < 1 || arg.paddleSize > 9)
+		if (arg.ballNumber < 1 || arg.ballNumber > 9 || arg.pointsToWin < 1 || arg.pointsToWin > 50 || arg.paddleSize < 1 || arg.paddleSize > 15)
 			return null
-		var game: Game = new Game(this.gameService, arg.pointsToWin, arg.ballNumber)
+		var game: Game = new Game(this.gameService, arg.pointsToWin, arg.ballNumber, arg.paddleSize)
 		game.player0socket = initiater
 		// game.player1socket = receiver
 		game.id = uuidv4()
