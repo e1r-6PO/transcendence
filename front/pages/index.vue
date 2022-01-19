@@ -9,8 +9,8 @@
     <v-container fill-height fluid>
       <v-row justify="center" align="center">
         <v-col cols="12" sm="8" md="6">
-          <v-card-text class="text-center main_title_test foreground_element" style="color: #e6ffff">
-            Welcome to Transcendence
+          <v-card-text class="text-center foreground_element main_title_test" style="color: #e6ffff">
+            Welcome to Tronscendence
           </v-card-text>
           <v-main>
             <v-btn class="foreground_element" @click="$store.commit('increment')">{{ $store.state.counter }}</v-btn>
@@ -78,6 +78,24 @@ export default class extends Vue {
 <style lang="scss">
   @import '../assets/Classes-scss/main_page.scss';
   @import '../assets/Classes-scss/particles.scss';
+
+  @font-face {
+    font-family: "Tr2n";
+    src: local("Tr2n"),
+    url(~assets/Tr2n.ttf) format("truetype");
+  }
+
+  html {
+    font-family: "Tr2n";
+  }
+
+  body {
+    font-family: "Tr2n";
+  }
+
+  head {
+    font-family: "Tr2n";
+  }
 
   .v-application{
     background-color: #181818 !important;

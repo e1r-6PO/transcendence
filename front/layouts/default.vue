@@ -29,7 +29,7 @@
           <v-icon style="margin-left: 20px; margin-top: -20px">
             {{ item.icon }}
           </v-icon>
-          <span style="margin-left: 20px; margin-top: -20px">{{ item.title }}</span>
+          <span style="margin-left: 20px; margin-top: -20px; font-family: Tr2n">{{ item.title }}</span>
         </v-btn>
       </div>
     </v-navigation-drawer>
@@ -42,20 +42,20 @@
       style="z-index: 10"
       clipped-left
     >
-      <v-app-bar-nav-icon class="open-menu mt-3" @click.stop="drawer = !drawer" />
-      <v-toolbar-title class="title neonText" v-text="title" />
-      <v-spacer />
-      <div style="padding-right: 15px">
+      <v-app-bar-nav-icon class="open-menu" @click.stop="drawer = !drawer" />
+      <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 160%; text-overflow: clip; overflow: visible" v-text="title" />
+      <v-spacer /> 
+      <div style="padding-right: 20px">
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
-            <TextField @enterPress="searchbar" v-model="search" neonColor="orange" prepend_inner_icon="mdi-magnify" placeholder="Search" />
+            <TextField class="mb-2" @enterPress="searchbar" v-model="search" neonColor="orange" prepend_inner_icon="mdi-magnify" placeholder="Search" />
           </v-col>
         </v-row>
       </div>
       <v-btn
         icon
         href="/api/auth/logout"
-        class="logout-btn mt-3"
+        class="logout-btn"
         :color="exitFocus == true ? '#ffc79c' : 'black'"
         v-on:mouseover="exitFocus = true"
         v-on:mouseleave="exitFocus = false"
