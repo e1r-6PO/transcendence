@@ -80,6 +80,12 @@ export default {
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
+    treeShake: true,
+    defaultAssets: {
+      font: {
+        family: 'Courier New'
+      }
+    },
     customVariables: ['~/assets/Classes-scss/variables.scss'],
     theme: {
       dark: false,
