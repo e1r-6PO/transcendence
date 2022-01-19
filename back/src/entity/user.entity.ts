@@ -1,4 +1,5 @@
 import { channel, Channel } from 'diagnostics_channel';
+import { ColumnNumericOptions } from 'typeorm/decorator/options/ColumnNumericOptions';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany } from 'typeorm';
 import { ChannelParticipant } from './channelParticipant.entity';
 
@@ -35,6 +36,9 @@ export class User {
   @Column({ default: false })
   isActive: boolean;
 
+  @Column("decimal", {default: 1500, precision: 12 + 4, scale: 4})
+  elo: number
+
   @Column()
   gameWin: number;
 
@@ -52,6 +56,7 @@ export class User {
       id: this.id,
       picture: 'http://localhost:8000/api/users/' + this.id + '/picture',
       nickName: this.nickName,
+      elo: this.elo,
       gameWin: this.gameWin,
       gameLose: this.gameLose,
       isActive: this.isActive,

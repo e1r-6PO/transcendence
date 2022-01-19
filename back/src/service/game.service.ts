@@ -57,6 +57,28 @@ export class GameService {
         }
     }
 
+    async modifyElo(player0: User, player1: User, winner: User) {
+        const k = 30
+
+        player0.elo = parseFloat((await this.usersRepository.findOne({where: {id: player0.id}})).elo as any)
+        player1.elo = parseFloat((await this.usersRepository.findOne({where: {id: player1.id}})).elo as any)
+
+        var p0 = (1.0 / (1.0 + Math.pow(10, ((player1.elo - player0.elo) / 400))));
+        var p1 = (1.0 / (1.0 + Math.pow(10, ((player0.elo - player1.elo) / 400))));
+
+        if (winner.id == player0.id) {
+            var newelo0 = player0.elo + k * (1 - p0)
+            var newelo1 = player1.elo + k * (0 - p1)
+        }
+        else if (winner.id == player1.id) {
+            var newelo0: number = player0.elo + k * (0 - p0)
+            var newelo1 = player1.elo + k * (1 - p1)
+        }
+
+        this.usersRepository.update({ id: player0.id }, {elo: newelo0})
+        this.usersRepository.update({ id: player1.id }, {elo: newelo1})
+    }
+
     async save_game(game: Game, winner: User) {
         var match: Match = new Match()
 
@@ -70,6 +92,7 @@ export class GameService {
         match.date = new Date()
 
         this.matchRepository.save(match)
+
         if (winner.id == game.player0.id) {
             this.usersRepository.increment({id: game.player0.id}, "gameWin", 1)
             this.usersRepository.increment({id: game.player1.id}, "gameLose", 1)
@@ -78,6 +101,8 @@ export class GameService {
             this.usersRepository.increment({id: game.player0.id}, "gameLose", 1)
             this.usersRepository.increment({id: game.player1.id}, "gameWin", 1)
         }
+
+        this.modifyElo(match.player0, match.player1, match.winner)
     }
 
     endgame(game: Game) {
@@ -103,6 +128,11 @@ export class GameService {
                 game.player0socket['game'] = undefined
         }
         game.status = 'end'
+
+        // update user info (not needed right now) in the socket
+        this.usersRepository.findOne({where: {id: game.player0.id }}).then(updatedUser => game.player0socket['info'] = updatedUser)
+        this.usersRepository.findOne({where: {id: game.player1.id }}).then(updatedUser => game.player1socket['info'] = updatedUser)
+
         this.games.delete(game.id)
     }
 

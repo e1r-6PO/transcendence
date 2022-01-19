@@ -8,9 +8,13 @@ export class LightUser {
 
   nickName: string;
 
+  elo: number;
+
   gameWin: number;
 
   gameLose: number;
 
   isActive: boolean;
+
+  paddleColor: string;
 }
