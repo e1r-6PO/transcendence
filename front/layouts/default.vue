@@ -10,7 +10,7 @@
       clipped
       stateless
     >
-      <div style="display: flex ; flex-direction: column;">
+      <div style="display: flex ; flex-direction: column; margin-top: 10px">
         <v-btn
           depressed
           class="title_color neonText no-uppercase pt-5"
@@ -26,10 +26,10 @@
           plain
           text
         >
-          <v-icon style="margin-left: 20px">
+          <v-icon style="margin-left: 20px; margin-top: -20px">
             {{ item.icon }}
           </v-icon>
-          <span style="margin-left: 20px">{{ item.title }}</span>
+          <span style="margin-left: 20px; margin-top: -20px">{{ item.title }}</span>
         </v-btn>
       </div>
     </v-navigation-drawer>
