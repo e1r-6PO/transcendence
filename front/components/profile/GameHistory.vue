@@ -13,9 +13,9 @@
         width="550"
         height="60"
       >
-        <v-row align="center flex-nowrap" style="padding-left: 20px; padding-top: 7px">
+        <v-row align="center" class="flex-nowrap" style="padding-left: 20px; padding-top: 7px">
           <ProfilePicture @click="goToProfile(getOpenent(match))" :src="getOpenent(match).picture" :isActive="getOpenent(match).isActive" />
-          <v-card-text @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium" align="center" style="font-family: OrbitronM !important; font-size: 120% !important">{{getOpenent(match).nickName}}</v-card-text>
+          <v-card-text @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium" style="font-family: OrbitronM !important; font-size: 120% !important">{{getOpenent(match).nickName}}</v-card-text>
           <v-card-text class="white--text text-center pr-10 font-italic d-flex flex-row" style="padding-right: 50px; font-family: OrbitronM !important"> {{ thistimeSince(match.date) }} ago</v-card-text>
           <v-card-text class="white--text text-center pr-10 font-italic d-flex flex-row" style="color: #ffffff; font-family: OrbitronM !important">{{ getSelfScore(match) }} - {{ getOpenentScore(match) }}</v-card-text>
         </v-row>
