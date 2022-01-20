@@ -29,7 +29,7 @@
           <v-icon style="margin-left: 20px; margin-top: -20px">
             {{ item.icon }}
           </v-icon>
-          <span style="margin-left: 20px; margin-top: -20px; font-family: Tr2n">{{ item.title }}</span>
+          <span style="margin-left: 20px; margin-top: -17px; font-family: OrbitronM; font-size: 115%">{{ item.title }}</span>
         </v-btn>
       </div>
     </v-navigation-drawer>
@@ -43,12 +43,15 @@
       clipped-left
     >
       <v-app-bar-nav-icon class="open-menu" @click.stop="drawer = !drawer" />
-      <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 160%; text-overflow: clip; overflow: visible" v-text="title" />
+      <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 250%; text-overflow: clip; overflow: visible; margin-top: 7px" v-text="title" />
       <v-spacer /> 
       <div style="padding-right: 20px">
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
-            <TextField class="mb-2" @enterPress="searchbar" v-model="search" neonColor="orange" prepend_inner_icon="mdi-magnify" placeholder="Search" />
+            <TextField class="mb-2" @enterPress="searchbar" v-model="search"
+              neonColor="orange" prepend_inner_icon="mdi-magnify" placeholder="Search"
+              style="font-size: 115%; display: flex"
+            />
           </v-col>
         </v-row>
       </div>
@@ -56,6 +59,7 @@
         icon
         href="/api/auth/logout"
         class="logout-btn"
+        style="margin-top: 2px"
         :color="exitFocus == true ? '#ffc79c' : 'black'"
         v-on:mouseover="exitFocus = true"
         v-on:mouseleave="exitFocus = false"
