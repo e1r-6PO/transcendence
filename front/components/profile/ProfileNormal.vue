@@ -1,6 +1,6 @@
 <template>
 	<div justify="center" align="center">
-		<LeaderboardRank @click="gotoleaderboard" :rank="'RANK ' + rank" style="left: 50px; top: 115px; width: 250px; height: 50px; text-align: center"/>
+		<LeaderboardRank @click="gotoleaderboard" :rank="'RANK ' + rank" style="left: 50px; top: 110px; width: 250px; height: 50px; text-align: center"/>
 		<LeaderboardRank @click="gotoleaderboard" :rank="'RATING: ' + user.elo" style="left: 50px; top: 120px; width: 250px; height: 50px; text-align: center"/>
 		<v-avatar class="overflow-visible" style="right: 100px" size="128">
 			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="140" />
