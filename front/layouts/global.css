@@ -1,7 +1,7 @@
 @font-face {
   font-family: "Tr2n";
   src: local("Tr2n"), url(~assets/Tr2n.ttf) format("truetype");
-  }
+}
 
 html {
   font-family: "Tr2n";
