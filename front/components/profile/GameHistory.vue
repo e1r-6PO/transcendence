@@ -30,7 +30,7 @@
     >
       <v-btn
         class="foreground_element neon-button"
-        style="margin-top: 0px; margin-left: 15px"
+        style="margin-top: 0px; margin-left: 15px; font-family: OrbitronM !important"
         rounded
         text
         color="#ffffff"

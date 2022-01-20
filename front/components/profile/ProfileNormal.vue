@@ -1,8 +1,8 @@
 <template>
 	<div justify="center" align="center">
-		<LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + rank" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
-		<LeaderboardRank @click="gotoleaderboard" :rank="'rating: ' + user.elo" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
-		<v-avatar class="overflow-visible" size="128">
+		<LeaderboardRank @click="gotoleaderboard" :rank="'RANK ' + rank" style="left: 50px; top: 115px; width: 250px; height: 50px; text-align: center"/>
+		<LeaderboardRank @click="gotoleaderboard" :rank="'RATING: ' + user.elo" style="left: 50px; top: 120px; width: 250px; height: 50px; text-align: center"/>
+		<v-avatar class="overflow-visible" style="right: 100px" size="128">
 			<ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="140" />
 			<v-btn
 				color="#8124be"

@@ -1,10 +1,10 @@
 <template>
   <v-card
     color="#8124be"
-    class="rank-card overflow-visible"
+    class="rank-card overflow-visible container3"
     :absolute="absolute"
   >
-    <span class="white--text text-h5 pl-3 pr-4 font-italic" style="font-family: OrbitronM !important"> {{rank}} </span>
+    <v-card-text class="white--text font-italic pl-10 d-flex flex-column" style="font-family: OrbitronM !important; font-size: 120% !important"> {{rank}} </v-card-text>
   </v-card>
 </template>
 
