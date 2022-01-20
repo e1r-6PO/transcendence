@@ -1,9 +1,9 @@
 <template>
 <v-container fluid>
   <div justify="center" align="center" style="padding-top: 0%">
-    <LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + rank" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
-    <LeaderboardRank @click="gotoleaderboard" :rank="'rank ' + user.elo" style="left: 25%; top: 120px; width: 200px; height: 50px"/>
-    <v-avatar class="overflow-visible" size="128">
+    <LeaderboardRank @click="gotoleaderboard" :rank="'RANK ' + rank" style="left: 50px; top: 110px; width: 250px; height: 50px; text-align: center"/>
+    <LeaderboardRank @click="gotoleaderboard" :rank="'RATING: ' + user.elo" style="left: 50px; top: 120px; width: 250px; height: 50px; text-align: center"/>
+    <v-avatar class="overflow-visible" style="right: 100px" size="128">
       <ProfilePicture :src="user.picture" disable neonColor="light-blue" :size="130" />
       <v-btn v-if="self.id != user.id"
         color="#8124be"
@@ -68,11 +68,11 @@
         </v-btn>
       </div>
     </v-avatar>
-    <v-row v-if="self.id != user.id" justify="end">
+    <v-row v-if="self.id != user.id" justify="center" class="mt-10">
       <BasicBtn @click="redirectToPrivateMessage()" :isText="true" content="Send Message" />
     </v-row>
   </div>
-  <div class="flex-container-editing" style="padding-top: 80px">
+  <div class="flex-container-editing" style="padding-top: 50px">
     <v-card class="foreground_element card_profile">
       <v-card-text align="center">
         <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>

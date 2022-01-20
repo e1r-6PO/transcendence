@@ -3,32 +3,28 @@
     <v-card-text class="color_text text-h5 font-weight-medium" style="font-family: OrbitronM !important">
       Game history
     </v-card-text>
-    <div v-for="match in matchHistory" :key="match.id"
-    style="padding-top:10px"
-    v-on:bind="matchHistory"
-    >
+    <div class="d-flex flex-column align-center">
       <v-card
-        class="foreground_element"
+        v-for="match in matchHistory" :key="match.id"
+        v-on:bind="matchHistory"
+        class="mt-5 foreground_element"
         :class="isProfileWinner(match) ? 'card_gameWin' : 'card_gameLose'"
         @click="goToGame(match)"
+        width="550"
         height="60"
       >
-        <v-row align="center" style="padding-left: 20px; padding-top: 7px">
+        <v-row align="center" class="flex-nowrap" style="padding-left: 20px; padding-top: 7px">
           <ProfilePicture @click="goToProfile(getOpenent(match))" :src="getOpenent(match).picture" :isActive="getOpenent(match).isActive" />
-          <v-card-title @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium" align="center" style="font-family: OrbitronM !important">{{getOpenent(match).nickName}}</v-card-title>
-          <v-spacer />
-          <v-card-subtitle class="white--text text-left pr-10 font-italic" style="font-family: OrbitronM !important">
-            <span style="padding-right: 50px"> {{ thistimeSince(match.date) }} ago</span>
-            <span class="font-weight-regular" style="color: #ffffff">{{ getSelfScore(match) }} /</span>
-            <span style="color: #ffffff">{{ getOpenentScore(match) }}</span>
-          </v-card-subtitle>
+          <v-card-text @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium" style="font-family: OrbitronM !important; font-size: 120% !important">{{getOpenent(match).nickName}}</v-card-text>
+          <v-card-text class="white--text text-center pr-10 font-italic d-flex flex-row" style="padding-right: 50px; font-family: OrbitronM !important"> {{ thistimeSince(match.date) }} ago</v-card-text>
+          <v-card-text class="white--text text-center pr-10 font-italic d-flex flex-row" style="color: #ffffff; font-family: OrbitronM !important">{{ getSelfScore(match) }} - {{ getOpenentScore(match) }}</v-card-text>
         </v-row>
       </v-card>
     </div>
     <div>
       <v-btn
-        class="foreground_element neon-button mt-3"
-        style="margin-left: 15px"
+        class="foreground_element neon-button"
+        style="margin-top: 0px; margin-left: 15px; font-family: OrbitronM !important"
         rounded
         text
         color="#ffffff"
