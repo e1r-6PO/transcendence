@@ -25,12 +25,10 @@
         </v-row>
       </v-card>
     </div>
-    <div
-      style="padding-top:10px"
-    >
+    <div>
       <v-btn
-        class="foreground_element neon-button"
-        style="margin-top: 0px; margin-left: 15px"
+        class="foreground_element neon-button mt-3"
+        style="margin-left: 15px"
         rounded
         text
         color="#ffffff"
@@ -39,6 +37,7 @@
       >
         fetch more
       </v-btn>
+      <span v-if="matchHistory.length == 0" class="white--text text-h7">No game played</span>
     </div>
   </div>
 </template>
@@ -62,6 +61,8 @@ export default class GameHistory extends Vue {
 
   async mounted() {
     this.matchHistory = await this.$axios.$get('/api/users/' + this.user.id + '/matchs')
+    if (this.matchHistory.length == 0)
+      this.fetchBtnEnable = false
   }
 
   async fetchMoreGames() {
