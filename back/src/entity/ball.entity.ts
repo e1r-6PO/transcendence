@@ -75,11 +75,10 @@ export class Ball extends Rect {
 		if (p.left < this.right && p.right > this.left &&
         p.top < this.bottom && p.bottom > this.top &&
 		this.lastPaddleHit != 0) {
-			console.log(this.speed.x)
 			if (Math.abs(this.speed.x) < 40 / 3)
             	this.speed.x *= -1.05;
 			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
-			this.speed.y = pos * (6 + (0.4 * Math.abs(this.speed.x))) // (10 is arbitrary)
+			this.speed.y = pos * (2 + (0.4 * Math.abs(this.speed.x))) // (10 is arbitrary)
 			this.collision = 1
 			this.color = p.color
 			this.lastPaddleHit = 0 // p0 is last to have it the ball
@@ -91,11 +90,10 @@ export class Ball extends Rect {
 		if (p.left < this.right && p.right > this.left &&
     	p.top < this.bottom && p.bottom > this.top &&
 		this.lastPaddleHit != 1) {
-			console.log(this.speed.x)
 			if (Math.abs(this.speed.x) < 40 / 3)
             	this.speed.x *= -1.05;
 			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
-			this.speed.y = pos * (6 + (0.4 * Math.abs(this.speed.x))) // (10 is arbitrary)
+			this.speed.y = pos * (2 + (0.4 * Math.abs(this.speed.x))) // (10 is arbitrary)
 			this.collision = 1
 			this.color = p.color
 			this.lastPaddleHit = 1 // p1 is last to have hit it

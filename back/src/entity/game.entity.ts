@@ -58,8 +58,6 @@ export class Game {
 							// for x: 48 tickspeed -> 4 is a great speed (48 -> 2 for y) 
 		new_ball.speed.x = (16 / ((1000 / this.tickSpeed) / 12) * (Math.random() > .5 ? 1 : -1)) / this.tickPerTick;
 		new_ball.speed.y = (8 / ((1000 / this.tickSpeed) / 12) * (Math.random() * 2 - 1)) / this.tickPerTick;
-		new_ball.speed.x = 6 / this.tickPerTick
-		new_ball.speed.y = 0 / this.tickPerTick
 		// new_ball.speed.len = 8;
 		this.balls.push(new_ball)
 	}
