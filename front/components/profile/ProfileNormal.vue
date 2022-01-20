@@ -23,9 +23,9 @@
 
 		<v-card class="foreground_element card_profile mt-10">
 			<v-card-text align="center">
-				<p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
-				<p class="color_text text-h5" align="center">{{ user.email }}</p>
-				<p class="color_text text-h6" align="center">Connected via :</p>
+				<p class="color_text text-h4 font-weight-medium" align="center" style="font-family: OrbitronM !important">{{ user.nickName }}</p>
+				<p class="color_text text-h5" align="center" style="font-family: OrbitronM !important">{{ user.email }}</p>
+				<p class="color_text text-h6" align="center" style="font-family: OrbitronM !important">Connected via :</p>
 				<icon-github v-if="user.provider === 'github'"
 					width="50"
 					height="50"
@@ -44,12 +44,12 @@
 		</v-card>
 		<div class="flex-container-row mt-10" style="margin-bottom: 1%">
 			<v-card class="foreground_element card_game flex-item" margin-top="5%">
-				<h1 class="color_win" align="center">Win</h1>
-				<h3 class="color_text" align="center">{{ user.gameWin }} </h3>
+				<h1 class="color_win" align="center" style="font-family: OrbitronM !important">Win</h1>
+				<h3 class="color_text" align="center" style="font-family: OrbitronM !important">{{ user.gameWin }} </h3>
 			</v-card>
 			<v-card class="foreground_element card_game flex-item" margin-top="5%">
-				<h1 class="color_lose" align="center">Lose</h1>
-				<h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
+				<h1 class="color_lose" align="center" style="font-family: OrbitronM !important">Lose</h1>
+				<h3 class="color_text" align="center" justify="center" style="font-family: OrbitronM !important"> {{ user.gameLose }} </h3>
 			</v-card>
 		</div>
     <GameHistory :matchHistory="matchHistory" :user="user"/>

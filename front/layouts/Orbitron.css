@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "OrbitronM";
+    src: local("OrbitronM"), url(~assets/orbitron.medium.ttf) format("truetype");
+    }
+  
+  html {
+    font-family: "OrbitronM";
+  }
+  

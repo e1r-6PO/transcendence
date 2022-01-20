@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card-text class="color_text text-h5 font-weight-medium">
+    <v-card-text class="color_text text-h5 font-weight-medium" style="font-family: OrbitronM !important">
       Game history
     </v-card-text>
     <div v-for="match in matchHistory" :key="match.id"
@@ -15,9 +15,9 @@
       >
         <v-row align="center" style="padding-left: 20px; padding-top: 7px">
           <ProfilePicture @click="goToProfile(getOpenent(match))" :src="getOpenent(match).picture" :isActive="getOpenent(match).isActive" />
-          <v-card-title @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium" align="center">{{getOpenent(match).nickName}}</v-card-title>
+          <v-card-title @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium" align="center" style="font-family: OrbitronM !important">{{getOpenent(match).nickName}}</v-card-title>
           <v-spacer />
-          <v-card-subtitle class="white--text text-left pr-10 font-italic">
+          <v-card-subtitle class="white--text text-left pr-10 font-italic" style="font-family: OrbitronM !important">
             <span style="padding-right: 50px"> {{ thistimeSince(match.date) }} ago</span>
             <span class="font-weight-regular" style="color: #ffffff">{{ getSelfScore(match) }} /</span>
             <span style="color: #ffffff">{{ getOpenentScore(match) }}</span>
