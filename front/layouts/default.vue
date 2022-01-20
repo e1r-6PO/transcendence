@@ -43,7 +43,7 @@
       clipped-left
     >
       <v-app-bar-nav-icon class="open-menu" @click.stop="drawer = !drawer" />
-      <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 250%; text-overflow: clip; overflow: visible; margin-top: 7px" v-text="title" />
+      <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 220%; text-overflow: clip; overflow: visible; margin-top: 9px" v-text="title" />
       <v-spacer /> 
       <div style="padding-right: 20px">
         <v-row align="center" justify="center">
