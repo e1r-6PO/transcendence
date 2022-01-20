@@ -37,7 +37,8 @@ export class Game {
 	ball_amount: number
 	paddleSize: number
 	room: BroadcastOperator<DefaultEventsMap>
-	tickSpeed = 1000 / 48
+	tickSpeed = 1000 / 42
+	tickPerTick = 3
 
 	mod: string
 
@@ -55,8 +56,10 @@ export class Game {
 		await new Promise(f => setTimeout(f, time));
 		let new_ball = new Ball()
 							// for x: 48 tickspeed -> 4 is a great speed (48 -> 2 for y) 
-		new_ball.speed.x = 16 / ((1000 / this.tickSpeed) / 12) * (Math.random() > .5 ? 1 : -1);
-		new_ball.speed.y = 8 / ((1000 / this.tickSpeed) / 12) * (Math.random() * 2 - 1);
+		new_ball.speed.x = (16 / ((1000 / this.tickSpeed) / 12) * (Math.random() > .5 ? 1 : -1)) / this.tickPerTick;
+		new_ball.speed.y = (8 / ((1000 / this.tickSpeed) / 12) * (Math.random() * 2 - 1)) / this.tickPerTick;
+		new_ball.speed.x = 6 / this.tickPerTick
+		new_ball.speed.y = 0 / this.tickPerTick
 		// new_ball.speed.len = 8;
 		this.balls.push(new_ball)
 	}
@@ -71,7 +74,7 @@ export class Game {
 	tick() {
 		let ballsinfo = []
 		for (let i = 0; i < this.balls.length; ++i) {
-				var tick_result: {} = this.balls[i].tick();
+				var tick_result: {} = this.balls[i].tickWrapper(this.tickPerTick);
 				if (tick_result == 'p1+1') {
 						this.scorep1++
 						this.room.emit('score_p1', this.scorep1)

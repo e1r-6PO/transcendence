@@ -8,8 +8,8 @@ class Particle{
 	radius: number
 	color: string
 	shadowColor: string
-	velocity = { x: randomIntFromRange(-2, 2), y: randomIntFromRange(-2, 2)}
-	ttl = 30
+	velocity = { x: randomIntFromRange(-1.4, 1.4), y: randomIntFromRange(-1.4, 1.4)}
+	ttl = 25
 
 	constructor(x: number, y: number, r: number, c: string){
 		this.x = x
