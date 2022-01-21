@@ -1,31 +1,9 @@
 <template>
-<v-container>
-  <v-row style="align: center">
+<v-container fill-height fluid>
+  <AlertError :state="alert" :type="alertType" :textError="alertText" />
+  <v-row align="center" justify="center">
     <v-col align="center">
-
-      <BasicBtn @click="leaveQueue()" content="mdi-close" neonColor="red" :disable="!in_queue"/>
-
-      <join-queue-btn @click="joinMatchmaking()" :inQueue="in_queue" msg="PLAY"/>
-
-      <v-alert
-        v-model="error_with_server"
-        outlined
-        type="error"
-        text
-        dismissible
-        @input="closeAlert"
-      >
-        error: could not reach the server
-      </v-alert>
-
-      <v-alert
-        v-model="in_queue"
-        outlined
-        type="warning"
-        text
-      >
-        Do not refresh the page, we are looking for a match
-      </v-alert>
+      <join-queue-btn @click="switchQueueState()" :inQueue="in_queue" :msg="in_queue ? 'CANCEL' : 'PLAY'"/>
     </v-col>
   </v-row>
 </v-container>
@@ -42,21 +20,30 @@ export default Vue.extend({
   data() {
     return {
       in_queue: false,
-      error_with_server: false,
+      alertText: "Do not refresh the page, we are looking for a match",
+      alertType: "warning",
+      alert: false
     }
   },
 
   methods: {
 
+    switchQueueState() {
+      if (this.in_queue)
+        this.leaveQueue()
+      else
+        this.joinMatchmaking()
+    },
+
     async joinMatchmaking() {
-      this.error_with_server = false
+      this.alert = false
       if (socket_game.connected == false) {
         socket_game.connect()
 
         var s1 = new Date().getTime() / 1000;
         while (socket_game.connected == false) {
           if ((new Date().getTime() / 1000) - s1 > 2) {
-            this.error_with_server = true
+            this.activeAlert("error: could not reach the server", "error")
             return
           }
           await new Promise(f => setTimeout(f, 50));
@@ -64,6 +51,7 @@ export default Vue.extend({
       }
 
       socket_game.emit('joinQueue')
+      this.activeAlert("Do not refresh the page, we are looking for a match", "warning")
 
       this.in_queue = true
     },
@@ -72,11 +60,14 @@ export default Vue.extend({
       // socket_game.disconnect()
       socket_game.emit('leaveQueue')
       this.in_queue = false
+      this.alert = false
     },
 
-    closeAlert() {
-      this.error_with_server = false
-    },
+    activeAlert(text: string, type: string) {
+      this.alertText = text
+      this.alertType = type
+      this.alert = true
+    }
   },
 
   async created() {
