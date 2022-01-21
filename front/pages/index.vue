@@ -9,11 +9,10 @@
     <v-container fill-height fluid>
       <v-row justify="center" align="center">
         <v-col cols="12" sm="8" md="6">
-          <v-card-text class="text-center foreground_element main_title_test" style="color: #e6ffff">
+          <p class="text-center foreground_element main_title_test neonText-light-blue" style="color: #e6ffff; font-size: 550%">
             Welcome to Tronscendence
-          </v-card-text>
+          </p>
           <v-main>
-            <v-btn class="foreground_element" @click="$store.commit('increment')">{{ $store.state.counter }}</v-btn>
             <v-row justify="center" align="center">
               <v-col align="center">
                 <v-btn  
