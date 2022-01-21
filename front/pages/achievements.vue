@@ -3,34 +3,6 @@
     <v-row justify="center">
       <div v-for="(key, i) in achievementsList" :key="i">
         <AchievementCard :achievement="key" :value="getAchievementValue(key.title)"/>
-        <!-- <v-list-item>
-        <v-list-item-content>
-        <v-list-item-title v-text="key.title"
-          align="start"
-          class="white--text text-h6 pl-1 pb-2"
-          :class="getAchievementValue(key.title) == '100.0' ? 'neonText-light-blue': 'neonText'"
-        />
-        <v-list-item-subtitle v-text="key.action" class="white--text" align="start" />
-        </v-list-item-content>
-        <v-icon
-          color="white"
-          :class="getAchievementValue(key.title) == '100.0' ? 'neonText-light-blue': 'neonText'"
-        >
-          {{ key.icon }}
-        </v-icon>
-        </v-list-item>
-        <v-card-actions class="justify-center pt-0 pb-4">
-        <v-progress-circular
-          :rotate="-90"
-          :size="75"
-          :width="10"
-          :color="getAchievementValue(key.title) == '100.0' ? '#a5fafa': '#fc6500'"
-          :class="getAchievementValue(key.title) == '100.0' ? 'success-circular': 'test'"
-          :value="getAchievementValue(key.title)"
-        >
-          {{ getAchievementValue(key.title) }}%
-        </v-progress-circular>
-        </v-card-actions> -->
       </div>
     </v-row>
   </div>
@@ -84,14 +56,6 @@ export default Vue.extend({
 </script>
 
 <style>
-.card {
-	border: 3px solid #cd78ff !important;
-	box-shadow: inset 0px 0px 30px 0px #a200ff, 0px 0px 15px 0px #a200ff !important;
-	border-radius: 15px !important;
-	background-color: #181818 !important;
-	min-width: 260px;
-	width: 275px;
-}
 
 .test{
 	border-radius: 100% !important;

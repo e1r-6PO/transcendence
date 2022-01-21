@@ -22,7 +22,7 @@ export default class OwnAchievement extends Vue {
   achievementsList: Array<Achievements> = new Array<Achievements>()
 
   async mounted() {
-    this.achievementsList = await this.$axios.$get('/api/profile/me/achievements?filter=completed')
+    this.achievementsList = await this.$axios.$get('/api/profile/me/achievements')
   }
 
   getValuePercent(achievement: Achievements): string {
