@@ -52,14 +52,19 @@
 				<h3 class="color_text" align="center" justify="center" style="font-family: OrbitronM !important"> {{ user.gameLose }} </h3>
 			</v-card>
 		</div>
-		<v-row justify="space-around">
-			<v-col>
-    <GameHistory :matchHistory="matchHistory" :user="user"/>
+  <v-row class="pt-4 d-flex flex-row">
+    	<v-col xs="12" sm="12" md="6">
+				<v-card color="#181818" >
+    		<GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user"/>
+				</v-card>
 			</v-col>
-			<v-col>
-		<OwnAchievements />
+    	<v-col xs="12" sm="12" md="6">
+				<v-card color="#181818" justify="end">
+				<OwnAchievements v-if="user.id != 0" align="center" :user="user"/>
+				</v-card>
 			</v-col>
 		</v-row>
+		<!-- </div> -->
 	</div>
 </template>
 
