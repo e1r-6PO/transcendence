@@ -1,8 +1,8 @@
 <template>
 <v-container>
-	<div justify="center" align="center" style="padding-top: 20px">
-		<v-card-text class="color_text text-h5 font-weight-medium">
-      🏆 Leaderboard 🏆
+	<div justify="center" align="center" style="padding-top: 40px">
+		<v-card-text class="color_text" style="font-family: OrbitronM !important; font-size: 265% !important; padding-bottom: 40px !important">
+      Leaderboard
     </v-card-text>
 
     <div v-for="user in leaderboard" :key="user.id"
@@ -12,14 +12,16 @@
       <v-card
         class="foreground_element card_profile"
         height="60"
+        max-width="1000"
       >
         <v-row align="center"  style="padding-left: 20px; padding-top: 7px">
           <span class="text-left pl-2 pt-1" :class="getRankColor(user.rank)" style="min-width: 30px ;font-family: OrbitronM; font-size: 165%">{{ user.rank }}</span>
           <ProfilePicture @click="goToProfile(user)" :src="user.picture" :isActive="user.isActive" />
           <v-card-title @click="goToProfile(user)" class="color_text text-h5 font-weight-medium" align="center">{{user.nickName}}</v-card-title>
           <v-spacer />
-          <LeaderboardRank :rank="user.elo" :absolute="false"/>
-          <v-card-subtitle class="white--text text-left pr-10 font-italic">
+          <span class="grey--text pt-1 text-right mr-5" style="font-family: OrbitronM; font-size: 165%">rating: </span>
+          <span class="white--text pt-1 text-right mr-5" style="min-width: 75px; font-family: OrbitronM; font-size: 165%">{{ user.elo }}</span>
+          <v-card-subtitle class="white--text text-left pr-10 font-italic" style="min-width: 150px">
             <span class=" font-weight-regular" style="color: #b8a435">W: {{ user.gameWin }} /</span>
             <span style="color: #c7401e">L: {{ user.gameLose }}</span>
           </v-card-subtitle>
@@ -46,7 +48,7 @@ export default class extends Vue {
   async mounted() {
     this.leaderboard = await this.$axios.$get('/api/leaderboard')
 
-    this.leaderboard.forEach(user => user.elo = parseFloat(parseFloat(user.elo as any).toFixed(2)))
+    this.leaderboard.forEach(user => user.elo = parseFloat(parseFloat(user.elo as any).toFixed(0)))
 
     socket_active.on("active", (user: LightUser) => {
       var find = this.leaderboard.findIndex((el) => el.id == user.id)
