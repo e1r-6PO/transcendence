@@ -22,17 +22,13 @@
       </v-card>
     </div>
     <div>
-      <v-btn
-        class="foreground_element neon-button mt-5"
-        style="margin-left: 15px; font-family: OrbitronM !important"
-        rounded
-        text
-        color="#ffffff"
-        @click="fetchMoreGames()"
-        v-if="fetchBtnEnable"
-      >
-        fetch more
-      </v-btn>
+      <v-pagination
+        v-model="page"
+        class="pt-5"
+        :length="Math.ceil((user.gameWin + user.gameLose) / 5)"
+        @input="fetchMoreGames()"
+        circle
+      ></v-pagination>
       <span v-if="matchHistory.length == 0" class="white--text text-h7" style="font-family: OrbitronM">No game played</span>
     </div>
   </div>
@@ -49,21 +45,30 @@ import timeSince from '../../plugins/timeSince'
 export default class GameHistory extends Vue {
 
 	@Prop({ type: Object, default: new User() })
-	user!: User
-
+  user!: User
+  
   matchHistory: Array<Match> = new Array
+  totalMatch: Array<Match> = new Array
 
   fetchBtnEnable: boolean = true
 
+  page: number = 1
+
   async mounted() {
-    this.matchHistory = await this.$axios.$get('/api/users/' + this.user.id + '/matchs')
+    this.matchHistory = await this.$axios.$get('/api/users/' + this.user.id + '/matchs?offset=0&count=5')
+    this.totalMatch = await this.$axios.$get('/api/users/' + this.user.id + '/matchs')
     if (this.matchHistory.length == 0)
       this.fetchBtnEnable = false
+    console.log(this.matchHistory)
   }
 
   async fetchMoreGames() {
-    var ret: Array<Match> = await this.$axios.$get('/api/users/' + this.user.id + '/matchs?page=' + this.matchHistory.length)
-    this.matchHistory = this.matchHistory.concat(ret)
+    var ret: Array<Match> = await this.$axios.$get('/api/users/' + this.user.id + '/matchs?offset=' + (this.page - 1) * 5 + '&count=5')
+    // this.matchHistory = this.matchHistory.concat(ret)
+    console.log("ret")
+    this.matchHistory = ret
+    console.log(this.matchHistory)
+    console.log(this.totalMatch)
 
     if (ret.length == 0)
       this.fetchBtnEnable = false
@@ -111,33 +116,11 @@ export default class GameHistory extends Vue {
     return timeSince(new Date(date))
   }
 }
-
 </script>
 
 <style scoped lang="scss">
 @import '../../assets/Classes-scss/main_page.scss';
 @import '../../assets/Classes-scss/custom_flexBox.scss';
-
-.profile-picture {
-	border-radius:100% !important;
-	border: 3px solid #a5fafa !important;
-	box-shadow: 0px 0px 15px 0px #63f3f3 !important;
-}
-
-.edit-button {
-	border: 3px solid #e9c8ff !important;
-	box-shadow: 0px 0px 10px 0px #9141c7 !important;
-}
-
-.card_profile {
-	border: 3px solid #a5fafa !important;
-	box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
-	border-radius: 15px !important;
-	background-color: #181818 !important;
-	min-width: 400px;
-	height: 250px;
-	width: 30%;
-}
 
 .card_gameWin {
 	border: 3px solid #f7e687 !important;
@@ -156,36 +139,13 @@ export default class GameHistory extends Vue {
 	background-color: #181818 !important;
 	// min-width: 400px;
 	// height: 250px;
-	// width: 30%;
+  // width: 30%;
+  // max-width: 600px;
 }
 
 .color_text { 
 	z-index: 6;
 	color: #ffffff;
-}
-
-.rank-card {
-	border: 3px solid #fff7c8 !important;
-	box-shadow: 0px 0px 10px 0px #ffdc17 !important;
-}
-
-.card_game {
-	border: 3px solid #a5fafa !important;
-	box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
-	border-radius: 15px !important;
-	background-color: #181818 !important;
-	min-width: 260px;
-	width: 275px;
-}
-
-.color_lose {
-	z-index: 6;
-	color: #c7401e;
-}
-
-.color_win {
-	z-index: 6;
-	color: #b8a435; 
 }
 
 </style>
