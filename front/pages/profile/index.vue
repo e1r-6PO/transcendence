@@ -1,7 +1,7 @@
 <template>
 <v-container fluid class="mt-0">
 	<AlertError @end="alert = false" :textError="alertText" :type="alertType" :state="alert"/>
-  <ProfileNormal v-if="!isEditing && user"
+  <ProfileNormal v-if="!isEditing && user.id != 0"
     :user="this.user"
     :pictureEdited="pictureEdited"
     :rank="rank"
@@ -33,7 +33,7 @@ import { Match } from '../../assets/Classes-ts/Match';
 })
 export default class extends Vue {
 
-  user : User = null;
+  user : User = new User;
   isEditing = false
   alert = false
   alertText = ""
