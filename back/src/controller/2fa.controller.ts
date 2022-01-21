@@ -6,6 +6,7 @@ import { Request, response, Response } from "express";
 import { User } from "src/entity/user.entity";
 import { HasNickGuard, TwoFaFileGuard, ValidTokenGuard } from "src/guards/account.guards";
 import { TwoFactorAuthenticationService } from "src/service/2fa.service";
+import { AchievementsService } from "src/service/achievements.service";
 import { UsersService } from "src/service/users.service";
 import { Repository } from "typeorm";
 
@@ -15,6 +16,7 @@ import { Repository } from "typeorm";
 export class TwoFactorAuthenticationController {
   constructor(
     private readonly twoFactorAuthenticationService : TwoFactorAuthenticationService,
+    private readonly achievementService : AchievementsService,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private usersService : UsersService,
@@ -52,6 +54,7 @@ export class TwoFactorAuthenticationController {
       throw new UnauthorizedException('Wrong auth code')
 
     await this.usersService.turnOnTwoFactorAuthentication(user.id)
+    this.achievementService.twoFaAchievement(user)
 
     return { message: "success" }
   }

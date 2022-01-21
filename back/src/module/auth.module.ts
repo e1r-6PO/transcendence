@@ -12,10 +12,12 @@ import { CustomJwtModule } from './custom.jwt.module';
 import { TwoFactorAuthenticationController } from 'src/controller/2fa.controller';
 import { TwoFactorAuthenticationService } from 'src/service/2fa.service';
 import { UsersService } from 'src/service/users.service';
+import { AchievementsService } from 'src/service/achievements.service';
+import { Achievements } from 'src/entity/achievements.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), PassportModule, CustomJwtModule ],
+  imports: [TypeOrmModule.forFeature([User, Achievements]), PassportModule, CustomJwtModule ],
   controllers: [ AuthController, TwoFactorAuthenticationController ],
-  providers: [ AuthService, googleStrategy, qdStrategy, githubStrategy, TwoFactorAuthenticationService, UsersService ]
+  providers: [ AuthService, googleStrategy, qdStrategy, githubStrategy, TwoFactorAuthenticationService, UsersService, AchievementsService ]
 })
 export class AuthModule {}

@@ -7,10 +7,14 @@ import { Match } from "src/entity/match.entity";
 import { PrivateMessage } from "src/entity/privateMessage.entity";
 import { User } from "src/entity/user.entity";
 import { Repository } from "typeorm";
+import { AchievementsService } from "./achievements.service";
+import { LeaderboardService } from "./leaderboard.service";
 
 @Injectable()
 export class GameService {
     constructor(
+        private achievementService: AchievementsService,
+        private leaderboardService: LeaderboardService,
         @InjectRepository(User)
         private readonly usersRepository : Repository<User>,
         // @Inject(forwardRef(() => Game))
@@ -114,18 +118,30 @@ export class GameService {
                 if (game.type == "private") {
                   this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "finish", winner: game.player1})
                 }
-            }
+				this.achievementService.winGameAchievement(game.player1)
+				this.leaderboardService.getrank(game.player1.id).then((rank) => {
+					if (rank == 1)
+						this.achievementService.firstRankAchievement(game.player1)
+				})
+			}
             else if (game.player1socket == null || game.scorep0 > game.scorep1 || game.status == "forfeitp1") { //player1 dc or p0 won
                 game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser })
                 this.save_game(game, game.player0)
                 if (game.type == "private") {
                   this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "finish", winner: game.player0})
                 }
+				this.achievementService.winGameAchievement(game.player0)
+				this.leaderboardService.getrank(game.player0.id).then((rank) => {
+					if (rank == 1)
+						this.achievementService.firstRankAchievement(game.player0)
+				})
             }
             if (game.player1socket != null)
                 game.player1socket['game'] = undefined
             if (game.player0socket != null)
                 game.player0socket['game'] = undefined
+            this.achievementService.playGameAchievement(game.player0)
+            this.achievementService.playGameAchievement(game.player1)
         }
         game.status = 'end'
 
