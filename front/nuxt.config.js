@@ -45,7 +45,7 @@ export default {
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: ['~/components/', '~/components/channel/', '~/components/channel/button', '~/components/profile'],
+  components: ['~/components/', '~/components/channel/', '~/components/channel/button', '~/components/profile', '~/components/achievements'],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
