@@ -1,5 +1,5 @@
 <template>
-  <v-card class="white--text ml-2 mr-2 mt-4 card" width="200" align="center">
+  <v-card class="white--text ml-2 mr-2 mt-4 card" width="250" align="center">
     <v-list-item>
     <v-list-item-content>
     <v-list-item-title v-text="achievement.title"
@@ -38,3 +38,14 @@ export default class AchievementCard extends Vue{
 
 }
 </script>
+
+<style>
+.card {
+	border: 3px solid #cd78ff !important;
+	box-shadow: inset 0px 0px 30px 0px #a200ff, 0px 0px 15px 0px #a200ff !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	/* min-width: 260px; */
+	/* width: 275px; */
+}
+</style>
