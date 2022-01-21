@@ -62,7 +62,7 @@ export class UsersService {
     return user;
   }
 
-  async getMatchHistory(id: number, page: number) {
+  async getMatchHistory(id: number, offset: number, count: number) {
     var dbret = await this.connection
     .getRepository(Match)
     .createQueryBuilder('matchs')
@@ -72,8 +72,8 @@ export class UsersService {
     .leftJoinAndSelect('matchs.player1', 'player1')
     .leftJoinAndSelect('matchs.winner', 'winner')
     .orderBy('matchs.date', 'DESC')
-    .take(10) // 10 per 10 results
-    .skip(page)
+    .take(count)
+    .skip(offset)
     .getMany()
 
     var ret = new Array

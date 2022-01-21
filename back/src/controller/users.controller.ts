@@ -35,8 +35,8 @@ export class UsersController {
   }
 
   @Get(':id/matchs')
-  getmatchhistory(@Param('id') id, @Query('page') page: number) {
-    return this.userService.getMatchHistory(id, (page == null ? 0 : page))
+  getmatchhistory(@Param('id') id, @Query('offset') offset: number, @Query('count') count: number) {
+    return this.userService.getMatchHistory(id, (offset == null ? 0 : offset), ((count == null ? 10 : count)))
   }
 
 
