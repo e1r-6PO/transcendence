@@ -14,7 +14,7 @@
         height="60"
       >
         <v-row align="center"  style="padding-left: 20px; padding-top: 7px">
-          <LeaderboardRank :rank="user.rank" :absolute="false"/>
+          <span class="text-left pl-2 pt-1" :class="getRankColor(user.rank)" style="min-width: 30px ;font-family: OrbitronM; font-size: 165%">{{ user.rank }}</span>
           <ProfilePicture @click="goToProfile(user)" :src="user.picture" :isActive="user.isActive" />
           <v-card-title @click="goToProfile(user)" class="color_text text-h5 font-weight-medium" align="center">{{user.nickName}}</v-card-title>
           <v-spacer />
@@ -63,6 +63,17 @@ export default class extends Vue {
   goToProfile(user: any)
   {
     this.$router.push('/users/' + user.nickName)
+  }
+
+  getRankColor(rank: number) {
+    if (rank == 1)
+      return 'neonText-gold pl-4'
+    if (rank == 2)
+      return 'neonText-silver'
+    if (rank == 3)
+      return 'neonText-bronze'
+    else
+      return 'white--text'
   }
 }
 
