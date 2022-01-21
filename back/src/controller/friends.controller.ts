@@ -4,6 +4,7 @@ import { Request, request } from "express";
 import { identity } from "rxjs";
 import { Friend_Status, Relationship } from "src/entity/relationship.entity";
 import { TwoFaGuard, ValidTokenGuard } from "src/guards/account.guards";
+import { AchievementsService } from "src/service/achievements.service";
 import { FriendsService } from "src/service/friends.service";
 import { UsersService } from "src/service/users.service";
 import { Repository } from "typeorm";
@@ -12,6 +13,7 @@ import { Repository } from "typeorm";
 @UseGuards(ValidTokenGuard, TwoFaGuard)
 export class FriendsController {
   constructor(
+    private readonly achievementsService: AchievementsService,
     private readonly usersService : UsersService,
     private readonly friendsService : FriendsService,
     @InjectRepository(Relationship)
@@ -67,6 +69,7 @@ export class FriendsController {
     }
 
     this.friendsService.accept_friend_request(sender, receiver);
+    this.achievementsService.addFriendAchievement(receiver.user)
     return { message: "success" }
   }
 
