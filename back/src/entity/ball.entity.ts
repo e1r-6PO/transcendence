@@ -15,6 +15,7 @@ export class Ball extends Rect {
 	color: string
 	lastPaddleHit: number // -1 for none, 0 for p0, 1 for p1
 	lastWallHit: number // -1 for none, 0 for top, 1 for bot
+	s: number
 
 	constructor()
 	{
@@ -29,6 +30,7 @@ export class Ball extends Rect {
 		this.color = 'white'
 		this.lastPaddleHit = -1
 		this.lastWallHit = -1
+		this.s = 4
 	}
 
 	tickWrapper(n: number) {
@@ -75,10 +77,14 @@ export class Ball extends Rect {
 		if (p.left < this.right && p.right > this.left &&
         p.top < this.bottom && p.bottom > this.top &&
 		this.lastPaddleHit != 0) {
-			if (Math.abs(this.speed.x) < 40 / 3)
-            	this.speed.x *= -1.05;
+
 			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
-			this.speed.y = pos * (2 + (0.4 * Math.abs(this.speed.x))) // (10 is arbitrary)
+			var rebond = pos * (4 * Math.PI) / 12
+			this.speed.y = this.s * (Math.sin(rebond))
+			this.speed.x = this.s * (Math.cos(rebond))
+	
+			this.s *= 1.05
+
 			this.collision = 1
 			this.color = p.color
 			this.lastPaddleHit = 0 // p0 is last to have it the ball
@@ -90,10 +96,14 @@ export class Ball extends Rect {
 		if (p.left < this.right && p.right > this.left &&
     	p.top < this.bottom && p.bottom > this.top &&
 		this.lastPaddleHit != 1) {
-			if (Math.abs(this.speed.x) < 40 / 3)
-            	this.speed.x *= -1.05;
+
 			var pos = (this.pos.y - p.pos.y) * (1 / ((p.size.y / 2) + this.size.y / 2)) // give a number between -1 and 1 (excluded) wich tells where the ball hit the paddle
-			this.speed.y = pos * (2 + (0.4 * Math.abs(this.speed.x))) // (10 is arbitrary)
+			var rebond = pos * (4 * Math.PI) / 12
+			this.speed.y = this.s * (Math.sin(rebond))
+			this.speed.x = this.s * -(Math.cos(rebond))
+
+			this.s *= 1.05
+
 			this.collision = 1
 			this.color = p.color
 			this.lastPaddleHit = 1 // p1 is last to have hit it
