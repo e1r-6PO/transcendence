@@ -33,7 +33,7 @@
       >
         fetch more
       </v-btn>
-      <span v-if="matchHistory.length == 0" class="white--text text-h7">No game played</span>
+      <span v-if="matchHistory.length == 0" class="white--text text-h7" style="font-family: OrbitronM">No game played</span>
     </div>
   </div>
 </template>
