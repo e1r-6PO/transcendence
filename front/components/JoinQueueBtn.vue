@@ -11,7 +11,7 @@
     <circle id="arc8" :class="getCircleColor()" class="circle" cx="150" cy="150" r="80" opacity=".79" fill="#4DD0E1"
     fill-opacity="0"         stroke="#632b26" stroke-width="8" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
 
-    <text x="78" y="160">{{msg}}</text>
+    <text :x="inQueue ? 68 : 78" y="160" :style="'font-size: ' + (inQueue ? '210%;' : '250%;')">{{msg}}</text>
   </svg>
 </template>
 

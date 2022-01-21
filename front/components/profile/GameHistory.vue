@@ -26,6 +26,7 @@
         v-model="page"
         class="pt-5"
         :length="Math.ceil((user.gameWin + user.gameLose) / 5)"
+        :total-visible="4"
         @input="fetchMoreGames()"
         circle
       ></v-pagination>
