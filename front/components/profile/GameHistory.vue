@@ -7,24 +7,24 @@
       <v-card
         v-for="match in matchHistory" :key="match.id"
         v-on:bind="matchHistory"
-        class="mt-5 foreground_element"
+        class="mt-6 foreground_element"
         :class="isProfileWinner(match) ? 'card_gameWin' : 'card_gameLose'"
         @click="goToGame(match)"
         width="550"
         height="60"
       >
-        <v-row align="center" class="flex-nowrap" style="padding-left: 20px; padding-top: 7px">
-          <ProfilePicture @click="goToProfile(getOpenent(match))" :src="getOpenent(match).picture" :isActive="getOpenent(match).isActive" />
-          <v-card-text @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium" style="font-family: OrbitronM !important; font-size: 120% !important">{{getOpenent(match).nickName}}</v-card-text>
-          <v-card-text class="white--text text-center pr-10 font-italic d-flex flex-row" style="padding-right: 50px; font-family: OrbitronM !important"> {{ thistimeSince(match.date) }} ago</v-card-text>
-          <v-card-text class="white--text text-center pr-10 font-italic d-flex flex-row" style="color: #ffffff; font-family: OrbitronM !important">{{ getSelfScore(match) }} - {{ getOpenentScore(match) }}</v-card-text>
-        </v-row>
+        <div align="center" class="flex-nowrap row" style="padding-left: 20px;">
+          <ProfilePicture class="pt-10" align="center" @click="goToProfile(getOpenent(match))" :src="getOpenent(match).picture" :isActive="getOpenent(match).isActive" />
+          <v-card-text @click="goToProfile(getOpenent(match))" class="color_text text-h5 font-weight-medium pt-7" style="font-family: OrbitronM !important; font-size: 120% !important">{{getOpenent(match).nickName}}</v-card-text>
+          <v-card-text class="white--text font-italic pt-8" style="font-family: OrbitronM !important"> {{ thistimeSince(match.date) }} ago</v-card-text>
+          <v-card-text class="white--text pr-10 font-italic pt-8" style="color: #ffffff; font-family: OrbitronM !important">{{ getSelfScore(match) }} - {{ getOpenentScore(match) }}</v-card-text>
+        </div>
       </v-card>
     </div>
     <div>
       <v-btn
-        class="foreground_element neon-button"
-        style="margin-top: 0px; margin-left: 15px; font-family: OrbitronM !important"
+        class="foreground_element neon-button mt-5"
+        style="margin-left: 15px; font-family: OrbitronM !important"
         rounded
         text
         color="#ffffff"
@@ -144,9 +144,9 @@ export default class GameHistory extends Vue {
 	box-shadow: inset 0px 0px 500px 20px #b8a435, 0px 0px 40px 5px #b8a435 !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	min-width: 400px;
-	height: 250px;
-	width: 30%;
+	// min-width: 400px;
+	// height: 250px;
+	// width: 30%;
 }
 
 .card_gameLose {
@@ -154,9 +154,9 @@ export default class GameHistory extends Vue {
 	box-shadow: inset 0px 0px 500px 20px #c7401e, 0px 0px 40px 5px #c7401e !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	min-width: 400px;
-	height: 250px;
-	width: 30%;
+	// min-width: 400px;
+	// height: 250px;
+	// width: 30%;
 }
 
 .color_text { 
