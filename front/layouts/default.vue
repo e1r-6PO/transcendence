@@ -26,7 +26,7 @@
           plain
           text
         >
-          <v-icon style="margin-left: 20px; margin-top: -20px">
+          <v-icon style="margin-left: 0px; margin-top: -20px">
             {{ item.icon }}
           </v-icon>
           <span style="margin-left: 20px; margin-top: -17px; font-family: OrbitronM; font-size: 115%">{{ item.title }}</span>
@@ -118,6 +118,11 @@ export default Vue.extend({
           icon: 'mdi-ladder',
           title: 'Leaderboard',
           to: '/leaderboard'
+        },
+        {
+          icon: 'mdi-medal',
+          title: 'Achievements',
+          to: '/achievements'
         }
       ],
       right: true,

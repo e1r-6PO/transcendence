@@ -1,8 +1,9 @@
 <template>
   <div class="pt-10 pb-10">
     <v-row justify="center">
-      <v-card v-for="(key, i) in achievementsList" :key="i" class="white--text ml-2 mr-2 mt-4 card" width="200" align="center">
-        <v-list-item>
+      <div v-for="(key, i) in achievementsList" :key="i">
+        <AchievementCard :achievement="key" :value="getAchievementValue(key.title)"/>
+        <!-- <v-list-item>
         <v-list-item-content>
         <v-list-item-title v-text="key.title"
           align="start"
@@ -29,8 +30,8 @@
         >
           {{ getAchievementValue(key.title) }}%
         </v-progress-circular>
-        </v-card-actions>
-      </v-card>
+        </v-card-actions> -->
+      </div>
     </v-row>
   </div>
 </template>
