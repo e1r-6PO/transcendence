@@ -6,12 +6,14 @@ import { Friend_Status, Relationship } from 'src/entity/relationship.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendsService } from 'src/service/friends.service';
+import { AchievementsService } from 'src/service/achievements.service';
 
 @Controller('api/users')
 @UseGuards(ValidTokenGuard, TwoFaGuard, HasNickGuard)
 export class UsersController {
   constructor(
     private readonly userService: UsersService,
+    private readonly achievementService: AchievementsService,
     @InjectRepository(Relationship)
     private readonly relationShipRepository : Repository<Relationship>,
     private readonly friendsService: FriendsService
@@ -46,5 +48,12 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Get(':id/achievements')
+  async getAchievements(@Param('id') id, @Query('filter') filter) {
+
+    return await this.achievementService.getAchievements(id, filter)
+
   }
 }

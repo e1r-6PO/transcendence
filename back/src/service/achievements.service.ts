@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Query } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Achievements} from "src/entity/achievements.entity";
 import { AchievementsList } from "src/entity/achievementsList.entity";
@@ -27,6 +27,15 @@ export class AchievementsService {
 
   getAllAchievement() {
     return new AchievementsList().list
+  }
+
+  async getAchievements(id: number, filter: string) {
+    var list = await this.achievementsRepository.find({
+      where: { user: id }
+    })
+    if (filter == "completed")
+      list = list.filter(el => el.count >= el.goal)
+    return list
   }
 
   async createChannelAchievement(user: User) {

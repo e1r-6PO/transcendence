@@ -107,8 +107,7 @@ export class ProfileController {
   }
 
   @Get('me/achievements')
-  async getMyAchievements(@Req() req: Request) {
-    var me = await this.channelService.findUserById(req.cookies['user_id'])
-    return await this.achievementService.getMyAchievements(me)
+  async getMyAchievements(@Req() req: Request, @Query('filter') filter) {
+    return await this.achievementService.getAchievements(req.cookies['user_id'], filter)
   }
 }
