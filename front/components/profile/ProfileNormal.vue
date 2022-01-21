@@ -79,7 +79,7 @@ export default class ProfileNormal extends Vue {
 	rank!: number
 
 	async mounted() {
-		this.user.elo = parseFloat(parseFloat(this.user.elo as any).toFixed(2))
+		this.user.elo = parseFloat(parseFloat(this.user.elo as any).toFixed(0)) //truncate elo to 0
 	}
 
 	switchEditing() {

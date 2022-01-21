@@ -33,7 +33,7 @@
           height="40"
         >
           <v-icon :color="friendStatus == status.null ? 'green' : 'red'">
-            {{ friendStatus == status.null ? 'mdi-account-plus' : 'mdi-account-minus'}}
+            {{ friendStatus == status.null ? 'mdi-account-plus' : 'mdi-account-minus'}}
           </v-icon>
         </v-btn>
         <v-btn v-if="friendStatus == status.incomming"
@@ -132,7 +132,7 @@ export default class extends Vue {
 
     console.log(this.friendStatus)
 
-    this.user.elo = parseFloat(parseFloat(this.user.elo as any).toFixed(2)) // truncate the elo to 2 digit
+    this.user.elo = parseFloat(parseFloat(this.user.elo as any).toFixed(0)) // truncate the elo to 0 digit
   }
 
   async friend() {

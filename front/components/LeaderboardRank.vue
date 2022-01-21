@@ -4,7 +4,7 @@
     class="rank-card overflow-visible container3"
     :absolute="absolute"
   >
-    <v-card-text class="white--text font-italic pl-10 d-flex flex-column" style="font-family: OrbitronM !important; font-size: 120% !important"> {{rank}} </v-card-text>
+    <v-card-text class="white--text font-italic pl-10 d-flex flex-column" style="padding-top: 14px; font-family: OrbitronM !important; font-size: 120% !important"> {{rank}} </v-card-text>
   </v-card>
 </template>
 
