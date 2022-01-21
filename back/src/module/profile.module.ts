@@ -11,10 +11,12 @@ import { ChannelService } from 'src/service/channel.service';
 import { ChannelParticipant } from 'src/entity/channelParticipant.entity';
 import { Messages } from 'src/entity/messages.entity';
 import { Channel } from 'src/entity/channel.entity';
+import { AchievementsService } from 'src/service/achievements.service';
+import { Achievements } from 'src/entity/achievements.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Relationship, ChannelParticipant, Channel, Messages]), CustomJwtModule ],
+  imports: [TypeOrmModule.forFeature([User, Relationship, ChannelParticipant, Channel, Messages, Achievements]), CustomJwtModule ],
   controllers: [ ProfileController ],
-  providers: [ ProfileService, UsersService, ChannelService ]
+  providers: [ ProfileService, UsersService, ChannelService, AchievementsService ]
 })
 export class ProfileModule {}
