@@ -11,7 +11,7 @@
         :class="isProfileWinner(match) ? 'card_gameWin' : 'card_gameLose'"
         @click="goToGame(match)"
         width="550"
-        height="60"
+        height="62"
       >
         <div align="center" class="flex-nowrap row" style="padding-left: 20px;">
           <ProfilePicture class="pt-10" align="center" @click="goToProfile(getOpenent(match))" :src="getOpenent(match).picture" :isActive="getOpenent(match).isActive" />
