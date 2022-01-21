@@ -17,7 +17,7 @@
           <BasicBtn @click="dialog = false" content="mdi-close" neonColor="red" />
         </v-card-title>
         <v-card-text class="pt-4 pb-6 pl-8 pr-8">
-            <TextField v-model="channName" placeholder="Channel name" />
+            <TextField v-model="channName" autofocus placeholder="Channel name" />
             <Select v-model="channType" placeholder="Channel type" :itemsList="typeList" />
             <TextField v-model="channPass" placeholder="Password" :disable="channType != 'Protected'" />
         </v-card-text>

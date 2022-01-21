@@ -13,12 +13,14 @@ import { Friend_Status, Relationship } from 'src/entity/relationship.entity';
 import { ChannelUser } from 'src/entity/channelUser.entity';
 import { start } from 'repl';
 import { Messages, Messages_type } from 'src/entity/messages.entity';
+import { AchievementsService } from 'src/service/achievements.service';
 // import { ChannelGuard } from 'src/guards/.channel.guards';
 
 @Controller('api/chat')
 @UseGuards(ValidTokenGuard, TwoFaGuard)
 export class ChannelController {
   constructor(
+    private readonly achievementsService: AchievementsService,
     private readonly channelService: ChannelService,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
@@ -151,6 +153,8 @@ export class ChannelController {
     servMsg.type = Messages_type.server
     servMsg.message = "User <" + owner.nickName + "> has created the channel."
     servMsg.channel = channel
+
+    this.achievementsService.createChannelAchievement(owner)
     this.messagesRepository.save(servMsg)
     this.channelParticipantsRepository.save(participant)
   }

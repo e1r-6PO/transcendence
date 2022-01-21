@@ -2,6 +2,7 @@ import { channel, Channel } from 'diagnostics_channel';
 import { ColumnNumericOptions } from 'typeorm/decorator/options/ColumnNumericOptions';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany } from 'typeorm';
 import { ChannelParticipant } from './channelParticipant.entity';
+import { Achievements } from './achievements.entity';
 
 @Entity()
 export class User {
@@ -50,6 +51,9 @@ export class User {
 
   @OneToMany(() => ChannelParticipant, channelParticipant => channelParticipant.user, { cascade: true })
   channelParticipant: ChannelParticipant[];
+
+  @OneToMany(() => Achievements, achievements => achievements.user, { cascade: true })
+  achievements: ChannelParticipant[];
 
   toLightuser() {
     return {

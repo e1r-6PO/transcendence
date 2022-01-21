@@ -7,7 +7,7 @@
     filled
     dense
     rounded
-    class="mt-3 custom-select-color custom-select-placeholder-color"
+    class="mt-3 custom-select-placeholder-color custom-select-color-yellow"
     color="yellow"
     item-color="yellow"
     @input="updateValue"

@@ -19,6 +19,7 @@ import { ChannelParticipant } from "src/entity/channelParticipant.entity";
 import { IoAdapter } from "@nestjs/platform-socket.io";
 import { PrivateMessage } from "src/entity/privateMessage.entity";
 import { ChatService } from "src/service/chat.service";
+import { AchievementsService } from "src/service/achievements.service";
 
 @WebSocketGateway({
     cors: {
@@ -31,6 +32,7 @@ import { ChatService } from "src/service/chat.service";
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
     constructor(
         private jwtService: JwtService,
+        private achievementService: AchievementsService,
         private chatService: ChatService,
         @InjectRepository(User)
         private readonly usersRepository : Repository<User>,
@@ -77,10 +79,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         newMsg.date = new Date()
         
         newMsg = await this.privateMessagesRepository.save(newMsg)
-
+        
         var socketTarget = this.ClientConnected.get(userTarget.id)
         if (socketTarget)
             this.server.to(socketTarget.id).emit("privateMessage", newMsg)
+        this.achievementService.sendMsgAchievement(newMsg.sender)
 
     }
 
@@ -131,6 +134,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         newMsg.type = Messages_type.default
 
         this.messagesRepository.save(newMsg)
+        this.achievementService.sendMsgAchievement(newMsg.sender)
         this.server.to(av[1]).emit('msgToClient', newMsg);
     }
 
