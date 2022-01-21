@@ -21,7 +21,7 @@ export class Paddle extends Rect{
 	moveUp(){
 		let res = this.pos.y - this.speed.y;
 		if (res < 0)
-			this.pos.y = 0;
+			this.pos.y = 1;
 		else
 			this.pos.y -= this.speed.y;
 		this.motion = true
@@ -29,8 +29,8 @@ export class Paddle extends Rect{
 	
 	moveDown(){
 		let res = this.pos.y + this.speed.y
-		if (res > 600)
-			this.pos.y = 600
+		if (res > this.canvas_y)
+			this.pos.y = this.canvas_y - 1
 		else
 			this.pos.y += this.speed.y
 		this.motion = true
