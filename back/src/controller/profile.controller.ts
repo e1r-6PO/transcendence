@@ -8,8 +8,10 @@ import multer, { diskStorage, memoryStorage } from 'multer';
 import { extname } from 'path/posix';
 import { LightChannel } from 'src/entity/lightChannel.entity';
 import { Relationship } from 'src/entity/relationship.entity';
+import { User } from 'src/entity/user.entity';
 import { HasNickGuard, TwoFaGuard, ValidTokenGuard } from 'src/guards/account.guards';
 import { ImageUpload } from 'src/middleware/image.upload.middleware';
+import { AchievementsService } from 'src/service/achievements.service';
 import { ChannelService } from 'src/service/channel.service';
 import { ProfileService } from 'src/service/profile.service';
 import { UsersService } from 'src/service/users.service';
@@ -21,6 +23,7 @@ import { Repository } from 'typeorm';
 export class ProfileController {
   constructor(
     private readonly profileService: ProfileService,
+    private readonly achievementService: AchievementsService,
     private readonly channelService: ChannelService,
     @InjectRepository(Relationship)
     private readonly relationShipRepository : Repository<Relationship>
@@ -101,5 +104,11 @@ export class ProfileController {
     for (var i = 0; i < participantList.length; i++)
       channList.push(participantList[i].channel.toLightChannel())
     return { "channel": channList }
+  }
+
+  @Get('me/achievements')
+  async getMyAchievements(@Req() req: Request) {
+    var me = await this.channelService.findUserById(req.cookies['user_id'])
+    return await this.achievementService.getMyAchievements(me)
   }
 }
