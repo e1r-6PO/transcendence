@@ -4,6 +4,7 @@
       Game history
     </v-card-text>
     <div class="d-flex flex-column align-center">
+      <span v-if="totalMatch == 0" class="white--text pt-6" style="font-size: 230%; font-family: OrbitronM">No game found</span>
       <v-card
         v-for="match in matchHistory" :key="match.id"
         v-on:bind="matchHistory"
@@ -21,11 +22,11 @@
         </div>
       </v-card>
     </div>
-    <div class="custom-position-bottom-center d-flex flex-row mb-2 justify-center">
+    <div v-if="totalMatch != 0" class="custom-position-bottom-center d-flex flex-row mb-2 justify-center">
       <BasicBtn @click="previousPage()" content="mdi-arrow-left" :disable="page <= 1" class="mr-1 mt-1" />
        <span class="mr-1 ml-1 neonText-purple" style="font-size: 180%">{{ page }} </span>
       <BasicBtn @click="nextPage()" content="mdi-arrow-right" :disable="page >= totalPage" class="ml-1 mt-1" />
-      <span v-if="matchHistory.length == 0" class="white--text text-h7" style="font-family: OrbitronM">No achievements started or succeed</span>
+      <!-- <span v-if="matchHistory.length == 0" class="white--text text-h7" style="font-family: OrbitronM">No achievements started or succeed</span> -->
     </div>
   </v-card>
 </template>
@@ -112,7 +113,7 @@ export default class GameHistory extends Vue {
   nextPage() {
     this.page = this.page < this.totalPage ? this.page + 1 : this.page;
     this.fetchMoreGames()
-    console.log("hey")
+    // console.log("hey")
   }
 
   previousPage() {
