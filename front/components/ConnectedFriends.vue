@@ -156,3 +156,7 @@ export default class ConnectedFriends extends Vue{
   }
 }
 </script>
+
+<style>
+@import '../assets/Classes-scss/neonText_colors.scss';
+</style>

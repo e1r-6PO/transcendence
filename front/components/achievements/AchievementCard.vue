@@ -1,5 +1,5 @@
 <template>
-  <v-card class="white--text ml-2 mr-2 mt-4 card" width="250" align="center">
+  <v-card :class="'achievements-card-' + neonColor" class="white--text ml-2 mr-2 mt-4" width="220" align="center">
     <v-list-item>
     <v-list-item-content>
     <v-list-item-title v-text="achievement.title"
@@ -36,13 +36,90 @@ export default class AchievementCard extends Vue{
   @Prop({ default: 0 })
   value!: Number | String
 
+  @Prop({ type: String, default: 'purple'})
+  neonColor!: String
+
 }
 </script>
 
 <style>
-.card {
+@import '../../assets/Classes-scss/neonText_colors.scss';
+
+.achievements-card-purple {
 	border: 3px solid #cd78ff !important;
 	box-shadow: inset 0px 0px 30px 0px #a200ff, 0px 0px 15px 0px #a200ff !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	/* min-width: 260px; */
+	/* width: 275px; */
+}
+
+.achievements-card-light-blue {
+	border: 3px solid #a5fafa !important;
+	box-shadow: inset 0px 0px 30px 0px #0affff, 0px 0px 15px 0px #0affff !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	/* min-width: 260px; */
+	/* width: 275px; */
+}
+
+.achievements-card-yellow {
+	border: 3px solid #f7e687 !important;
+	box-shadow: inset 0px 0px 30px 0px #b8a435, 0px 0px 15px 0px #b8a435 !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	/* min-width: 260px; */
+	/* width: 275px; */
+}
+
+.achievements-card-red {
+	border: 3px solid #d14949 !important;
+	box-shadow: inset 0px 0px 30px 0px #d61c1c, 0px 0px 15px 0px #d61c1c !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	/* min-width: 260px; */
+	/* width: 275px; */
+}
+
+.achievements-card-blue {
+	border: 3px solid #3c58d3 !important;
+	box-shadow: inset 0px 0px 30px 0px #1b019b, 0px 0px 15px 0px #1b019b !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	/* min-width: 260px; */
+	/* width: 275px; */
+}
+
+.achievements-card-green {
+	border: 3px solid #82e492 !important;
+	box-shadow: inset 0px 0px 30px 0px #32c44a, 0px 0px 15px 0px #32c44a !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	/* min-width: 260px; */
+	/* width: 275px; */
+}
+
+.achievements-card-orange {
+	border: 3px solid #ffa768 !important;
+	box-shadow: inset 0px 0px 30px 0px #fc6500, 0px 0px 15px 0px #fc6500 !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	/* min-width: 260px; */
+	/* width: 275px; */
+}
+
+.achievements-card-pink {
+	border: 3px solid #ee8be9 !important;
+	box-shadow: inset 0px 0px 30px 0px #e232d9, 0px 0px 15px 0px #e232d9 !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	/* min-width: 260px; */
+	/* width: 275px; */
+}
+
+.achievements-card-white {
+	border: 3px solid #ece3e3 !important;
+	box-shadow: inset 0px 0px 30px 0px #dfdfdf, 0px 0px 15px 0px #dfdfdf !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
 	/* min-width: 260px; */
