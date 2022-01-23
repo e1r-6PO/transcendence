@@ -26,9 +26,15 @@ export class GameService {
 
     games = new Map<string, Game>()
 
+    startGame(game: Game) {
+        this.usersRepository.update({id: game.player0.id}, {currentGame: game.id})
+        this.usersRepository.update({id: game.player1.id}, {currentGame: game.id})
+        game.start()
+    }
+
     push_game(game: Game) {
         if (game.type == "ranked") // only start game if its ranked (not private)
-            game.start()
+            this.startGame(game)
         // this.games.push(game)
         this.games.set(game.id, game)
         // console.log(game.id, typeof game.id, 24, typeof 24, this.games.get(24), this.games.get(game.id))
@@ -142,6 +148,10 @@ export class GameService {
                 game.player0socket['game'] = undefined
             this.achievementService.playGameAchievement(game.player0)
             this.achievementService.playGameAchievement(game.player1)
+
+            //remove the game status
+            this.usersRepository.update({id: game.player0.id}, {currentGame: null})
+            this.usersRepository.update({id: game.player1.id}, {currentGame: null})
         }
         game.status = 'end'
 
