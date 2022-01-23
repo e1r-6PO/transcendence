@@ -37,7 +37,7 @@ export class User {
   @Column({ default: false })
   isActive: boolean;
 
-  @Column({ nullable: true, default: null})
+  @Column({ nullable: true, default: ""})
   currentGame: string
 
   @Column("decimal", {default: 1500, precision: 12 + 4, scale: 4})

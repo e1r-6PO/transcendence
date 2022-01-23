@@ -6,6 +6,7 @@ import { Game } from "src/entity/game.entity";
 import { Match } from "src/entity/match.entity";
 import { PrivateMessage } from "src/entity/privateMessage.entity";
 import { User } from "src/entity/user.entity";
+import { ActiveGateway } from "src/webSocket/active.gateway";
 import { Repository } from "typeorm";
 import { AchievementsService } from "./achievements.service";
 import { LeaderboardService } from "./leaderboard.service";
@@ -22,6 +23,8 @@ export class GameService {
         private readonly matchRepository: Repository<Match>,
         @InjectRepository(PrivateMessage)
         private readonly privateMessageRepository: Repository<PrivateMessage>,
+
+        private readonly activeGateway: ActiveGateway // used to send in game status
       ) {}
 
     games = new Map<string, Game>()
@@ -29,6 +32,8 @@ export class GameService {
     startGame(game: Game) {
         this.usersRepository.update({id: game.player0.id}, {currentGame: game.id})
         this.usersRepository.update({id: game.player1.id}, {currentGame: game.id})
+        this.activeGateway.server.emit('inGame', game.player0.toLightuser())
+        this.activeGateway.server.emit('inGame', game.player1.toLightuser())
         game.start()
     }
 
@@ -150,8 +155,8 @@ export class GameService {
             this.achievementService.playGameAchievement(game.player1)
 
             //remove the game status
-            this.usersRepository.update({id: game.player0.id}, {currentGame: null})
-            this.usersRepository.update({id: game.player1.id}, {currentGame: null})
+            this.usersRepository.update({id: game.player0.id}, {currentGame: ""})
+            this.usersRepository.update({id: game.player1.id}, {currentGame: ""})
         }
         game.status = 'end'
 
