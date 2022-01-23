@@ -73,23 +73,30 @@
     </v-row>
   </div>
   <div class="flex-container-editing" style="padding-top: 50px">
-    <v-card class="foreground_element card_profile">
+    <v-card class="foreground_element card_profile-purple">
       <v-card-text align="center">
         <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
       </v-card-text>
     </v-card>
   </div>
-  <div class="flex-container-row">
-    <v-card class="foreground_element card_game flex-item" margin-top="5%">
+  <v-row class="d-flex justify-space-around flex-row">
+    <v-card class="foreground_element card_game-purple flex-item" margin-top="5%">
       <h1 class="color_win" align="center">Win</h1>
       <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
     </v-card>
-    <v-card class="foreground_element card_game flex-item" margin-top="5%">
+    <v-card class="foreground_element card_game-purple flex-item" margin-top="5%">
       <h1 class="color_lose" align="center">Lose</h1>
       <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
     </v-card>
-  </div>
-  <GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user" v-if="user.id != 0"/>
+  </v-row>
+  <v-row class="pt-4 d-flex flex-row justify-center">
+    <v-col xs="12" sm="12" md="6">
+      <GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user" v-if="user.id != 0"/>
+    </v-col>
+    <v-col xs="12" sm="12" md="6">
+		  <OwnAchievements v-if="user.id != 0" align="center" :user="user" completedOnly />
+    </v-col>
+  </v-row>
 </v-container>
 </template>
 
@@ -107,19 +114,23 @@ const All_Friend_Status = {
   blocked: "blocked",
 }
 
-@Component({
-  middleware: login
-})
-export default class extends Vue {
+export default Vue.extend({
+    
+  middleware: login,
+  
+  data() {
 
-  status = All_Friend_Status
-  user : LightUser = new LightUser
-  friendStatus : string = All_Friend_Status.null
-  self : User = new User
-  mouseOverButton = false
-  mouseOverFriendOption = false
-  rank = 0
-  matchHistory = Array
+    return {
+      status: All_Friend_Status,
+      user : new LightUser(),
+      friendStatus : All_Friend_Status.null,
+      self : new User,
+      mouseOverButton : false,
+      mouseOverFriendOption : false,
+      rank : 0,
+      matchHistory : Array,
+    }
+  },
 
   async mounted() {
     const { params: { slug } } = this.$route
@@ -130,10 +141,10 @@ export default class extends Vue {
     this.friendStatus = (await this.$axios.$get('/api/friends/' + this.user.id)).status
     this.matchHistory = await this.$axios.$get('/api/users/' + this.user.id + '/matchs')
 
-    console.log(this.friendStatus)
-
     this.user.elo = parseFloat(parseFloat(this.user.elo as any).toFixed(0)) // truncate the elo to 0 digit
-  }
+  },
+
+  methods: {
 
   async friend() {
     if (this.friendStatus == this.status.null)
@@ -147,65 +158,60 @@ export default class extends Vue {
     else if (this.friendStatus == this.status.blocked)
       await this.$axios.$post('/api/friends/' + this.user.id + '/unblock')
     this.friendStatus = (await this.$axios.$get('/api/friends/' + this.user.id)).status
-  }
+  },
 
   async addFriend() {
     await this.$axios.$post('/api/friends/' + this.user.id)
     this.friendStatus = this.status.sent
     this.mouseOverFriendOption = false
-  }
+  },
 
   async deleteFriend() {
     await this.$axios.$delete('/api/friends/' + this.user.id)
     this.friendStatus = this.status.null
       this.mouseOverFriendOption = false
-  }
+  },
 
   async acceptFriendRequest() {
     await this.$axios.$patch('/api/friends/' + this.user.id + '/accept')
     this.friendStatus = this.status.completed
     this.mouseOverFriendOption = false
-  }
+  },
 
   async denyFriendRequest() {
     await this.$axios.$delete('/api/friends/' + this.user.id)
     this.friendStatus = this.status.null
     this.mouseOverFriendOption = false
-  }
+  },
 
   async blockUser() {
     await this.$axios.$post('/api/friends/' + this.user.id + '/block')
     this.friendStatus = this.status.blocked
     this.mouseOverFriendOption = false
-  }
+  },
 
   async unblockUser() {
     await this.$axios.$post('/api/friends/' + this.user.id + '/unblock')
     this.friendStatus = this.status.null
     this.mouseOverFriendOption = false
-  }
+  },
 
 	gotoleaderboard() {
 		this.$router.push('/leaderboard')
-	}
-
-  $refs!: {
-    uploader: HTMLFormElement
-  }
-
+	},
 
   async mouseLeaveFriendOption() {
       this.mouseOverFriendOption = false
-  }
+  },
 
     async mouseLeaveButton() {
     await new Promise(d => setTimeout(d, 300));
       this.mouseOverButton = false
-  }
+  },
 
   redirectToPrivateMessage() {
     this.$router.push('/privateMessage/' + this.user.nickName)
-  }
+  },
 
   getIconStatus(): string {
     if (this.friendStatus == this.status.blocked)
@@ -215,9 +221,10 @@ export default class extends Vue {
     if (this.friendStatus == this.status.sent)
       return 'mdi-account-clock'
     return 'mdi-account-question'
+  },
   }
 
-}
+})
 </script>
 
 <style scoped>
@@ -281,6 +288,15 @@ export default class extends Vue {
   width: 275px;
 }
 
+.card_game-purple {
+  border: 3px solid #cd78ff !important;
+  box-shadow: inset 0px 0px 80px 0px #a200ff, 0px 0px 40px 0px #a200ff !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+  min-width: 260px;
+  width: 275px;
+}
+
 .card_profile {
   border: 3px solid #a5fafa !important;
   box-shadow: inset 0px 0px 100px 10px #0affff, 0px 0px 40px 0px #0affff !important;
@@ -289,6 +305,16 @@ export default class extends Vue {
   height: 80px;
   width: 550px;
 }
+
+.card_profile-purple {
+  border: 3px solid #cd78ff !important;
+  box-shadow: inset 0px 0px 65px 10px #a200ff, 0px 0px 40px 0px #a200ff !important;
+  border-radius: 15px !important;
+  background-color: #181818 !important;
+  height: 80px;
+  width: 550px;
+}
+
 
 .editing_card {
   height: 10%;

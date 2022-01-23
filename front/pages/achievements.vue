@@ -56,18 +56,4 @@ export default Vue.extend({
 </script>
 
 <style>
-
-.test{
-	border-radius: 100% !important;
-  border: 1px solid #ffa768 !important;
-	box-shadow: inset 0px 0px 15px 0px #fc6500, 0px 0px 15px 0px #fc6500 !important;
-
-}
-
-.success-circular{
-	border-radius: 100% !important;
-  border: 1px solid #a5fafa !important;
-	box-shadow: inset 0px 0px 20px 0px #0affff, 0px 0px 15px 0px #0affff !important;
-
-}
 </style>
