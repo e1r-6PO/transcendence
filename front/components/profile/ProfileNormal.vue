@@ -21,7 +21,7 @@
 			</v-btn>
 		</v-avatar>
 
-		<v-card class="foreground_element card_profile mt-10">
+		<v-card class="foreground_element card_profile-purple mt-10">
 			<v-card-text align="center">
 				<p class="color_text text-h4 font-weight-medium" align="center" style="font-family: OrbitronM !important">{{ user.nickName }}</p>
 				<p class="color_text text-h5" align="center" style="font-family: OrbitronM !important">{{ user.email }}</p>
@@ -43,25 +43,23 @@
 			</v-card-text>
 		</v-card>
 		<div class="flex-container-row mt-10" style="margin-bottom: 1%">
-			<v-card class="foreground_element card_game flex-item" margin-top="5%">
+			<v-card class="foreground_element card_game-purple flex-item" margin-top="5%">
 				<h1 class="color_win" align="center" style="font-family: OrbitronM !important">Win</h1>
 				<h3 class="color_text" align="center" style="font-family: OrbitronM !important">{{ user.gameWin }} </h3>
 			</v-card>
-			<v-card class="foreground_element card_game flex-item" margin-top="5%">
+			<v-card class="foreground_element card_game-purple flex-item" margin-top="5%">
 				<h1 class="color_lose" align="center" style="font-family: OrbitronM !important">Lose</h1>
 				<h3 class="color_text" align="center" justify="center" style="font-family: OrbitronM !important"> {{ user.gameLose }} </h3>
 			</v-card>
 		</div>
   <v-row class="pt-4 d-flex flex-row">
     	<v-col xs="12" sm="12" md="6">
-				<v-card color="#181818" >
     		<GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user"/>
-				</v-card>
 			</v-col>
     	<v-col xs="12" sm="12" md="6">
-				<v-card color="#181818" justify="end">
+				<!-- <v-card color="#181818" justify="end" height="558"> -->
 				<OwnAchievements v-if="user.id != 0" align="center" :user="user"/>
-				</v-card>
+				<!-- </v-card> -->
 			</v-col>
 		</v-row>
 		<!-- </div> -->
@@ -164,7 +162,27 @@ export default class ProfileNormal extends Vue {
 
 .card_profile {
 	border: 3px solid #a5fafa !important;
-	box-shadow: inset 0px 0px 500px 20px #0affff, 0px 0px 40px 0px #0affff !important;
+	box-shadow: inset 0px 0px 150px 20px #0affff, 0px 0px 25px 0px #0affff !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	min-width: 400px;
+	height: 250px;
+	width: 30%;
+}
+
+.card_profile-purple {
+	border: 3px solid #cd78ff !important;
+	box-shadow: inset 0px 0px 150px 20px #a200ff, 0px 0px 25px 0px #a200ff !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	min-width: 400px;
+	height: 250px;
+	width: 30%;
+}
+
+.card_profile-yellow {
+	border: 3px solid #f7e687 !important;
+	box-shadow: inset 0px 0px 150px 20px #b8a435, 0px 0px 25px 0px #b8a435 !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
 	min-width: 400px;
@@ -173,7 +191,7 @@ export default class ProfileNormal extends Vue {
 }
 
 .card_gameWin {
-	border: 3px solid #b8a435 !important;
+	border: 3px solid #f7e687 !important;
 	box-shadow: inset 0px 0px 500px 20px #b8a435, 0px 0px 40px 0px #b8a435 !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
@@ -204,7 +222,25 @@ export default class ProfileNormal extends Vue {
 
 .card_game {
 	border: 3px solid #a5fafa !important;
-	box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 40px 0px #0affff !important;
+	box-shadow: inset 0px 0px 110px 0px #0affff, 0px 0px 20px 2px #0affff !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	min-width: 260px;
+	width: 275px;
+}
+
+.card_game-purple {
+	border: 3px solid #cd78ff !important;
+	box-shadow: inset 0px 0px 110px 0px #a200ff, 0px 0px 20px 2px #a200ff !important;
+	border-radius: 15px !important;
+	background-color: #181818 !important;
+	min-width: 260px;
+	width: 275px;
+}
+
+.card_game-yellow {
+	border: 3px solid #f7e687 !important;
+	box-shadow: inset 0px 0px 110px 0px #b8a435, 0px 0px 20px 2px #b8a435 !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
 	min-width: 260px;
@@ -214,11 +250,14 @@ export default class ProfileNormal extends Vue {
 .color_lose {
 	z-index: 6;
 	color: #c7401e;
+	// color: #fc6500;
+	// color: #0affff;
 }
 
 .color_win {
 	z-index: 6;
-	color: #b8a435; 
+	// color: #b8a435; 
+	color: #0affff;
 }
 
 </style>
