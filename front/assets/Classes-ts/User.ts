@@ -9,6 +9,7 @@ class User {
     twoFactorAuthenticationSecret: string;
     isTwoFactorAuthenticationEnabled: boolean;
     isActive: boolean;
+    currentGame: string;
     elo: number;
     gameWin: number;
     gameLose: number;
@@ -27,6 +28,7 @@ class User {
         this.isTwoFactorAuthenticationEnabled = false;
         this.elo = 0;
         this.isActive = false;
+        this.currentGame = "";
         this.gameWin = 0;
         this.gameLose = 0;
         this.paddleColor = "";
@@ -41,6 +43,7 @@ class LightUser {
     gameWin: number;
     gameLose: number;
     isActive: boolean;
+    currentGame: string;
     paddleColor: string;
     constructor()
     {
@@ -51,6 +54,7 @@ class LightUser {
         this.gameWin = 0;
         this.gameLose = 0;
         this.isActive = false;
+        this.currentGame = "";
         this.paddleColor = ""
     }
 }

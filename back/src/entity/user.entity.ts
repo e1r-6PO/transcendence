@@ -37,6 +37,9 @@ export class User {
   @Column({ default: false })
   isActive: boolean;
 
+  @Column({ nullable: true, default: null})
+  currentGame: string
+
   @Column("decimal", {default: 1500, precision: 12 + 4, scale: 4})
   elo: number
 
@@ -64,6 +67,7 @@ export class User {
       gameWin: this.gameWin,
       gameLose: this.gameLose,
       isActive: this.isActive,
+      currentGame: this.currentGame,
       paddleColor: this.paddleColor
     }
   }

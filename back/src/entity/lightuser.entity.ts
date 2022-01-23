@@ -16,5 +16,7 @@ export class LightUser {
 
   isActive: boolean;
 
+  currentGame: string;
+
   paddleColor: string;
 }
