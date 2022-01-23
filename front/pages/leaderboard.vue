@@ -16,7 +16,7 @@
       >
         <v-row align="center"  style="padding-left: 20px; padding-top: 7px">
           <span class="text-left pl-2 pt-1" :class="getRankColor(user.rank)" style="min-width: 30px ;font-family: OrbitronM; font-size: 165%">{{ user.rank }}</span>
-          <ProfilePicture @click="goToProfile(user)" :src="user.picture" :isActive="user.isActive" />
+          <ProfilePicture @click="goToProfile(user)" :src="user.picture" :isActive="user.isActive" :currentGame="user.currentGame"/>
           <v-card-title @click="goToProfile(user)" class="color_text text-h5 font-weight-medium" align="center">{{user.nickName}}</v-card-title>
           <v-spacer />
           <span class="grey--text pt-1 text-right mr-5" style="font-family: OrbitronM; font-size: 165%">rating: </span>
@@ -59,6 +59,17 @@ export default class extends Vue {
       var find = this.leaderboard.findIndex((el) => el.id == user.id)
       if (find != -1)
         this.leaderboard[find].isActive = false
+    })
+    socket_active.on("inGame", (user: LightUser) => {
+      var find = this.leaderboard.findIndex((el) => el.id == user.id)
+      console.log(user.currentGame)
+      if (find != -1)
+        this.leaderboard[find].currentGame = user.currentGame
+    })
+    socket_active.on("endGame", (user: LightUser) => {
+      var find = this.leaderboard.findIndex((el) => el.id == user.id)
+      if (find != -1)
+        this.leaderboard[find].currentGame = ""
     })
   }
 

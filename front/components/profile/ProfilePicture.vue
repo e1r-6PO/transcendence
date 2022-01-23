@@ -32,6 +32,9 @@ export default class ProfilePicture extends Vue {
   @Prop({ default: null })
   isActive!: Boolean | Number
 
+  @Prop({ default: "" })
+  currentGame!: string
+
   @Prop({ type: Boolean, default: false})
   disable!: Boolean
 
@@ -42,6 +45,8 @@ export default class ProfilePicture extends Vue {
     var classes = ""
     if (this.neonColor != "")
       classes = "profile-picture-" + this.neonColor
+    else if (this.currentGame != "")
+      classes = 'profile-picture-purple'
     else if (this.isActive != null)
       classes = this.isActive ? 'profile-picture-green' : 'profile-picture-red'
       // console.log(this.size)

@@ -30,6 +30,8 @@ export class GameService {
     games = new Map<string, Game>()
 
     startGame(game: Game) {
+        game.player0.currentGame = game.id
+        game.player1.currentGame = game.id
         this.usersRepository.update({id: game.player0.id}, {currentGame: game.id})
         this.usersRepository.update({id: game.player1.id}, {currentGame: game.id})
         this.activeGateway.server.emit('inGame', game.player0.toLightuser())
@@ -155,6 +157,8 @@ export class GameService {
             this.achievementService.playGameAchievement(game.player1)
 
             //remove the game status from db and from front with socket
+            game.player0.currentGame = ""
+            game.player1.currentGame = ""
             this.usersRepository.update({id: game.player0.id}, {currentGame: ""})
             this.usersRepository.update({id: game.player1.id}, {currentGame: ""})
             this.activeGateway.server.emit('endGame', game.player0.toLightuser())
