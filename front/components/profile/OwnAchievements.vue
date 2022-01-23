@@ -60,7 +60,7 @@ export default class OwnAchievement extends Vue {
     window.removeEventListener("resize", this.myEventHandler);
   }
 
-  myEventHandler(e) {
+  myEventHandler(e: any) {
     console.log(window.innerWidth)
     if (window.innerWidth >= 1888)
       this.numberAchievementByPage = 8
