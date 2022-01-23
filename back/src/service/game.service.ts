@@ -154,9 +154,11 @@ export class GameService {
             this.achievementService.playGameAchievement(game.player0)
             this.achievementService.playGameAchievement(game.player1)
 
-            //remove the game status
+            //remove the game status from db and from front with socket
             this.usersRepository.update({id: game.player0.id}, {currentGame: ""})
             this.usersRepository.update({id: game.player1.id}, {currentGame: ""})
+            this.activeGateway.server.emit('endGame', game.player0.toLightuser())
+            this.activeGateway.server.emit('endGame', game.player1.toLightuser())
         }
         game.status = 'end'
 
