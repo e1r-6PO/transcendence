@@ -53,3 +53,10 @@
   padding-top: 1%;
   column-gap: 100px !important;
 }
+
+.custom-position-bottom-center {
+  position:absolute;
+  bottom:0px;
+  right:50%;
+  left:50%;
+}
