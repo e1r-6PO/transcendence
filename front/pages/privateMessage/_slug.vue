@@ -5,7 +5,6 @@
   fluid 
   fill-height
 >
-  <AlertError style="margin-top: 10px" @end="onEnd" :textError="alertText" :state="alert"> {{ alertText }} </AlertError>
   <v-app-bar
     color="#181818"
     height="130"
@@ -13,6 +12,7 @@
     fixed
     clipped-left
   >
+    <AlertError style="margin-top: 70px" @end="onEnd" :textError="alertText" :state="alert"> {{ alertText }} </AlertError>
     <BasicBtn
       style="margin-top: 80px"
       content="mdi-forum"
@@ -22,7 +22,7 @@
     <ProfilePicture @click="redirectToUserProfile" :src="user.picture" :isActive="user.isActive" size="42" style="margin-top: 80px; margin-right: 5px"/>
     <h3 class="neonText" style="color: white; margin-top: 80px">{{ user.nickName }}</h3>
 
-    <private-game-btn
+    <PrivateGameBtn
       style="margin-top: 80px; margin-left: 5px"
       @error="activeAlert" 
       :user="user"
@@ -64,7 +64,8 @@
       style="padding-top: 70px"
     >
     <v-row align="center" justify="center" class="pl-4 pr-5 pt-7">
-      <ChannelLeaveBtn @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn>
+      <!-- <ChannelLeaveBtn @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn> -->
+      <BasicBtn @click="goToChannelHub()" @refreshUser="updateToken" isText content="Chanel hub" :height="50" class="ml-5 mt-2" />
       <v-spacer/>
       <BasicBtn content="mdi-close" neonColor="red" @click="userDrawer = !userDrawer"></BasicBtn>
     </v-row>
@@ -94,9 +95,10 @@
           <!-- if the message is a normal message -->
           <OtherBubbleMsg v-if="!isYourMsg(msg) && msg.type != 'game'" :msg="msg"/>
           <MyBubbleMsg v-else-if="msg.type != 'game'" :msg="msg" />
+          <GameMessage v-if="msg.type == 'game'" :msg="msg" />
 
           <!-- if the message is a game -->
-          <v-card
+          <!-- <v-card
             v-if="msg.type == 'game'"
             v-on:click="redirectToGame(msg.game_id, msg.game_state)"
             class="bubble"
@@ -115,10 +117,10 @@
               style="padding-bottom: 5px; padding-top: 0px; color: white"
               v-text="formateTime(msg.time)"
               class="text-right"
-            >
+            > -->
             <!-- no clue why tf its msg.time and not msg.date but okay i guess -->
-            </v-card-subtitle>
-          </v-card>
+            <!-- </v-card-subtitle>
+          </v-card> -->
 
         </div>
       </v-card>
@@ -127,7 +129,7 @@
   </v-row>
   
   <v-footer app inset color="#181818">
-    <TextField @enterPress="sendMessage" v-model="message" append_outer_icon="mdi-send" placeholder="Message" class="mb-2" />
+    <TextField @enterPress="sendMessage" v-model="message" :disable="message.length > 180" append_outer_icon="mdi-send" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
 </template>
@@ -228,6 +230,11 @@ export default Vue.extend({
 
   methods: {
     sendMessage(): void {
+      if (this.message.length > 180)
+      {
+        this.activeAlert("Messages are limited at 180 character.")
+        return
+      }
       var newMsg = new PrivateMessages()
       newMsg.sender = this.me
       newMsg.picture = this.me.picture
@@ -295,12 +302,8 @@ export default Vue.extend({
       window.scrollTo(0, document.body.scrollHeight);
     },
 
-    redirectToChannel(channName: string) {
-      this.$router.push('/chat/' + channName)
-    },
-
-    clearMessage() {
-      this.message = ""
+    goToChannelHub() {
+      this.$router.push('/chat')
     },
 
     activeAlert(error: any)
@@ -311,9 +314,6 @@ export default Vue.extend({
 
     onEnd() {
       this.alert = false
-    },
-
-    updateUser() {
     },
 
     updateToken() {

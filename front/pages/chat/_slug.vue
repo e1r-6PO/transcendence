@@ -5,7 +5,6 @@
   fluid 
   fill-height
 >
-  <AlertError style="margin-top: 10px" @end="onEnd" :textError="alertText" :state="alert"> {{ alertText }} </AlertError>
   <v-app-bar
     color="#181818"
     height="130"
@@ -13,6 +12,7 @@
     fixed
     clipped-left
   >
+  <AlertError style="margin-top: 70px" @end="onEnd" :textError="alertText" type="error" :state="alert" />
     <BasicBtn
       style="margin-top: 80px"
       content="mdi-forum"
@@ -57,7 +57,7 @@
     >
       <ChannelUserList
         @refreshUser="updateToken"
-        :meId="me.id"
+        :meId="me.user.id"
         :small="true"
         :refresh="tokenUser"
         class="mt-4"
@@ -69,7 +69,7 @@
             @refreshUser="updateToken"
             @newOwner="newOwner"
             :status="me.channelStatus"
-            :meId="me.id"
+            :meId="me.user.id"
             class="pl-5 pb-3"
             :refreshToken="tokenUser"
           >
@@ -119,7 +119,7 @@
   </v-row>
   
   <v-footer app inset color="#181818">
-    <TextField @enterPress="sendMessage" v-model="message" append_outer_icon="mdi-send" placeholder="Message" class="mb-2" />
+    <TextField @enterPress="sendMessage" v-model="message" :append_outer_icon="msgIsValid()" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
 </template>
@@ -152,7 +152,6 @@ export default Vue.extend({
       messagesArray: new Array<Messages>(),
       me: new ChannelUser(),
       nbMsg: -1,
-      userList: new Array<ChannelUser>(),
       userDrawer: false,
       channelDrawer: false,
       userFocus: false,
@@ -199,18 +198,7 @@ export default Vue.extend({
         this.messagesArray.push(msg)
         this.nbMsg = this.messagesArray.length
       })
-      socket_chat.on('refreshUser', (msg: string) => {
-        this.tokenUser = -this.tokenUser
-      })
-      socket_chat.on('newUser', (servMsg: Messages) => {
-        this.messagesArray.push(servMsg)
-        this.nbMsg = this.messagesArray.length
-      })
-      socket_chat.on('kickUser', (servMsg: Messages) => {
-        this.messagesArray.push(servMsg)
-        this.nbMsg = this.messagesArray.length
-      })
-      socket_chat.on('leaveUser', (servMsg: Messages) => {
+      socket_chat.on('serverMsg', (servMsg: Messages) => {
         this.messagesArray.push(servMsg)
         this.nbMsg = this.messagesArray.length
       })
@@ -219,27 +207,24 @@ export default Vue.extend({
           this.me.channelStatus = ChannelUserStatus.OWNER
         this.tokenUser = -this.tokenUser
       })
+      socket_chat.on('ChannelDelete', (owner: string) => {
+        this.$router.push('/chat?event=' + owner + ' has deleted the channel ' + this.$route.params.slug + '.')
+      })
       socket_chat.on('switchGrade', (ownerId: number) => {
         if (ownerId == this.me.id)
           this.me.channelStatus = this.me.channelStatus == ChannelUserStatus.ADMINISTRATOR ? ChannelUserStatus.DEFAULT : ChannelUserStatus.ADMINISTRATOR;
         this.tokenUser = -this.tokenUser
-      })
-      socket_chat.on('kickMe', (userId: number, channName: string) => {
-        if (userId == this.me.id)
-          this.$router.push('/chat')
-        else
-          this.tokenUser = -this.tokenUser
-      })
-      socket_chat.on('ChannelDelete', (owner: string) => {
-        this.$router.push('/chat?event=' + owner + ' has deleted the channel ' + this.$route.params.slug + '.')
       })
     }
   },
 
   methods: {
     sendMessage(): void {
-      if (this.message.length > 240)
+      if (this.message.length > 180)
+      {
+        this.activeAlert("Messages too long")
         return
+      }
       var test = socket_chat.emit('msgToServer', this.message, this.$route.params.slug)
       socket_chat.on('MuteError', (msg: string) => {
         this.activeAlert(msg)
@@ -253,7 +238,7 @@ export default Vue.extend({
     },
 
     isYourMsg(msg: Messages): boolean {
-      if (this.me.nickName == msg.sender.nickName)
+      if (this.me.user.nickName == msg.sender.nickName)
         return (true)
       return (false)
     },
@@ -310,6 +295,12 @@ export default Vue.extend({
     updateToken() {
       this.tokenUser = -this.tokenUser
       socket_chat.emit('refreshUser', this.$route.params.slug)
+    },
+
+    msgIsValid(): string {
+      if (this.message.length > 180)
+        return ''
+      return "mdi-send"
     }
   }
 })
