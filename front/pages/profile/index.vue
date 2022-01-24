@@ -1,5 +1,5 @@
 <template>
-<v-container fluid class="mt-0">
+<v-container fluid class="pt-0">
 	<AlertError @end="alert = false" :textError="alertText" :type="alertType" :state="alert"/>
   <ProfileNormal v-if="!isEditing && user.id != 0"
     :user="this.user"

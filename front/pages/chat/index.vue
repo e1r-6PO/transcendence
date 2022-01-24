@@ -17,8 +17,9 @@
       <ChannelList :state="true" />
     </v-col>
 
-    <v-col cols="12" sm="5" md="7" class="border">
+    <v-col cols="12" sm="5" md="7" class="border d-flex align-center">
 
+    <iframe width="100%" height="315" src="https://www.youtube.com/embed/SqSuRdkglxM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </v-col>
 
     <v-col cols="12" sm="4" md="3">
@@ -66,7 +67,8 @@ export default class extends Vue {
       this.alertText = error
       this.alertType = "error"
       this.alert = true
-      this.$router.replace('/chat')
+      if (this.$route.path != '/chat')
+        this.$router.replace('/chat')
     }
 
     activeSucess(success: any) {
