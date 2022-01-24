@@ -35,7 +35,7 @@
 					height="50"
 				/>
 				<v-icon v-if="user.provider === 'google'"
-						color="primary"
+						color="black"
 						x-large
 				>
 					mdi-google
