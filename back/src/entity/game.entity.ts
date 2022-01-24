@@ -148,10 +148,10 @@ export class Game {
 		// paddles
 		this.create_paddles()
 
-		// for (let i: number = 3; i >= 0; --i) {
-		// 	this.room.emit('matchSetup', { gameStart: i} ) 
-		// 	await new Promise(f => setTimeout(f, 1000)); // countdown
-		// }
+		for (let i: number = 3; i >= 0; --i) {
+			this.room.emit('matchSetup', { gameStart: i} ) 
+			await new Promise(f => setTimeout(f, 1000)); // countdown
+		}
 
 		if (this.player0socket == null || this.player1socket == null) { // prepause the game if one of the player is dc
 			this.status = 'started'
