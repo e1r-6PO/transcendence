@@ -82,15 +82,7 @@ export class ChannelController {
     var channel = await this.channelService.findChannel(channName)
 
     var participant = await this.channelService.findParticipant(req.cookies['user_id'], channel)
-    
-    var channelUser = new ChannelUser()
-    channelUser.id = participant.user.id
-    channelUser.nickName = participant.user.nickName
-    channelUser.picture = participant.user.picture
-    channelUser.channelStatus = participant.status
-    channelUser.isMute = participant.isMute
-    channelUser.muteTime = participant.muteTime
-    return channelUser
+    return participant.toJSON()
   }
 
   @Get(':channName/users')

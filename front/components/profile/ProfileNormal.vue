@@ -1,5 +1,5 @@
 <template>
-	<div justify="center" align="center">
+	<div justify="center" align="center" class="mt-n10">
 		<LeaderboardRank @click="gotoleaderboard" :rank="'RANK ' + rank" style="left: 50px; top: 110px; width: 250px; height: 50px; text-align: center"/>
 		<LeaderboardRank @click="gotoleaderboard" :rank="'RATING: ' + user.elo" style="left: 50px; top: 120px; width: 250px; height: 50px; text-align: center"/>
 		<v-avatar class="overflow-visible" style="right: 100px" size="128">
@@ -25,18 +25,19 @@
 			<v-card-text align="center">
 				<p class="color_text text-h4 font-weight-medium" align="center" style="font-family: OrbitronM !important">{{ user.nickName }}</p>
 				<p class="color_text text-h5" align="center" style="font-family: OrbitronM !important">{{ user.email }}</p>
-				<p class="color_text text-h6" align="center" style="font-family: OrbitronM !important">Connected via :</p>
+				<p class="color_text text-h6 mb-4" align="center" style="font-family: OrbitronM !important">Connected via :</p>
 				<icon-github v-if="user.provider === 'github'"
 					width="50"
 					height="50"
+					class="pb-5"
 				/>
 				<icon-42 v-if="user.provider === '42'"
 					width="50"
 					height="50"
 				/>
 				<v-icon v-if="user.provider === 'google'"
-						color="primary"
-						x-large
+					color="primary"
+					x-large
 				>
 					mdi-google
 				</v-icon>
@@ -58,7 +59,7 @@
 			</v-col>
     	<v-col xs="12" sm="12" md="6">
 				<!-- <v-card color="#181818" justify="end" height="558"> -->
-				<OwnAchievements v-if="user.id != 0" align="center" :user="user"/>
+				<OwnAchievements v-if="user.id != 0" align="center" :user="user" class=""/>
 				<!-- </v-card> -->
 			</v-col>
 		</v-row>
@@ -160,14 +161,14 @@ export default class ProfileNormal extends Vue {
 	box-shadow: 0px 0px 10px 0px #9141c7 !important;
 }
 
-.card_profile {
+.card_profile-light-blue {
 	border: 3px solid #a5fafa !important;
 	box-shadow: inset 0px 0px 150px 20px #0affff, 0px 0px 25px 0px #0affff !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	min-width: 400px;
+	min-width: 500px;
 	height: 250px;
-	width: 30%;
+	width: 33%;
 }
 
 .card_profile-purple {
@@ -175,9 +176,9 @@ export default class ProfileNormal extends Vue {
 	box-shadow: inset 0px 0px 150px 20px #a200ff, 0px 0px 25px 0px #a200ff !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	min-width: 400px;
+	min-width: 500px;
 	height: 250px;
-	width: 30%;
+	width: 33%;
 }
 
 .card_profile-yellow {
@@ -185,9 +186,9 @@ export default class ProfileNormal extends Vue {
 	box-shadow: inset 0px 0px 150px 20px #b8a435, 0px 0px 25px 0px #b8a435 !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	min-width: 400px;
+	min-width: 500px;
 	height: 250px;
-	width: 30%;
+	width: 33%;
 }
 
 .card_gameWin {
@@ -213,11 +214,6 @@ export default class ProfileNormal extends Vue {
 .color_text { 
 	z-index: 6;
 	color: #ffffff;
-}
-
-.rank-card {
-	border: 3px solid #fff7c8 !important;
-	box-shadow: 0px 0px 10px 0px #ffdc17 !important;
 }
 
 .card_game {
