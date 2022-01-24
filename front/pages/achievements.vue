@@ -1,8 +1,11 @@
 <template>
   <div class="pt-10 pb-10">
     <v-row justify="center">
+      <p class="white--text text-h4 neonTextYellow"> Achievements :</p>
+    </v-row>
+    <v-row justify="center">
       <div v-for="(key, i) in achievementsList" :key="i">
-        <AchievementCard :achievement="key" :value="getAchievementValue(key.title)"/>
+        <AchievementCard :achievement="key" class="achievements-card-yellow" :value="getAchievementValue(key.title)"/>
       </div>
     </v-row>
   </div>
