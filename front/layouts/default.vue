@@ -1,13 +1,14 @@
 <template>
   <v-app style="z-index: 10">
+    <!-- Add fixed prop to v-navigation drawer to not blur the page -->
     <v-navigation-drawer
       v-model="drawer"
-      fixed
       app
-      class="side-bar"
+      class="side-bar mt-15"
       color="#0f0f0f"
       style="z-index: 7"
       clipped
+      temporary
       stateless
     >
       <div style="display: flex ; flex-direction: column; margin-top: 10px">
