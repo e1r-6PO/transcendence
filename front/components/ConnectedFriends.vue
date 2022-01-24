@@ -17,7 +17,7 @@
       class="pr-0 pl-0"
     >
     <v-list-item-icon class="mr-4 ml-4">
-        <ProfilePicture :src="friend.peer.picture" :isActive="friend.peer.isActive" disable size="42"/>
+        <ProfilePicture :src="friend.peer.picture" :isActive="friend.peer.isActive" :currentGame="friend.peer.currentGame" disable size="42"/>
       </v-list-item-icon>
       <v-list-item-content class="pb-0">
         <v-list-item-title
@@ -65,6 +65,8 @@ import { Friendship } from '../assets/Classes-ts/Friendship'
 
 import socket_active from '../plugins/active.io'
 
+import copyLightUser from '../plugins/copyUser'
+
 @Component
 export default class ConnectedFriends extends Vue{
   
@@ -83,19 +85,16 @@ export default class ConnectedFriends extends Vue{
       if (this.friendList[i].status == "completed" && this.friendList[i].peer.isActive)
         this.activeUser.push(this.friendList[i])
     }
-    socket_active.on("active", (user: LightUser) => {
-      var find = this.findUser(user)
-      if (find != -1)
-      {
-        this.update = !this.update
-        this.switchToActive(user.id)
-      }
-    })
-    socket_active.on("inactive", (user: LightUser) => {
-      var find = this.findUser(user)
-      if (find != -1)
-      {
-        this.switchToInactive(user.id)
+    socket_active.on('stateChanged', (user: LightUser) => {
+      var find = this.friendList.findIndex((el) => el.peer.id == user.id)
+      if (find != -1) {
+        if (user.isActive == true) {
+          this.switchToActive(user.id)
+        }
+        else {
+          this.switchToInactive(user.id)
+        }
+        copyLightUser(this.friendList[find].peer, user)
         this.update = !this.update
       }
     })

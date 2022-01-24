@@ -34,8 +34,8 @@ export class GameService {
         game.player1.currentGame = game.id
         this.usersRepository.update({id: game.player0.id}, {currentGame: game.id})
         this.usersRepository.update({id: game.player1.id}, {currentGame: game.id})
-        this.activeGateway.server.emit('inGame', game.player0.toLightuser())
-        this.activeGateway.server.emit('inGame', game.player1.toLightuser())
+        this.activeGateway.server.emit('stateChanged', game.player0.toLightuser())
+        this.activeGateway.server.emit('stateChanged', game.player1.toLightuser())
         game.start()
     }
 
@@ -74,7 +74,7 @@ export class GameService {
         }
     }
 
-    async modifyElo(player0: User, player1: User, winner: User) {
+    async modifyElo(player0: User, player1: User, winner: User, match: Game) {
         const k = 30
 
         player0.elo = parseFloat((await this.usersRepository.findOne({where: {id: player0.id}})).elo as any)
@@ -91,6 +91,9 @@ export class GameService {
             var newelo0: number = player0.elo + k * (0 - p0)
             var newelo1 = player1.elo + k * (1 - p1)
         }
+
+        match.player0.elo = newelo0
+        match.player1.elo = newelo1
 
         this.usersRepository.update({ id: player0.id }, {elo: newelo0})
         this.usersRepository.update({ id: player1.id }, {elo: newelo1})
@@ -119,15 +122,15 @@ export class GameService {
             this.usersRepository.increment({id: game.player1.id}, "gameWin", 1)
         }
 
-        this.modifyElo(match.player0, match.player1, match.winner)
+        await this.modifyElo(match.player0, match.player1, match.winner, game)
     }
 
-    endgame(game: Game) {
+    async endgame(game: Game) {
         if (game.status != "idle") {
             game.stop()
             if (game.player0socket == null || game.scorep1 > game.scorep0 || game.status == "forfeitp0") { // player0 dc or p1 won
                 game.room.emit('matchEnd', { winner: game.player1.toLightuser(), looser: game.player0.toLightuser() })
-                this.save_game(game, game.player1)
+                await this.save_game(game, game.player1)
                 if (game.type == "private") {
                   this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "finish", winner: game.player1})
                 }
@@ -139,7 +142,7 @@ export class GameService {
 			}
             else if (game.player1socket == null || game.scorep0 > game.scorep1 || game.status == "forfeitp1") { //player1 dc or p0 won
                 game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser })
-                this.save_game(game, game.player0)
+                await this.save_game(game, game.player0)
                 if (game.type == "private") {
                   this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "finish", winner: game.player0})
                 }
@@ -161,8 +164,10 @@ export class GameService {
             game.player1.currentGame = ""
             this.usersRepository.update({id: game.player0.id}, {currentGame: ""})
             this.usersRepository.update({id: game.player1.id}, {currentGame: ""})
-            this.activeGateway.server.emit('endGame', game.player0.toLightuser())
-            this.activeGateway.server.emit('endGame', game.player1.toLightuser())
+            console.log(game.player0.toLightuser())
+            console.log(game.player1.toLightuser())
+            this.activeGateway.server.emit('stateChanged', game.player0.toLightuser())
+            this.activeGateway.server.emit('stateChanged', game.player1.toLightuser())
         }
         game.status = 'end'
 

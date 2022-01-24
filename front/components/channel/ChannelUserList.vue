@@ -50,6 +50,7 @@ import { ChannelUser, ChannelUserStatus } from '../../assets/Classes-ts/ChannelU
 import { LightUser } from '../../assets/Classes-ts/User';
 import socket_active from '../../plugins/active.io';
 
+import copyLightUser from '../../plugins/copyUser'
 
 @Component
 export default class ChannelUserList extends Vue {
@@ -73,7 +74,6 @@ export default class ChannelUserList extends Vue {
   widthCard!: Number | String
   
   userList: Array<ChannelUser> = new Array<ChannelUser>()
-  activeUser: Map<number, LightUser> = new Map()
   userFocus: number = -1
   updateActive: boolean = false
   userId: number = -1
@@ -88,15 +88,9 @@ export default class ChannelUserList extends Vue {
     else
     {
       this.userList = userListRet.data
-      socket_active.on("active", (user: LightUser) => {
-        this.activeUser.set(user.id, user)
-          this.switchState(user, true)
-          this.updateActive = !this.updateActive
-      })
-      socket_active.on("inactive", (user: LightUser) => {
-        this.activeUser.delete(user.id)
-          this.switchState(user, false)
-            this.updateActive = !this.updateActive
+      socket_active.on('stateChanged', (user: LightUser) => {
+        this.switchState(user)
+        this.updateActive = !this.updateActive
       })
     }
   }
@@ -114,14 +108,15 @@ export default class ChannelUserList extends Vue {
       this.userList = userListRet.data
   }
 
-  switchState(user: LightUser, state: boolean) {
+  switchState(user: LightUser) {
     for (var i = 0; i < this.userList.length; i++)
     {
       if (user.id == this.userList[i].id)
       {
         this.userList[i].nickName = user.nickName
         this.userList[i].picture = 'http://localhost:8000/api/users/' + user.id + '/picture'
-        this.userList[i].isActive = state;
+        this.userList[i].isActive = user.isActive;
+        this.userList[i].currentGame = user.currentGame
         return
       }
     }

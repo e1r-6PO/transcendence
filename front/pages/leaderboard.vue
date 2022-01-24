@@ -40,6 +40,8 @@ import { LightUser } from '../assets/Classes-ts/User'
 
 import socket_active from '../plugins/active.io'
 
+import copyLightUser from '../plugins/copyUser'
+
 @Component({})
 export default class extends Vue {
 
@@ -50,26 +52,11 @@ export default class extends Vue {
 
     this.leaderboard.forEach(user => user.elo = parseFloat(parseFloat(user.elo as any).toFixed(0)))
 
-    socket_active.on("active", (user: LightUser) => {
+    socket_active.on('stateChanged', (user: LightUser) => {
       var find = this.leaderboard.findIndex((el) => el.id == user.id)
-      if (find != -1)
-        this.leaderboard[find].isActive = true
-    })
-    socket_active.on("inactive", (user: LightUser) => {
-      var find = this.leaderboard.findIndex((el) => el.id == user.id)
-      if (find != -1)
-        this.leaderboard[find].isActive = false
-    })
-    socket_active.on("inGame", (user: LightUser) => {
-      var find = this.leaderboard.findIndex((el) => el.id == user.id)
-      console.log(user.currentGame)
-      if (find != -1)
-        this.leaderboard[find].currentGame = user.currentGame
-    })
-    socket_active.on("endGame", (user: LightUser) => {
-      var find = this.leaderboard.findIndex((el) => el.id == user.id)
-      if (find != -1)
-        this.leaderboard[find].currentGame = ""
+      if (find != -1) {
+        copyLightUser(this.leaderboard[find], user)
+      }
     })
   }
 

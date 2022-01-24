@@ -15,6 +15,7 @@ class ChannelUser {
       this.channelStatus = ChannelUserStatus.DEFAULT;
       this.picture = ''
       this.isActive = false
+      this.currentGame = "";
     }
 
     id: number;
@@ -26,6 +27,7 @@ class ChannelUser {
     banTime: Date;
     picture: string;
     isActive: boolean;
+    currentGame: string
 }
 
 export { ChannelUser }

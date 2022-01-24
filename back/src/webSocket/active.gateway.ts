@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AddUserIdMiddleware } from "src/middleware/account.middleware";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/entity/user.entity";
+import { plainToClass } from "class-transformer";
 
 @WebSocketGateway({
   cors: {
@@ -43,7 +44,9 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     private logger: Logger = new Logger('ActiveGateway');
 
   async handleDisconnect(client: Socket){
-    this.server.emit("inactive", client['info'])
+    client['info'].isActive = false
+    this.server.emit("stateChanged", plainToClass(User, client['info']).toLightuser())
+    // this.server.emit("inactive", client['info'])
     console.log("disconnect Active HERE")
     this.logger.log(`Client disconnected: ${client.id}`)
     if (client['info'] != undefined && client['info'].id != undefined) {
@@ -85,7 +88,8 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     })
     client['info'] = user_data
     this.ClientConnected.set(user_data.id, client)
-    this.server.emit("active", user_data.toLightuser())
+    user_data.isActive = true
+    this.server.emit("stateChanged", user_data.toLightuser())
     this.usersRepository.update({
       id: user_data.id } , {
         isActive: true
