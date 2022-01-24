@@ -44,7 +44,6 @@ export default class ChangeGradeUserBtn extends Vue{
       this.$router.push('/chat?error=' + ret.data.message)
     else
     {
-      socket_chat.emit('refreshUser')
       socket_chat.emit('switchGrade', this.$route.params.slug, this.userName)
     }
   }

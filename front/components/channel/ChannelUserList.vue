@@ -8,18 +8,16 @@
       justify="center"
       :key="`user-${i}`"
       link
-      v-on:change="refreshList()"
-      v-on:bind="userList"
+      v-bind="userList"
     >
       <ChannelUserCard
         @clicked="openPreview"
         @focus="focusCard"
         @leave="leaveCard"
-        @refreshUser="refreshUser"
         :ownerAction="ownerAction"
         :status="status"
-        :user="user"
-        :updateActive="updateActive"
+        :userStatus="user.channelStatus"
+        :user="user.user"
       />
       <div
         v-on:mouseover="focusCard(user.id)"
@@ -49,6 +47,7 @@ import Vue from 'vue'
 import { ChannelUser, ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
 import { LightUser } from '../../assets/Classes-ts/User';
 import socket_active from '../../plugins/active.io';
+import socket_chat from '../../plugins/chat.io';
 
 import copyLightUser from '../../plugins/copyUser'
 
@@ -75,7 +74,6 @@ export default class ChannelUserList extends Vue {
   
   userList: Array<ChannelUser> = new Array<ChannelUser>()
   userFocus: number = -1
-  updateActive: boolean = false
   userId: number = -1
 
   async mounted() {
@@ -90,36 +88,51 @@ export default class ChannelUserList extends Vue {
       this.userList = userListRet.data
       socket_active.on('stateChanged', (user: LightUser) => {
         this.switchState(user)
-        this.updateActive = !this.updateActive
+      })
+      socket_chat.on('newUser', (user: LightUser) => {
+        this.newUser(user)
+      })
+      socket_chat.on('removeUser', (user: LightUser) => {
+        this.removeUser(user)
+      })
+      socket_chat.on('switchGrade', (userId: number) => {
+        var ret = this.userList.findIndex(el => el.user.id == userId)
+        this.userList[ret].channelStatus
+        if (ret != -1)
+          this.userList[ret].channelStatus = this.userList[ret].channelStatus == ChannelUserStatus.DEFAULT ? ChannelUserStatus.ADMINISTRATOR: ChannelUserStatus.DEFAULT
       })
     }
-  }
-
-  @Watch('refresh', { immediate: true })
-  async refreshList()
-  {
-    var userListRet = await this.$axios.get('/api/chat/' + this.$route.params.slug + '/users')
-    .catch(function(error) {
-      return error.response
-    })
-    if (userListRet.status == 403)
-      this.$router.push('/chat')
-    else
-      this.userList = userListRet.data
   }
 
   switchState(user: LightUser) {
     for (var i = 0; i < this.userList.length; i++)
     {
-      if (user.id == this.userList[i].id)
+      if (user.id == this.userList[i].user.id)
       {
-        this.userList[i].nickName = user.nickName
-        this.userList[i].picture = 'http://localhost:8000/api/users/' + user.id + '/picture'
-        this.userList[i].isActive = user.isActive;
-        this.userList[i].currentGame = user.currentGame
+        this.userList[i].user.nickName = user.nickName
+        this.userList[i].user.picture = 'http://localhost:8000/api/users/' + user.id + '/picture'
+        this.userList[i].user.isActive = user.isActive;
+        this.userList[i].user.currentGame = user.currentGame
         return
       }
     }
+  }
+
+  newUser(user: LightUser) {
+    var newUser = new ChannelUser()
+
+    newUser.user = user
+    this.userList.push(newUser)
+  }
+
+  removeUser(user: LightUser) {
+    var newUser = new ChannelUser()
+
+    var id = this.userList.findIndex(el => el.user.id == user.id)
+    if (id != -1)
+      this.userList.splice(id, 1)
+    if (user.id == this.meId)
+      this.$router.push('/chat')
   }
 
   openPreview(id: number) {
@@ -137,9 +150,9 @@ export default class ChannelUserList extends Vue {
     this.userFocus = -1
   }
 
-  refreshUser() {
-    this.$emit("refreshUser")
-  }
+  // refreshUser() {
+  //   this.$emit("refreshUser")
+  // }
 }
 </script>
 
