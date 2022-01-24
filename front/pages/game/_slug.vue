@@ -16,7 +16,6 @@
     </v-col>
 
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 200px">
-      <!-- style="padding-top: 30%" -->
       <ProfilePicture :src="player1.picture" disble :neonColor="player1.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{player1.nickName}}</p>
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{ score_p1 }}</p>
@@ -139,6 +138,11 @@ export default Vue.extend({
     socket_game.on('oldGame', async (info: null) => {
       this.matchStatus = 'finished'
       this.match_res = await this.$axios.$get('/api/games/' + this.game_id)
+      console.log(this.match_res.scorep1)
+      this.score_p0 = this.match_res.scorep0
+      this.score_p1 = this.match_res.scorep1
+      this.player0 = this.match_res.player0
+      this.player1 = this.match_res.player1
     })
 
     socket_game.on('matchInfo', (info) => {
@@ -170,16 +174,43 @@ export default Vue.extend({
     socket_game.on('matchSetup', (info) => {
       var m = <HTMLCanvasElement> document.getElementById("map")
       var maptest = <CanvasRenderingContext2D> m.getContext("2d");
+      var color = ""
 
       maptest.clearRect(0, 0, this.mapx, this.mapy);
-      maptest.fillStyle = 'white'
-      maptest.fillText(info['gameStart'], this.mapx / 2, this.mapy / 2);
+      if (info['gameStart'] == 3)
+        color = this.player0.paddleColor
+      else if (info['gameStart'] == 2)
+        color = this.player1.paddleColor
+      else
+        color = 'white'
+      maptest.fillStyle = color
+      if (color == 'purple')
+		  	maptest.shadowColor = 'rebeccapurple'
+      else if (color == 'yellow')
+        maptest.shadowColor = 'goldenrod'
+      else if (color == 'pink')
+        maptest.shadowColor = 'darkviolet'
+      else if (color == 'white')
+        maptest.shadowColor = 'grey'
+      else
+		  	maptest.shadowColor = 'dark' + color
+      maptest.shadowBlur = 20
+      maptest.shadowOffsetY = 25
+      maptest.shadowOffsetX = 25
+      maptest.font = '150px OrbitronM'
+      maptest.textAlign = 'center'
+      if (info['gameStart'] == 0)
+        maptest.fillText("GO!", this.mapx / 2, 320);
+      else
+        maptest.fillText(info['gameStart'], this.mapx / 2, 320);
     })
 
     socket_game.on('gameInfo', (info) => {
       this.m = <HTMLCanvasElement> document.getElementById("map")
       this.maptest = <CanvasRenderingContext2D> this.m.getContext("2d");
 
+      this.maptest.shadowOffsetY = 0
+      this.maptest.shadowOffsetX = 0
       this.maptest.shadowColor = 'black'
       this.maptest.shadowBlur = 0;
       this.maptest.fillStyle = 'rgba(0, 0, 0, 0.25)'

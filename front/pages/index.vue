@@ -31,7 +31,7 @@
                   class="foreground_element button_auth white"
                 >
                   <v-icon
-                    color="primary"
+                    color="black"
                     x-large
                   >
                   mdi-google
