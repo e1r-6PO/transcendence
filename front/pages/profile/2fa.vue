@@ -1,55 +1,47 @@
 <template>
-  <v-container>
-    <div class="foreground_elemen flex-contianer" style="padding-top: 10%;">
-      <v-row>
-        <v-col justify="center" align="center">
-          <v-alert
-            v-model="alertCode"
-            outlined
-            :type="alertType"
-            text
-            dismissible
-            @input="closeAlert"
-          >
-            Wrong 2fa code
-          </v-alert>
-          <v-btn
-            class="foreground_element neon-button"
-            rounded
-            text
-            color="#ffffff"
-            @click="generate_qr_code()"
-          >
-            Re-Generate 2fa
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-row justify="center" align="center" style="padding-top: 20px">
-        <v-img class="foreground_element"
-          width="35%"
-          height="35%"
-          max-width="250"
-          max-height="250"
-          style="border-radius: 10px"
-          v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
-      </v-row>
-      <v-row align="center" justify="center" style="padding-top: 3%; column-gap: 15px">
-        <p v-for="i in 6" :key="i">
-          <v-text-field class="foreground_element text-field_size"
-            :ref="createRef(i)"
-            v-model="tfa_digit[i - 1]"
-            filled
-            background-color="white"
-            type="number"
-            maxlength="1"
-            oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-            @input="tfaIsComplete"
-            @keydown.delete="deleteDigit(i)"
-          ></v-text-field>
-        </p>
-      </v-row>
-    </div>
-  </v-container>
+  <div class="foreground_elemen flex-container pt-8">
+    <AlertError @end="alert = false" :textError="alertText" :type="alertType" :state="alert"> {{ alertText }} </AlertError>
+    <v-row justify="end" class="mr-6 pb-4">
+			<BasicBtn @click="returnToProfile()" content="mdi-close" neonColor="red" />
+		</v-row>
+    <v-row>
+      <v-col justify="center" align="center">
+        <v-btn
+          class="foreground_element neon-button"
+          rounded
+          text
+          color="#ffffff"
+          @click="generate_qr_code()"
+        >
+          Re-Generate 2fa
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row justify="center" align="center" style="padding-top: 20px">
+      <v-img class="foreground_element"
+        width="35%"
+        height="35%"
+        max-width="250"
+        max-height="250"
+        style="border-radius: 10px"
+        v-if="this.qr_code != null" v-bind:src="this.qr_code"/>
+    </v-row>
+    <v-row align="center" justify="center" style="padding-top: 3%; column-gap: 15px">
+      <p v-for="i in 6" :key="i">
+        <v-text-field class="foreground_element text-field_size"
+          :ref="createRef(i)"
+          v-model="tfa_digit[i - 1]"
+          filled
+          background-color="white"
+          type="number"
+          maxlength="1"
+          oninput="typescript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @input="tfaIsComplete"
+          @keydown.delete="deleteDigit(i)"
+        ></v-text-field>
+      </p>
+    </v-row>
+  </div>
 </template>
 
 <script lang='ts'>
@@ -69,8 +61,9 @@ export default class extends Vue {
   tfa_code = ""
   tfa_digit = []
   digit_ref = ["digit_1", "digit_2", "digit_3", "digit_4", "digit_5", "digit_6"]
-  alertCode = false
+  alert = false
   alertType = "success"
+  alertText = ""
 
   async mounted() {
   
@@ -87,20 +80,22 @@ export default class extends Vue {
       if (this.tfa_status == false) {
         this.generate_qr_code()
       }
+      else
+        this.$router.push('/profile')
     }
   }
 
   async generate_qr_code() {
     const ret = await this.$axios.post('/api/auth/2fa/generate')
     .catch(function (error) {
-      alert("2fa is already enabled")
+      // alert("2fa is already enabled")
       return error.response
     });
     if (ret.status == 201)
     {
       this.qr_code = ret.data
-      this.alertCode = false
       this.tfa_digit = []
+      this.alert = false
       this.$refs[`digit_1`][0]?.focus?.()
     }
   }
@@ -122,14 +117,9 @@ export default class extends Vue {
       this.$router.push("/profile?2fa=on")
       return;
     }
-    this.alertType = "error"
-    this.alertCode = true
-    this.tfa_code = ""
+    this.activeAlert("Wrong 2fa code", "error")
     this.tfa_digit = []
     this.$refs[`digit_1`][0]?.focus?.()
-    setTimeout(()=>{
-      this.alertCode=false
-    },5000)
   }
 
     $refs: any = {
@@ -170,11 +160,15 @@ export default class extends Vue {
     this.turn_on()
   }
 
-  closeAlert() {
-    this.alertCode = false;
-    this.tfaIsComplete()
+  returnToProfile() {
+    this.$router.push('/profile')
   }
 
+  activeAlert(text: string, type: string) {
+    this.alertType = type
+    this.alertText = text
+    this.alert = true
+  }
 }
 </script>
 
