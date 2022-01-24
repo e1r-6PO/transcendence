@@ -1,5 +1,5 @@
 <template>
-	<div justify="center" align="center" style="padding-top: 1%">
+	<div justify="center" align="center" class="pt-8">
 		<v-row justify="end" class="mr-3 pb-4">
 			<BasicBtn @click="switchEditing(); close_btn()" content="mdi-close" neonColor="red" />
 		</v-row>
@@ -89,7 +89,7 @@ export default class ProfileEditing extends Vue {
 	}
 
 	disableSave(): boolean {
-		if ((this.nick == this.user.nickName || this.nick == "") && this.selectedFile == null && this.selectedPaddleColor == this.user.paddleColor)
+		if ((this.nick == this.user.nickName || this.nick == "" || this.nick.length > 20) && this.selectedFile == null && this.selectedPaddleColor == this.user.paddleColor)
 			return true
 		return false
 	}

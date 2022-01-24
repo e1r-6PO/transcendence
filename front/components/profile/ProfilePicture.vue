@@ -45,11 +45,10 @@ export default class ProfilePicture extends Vue {
     var classes = ""
     if (this.neonColor != "")
       classes = "profile-picture-" + this.neonColor
-    else if (this.currentGame != "")
+    else if (this.currentGame != "" && this.currentGame != undefined)
       classes = 'profile-picture-purple'
     else if (this.isActive != null)
       classes = this.isActive ? 'profile-picture-green' : 'profile-picture-red'
-      // console.log(this.size)
     return classes
   }
 
@@ -57,14 +56,10 @@ export default class ProfilePicture extends Vue {
     var style = ""
 
     style += "width: "
-    // console.log(typeof(this.size))
-    // console.log(typeof("42"))
     if (typeof(this.size) == typeof(42))
       style += this.size + "px"
     else if (typeof(this.size) == typeof("42"))
     {
-      // console.log("string")
-      // console.log(this.size)
       var strSize: String = this.size.toString()
       style += strSize
       if (strSize.search('%') == -1)
