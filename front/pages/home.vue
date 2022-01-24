@@ -1,6 +1,7 @@
 <template>
 <v-container fill-height fluid>
   <AlertError :state="alert" :type="alertType" :textError="alertText" />
+  <number-connected-user :amount="playerOnline" />
   <v-row align="center" justify="center">
     <v-col align="center">
       <join-queue-btn @click="switchQueueState()" :inQueue="in_queue" :msg="in_queue ? 'CANCEL' : 'PLAY'"/>
@@ -22,11 +23,30 @@ export default Vue.extend({
       in_queue: false,
       alertText: "Do not refresh the page, we are looking for a match",
       alertType: "warning",
-      alert: false
+      alert: false,
+      playerOnline: 0,
+      watchPlayerCount: null
     }
   },
 
+  async mounted() {
+    let stats = this.$axios.$get('/api/stats', { progress: false }).then((res) => {
+      this.playerOnline = res['playerOnline']
+    })
+    this.watchPlayerCount = setInterval(() => this.getPlayerOnline(), 1000)
+  },
+
+  destroyed() {
+    clearInterval(this.watchPlayerCount)
+  },
+
   methods: {
+
+    async getPlayerOnline() {
+      this.$axios.$get('/api/stats', { progress: false }).then((res) => {
+        this.playerOnline = res['playerOnline']
+      })
+    },
 
     switchQueueState() {
       if (this.in_queue)

@@ -175,6 +175,16 @@ export default class extends Vue {
 <style>
   @import '../../assets/Classes-scss/main_page.scss';
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
 
 .text-field_size{
   min-width: 35px;
