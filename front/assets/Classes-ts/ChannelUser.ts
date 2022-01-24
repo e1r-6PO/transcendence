@@ -1,3 +1,5 @@
+import { LightUser } from "./User";
+
 export enum ChannelUserStatus {
   OWNER = 'owner',
   ADMINISTRATOR = 'administrator',
@@ -7,27 +9,21 @@ class ChannelUser {
 
     constructor() {
       this.id = 0;
-      this.nickName = '';
       this.isMute = false;
       this.muteTime = new Date();
       this.isBan = false;
       this.banTime = new Date();
       this.channelStatus = ChannelUserStatus.DEFAULT;
-      this.picture = ''
-      this.isActive = false
-      this.currentGame = "";
+      this.user = new LightUser()
     }
 
     id: number;
     channelStatus: ChannelUserStatus;
-    nickName: string;
+    user: LightUser;
     isMute: boolean;
     muteTime: Date;
     isBan: boolean;
     banTime: Date;
-    picture: string;
-    isActive: boolean;
-    currentGame: string
 }
 
 export { ChannelUser }
