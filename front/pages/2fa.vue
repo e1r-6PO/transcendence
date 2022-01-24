@@ -6,6 +6,21 @@
         :move-speed="4"
       />
     </client-only>
+    <v-btn
+      icon
+      href="/api/auth/logout"
+      class="logout-btn foreground_element"
+      style="margin-left: auto; margin-right: 20px; margin-top: 20px"
+      :color="exitFocus == true ? '#ffc79c' : 'black'"
+      v-on:mouseover="exitFocus = true"
+      v-on:mouseleave="exitFocus = false"
+    >
+      <v-icon
+        large
+      >
+        mdi-exit-to-app
+      </v-icon>
+    </v-btn>
     <v-container style="justify-content: center; padding-top: 20%">
       <v-row justify="center" align="center">
         <p class="foreground_element main_title_test" align="center" style="font-size:30px"> Please enter 2fa code </p>
@@ -48,6 +63,7 @@ export default class extends Vue {
 
   tfa_code =  ""
   tfa_digit = ["", "", "", "", "", ""];
+  exitFocus = false
 
   mounted() {
     this.$refs[`digit_1`][0]?.focus?.()
@@ -126,6 +142,18 @@ export default class extends Vue {
 <style lang="scss">
   @import '../assets/Classes-scss/main_page.scss';
   @import '../assets/Classes-scss/particles.scss';
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 
   .v-application{
     background-color: #181818 !important;
