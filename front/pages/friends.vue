@@ -29,7 +29,7 @@
             justify="center"
           >
             <v-row align="center" justify="start" style="padding-left: 20px; padding-top: 7px">
-              <ProfilePicture @click="goToProfile(relationship)" :src="relationship.peer.picture" :isActive="relationship.peer.isActive" />
+              <ProfilePicture @click="goToProfile(relationship)" :src="relationship.peer.picture" :isActive="relationship.peer.isActive" :currentGame="relationship.peer.currentGame" />
               <v-card-title @click="goToProfile(relationship)" class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</v-card-title>
               <BasicBtn
                 v-if="selectedStatus == 'Pending' && relationship.status == status.incomming"
@@ -69,6 +69,8 @@ const All_Friend_Status = {
 import Vue from 'vue'
 import { LightUser } from '../assets/Classes-ts/User'
 import socket_active from '../plugins/active.io'
+
+import copyLightUser from '../plugins/copyUser'
 
 export default Vue.extend({
 
@@ -122,21 +124,18 @@ export default Vue.extend({
   },
 
   async mounted() {
-    socket_active.on("active", (user: LightUser) => {
-      this.activeUser.set(user.id, user)
-      var find = this.findUser(user)
-      if (find != -1)
-      {
-        this.update = !this.update
-        this.switchState(user.id)
-      }
-    })
-    socket_active.on("inactive", (user: LightUser) => {
-      this.activeUser.delete(user.id)
-      var find = this.findUser(user)
-      if (find != -1)
-      {
-        this.switchState(user.id)
+    socket_active.on('stateChanged', (user: LightUser) => {
+      var find = this.fullRelationships.findIndex((el) => el.peer.id == user.id)
+      if (find != -1) {
+        if (user.isActive == true && this.fullRelationships[find].peer.isActive != user.isActive) {
+          this.activeUser.set(user.id, user)
+          this.switchState(user.id)
+        }
+        else if (user.isActive == true && this.fullRelationships[find].peer.isActive != user.isActive) {
+          this.activeUser.delete(user.id)
+          this.switchState(user.id)
+        }
+        copyLightUser(this.fullRelationships[find].peer, user)
         this.update = !this.update
       }
     })
@@ -278,9 +277,9 @@ export default Vue.extend({
           this.allRelationships[id].peer.isActive = !this.allRelationships[id].peer.isActive
           if (this.allRelationships[id].peer.isActive)
           {
-          console.log(this.allRelationships[id])
+          // console.log(this.allRelationships[id])
             this.onlineRelationships.push(this.allRelationships[id])
-          console.log(this.onlineRelationships)
+          // console.log(this.onlineRelationships)
           }
           else
           {

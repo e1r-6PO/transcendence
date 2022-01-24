@@ -5,7 +5,7 @@
     v-on:mouseleave="leave()"
   >
       <v-list-item-icon style="margin-right: 10px; padding-top: 4px">
-        <ProfilePicture :src="user.picture" :isActive="user.isActive" disable size="42"/>
+        <ProfilePicture :src="user.picture" :isActive="user.isActive" :currentGame="user.currentGame" disable size="42"/>
       </v-list-item-icon>
       <v-list-item-content class="pb-0">
         <v-list-item-title v-text="user.nickName" align="start" style="font-size: 15px; margin-top: 14px" :style="'color:' + getUserTextColor()" class="mb-7" />
@@ -25,13 +25,13 @@
 <script lang="ts">
 import { Component, Prop } from 'nuxt-property-decorator'
 import Vue from 'vue'
-import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser'
+import { ChannelUser, ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser'
 import { User } from '../../assets/Classes-ts/User'
 
 @Component
 export default class ChannelUserCard extends Vue{
   @Prop({ type: Object, default: new User() })
-  user!: User
+  user!: ChannelUser
 
   @Prop({ type: Boolean, default: false })
   ownerAction!: Boolean

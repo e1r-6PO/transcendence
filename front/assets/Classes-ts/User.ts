@@ -57,6 +57,19 @@ class LightUser {
         this.currentGame = "";
         this.paddleColor = ""
     }
+
+    copy(user: LightUser)
+    {
+        this.nickName = user.nickName
+        this.picture = user.picture
+        this.id = user.id;
+        this.elo = user.elo;
+        this.gameWin = user.gameWin;
+        this.gameLose = user.gameLose;
+        this.isActive = user.isActive;
+        this.currentGame = user.currentGame;
+        this.paddleColor = user.paddleColor;
+    }
 }
 
 export { User, LightUser };
