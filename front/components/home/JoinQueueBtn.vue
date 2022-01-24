@@ -1,17 +1,17 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" class="custom-svg" @click="emitEvent()">
-    <circle id="arc0" :class="getCircleSpeed()" class="circle circle-white" cx="150" cy="150" r="135" opacity="1" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
-    <circle id="arc1" :class="getCircleColor()" class="circle" cx="150" cy="150" r="120" opacity=".89" fill="none" stroke="#632b26" stroke-width="12" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
-    <circle id="arc2" :class="getCircleColor()" class="circle" cx="150" cy="150" r="120" opacity=".49" fill="none" stroke="#632b26" stroke-width="8" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
-    <circle id="arc3" :class="getCircleColor()" class="circle" cx="150" cy="150" r="100" opacity=".49" fill="none" stroke="#632b26" stroke-width="17" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
-    <circle id="arc4" :class="getCircleColor()" class="circle" cx="150" cy="150" r="120" opacity=".49" fill="none" stroke="#632b26" stroke-width="17" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
-    <circle id="arc5" :class="getCircleColor()" class="circle" cx="150" cy="150" r="100" opacity=".89" fill="none" stroke="#632b26" stroke-width="8" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
-    <circle id="arc6" :class="getCircleColor()" class="circle" cx="150" cy="150" r="90" opacity=".49" fill="none" stroke="#632b26" stroke-width="16" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
-    <circle id="arc7" :class="getCircleColor()" class="circle" cx="150" cy="150" r="90" opacity=".89" fill="none" stroke="#632b26" stroke-width="8" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
-    <circle id="arc8" :class="getCircleColor()" class="circle" cx="150" cy="150" r="80" opacity=".79" fill="#4DD0E1"
+  <svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" class="custom-svg" @click="emitEvent()">
+    <circle id="arc0" :class="getCircleSpeed()" class="circle circle-white" cx="300" cy="300" r="270" opacity="1" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
+    <circle id="arc1" :class="getCircleColor()" class="circle" cx="300" cy="300" r="240" opacity=".89" fill="none" stroke="#632b26" stroke-width="12" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
+    <circle id="arc2" :class="getCircleColor()" class="circle" cx="300" cy="300" r="240" opacity=".49" fill="none" stroke="#632b26" stroke-width="8" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
+    <circle id="arc3" :class="getCircleColor()" class="circle" cx="300" cy="300" r="200" opacity=".49" fill="none" stroke="#632b26" stroke-width="17" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
+    <circle id="arc4" :class="getCircleColor()" class="circle" cx="300" cy="300" r="220" opacity=".49" fill="none" stroke="#632b26" stroke-width="17" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
+    <circle id="arc5" :class="getCircleColor()" class="circle" cx="300" cy="300" r="200" opacity=".89" fill="none" stroke="#632b26" stroke-width="8" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
+    <circle id="arc6" :class="getCircleColor()" class="circle" cx="300" cy="300" r="180" opacity=".49" fill="none" stroke="#632b26" stroke-width="16" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
+    <circle id="arc7" :class="getCircleColor()" class="circle" cx="300" cy="300" r="180" opacity=".89" fill="none" stroke="#632b26" stroke-width="8" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
+    <circle id="arc8" :class="getCircleColor()" class="circle" cx="300" cy="300" r="160" opacity=".79" fill="#4DD0E1"
     fill-opacity="0"         stroke="#632b26" stroke-width="8" stroke-linecap="square" stroke-opacity=".99213" paint-order="fill markers stroke"/>
 
-    <text :x="inQueue ? 68 : 78" y="160" :style="'font-size: ' + (inQueue ? '210%;' : '250%;')">{{msg}}</text>
+    <text :x="inQueue ? 197 : 213" :y="inQueue ? 305 : 308" :style="'font-size: ' + (inQueue ? '270%;' : '320%;')">{{msg}}</text>
   </svg>
 </template>
 
