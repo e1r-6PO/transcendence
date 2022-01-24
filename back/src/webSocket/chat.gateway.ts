@@ -20,6 +20,7 @@ import { IoAdapter } from "@nestjs/platform-socket.io";
 import { PrivateMessage } from "src/entity/privateMessage.entity";
 import { ChatService } from "src/service/chat.service";
 import { AchievementsService } from "src/service/achievements.service";
+import { LightUser } from "src/entity/lightuser.entity";
 
 @WebSocketGateway({
     cors: {
@@ -174,7 +175,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             servMsg.type = Messages_type.server
             servMsg.message = "User <" + client['info'].nickName + "> has join the channel."
             servMsg.channel = chan
-            this.server.to(av[0]).emit("newUser", servMsg)
+            this.server.to(av[0]).emit("serverMsg", servMsg)
+            this.server.to(av[0]).emit("newUser", client['info'])
             this.messagesRepository.save(servMsg)
         }
         this.server.to(av[0]).emit("refreshUser")
@@ -189,12 +191,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         where: { channName: channName }
       })
 
+      var userLeave = this.ClientConnected.get(client['info'].id)['info']
       var servMsg = new Messages()
       servMsg.sender = client['info']
       servMsg.type = Messages_type.server
       servMsg.message = "User <" + client['info'].nickName + "> has left the channel."
       servMsg.channel = chan
-      this.server.to(channName).emit("leaveUser", servMsg)
+      this.server.to(channName).emit("serverMsg", servMsg)
+      this.server.to(channName).emit("removeUser", userLeave)
       this.messagesRepository.save(servMsg)
     }
 
@@ -216,9 +220,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       servMsg.type = Messages_type.server
       servMsg.message = client['info'].nickName + " has add <" + av[1] + "> in the channel."
       servMsg.channel = chan
-      this.server.to(av[0]).emit("newUser", servMsg)
+      this.server.to(av[0]).emit("serverMsg", servMsg)
+      this.server.to(av[0]).emit("newUser", user_data.toLightuser())
       setTimeout(() => {
-				var socketTarget = this.ClientConnected.get(user_data.id)
+        var socketTarget = this.ClientConnected.get(user_data.id)
         if (socketTarget)
             this.server.to(socketTarget.id).emit("addMe", user_data.id, chan.toLightChannel())
 			}, 200)
@@ -268,7 +273,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         servMsg.type = Messages_type.server
         servMsg.message = client['info'].nickName + " has kick <" + av[1] + "> of the channel."
         servMsg.channel = chan
-        this.server.to(av[0]).emit("kickUser", servMsg)
+        this.server.to(av[0]).emit("serverMsg", servMsg)
+        this.server.to(av[0]).emit("removeUser", user_data.toLightuser())
         setTimeout(() => {
             this.server.to(av[0]).emit("kickMe", user_data.id, chan.channName)
             var socketTarget = this.ClientConnected.get(user_data.id)
@@ -304,7 +310,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         console.log('New connection, users count: ' + this.count + ' Socket id: ' + client.id);
         console.log('Socket Namespace: ' + client.nsp.name);
 
-        console.log("COUCOU JE SUIS CONNECTé")
         let user_data = await this.usersRepository.findOne({
             where: {id: jwt_decoded['id']}
         })
