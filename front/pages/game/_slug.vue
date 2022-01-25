@@ -137,12 +137,13 @@ export default Vue.extend({
   async created() {
     socket_game.on('oldGame', async (info: null) => {
       this.matchStatus = 'finished'
-      this.match_res = await this.$axios.$get('/api/games/' + this.game_id)
-      console.log(this.match_res.scorep1)
-      this.score_p0 = this.match_res.scorep0
-      this.score_p1 = this.match_res.scorep1
-      this.player0 = this.match_res.player0
-      this.player1 = this.match_res.player1
+      this.$axios.$get('/api/games/' + this.game_id).then(match_res => {
+        this.match_res = match_res
+        this.score_p0 = match_res.scorep0
+        this.score_p1 = match_res.scorep1
+        this.player0 = match_res.player0
+        this.player1 = match_res.player1
+      })
     })
 
     socket_game.on('matchInfo', (info) => {

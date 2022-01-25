@@ -25,7 +25,7 @@ export default Vue.extend({
       alertType: "warning",
       alert: false,
       playerOnline: 0,
-      watchPlayerCount: null
+      watchPlayerCount: null as unknown as ReturnType<typeof setTimeout>
     }
   },
 
