@@ -58,12 +58,9 @@
     		<GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user"/>
 			</v-col>
     	<v-col xs="12" sm="12" md="6">
-				<!-- <v-card color="#181818" justify="end" height="558"> -->
-				<OwnAchievements v-if="user.id != 0" align="center" :user="user" class=""/>
-				<!-- </v-card> -->
+				<OwnAchievements v-if="user.id != 0"  align="center" :user="user" class=""/>
 			</v-col>
 		</v-row>
-		<!-- </div> -->
 	</div>
 </template>
 
@@ -176,7 +173,7 @@ export default class ProfileNormal extends Vue {
 	box-shadow: inset 0px 0px 150px 20px #a200ff, 0px 0px 25px 0px #a200ff !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	min-width: 500px;
+	min-width: 400px;
 	height: 250px;
 	width: 33%;
 }

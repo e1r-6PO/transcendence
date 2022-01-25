@@ -1,5 +1,5 @@
 <template>
-  <v-card :class="'achievements-card-' + neonColor" class="white--text ml-2 mr-2 mt-4" width="220" align="center">
+  <v-card :class="'achievements-card-' + neonColor" class="white--text ml-2 mr-2 mt-4" :width="!width ? 220: width" align="center">
     <v-list-item>
     <v-list-item-content>
     <v-list-item-title v-text="achievement.title"
@@ -34,7 +34,10 @@ export default class AchievementCard extends Vue{
   achievement!: Achievements
 
   @Prop({ default: 0 })
-  value!: Number | String
+	value!: Number | String
+	
+	@Prop({ default: 0 })
+  width!: Number | String
 
   @Prop({ type: String, default: 'purple'})
   neonColor!: String
@@ -68,8 +71,9 @@ export default class AchievementCard extends Vue{
 	box-shadow: inset 0px 0px 30px 0px #b8a435, 0px 0px 15px 0px #b8a435 !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	/* min-width: 260px; */
-	/* width: 275px; */
+	/* min-width: 150px; */
+	/* width: 95%; */
+	/* max-width: 250px; */
 }
 
 .achievements-card-red {
