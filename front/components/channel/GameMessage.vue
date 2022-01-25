@@ -47,11 +47,11 @@ export default class GameMessage extends Vue {
   @Prop({ type: Number, default: '10' })
   meId!: Number
 
-  gameParam = JSON.parse(this.msg.message)
+  gameParam = {}
 
   mounted() {
-    console.log(this.msg)
-    console.log(this.gameParam)
+    if (this.msg.message != "")
+      this.gameParam = JSON.parse(this.msg.message)
   }
 
   acceptGame() {
