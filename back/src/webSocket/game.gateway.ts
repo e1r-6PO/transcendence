@@ -183,7 +183,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 		if (client['info'].id == game.player1.id || client['info'].id == game.player0.id) {
 			var msg: PrivateMessage = await this.privateMessageRepository.findOne({where:{ sender: game.player0, target: game.player1, game_id: game.id }})
-			msg.game_state = "canceled"
+			msg.game_state = "denied"
 			msg.game_id = ""
 			this.privateMessageRepository.save(msg)
 
