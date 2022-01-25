@@ -15,7 +15,11 @@
       </v-list-item>
       <v-list-item v-if="meId != user.id">
         <v-list-item-action>
-          <BasicBtn @click="initiatePongRequest()" :iconSize="25" content="mdi-table-tennis" />
+          <PrivateGameBtn
+            style="padding-left: 14px"
+            :user="user"
+            location="profilePreview"
+          />
         </v-list-item-action>
         <v-list-item-title  style="color: white">Play Pong</v-list-item-title>
       </v-list-item>
@@ -26,8 +30,8 @@
         <v-list-item-title  style="color: white">Send message</v-list-item-title>
       </v-list-item>
       <v-list-item align="center">
-        <v-list-item-title style="color: white">Win 18</v-list-item-title>
-        <v-list-item-title style="color: white">Lose 13</v-list-item-title>
+        <v-list-item-title style="color: white">Win {{user.gameWin}}</v-list-item-title>
+        <v-list-item-title style="color: white">Lose {{user.gameLose}}</v-list-item-title>
       </v-list-item>
     </v-list>
   </div>
@@ -36,14 +40,14 @@
 <script lang="ts">
 import { Component, Prop } from 'nuxt-property-decorator'
 import Vue from 'vue'
-import { User } from '../../assets/Classes-ts/User'
+import { LightUser, User } from '../../assets/Classes-ts/User'
 import socket_game from '../../plugins/game.io'
 
 @Component
 export default class ProfilePreview extends Vue {
   
   @Prop({ type: Object, default: new User() })
-  user!: User
+  user!: LightUser
 
   @Prop({ type: Number, default: -1 })
   meId!: Number

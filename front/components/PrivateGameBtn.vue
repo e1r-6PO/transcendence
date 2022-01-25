@@ -8,6 +8,7 @@
       <template v-slot:activator="{}">
         <v-row align="center" justify="center" style="margin-top: 20px; margin-bottom: 20px">
           <v-btn
+            v-if="location == 'privateMsg'"
             class="foreground_element neon-button"
             style="margin-top: 0px; margin-left: 15px"
             rounded
@@ -17,6 +18,7 @@
           >
             Play
           </v-btn>
+          <BasicBtn v-if="location == 'profilePreview'" @click="dialogPrivateGameSetup = true" :iconSize="25" content="mdi-table-tennis" />
         </v-row>
       </template>
       <v-card class="dialog_card">
@@ -61,7 +63,10 @@ import socket_game from '../plugins/game.io'
 export default class PrivateGameBtn extends Vue{
 
   @Prop({ type: Object })
-  user!: Object
+  user!: LightUser
+
+  @Prop({ type: String, default: "privateMsg" })
+  location!: string
 
   tickLabel = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
   ballNumber: number = 1
@@ -75,6 +80,8 @@ export default class PrivateGameBtn extends Vue{
       socket_game.connect()
     socket_game.emit('newPrivate', {user: this.user, ballNumber: this.ballNumber, pointsToWin: this.pointsToWin, paddleSize: this.paddleSize})
     this.dialogPrivateGameSetup = false
+    if (window.location.pathname != '/privateMessage/' + this.user.nickName)
+      this.$router.push('/privateMessage/' + this.user.nickName)
   }
 }
 </script>
