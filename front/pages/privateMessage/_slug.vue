@@ -95,7 +95,7 @@
           <!-- if the message is a normal message -->
           <OtherBubbleMsg v-if="!isYourMsg(msg) && msg.type != 'game'" :msg="msg"/>
           <MyBubbleMsg v-else-if="msg.type != 'game'" :msg="msg" />
-          <GameMessage v-if="msg.type == 'game'" :msg="msg" />
+          <GameMessage v-if="msg.type == 'game'" :msg="msg" :meId="me.id" :ownerMsg="isYourMsg(msg)" />
 
           <!-- if the message is a game -->
           <!-- <v-card
@@ -257,13 +257,6 @@ export default Vue.extend({
       socket_game.emit('newPrivate', this.user)
     },
 
-    acceptGame(msg: PrivateMessages) {
-      socket_game.emit('acceptGame', {id: msg.game_id})
-    },
-
-    denyGame(msg: PrivateMessages) {
-      socket_game.emit('denyGame', {id: msg.game_id})
-    },
 
     formateTime(time: Date): string {
       var newTime: Date = new Date(time)

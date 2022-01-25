@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-10 pb-10">
+  <div class="pt-10 pb-10 pr-10 pl-10">
     <v-row justify="center">
       <p class="white--text text-h4 neonTextYellow"> Achievements :</p>
     </v-row>

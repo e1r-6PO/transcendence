@@ -34,7 +34,7 @@
       </div>
       <ProfilePreview v-if="userId == user.id"
         @closeCard="userId = -1"
-        :user="user"
+        :user="user.user"
         :meId="meId"
       />
     </div>
