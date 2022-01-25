@@ -5,8 +5,8 @@
   style="min-width: 70px; max-width: 400px !important; margin-top: 20px; margin-bottom: 5px"
 >
   <v-card-subtitle
-    style="padding-bottom: 0px; color: white"
-    v-text="msg.sender.nickName"
+    style="padding-bottom: 0px; padding-top: 10px; color: white; font-weight: bold"
+    v-text="msg.senderNick"
     class="text-left"
   >
   </v-card-subtitle>
