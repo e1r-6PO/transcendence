@@ -19,7 +19,6 @@ class PrivateMessages {
 
   id: number;
   sender: User;
-  senderNick: string;
   target: User;
   message: string;
   picture: string;
@@ -43,7 +42,6 @@ class PrivateMessages {
       this.game_id = msg && msg.game_id || ""
       this.game_state = msg && msg.game_state || ""
       this.winner = msg && msg.target || "";
-      this.senderNick = msg && msg.senderNick || ""
   }
 }
 
