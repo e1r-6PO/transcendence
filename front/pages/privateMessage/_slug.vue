@@ -12,7 +12,7 @@
     fixed
     clipped-left
   >
-    <AlertError style="margin-top: 70px" @end="onEnd" :textError="alertText" :state="alert"> {{ alertText }} </AlertError>
+    <AlertError style="margin-top: 100px" @end="onEnd" :textError="alertText" :type="alertType" :time="alertTime" :state="alert"> {{ alertText }} </AlertError>
     <BasicBtn
       style="margin-top: 80px"
       content="mdi-forum"
@@ -63,12 +63,34 @@
       color="#181818"
       style="padding-top: 70px"
     >
-    <v-row align="center" justify="center" class="pl-4 pr-5 pt-7">
-      <!-- <ChannelLeaveBtn @refreshUser="updateToken" class="pl-5 pb-3"> </ChannelLeaveBtn> -->
-      <BasicBtn @click="goToChannelHub()" @refreshUser="updateToken" isText content="Chanel hub" :height="50" class="ml-5 mt-2" />
-      <v-spacer/>
-      <BasicBtn content="mdi-close" neonColor="red" @click="userDrawer = !userDrawer"></BasicBtn>
-    </v-row>
+      <v-row align="center" justify="center" class="pl-4 pr-5 pt-7 mb-8">
+        <BasicBtn @click="goToChannelHub()" @refreshUser="updateToken" isText content="Chanel hub" :height="50" class="ml-5 mt-2" />
+        <v-spacer/>
+        <BasicBtn content="mdi-close" neonColor="red" @click="userDrawer = !userDrawer"></BasicBtn>
+      </v-row>
+      <v-divider class=" mb-4 divider" style="border-color: #f27719;"> </v-divider>
+      <div
+        class="neon-button"
+        style="border-radius: 15px; margin-top: 10px;"
+        justify="center"
+      >
+
+      <ChannelUserCard @clicked="userPreview = !userPreview" @focus="switchFocusCard" @leave="userPreviewFocus = false" :user="user" isMp />
+      <div
+        align="center"
+        justify="center"
+      >
+      <v-icon
+        @click="!userPreview"
+        @focus="switchFocusCard"
+        :color="userPreviewFocus? '#9142c7' : 'white'"
+        align="center"
+      >
+        {{ userPreview ? 'mdi-menu-up' : 'mdi-menu-down' }}
+      </v-icon>
+      </div>
+      <ProfilePreview v-if="userPreview" />
+      </div>
     </v-navigation-drawer>
 
     <v-spacer />
@@ -149,6 +171,8 @@ import AlertError from '../../components/AlertError.vue';
 import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
 import ChannelSettings from '../../components/channel/ChannelSettings.vue';
 
+import copyLightUser from '../../plugins/copyUser'
+
 import socket_chat from '../../plugins/chat.io';
 import socket_active from '../../plugins/active.io';
 import socket_game from '../../plugins/game.io';
@@ -171,9 +195,13 @@ export default Vue.extend({
       createFocus: false,
       alert: false,
       alertText: "",
+      alertType: "error",
+      alertTime: 4,
       tokenUser: 1,
       user: new LightUser(),
       updateActive: false,
+      userPreview: false,
+      userPreviewFocus: false,
     }
   },
 
@@ -212,20 +240,14 @@ export default Vue.extend({
         }
       }
     })
-    socket_active.on("active", (userChange: LightUser) => {
-          if (userChange.id == this.user.id)
-          {
-            this.user.isActive = true        
-            this.updateActive = !this.updateActive
-          }
-      })
-      socket_active.on("inactive", (userChange: LightUser) => {
-          if (userChange.id == this.user.id)
-          {
-            this.user.isActive = false        
-            this.updateActive = !this.updateActive
-          }
-      })
+    socket_active.on('stateChanged', (user: LightUser) => {
+        if (user.id = this.user.id)
+          copyLightUser(this.user, user)
+    })
+    socket_game.on('notificationPrivateGameInviteFailed', (arg: Object) => {
+      if (arg['user'].nickName && arg['user'].id == this.user.id)
+        this.activeAlert("The user is offline.", 'info')
+    })
   },
 
   methods: {
@@ -241,7 +263,7 @@ export default Vue.extend({
       newMsg.type = "message"
       socket_chat.emit('privateMessageToServer', this.$route.params.slug, this.me.nickName, this.message)
       socket_chat.on('MuteError', (msg: string) => {
-        this.activeAlert(msg)
+        this.activeAlert(msg, 'error')
       })
       this.message = ''
     },
@@ -294,9 +316,11 @@ export default Vue.extend({
       this.$router.push('/chat')
     },
 
-    activeAlert(error: any)
+    activeAlert(error: any, type: string)
     {
         this.alertText = error
+        this.alertType = type
+        this.alertTime = 4
         this.alert = true
     },
 
@@ -313,12 +337,25 @@ export default Vue.extend({
       this.message = this.message.trim()
       if (this.message.length > 180)
       {
-        this.activeAlert("Messages are limited at 180 character.")
+        this.activeAlert("Messages are limited at 180 character.", "warning")
         return false
       }
       if (this.message == "")
         return false
       return true
+    },
+
+    focusCard(id: number) {
+      this.userPreviewFocus = true
+    },
+
+    leaveCard(id: number) {
+      this.userPreviewFocus = false
+    },
+
+    switchFocusCard() {
+      if (this.userPreviewFocus == false)
+        this.userPreviewFocus = true
     }
   }
 })
