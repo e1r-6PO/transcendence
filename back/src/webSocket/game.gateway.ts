@@ -136,7 +136,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			// client.nsp.server._nsps.get('/chat').emit('privateMessage', newMsg)
 		}
 		else {
-				// player not found or not connected
+			client.emit('notificationPrivateGameInviteFailed', arg)
 		}
 	}
 
