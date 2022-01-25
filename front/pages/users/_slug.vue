@@ -70,6 +70,7 @@
     </v-avatar>
     <v-row v-if="self.id != user.id" justify="center" class="mt-10">
       <BasicBtn @click="redirectToPrivateMessage()" :isText="true" content="Send Message" />
+      <BasicBtn v-if="user.currentGame != ''" @click="watchGame()" :isText="true" content="Watch live game" style="margin-left: 50px" neonColor="red" />
     </v-row>
   </div>
   <div class="flex-container-editing" style="padding-top: 50px">
@@ -105,6 +106,8 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import login from '../../middleware/login'
 import { User, LightUser } from '../../assets/Classes-ts/User';
+import socket_active from '../../plugins/active.io';
+import copyLightUser from '../../plugins/copyUser'
 
 const All_Friend_Status = {
   null: "null",
@@ -142,9 +145,18 @@ export default Vue.extend({
     this.matchHistory = await this.$axios.$get('/api/users/' + this.user.id + '/matchs')
 
     this.user.elo = parseFloat(parseFloat(this.user.elo as any).toFixed(0)) // truncate the elo to 0 digit
+
+    socket_active.on('stateChanged', (user: LightUser) => {
+      if (user.id == this.user.id)
+        copyLightUser(this.user, user)
+    })
   },
 
   methods: {
+
+  async watchGame() {
+    this.$router.push('/game/' + this.user.currentGame)
+  },
 
   async friend() {
     if (this.friendStatus == this.status.null)
