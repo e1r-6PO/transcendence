@@ -60,6 +60,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const sender = av[1]
         const msg = av[2]
 
+        if (msg.length > 180)
+        {
+            this.server.to(client.id).emit("error", "Message is too long")
+            return
+        }
         var newMsg: PrivateMessage = new PrivateMessage;
         
         const jwt = await this.chatService.getJwt(client)
@@ -91,6 +96,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @SubscribeMessage('msgToServer')
     async handleMessage(client: Socket, av: string): Promise<void>{
         var newMsg: Messages = new Messages;
+
+        if (av[0].length >= 180)
+        {
+            this.server.to(client.id).emit("error", "Message is too long")
+            return
+        }
 
         var chan = await this.ChannelsRepository.findOne({
             where: { channName: av[1] }
