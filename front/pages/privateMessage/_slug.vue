@@ -19,7 +19,7 @@
       v-on:click="channelDrawer = !channelDrawer">
     </BasicBtn>
     <v-spacer />
-    <ProfilePicture @click="redirectToUserProfile" :src="user.picture" :isActive="user.isActive" size="42" style="margin-top: 80px; margin-right: 5px"/>
+    <ProfilePicture @click="redirectToUserProfile" :src="user.picture" :isActive="user.isActive" :currentGame="user.currentGame" size="42" style="margin-top: 80px; margin-right: 5px"/>
     <h3 class="neonText" style="color: white; margin-top: 80px">{{ user.nickName }}</h3>
 
     <PrivateGameBtn
@@ -129,7 +129,7 @@
   </v-row>
   
   <v-footer app inset color="#181818">
-    <TextField @enterPress="sendMessage" v-model="message" :disable="message.length > 180" append_outer_icon="mdi-send" placeholder="Message" class="mb-2" />
+    <TextField @enterPress="sendMessage" v-model="message" :append_outer_icon="message.length > 180 ? '' : 'mdi-send'" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
 </template>
@@ -162,7 +162,7 @@ export default Vue.extend({
     return {
       message: '',
       messagesArray: new Array<PrivateMessages>(),
-      me: new User(),
+      me: new LightUser(),
       nbMsg: -1,
       userDrawer: false,
       channelDrawer: false,
@@ -193,7 +193,7 @@ export default Vue.extend({
     this.nbMsg = this.messagesArray.length
     
     socket_chat.on("privateMessage", (msg: PrivateMessages) => {
-      if (msg.sender.nickName == this.$route.params.slug)
+      if (msg.sender.nickName == this.$route.params.slug || (msg.sender.id == this.me.id && msg.target.id == this.user.id))
       {
         this.messagesArray.push(msg)
         this.nbMsg = this.messagesArray.length
@@ -230,11 +230,8 @@ export default Vue.extend({
 
   methods: {
     sendMessage(): void {
-      if (this.message.length > 180)
-      {
-        this.activeAlert("Messages are limited at 180 character.")
+      if (!this.checkMsg())
         return
-      }
       var newMsg = new PrivateMessages()
       newMsg.sender = this.me
       newMsg.picture = this.me.picture
@@ -242,8 +239,6 @@ export default Vue.extend({
       newMsg.time = new Date()
       newMsg.target = new User()
       newMsg.type = "message"
-      this.messagesArray.push(newMsg)
-      this.nbMsg = this.messagesArray.length
       socket_chat.emit('privateMessageToServer', this.$route.params.slug, this.me.nickName, this.message)
       socket_chat.on('MuteError', (msg: string) => {
         this.activeAlert(msg)
@@ -313,6 +308,18 @@ export default Vue.extend({
       this.tokenUser += 1
       socket_chat.emit('refreshUser', this.$route.params.slug)
     },
+
+    checkMsg(msg): boolean {
+      this.message = this.message.trim()
+      if (this.message.length > 180)
+      {
+        this.activeAlert("Messages are limited at 180 character.")
+        return false
+      }
+      if (this.message == "")
+        return false
+      return true
+    }
   }
 })
 </script>

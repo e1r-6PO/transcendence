@@ -89,6 +89,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         var socketTarget = this.ClientConnected.get(userTarget.id)
         if (socketTarget)
             this.server.to(socketTarget.id).emit("privateMessage", newMsg)
+        this.server.to(client.id).emit("privateMessage", newMsg)
         this.achievementService.sendMsgAchievement(newMsg.sender)
 
     }
