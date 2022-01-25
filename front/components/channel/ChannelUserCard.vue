@@ -9,7 +9,7 @@
       </v-list-item-icon>
       <v-list-item-content class="pb-0">
         <v-list-item-title v-text="user.nickName" align="start" style="font-size: 15px; margin-top: 14px" :style="'color:' + getUserTextColor()" class="mb-7" />
-        <v-list-item-subtitle v-text="userStatus" align="right" style="font-size: 12px; position: absolute; bottom: -15px; right: 20px" :style="'color:' + getUserTextColor()" />
+        <v-list-item-subtitle v-if="!isMp" v-text="userStatus" align="right" style="font-size: 12px; position: absolute; bottom: -15px; right: 20px" :style="'color:' + getUserTextColor()" />
       </v-list-item-content>
       <v-list-item-icon v-if="ownerAction && isUserOwner() && userStatus != isOwner()" class="mt-3">
         <DeleteUserBtn style="margin-right: 5px" :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
@@ -35,6 +35,10 @@ export default class ChannelUserCard extends Vue{
 
   @Prop({ type: Boolean, default: false })
   ownerAction!: Boolean
+
+  @Prop({ type: Boolean, default: false })
+  isMp!: Boolean
+
 
   @Prop({ type: String, default: ChannelUserStatus.DEFAULT})
   status!: ChannelUserStatus
