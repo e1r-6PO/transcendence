@@ -26,6 +26,9 @@ export default class AlertError extends Vue{
   @Prop({ type: String, default: "error" })
   type!: string
 
+  @Prop({type: Number, default: 2 })
+  time!: number
+  
   alertCode: boolean = true
   alert: boolean = false
 
@@ -40,7 +43,7 @@ export default class AlertError extends Vue{
       this.alert = true
       setTimeout(() => {
         this.$emit('end')
-    }, 2000)
+    }, this.time * 1000)
   }
 }
 </script>
