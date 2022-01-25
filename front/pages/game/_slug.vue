@@ -4,8 +4,8 @@
   <v-row justify="center">
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 200px">
       <ProfilePicture :src="player0.picture" :neonColor="player0.paddleColor" size="100" />
-      <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{player0.nickName}}</p>
-      <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{ score_p0 }}</p>
+      <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player0.nickName}}</p>
+      <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p0 }}</p>
     </v-col>
 
     <v-col cols="6">
@@ -17,8 +17,8 @@
 
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 200px">
       <ProfilePicture :src="player1.picture" disble :neonColor="player1.paddleColor" size="100" />
-      <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{player1.nickName}}</p>
-      <p class="text-h5 pt-10 pl-3" style="color: #ffffff;">{{ score_p1 }}</p>
+      <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player1.nickName}}</p>
+      <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p1 }}</p>
     </v-col>
   </v-row>
 </div>
