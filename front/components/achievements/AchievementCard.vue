@@ -6,6 +6,7 @@
       align="start"
       class="white--text text-h6 pl-1 pb-2"
       :class="value == '100.0' ? 'neonText-light-blue': 'neonText'"
+	  style="font-family: OrbitronM !important; font-size: 105% !important"
     />
     <v-list-item-subtitle v-text="achievement.action" class="white--text" align="start" />
     </v-list-item-content>
