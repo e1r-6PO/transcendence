@@ -1,8 +1,18 @@
 <template>
-<v-card :class="getClasse()" align="center" min-width="350" max-width="500" width="50%" min-heigt="100" max-height="300">
+<v-card
+  @click="msg.game_state == 'finish' ? redirectToGame(msg.game_id, msg.game_state) : ''"
+  :disabled="msg.game_state == 'denied' || msg.game_state == 'canceled' ? true : false"
+  :class="getClasse()"
+  align="center"
+  min-width="350"
+  max-width="500"
+  width="50%"
+  min-heigt="100"
+  max-height="300"
+>
   <v-list-item class="justify-center">
     <v-list-item-content>
-    <v-icon large :color="getColorIcon()"> mdi-fencing </v-icon>
+      <v-icon large :color="getColorIcon()"> mdi-fencing </v-icon>
     <v-list-item-title v-if="msg.game_state == 'pending'" class="white--text">
       <p class="mb-1" style="font-size: 110%">{{ msg.sender.nickName }} challenges you in a pong game.</p>
       <p class="mb-4">Rules are the following :</p>
@@ -10,11 +20,14 @@
       <p class="mb-1 ml-10" align="start">- The size of paddles is : {{ gameParam.paddleSize }}</p>
       <p class="mb-1 ml-10" align="start">- First to {{ gameParam.pointsToWin }} points</p>
     </v-list-item-title>
-    <v-list-item-title v-if="msg.game_state == 'canceled'" class="white--text">
-      <p class="mb-1" style="font-size: 110%">{{ msg.target.nickName }} refused the challenge.</p>
+    <v-list-item-title v-else-if="msg.game_state == 'canceled'" class="white--text">
+      <p class="mb-1" style="font-size: 110%">The challenge has been canceled</p>
     </v-list-item-title>
-    <v-list-item-title v-if="msg.game_state == 'finish'" class="white--text">
-      <p class="mb-1" style="font-size: 110%">{{ msg.winner.nickName }} win the game</p>
+    <v-list-item-title v-else-if="msg.game_state == 'denied'" class="white--text">
+      <p class="mb-1" style="font-size: 110%">{{ msg.sender.id == meId ? msg.sender.nickName: 'you' }} denied the challenge.</p>
+    </v-list-item-title>
+    <v-list-item-title v-else-if="msg.game_state == 'finish'" class="white--text">
+      <p class="mb-1" style="font-size: 110%">You {{ msg.winner.id == meId ? 'won' : 'loose' }} the game.</p>
     </v-list-item-title>
     
     <!-- <BasicBtn v-if="msg.game_state == 'pending' && !isYourMsg(msg)" content="mdi-check" v-on:click="acceptGame(msg)"></BasicBtn> -->
@@ -22,8 +35,8 @@
     </v-list-item-content>
   </v-list-item>
   <div v-if="msg.game_state == 'pending'" class="d-flex justify-center align-center pb-2">
-    <BasicBtn @click="acceptGame()" content="mdi-check" neonColor="red" class="mr-2" />
-    <BasicBtn @click="denyGame()" content="mdi-close" neonColor="green" class="ml-2" />
+    <BasicBtn v-if="!ownerMsg" @click="acceptGame()" content="mdi-check" neonColor="green" class="mr-2" />
+    <BasicBtn @click="denyGame()" content="mdi-close" neonColor="red" class="ml-2" />
   </div>
 </v-card>
 </template>
@@ -63,6 +76,13 @@ export default class GameMessage extends Vue {
     socket_game.emit('denyGame', {id: this.msg.game_id})
   }
 
+  redirectToGame(game_id: string, game_state: string) {
+    if (game_state == "canceled" || game_state == "denied")
+      null//raise notification
+    else
+      this.$router.push("/game/" + game_id)
+  }
+
   getClasse(): string {
     if (this.ownerMsg)
     {
@@ -88,9 +108,9 @@ export default class GameMessage extends Vue {
   }
 
   getColorIcon(): string {
-    if (this.msg.game_state == 'pending' && this.ownerMsg)
+    if ((this.msg.game_state == 'pending' || this.msg.game_state == 'canceled' || this.msg.game_state == 'denied') && this.ownerMsg)
       return '#0affff'
-    else if (this.msg.game_state == 'pending' && !this.ownerMsg)
+    else if ((this.msg.game_state == 'pending' || this.msg.game_state == 'canceled'  || this.msg.game_state == 'denied') && !this.ownerMsg)
       return '#f27719'
     else if (this.msg.game_state == 'finish' && this.msg.winner.id == this.meId)
       return '#32c44a'

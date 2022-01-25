@@ -6,7 +6,7 @@
 >
   <v-card-subtitle
     style="padding-bottom: 0px; color: white"
-    v-text="msg.senderNick"
+    v-text="msg.sender.nickName"
     class="text-left"
   >
   </v-card-subtitle>
