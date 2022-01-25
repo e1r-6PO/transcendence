@@ -99,11 +99,11 @@ export class AchievementsService {
     if (achievement.length == 0)
     {
       var model = this.achievements.list[2]
-      var play10Games = new Achievements(user, model.action, model.title, 1, model.goal, "mdi-chat-plus")
+      var play10Games = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
       model = this.achievements.list[3]
-      var play100Games = new Achievements(user, model.action, model.title, 1, model.goal, "mdi-chat-plus")
+      var play100Games = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
       model = this.achievements.list[4]
-      var play1000Games = new Achievements(user, model.action, model.title, 1, model.goal, "mdi-chat-plus")
+      var play1000Games = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
       this.achievementsRepository.save([play10Games, play100Games, play1000Games])
     }
     else
@@ -127,11 +127,11 @@ export class AchievementsService {
     if (achievement.length == 0)
     {
       var model = this.achievements.list[5]
-      var play10Games = new Achievements(user, model.action, model.title, 1, model.goal, "mdi-chat-plus")
+      var play10Games = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
       model = this.achievements.list[6]
-      var play100Games = new Achievements(user, model.action, model.title, 1, model.goal, "mdi-chat-plus")
+      var play100Games = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
       model = this.achievements.list[7]
-      var play1000Games = new Achievements(user, model.action, model.title, 1, model.goal, "mdi-chat-plus")
+      var play1000Games = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
       this.achievementsRepository.save([play10Games, play100Games, play1000Games])
     }
     else
@@ -161,7 +161,7 @@ export class AchievementsService {
 
   createAchievement(user: User, id: number) {
     var model = this.achievements.list[id]
-    var newAchievement = new Achievements(user, model.action, model.title, 1, model.goal, "mdi-chat-plus")
+    var newAchievement = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
     this.achievementsRepository.save(newAchievement)
   }
 }
