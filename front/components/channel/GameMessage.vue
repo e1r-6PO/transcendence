@@ -105,6 +105,7 @@ export default class GameMessage extends Vue {
       else if (this.msg.game_state != 'finish')
         return 'bubble bubble_left-game'
     }
+    return ''
   }
 
   getColorIcon(): string {
@@ -116,6 +117,7 @@ export default class GameMessage extends Vue {
       return '#32c44a'
     else if (this.msg.game_state == 'finish' && this.msg.winner.id != this.meId)
       return '#d61c1c'
+    return '#000000'
 // ?    if (this.msg.game_state == 'finish' && this.msg.winner.id == this.meId)
 //  ?     return '#0affff'
   }

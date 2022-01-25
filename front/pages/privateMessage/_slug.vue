@@ -186,7 +186,7 @@ export default Vue.extend({
     return {
       message: '',
       messagesArray: new Array<PrivateMessages>(),
-      me: new LightUser(),
+      me: new User(),
       nbMsg: -1,
       userDrawer: false,
       channelDrawer: false,
@@ -241,10 +241,10 @@ export default Vue.extend({
       }
     })
     socket_active.on('stateChanged', (user: LightUser) => {
-        if (user.id = this.user.id)
-          copyLightUser(this.user, user)
+      if (user.id == this.user.id)
+        copyLightUser(this.user, user)
     })
-    socket_game.on('notificationPrivateGameInviteFailed', (arg: Object) => {
+    socket_game.on('notificationPrivateGameInviteFailed', (arg: any) => {
       if (arg['user'].nickName && arg['user'].id == this.user.id)
         this.activeAlert("The user is offline.", 'info')
     })
@@ -333,7 +333,7 @@ export default Vue.extend({
       socket_chat.emit('refreshUser', this.$route.params.slug)
     },
 
-    checkMsg(msg): boolean {
+    checkMsg(): boolean {
       this.message = this.message.trim()
       if (this.message.length > 180)
       {
