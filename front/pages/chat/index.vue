@@ -7,7 +7,7 @@
   <v-row style="height: 100%">
 
     <v-col cols="12" sm="3" md="2" class="border">
-      <h3 align="center" justify="center" class="white--text pb-3 pt-3 neonText"> Your channels </h3>
+      <h3 align="center" justify="center" class="white--text pb-3 pt-3 neonText" style="font-family: OrbitronM"> Your channels </h3>
     <v-divider class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
       <CreateChannelBtn @error="activeAlert" class="pb-2"/>
       <JoinChannelBtn @error="activeAlert" />

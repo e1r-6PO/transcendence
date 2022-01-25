@@ -7,7 +7,7 @@
     >
       <template v-slot:activator="{}">
         <v-row align="center" justify="center" style="margin-top: 0px">
-          <BasicBtn @click="dialog = true" isText :width="120" :height="40" content="Create +" />
+          <BasicBtn @click="dialog = true" isText :width="120" :height="40" content="Create +" style="font-family: OrbitronM !important; font-size: 80% !important"/>
         </v-row>
       </template>
       <v-card class="dialog_card">

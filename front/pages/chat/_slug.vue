@@ -19,7 +19,7 @@
       v-on:click="channelDrawer = !channelDrawer">
     </BasicBtn>
     <v-spacer />
-    <h3 class="neonText" style="color: white; margin-top: 80px">{{ $route.params.slug }}</h3>
+    <h3 class="neonText" style="color: white; margin-top: 80px; font-family: OrbitronM; font-size: 150%">{{ $route.params.slug }}</h3>
     <v-spacer />
     <BasicBtn
       style="margin-top: 80px"

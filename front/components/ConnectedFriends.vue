@@ -1,6 +1,6 @@
 <template>
   <v-list>
-    <h3 align="center" justify="center" class="white--text pb-4 pt-2 neonText"> Connected friends </h3>
+    <h3 align="center" justify="center" class="white--text pb-4 pt-2 neonText" style="font-family: OrbitronM !important"> Connected friends </h3>
     <v-divider class="mt-4 mb-8 divider" style="border-color: #f27719;"> </v-divider>
     <div
       v-for="(friend, i) in activeUser"

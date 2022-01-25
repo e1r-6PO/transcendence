@@ -8,7 +8,7 @@
       <template v-slot:activator="{}">
         <v-row align="center" justify="center" style="margin-top: 10px; margin-bottom: 20px">
         
-        <BasicBtn @click="dialogJoin = true" isText content="Join" :width="120" :height="40"/>
+        <BasicBtn @click="dialogJoin = true" isText content="Join" :width="120" :height="40" style="font-family: OrbitronM !important; font-size: 80% !important"/>
         </v-row>
       </template>
       <v-card class="dialog_card">

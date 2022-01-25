@@ -16,7 +16,7 @@
       @click="redirectToChannel(channel.channName)"
     >
       <v-list-item-content class="pb-1">
-        <h4 class="mb-0 pt-2" :style="'color:' + getChannelTextColor(i)" >{{ channel.channName }}</h4>
+        <h4 class="mb-0 pt-3" style="font-family: OrbitronM" :style="'color:' + getChannelTextColor(i)" >{{ channel.channName }}</h4>
       <v-list-item-subtitle v-text="channel.channAccess" align="right" style="font-size: 10px" :style="'color:' + getChannelTextColor(i)" />
       </v-list-item-content>
     </v-list-item>

@@ -5,7 +5,7 @@
   style="min-width: 70px; max-width: 400px !important; margin-top: 20px; margin-bottom: 5px"
 >
   <v-card-subtitle
-    style="padding-bottom: 0px; color: white"
+    style="padding-bottom: 0px; padding-top: 10px; color: white; font-weight: bold"
     v-text="msg.senderNick"
     class="text-left"
   >
@@ -15,7 +15,7 @@
     v-text="msg.message"
   />
   <v-card-subtitle
-    style="padding-bottom: 5px; padding-top: 0px; color: white"
+    style="padding-bottom: 5px; padding-top: 0px; color: white; font-style: italic"
     v-text="formateTime(msg.time)"
     class="text-right"
   />
