@@ -6,6 +6,7 @@ import { Friend_Status, Relationship } from "src/entity/relationship.entity";
 import { TwoFaGuard, ValidTokenGuard } from "src/guards/account.guards";
 import { AchievementsService } from "src/service/achievements.service";
 import { FriendsService } from "src/service/friends.service";
+import { PrivateMessageService } from "src/service/privateMessage.service";
 import { UsersService } from "src/service/users.service";
 import { Repository } from "typeorm";
 
@@ -14,6 +15,7 @@ import { Repository } from "typeorm";
 export class FriendsController {
   constructor(
     private readonly achievementsService: AchievementsService,
+    private readonly privateMessagesService : PrivateMessageService,
     private readonly usersService : UsersService,
     private readonly friendsService : FriendsService,
     @InjectRepository(Relationship)
@@ -117,6 +119,8 @@ export class FriendsController {
       this.relationShipRepository.delete(receiver);
 
     this.friendsService.create_block(req.cookies['user_id'], id);
+    this.privateMessagesService.createServMp("You has been blocked", req.cookies['user_id'], id)
+    this.privateMessagesService.createServMp("You blocked this user", id, req.cookies['user_id'])
     return { message: "success" }
   }
 
@@ -133,6 +137,9 @@ export class FriendsController {
     }
 
     this.relationShipRepository.delete(sender);
+    this.privateMessagesService.createServMp("You has been unblocked", req.cookies['user_id'], id)
+    this.privateMessagesService.createServMp("You unblocked this user", id, req.cookies['user_id'])
+
     return { message: "success" }
   }
 }
