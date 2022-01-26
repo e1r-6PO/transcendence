@@ -15,7 +15,6 @@ export default Vue.extend({
   middleware: 'login',
 
   async created() {
-		console.log(socket_game.connect());
     socket_game.on('connect', () => {
     })
 	}

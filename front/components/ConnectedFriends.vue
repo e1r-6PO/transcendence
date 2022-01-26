@@ -10,7 +10,7 @@
       @mouseleave="leaveCard(friend.peer.id)"
       class="neon-button text-center mb-2"
       justify-content="center"
-      style="border-radius: 15px"
+      style="border-radius: 15px; font-family: OrbitronM !important"
     >
     <v-list-item
       @click="openPreview(friend.peer.id)"
@@ -139,7 +139,6 @@ export default class ConnectedFriends extends Vue{
   }
 
   openPreview(id: number) {
-    console.log(id)
     if (this.userId == id)
       this.userId = -1
     else

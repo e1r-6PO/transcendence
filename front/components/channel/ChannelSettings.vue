@@ -20,7 +20,7 @@
           <BasicBtn @click="dialog = false" content="mdi-close" neonColor="red" class="mt-3 mr-3" />
         </div>
         <v-card-title v-if="status == isOwner()" class="justify-center">
-          <p align="center" class="text-h4 white--text">{{ channName }}</p>
+          <p align="center" class="text-h4 white--text" style="font-family: OrbitronM !important">{{ channName }}</p>
         </v-card-title>
         <v-card-text v-if="status == isOwner()">
           <v-container>
@@ -41,7 +41,7 @@
       <v-divider v-if="status == isOwner()" class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
         <v-row class="justify-center">
           <v-card-title>
-            <p class="text-h4 white--text"> Users </p>
+            <p class="text-h4 white--text" style="font-family: OrbitronM !important"> Users </p>
           </v-card-title>
           <AddUserBtn @refreshUser="updateToken" @error="activeAlert" />
         </v-row>

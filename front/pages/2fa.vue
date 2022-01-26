@@ -83,7 +83,6 @@ export default class extends Vue {
         i--
       else
         i = 1
-      console.log(i)
       this.$refs[`digit_${i}`][0]?.focus?.()
     }
     else

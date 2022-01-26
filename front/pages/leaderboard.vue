@@ -18,7 +18,7 @@
         <v-row align="center"  style="padding-left: 20px; padding-top: 7px">
           <span class="text-left pl-2 pt-1" :class="getRankColor(user.rank)" style="min-width: 30px ;font-family: OrbitronM; font-size: 165%">{{ user.rank }}</span>
           <ProfilePicture @click="goToProfile(user)" :src="user.picture" :isActive="user.isActive" :currentGame="user.currentGame"/>
-          <v-card-title @click="goToProfile(user)" class="color_text text-h5 font-weight-medium" align="center">{{user.nickName}}</v-card-title>
+          <v-card-title @click="goToProfile(user)" class="color_text text-h5 font-weight-medium" align="center" style="font-family: OrbitronM !important; font-size: 165%">{{user.nickName}}</v-card-title>
           <v-spacer />
           <span class="grey--text pt-1 text-right mr-5" style="font-family: OrbitronM; font-size: 165%">rating: </span>
           <span class="white--text pt-1 text-right mr-5" style="min-width: 75px; font-family: OrbitronM; font-size: 165%">{{ user.elo }}</span>

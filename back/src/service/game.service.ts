@@ -42,9 +42,7 @@ export class GameService {
     push_game(game: Game) {
         if (game.type == "ranked") // only start game if its ranked (not private)
             this.startGame(game)
-        // this.games.push(game)
         this.games.set(game.id, game)
-        // console.log(game.id, typeof game.id, 24, typeof 24, this.games.get(24), this.games.get(game.id))
     }
 
     join(client: Socket, id: string) { // join a running game or checking a past game
@@ -62,8 +60,6 @@ export class GameService {
                 else {
                     game.player1socket = client 
                 }
-                // if (game.hasStarted == false && game.player0socket != null && game.player1socket != null) // check if private ?
-                //     game.start()
                 game.sendGameInfoTo(client)
                 client.join(game.id.toString())
             }
@@ -164,8 +160,6 @@ export class GameService {
             game.player1.currentGame = ""
             this.usersRepository.update({id: game.player0.id}, {currentGame: ""})
             this.usersRepository.update({id: game.player1.id}, {currentGame: ""})
-            console.log(game.player0.toLightuser())
-            console.log(game.player1.toLightuser())
             this.activeGateway.server.emit('stateChanged', game.player0.toLightuser())
             this.activeGateway.server.emit('stateChanged', game.player1.toLightuser())
         }

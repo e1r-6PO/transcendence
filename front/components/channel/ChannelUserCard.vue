@@ -55,9 +55,6 @@ export default class ChannelUserCard extends Vue{
   userFocus: boolean = false
 
   mounted() {
-    console.log("check status")
-    console.log(this.user)
-    console.log(this.userStatus)
   }
 
   getGameState(): string {

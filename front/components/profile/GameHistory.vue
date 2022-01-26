@@ -113,7 +113,6 @@ export default class GameHistory extends Vue {
   nextPage() {
     this.page = this.page < this.totalPage ? this.page + 1 : this.page;
     this.fetchMoreGames()
-    // console.log("hey")
   }
 
   previousPage() {

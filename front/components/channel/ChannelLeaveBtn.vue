@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BasicBtn @click="leaveChannel()" :height="50" isText content="Leave" neonColor="red" />
+    <BasicBtn style="font-family: OrbitronM; font-size: 100%" @click="leaveChannel()" :height="50" isText content="Leave" neonColor="red" />
   </div>
 </template>
 

@@ -53,7 +53,6 @@ export default class LeaveOwnerBtn extends Vue {
     .catch(function(error) {
       return error.response
     })
-    console.log(ret)
   if (ret.status == 404)
     this.$router.push('/chat?error=' + ret.data.message)
   else if (ret.status == 403)

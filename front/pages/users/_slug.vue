@@ -69,25 +69,25 @@
       </div>
     </v-avatar>
     <v-row v-if="self.id != user.id" justify="center" class="mt-10">
-      <BasicBtn @click="redirectToPrivateMessage()" :isText="true" content="Send Message" />
+      <BasicBtn @click="redirectToPrivateMessage()" style="font-family: OrbitronM !important; font-size: 80% !important" :isText="true" content="Send Message" />
       <BasicBtn v-if="user.currentGame != ''" @click="watchGame()" :isText="true" content="Watch live game" style="margin-left: 50px" neonColor="red" />
     </v-row>
   </div>
   <div class="flex-container-editing" style="padding-top: 50px">
     <v-card class="foreground_element card_profile-purple">
       <v-card-text align="center">
-        <p class="color_text text-h4 font-weight-medium" align="center">{{ user.nickName }}</p>
+				<p class="color_text text-h4 font-weight-medium" align="center" style="font-family: OrbitronM !important">{{ user.nickName }}</p>
       </v-card-text>
     </v-card>
   </div>
   <v-row class="d-flex justify-space-around flex-row">
     <v-card class="foreground_element card_game-purple flex-item" margin-top="5%">
-      <h1 class="color_win" align="center">Win</h1>
-      <h3 class="color_text" align="center">{{ user.gameWin }} </h3>
+      <h1 class="color_win" align="center" style="font-family: OrbitronM !important">Win</h1>
+			<h3 class="color_text" align="center" style="font-family: OrbitronM !important">{{ user.gameWin }} </h3>
     </v-card>
     <v-card class="foreground_element card_game-purple flex-item" margin-top="5%">
-      <h1 class="color_lose" align="center">Lose</h1>
-      <h3 class="color_text" align="center" justify="center"> {{ user.gameLose }} </h3>
+			<h1 class="color_lose" align="center" style="font-family: OrbitronM !important">Lose</h1>
+			<h3 class="color_text" align="center" justify="center" style="font-family: OrbitronM !important"> {{ user.gameLose }} </h3>
     </v-card>
   </v-row>
   <v-row class="pt-4 d-flex flex-row justify-center">

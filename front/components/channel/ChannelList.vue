@@ -17,7 +17,7 @@
     >
       <v-list-item-content class="pb-1">
         <h4 class="mb-0 pt-3" style="font-family: OrbitronM" :style="'color:' + getChannelTextColor(i)" >{{ channel.channName }}</h4>
-      <v-list-item-subtitle v-text="channel.channAccess" align="right" style="font-size: 10px" :style="'color:' + getChannelTextColor(i)" />
+      <v-list-item-subtitle v-text="channel.channAccess" align="right" style="font-family: OrbitronM; font-size: 10px" :style="'color:' + getChannelTextColor(i)" />
       </v-list-item-content>
     </v-list-item>
   </v-list>
@@ -58,7 +58,6 @@ export default class ChannelList extends Vue {
   }
 
   redirectToChannel(channName: string) {
-    console.log(channName)
     this.$router.push('/chat/' + channName)
   }
 

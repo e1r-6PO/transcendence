@@ -72,7 +72,6 @@ export default class GameMessage extends Vue {
   }
 
   denyGame() {
-    console.log(this.msg.game_id)
     socket_game.emit('denyGame', {id: this.msg.game_id})
   }
 
@@ -86,9 +85,7 @@ export default class GameMessage extends Vue {
   getClasse(): string {
     if (this.ownerMsg)
     {
-      console.log(this.meId)
       if(this.msg.game_state == 'finish')
-      console.log(this.msg.winner.id)
       if (this.msg.game_state == 'finish' && this.msg.winner.id == this.meId)
         return 'bubble bubble_right-game-win'
       else if (this.msg.game_state == 'finish' && this.msg.winner.id != this.meId)

@@ -18,6 +18,7 @@
         :status="status"
         :userStatus="user.channelStatus"
         :user="user.user"
+        style="font-family: OrbitronM"
       />
       <div
         v-on:mouseover="focusCard(user.id)"

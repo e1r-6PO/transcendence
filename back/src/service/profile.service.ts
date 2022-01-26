@@ -17,7 +17,6 @@ export class ProfileService {
   ) {}
 
   async me(request) {
-    // console.log(request.cookies['jwt'])
     var user = await this.usersRepository.findOne(
       { where:
           { id: request.cookies['user_id'] }

@@ -1,7 +1,7 @@
 <template>
-  <div class="pt-10 pb-10 pr-10 pl-10">
+  <div class="pt-15 pb-10 pr-10 pl-10">
     <v-row justify="center">
-      <p class="white--text text-h4 neonTextYellow"> Achievements :</p>
+      <p class="white--text text-h4 neonTextYellow" style="font-family: OrbitronM !important; font-size: 225% !important"> Achievements :</p>
     </v-row>
     <v-row justify="center">
       <div v-for="(key, i) in achievementsList" :key="i">
@@ -29,13 +29,10 @@ export default Vue.extend({
   },
 
   async mounted() {
-    // this.achievementsList = AchievementsList
     var ret = await this.$axios.get('/api/profile/me/achievements').then()
     var retAll = await this.$axios.get('/api/achievements')
     this.achievementsUser = ret.data
     this.achievementsList = retAll.data
-    console.log(this.achievementsList)
-    console.log(this.achievementsUser)
   },
 
   methods: {

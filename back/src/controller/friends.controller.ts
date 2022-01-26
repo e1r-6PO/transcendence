@@ -42,7 +42,6 @@ export class FriendsController {
     sender = await this.friendsService.find_sender(req.cookies['user_id'], id)
     receiver = await this.friendsService.find_receiver(req.cookies['user_id'], id)
 
-    // console.log(sender, receiver)
     if (id == req.cookies['user_id']
       || sender != null
       || receiver != null)

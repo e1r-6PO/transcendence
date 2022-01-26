@@ -9,7 +9,7 @@
         overlap
         disable
       >
-        <BasicBtn @click="changeSelectedStatus(displayFriend[i - 1])" :width="150" :content="displayFriend[i - 1]" :isText="true" />
+        <BasicBtn style="font-family: OrbitronM; font-size: 80%" @click="changeSelectedStatus(displayFriend[i - 1])" :width="150" :content="displayFriend[i - 1]" :isText="true" />
       </v-badge>
     </p>
   </v-row>
@@ -30,7 +30,7 @@
           >
             <v-row align="center" justify="start" style="padding-left: 20px; padding-top: 7px">
               <ProfilePicture @click="goToProfile(relationship)" :src="relationship.peer.picture" :isActive="relationship.peer.isActive" :currentGame="relationship.peer.currentGame" />
-              <v-card-title @click="goToProfile(relationship)" class="color_text text-h5 font-weight-medium" align="center">{{relationship.peer.nickName}}</v-card-title>
+              <v-card-title @click="goToProfile(relationship)" class="color_text font-weight-medium" align="center" style="font-family: OrbitronM !important">{{relationship.peer.nickName}}</v-card-title>
               <BasicBtn
                 v-if="selectedStatus == 'Pending' && relationship.status == status.incomming"
                 style="position: absolute; bottom: -20px; right: 58px"
@@ -277,9 +277,7 @@ export default Vue.extend({
           this.allRelationships[id].peer.isActive = !this.allRelationships[id].peer.isActive
           if (this.allRelationships[id].peer.isActive)
           {
-          // console.log(this.allRelationships[id])
             this.onlineRelationships.push(this.allRelationships[id])
-          // console.log(this.onlineRelationships)
           }
           else
           {

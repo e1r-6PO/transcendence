@@ -65,7 +65,6 @@ export default class BanUserBtn extends Vue{
       this.$router.push('/chat?error=' + ret.data.message)
     else
     {
-      console.log("refresh")
       this.$emit('refreshUser')
     }this.dialog = false
     this.timeChoose = ""

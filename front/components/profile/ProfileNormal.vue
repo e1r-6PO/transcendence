@@ -43,12 +43,12 @@
 		</v-card>
 		<div class="flex-container-row mt-10" style="margin-bottom: 1%">
 			<v-card class="foreground_element card_game-purple flex-item" margin-top="5%">
-				<h1 class="color_win" align="center" style="font-family: OrbitronM !important">Win</h1>
-				<h3 class="color_text" align="center" style="font-family: OrbitronM !important">{{ user.gameWin }} </h3>
+				<h1 class="color_win" align="center" style="font-family: OrbitronM">Win</h1>
+				<h3 class="color_text" align="center" style="font-family: OrbitronM">{{ user.gameWin }} </h3>
 			</v-card>
 			<v-card class="foreground_element card_game-purple flex-item" margin-top="5%">
-				<h1 class="color_lose" align="center" style="font-family: OrbitronM !important">Lose</h1>
-				<h3 class="color_text" align="center" justify="center" style="font-family: OrbitronM !important"> {{ user.gameLose }} </h3>
+				<h1 class="color_lose" align="center" style="font-family: OrbitronM">Lose</h1>
+				<h3 class="color_text" align="center" justify="center" style="font-family: OrbitronM"> {{ user.gameLose }} </h3>
 			</v-card>
 		</div>
   <v-row class="pt-4 d-flex flex-row">

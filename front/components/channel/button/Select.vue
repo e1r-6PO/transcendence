@@ -49,7 +49,6 @@ export default class Select extends Vue {
   }
 
   test() {
-    console.log(this.itemsList)
   }
 }
 </script>

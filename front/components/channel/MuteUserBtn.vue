@@ -53,7 +53,6 @@ export default class MuteUserBtn extends Vue{
   timeList: Array<string> = ['1 minute', '10 minutes', '1 hours', '6 hours', '12 hours', '1 day', '3 day', '1 week', '1 month', '6 month', '1 year']
   
   mounted() {
-    console.log(this.timeChoose)
   }
 
   async switchMute() {

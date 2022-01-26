@@ -78,7 +78,6 @@ export class AchievementsService {
   }
 
   async firstRankAchievement(user: User) {
-    console.log("HERE")
     var achievement = await this.getOneAchievement(user, 11)
 
     var model = this.achievements.list[11]

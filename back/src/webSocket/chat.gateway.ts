@@ -334,6 +334,5 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         })
         client['info'] = user_data
         this.ClientConnected.set(user_data.id, client)
-        console.log(client['info'])
     }
 }
