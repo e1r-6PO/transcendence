@@ -32,14 +32,7 @@ export class Relationship {
   toJSON() {
     return {
       id: this.id,
-      peer: {
-        id: this.peer.id,
-        picture: 'http://localhost:8000/api/users/' + this.peer.id + '/picture',
-        nickName: this.peer.nickName,
-        gameWin: this.peer.gameWin,
-        gameLose: this.peer.gameLose,
-        isActive: this.peer.isActive
-      },
+      peer: this.peer.toLightuser(),
       status: this.status
     }
   }

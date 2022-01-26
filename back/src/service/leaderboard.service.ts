@@ -43,8 +43,8 @@ export class LeaderboardService {
               .select('*')
               .addSelect('RANK () OVER (ORDER BY elo DESC)', 'rank')
               .from(User, 'user')
-          }, 'user')
-        .where('user.id = :id', { id })
+          }, 'data')
+        .where('data.id = :id', { id })
         .getRawOne()).rank)
     }
 }
