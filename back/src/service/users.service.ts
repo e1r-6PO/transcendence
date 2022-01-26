@@ -30,10 +30,6 @@ export class UsersService {
 
     if (!user)
       throw new NotFoundException
-
-    // replace provider picture with custom one
-    if (existsSync('../data/users/' + user.id + '.png'))
-      user.picture = 'http://localhost:8000/api/users/' + user.id + '/picture'
     
     return user.toLightuser()
   }

@@ -58,10 +58,32 @@ export class User {
   @OneToMany(() => Achievements, achievements => achievements.user, { cascade: true })
   achievements: ChannelParticipant[];
 
+  toJSON() {
+    return {
+      id: this.id,
+      email: this.email,
+      displayName: this.displayName,
+      picture: 'http://' + process.env.HOST + '/api/users/' + this.id + '/picture',
+      nickName: this.nickName,
+      provider: this.provider,
+      provider_id: this.provider_id,
+      twoFactorAuthenticationSecret: this.twoFactorAuthenticationSecret,
+      isTwoFactorAuthenticationEnabled: this.isTwoFactorAuthenticationEnabled,
+      isActive: this.isActive,
+      currentGame: this.currentGame,
+      elo: this.elo,
+      gameWin: this.gameWin,
+      gameLose: this.gameLose,
+      paddleColor: this.paddleColor,
+      channelParticipant: this.channelParticipant,
+      achievements: this.achievements,
+    }
+  }
+
   toLightuser() {
     return {
       id: this.id,
-      picture: 'http://localhost:8000/api/users/' + this.id + '/picture',
+      picture: 'http://' + process.env.HOST + '/api/users/' + this.id + '/picture',
       nickName: this.nickName,
       elo: this.elo,
       gameWin: this.gameWin,
