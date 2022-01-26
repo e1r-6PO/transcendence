@@ -15,9 +15,9 @@ class Paddle {
 			this.shadowColor = ""
     }
 	
-	draw(maptest: CanvasRenderingContext2D){
-		maptest.beginPath()
-		maptest.fillStyle = this.color
+	draw(ctx: CanvasRenderingContext2D){
+		ctx.beginPath()
+		ctx.fillStyle = this.color
 		if (this.color == 'purple')
 			this.shadowColor = 'rebeccapurple'
 		else if (this.color == 'yellow')
@@ -26,10 +26,10 @@ class Paddle {
 			this.shadowColor = 'darkviolet'
 		else
 			this.shadowColor = 'dark' + this.color
-		maptest.shadowColor = this.shadowColor
-		maptest.shadowBlur = 8
-		maptest.fillRect(this.x, this.y, this.width, this.height)  
-		maptest.closePath()
+		ctx.shadowColor = this.shadowColor
+		ctx.shadowBlur = 8
+		ctx.fillRect(this.x, this.y, this.width, this.height)  
+		ctx.closePath()
 	}
 }
 export { Paddle }

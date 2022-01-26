@@ -19,9 +19,9 @@ class Particle{
 		this.shadowColor = c
 	}
 
-	draw(maptest: CanvasRenderingContext2D){
-		maptest.beginPath()
-		maptest.fillStyle = this.color
+	draw(ctx: CanvasRenderingContext2D){
+		ctx.beginPath()
+		ctx.fillStyle = this.color
         if (this.color == 'purple')
             this.shadowColor = 'rebeccapurple'
         else if (this.color == 'yellow')
@@ -30,16 +30,16 @@ class Particle{
             this.shadowColor = 'darkviolet'
         else
             this.shadowColor = 'dark' + this.color
-        maptest.shadowColor = this.shadowColor
-		maptest.fillStyle = this.color // ballcolors
-		maptest.shadowColor = this.shadowColor  // ballcolors
-		maptest.arc(this.x + this.radius, this.y + this.radius, this.radius, 0, Math.PI * 2, false)
-		maptest.fill()
-		maptest.closePath()
+        ctx.shadowColor = this.shadowColor
+		ctx.fillStyle = this.color // ballcolors
+		ctx.shadowColor = this.shadowColor  // ballcolors
+		ctx.arc(this.x + this.radius, this.y + this.radius, this.radius, 0, Math.PI * 2, false)
+		ctx.fill()
+		ctx.closePath()
 	}
 
-	update(maptest: CanvasRenderingContext2D){
-		this.draw(maptest)
+	update(ctx: CanvasRenderingContext2D){
+		this.draw(ctx)
 		this.x += this.velocity.x
 		this.y += this.velocity.y
 		this.ttl -= 1

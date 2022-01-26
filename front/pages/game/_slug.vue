@@ -37,7 +37,6 @@ import { Ball } from '../../assets/Classes-ts/Ball'
 import { Paddle } from '../../assets/Classes-ts/Paddle'
 import { Particle } from '../../assets/Classes-ts/Particle'
 import { Match } from '../../assets/Classes-ts/Match'
-// import { gsap } from 'gsap'
 import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
@@ -58,8 +57,8 @@ export default Vue.extend({
       balls: new Map<number, Ball>(),
       paddle0: Object(),
       paddle1: Object(),
-      m : Object(),
-      maptest : Object(),
+      canvas : Object(),
+      ctx : Object(),
       particles: [Object()],
       updatePage: false,
       score_p0: 0,
@@ -87,18 +86,18 @@ export default Vue.extend({
       
       }
     }
-    this.m = document.getElementById("map")
-    this.maptest = this.m.getContext("2d")
+    this.canvas = document.getElementById("map")
+    this.ctx = this.canvas.getContext("2d")
     this.particles = new Array
     
     socket_game.emit('join', { id: this.game_id })
     //Keydown listener
     window.addEventListener('keydown', (event) => {
-      if (event.key == 'W' || event.key == 'ArrowUp')
+      if (event.key == 'w' || event.key == 'W' || event.key == 'ArrowUp')
       {
         this.keyUp = true
       }
-      else if (event.key == "S" || event.key == 'ArrowDown')
+      else if (event.key == "s" || event.key == 'S' || event.key == 'ArrowDown')
       {
         console.log('KeyDown: S')
         this.keyDown = true
@@ -107,14 +106,12 @@ export default Vue.extend({
 
     //Keyup listener
     window.addEventListener('keyup', (event) => {
-      if (event.key == 'W' || event.key == 'ArrowUp')
+      if (event.key == 'w' || event.key == 'W' || event.key == 'ArrowUp')
       {
-        console.log('KeyUp: W');
         this.keyUp = false
       }
-      else if (event.key == "S" || event.key == 'ArrowDown')
+      else if (event.key == "s" || event.key == 'S' || event.key == 'ArrowDown')
       {
-        console.log('KeyUP: S')
         this.keyDown = false
       }
     })
@@ -134,9 +131,6 @@ export default Vue.extend({
 
   async created() {
     socket_game.on('oldGame', async (info: null) => {
-        var m = <HTMLCanvasElement> document.getElementById("map")
-        var maptest = <CanvasRenderingContext2D> m.getContext("2d");
-
         this.matchStatus = 'finished'
         this.$axios.$get('/api/games/' + this.game_id).then(match_res => {
         this.match_res = match_res
@@ -145,15 +139,15 @@ export default Vue.extend({
         this.player0 = match_res.player0
         this.player1 = match_res.player1
         this.winner = match_res.winner
-        maptest.clearRect(0, 0, this.mapx, this.mapy);
-        maptest.shadowColor = "grey"
-        maptest.shadowBlur = 20
-        maptest.shadowOffsetY = 25
-        maptest.shadowOffsetX = 25
-        maptest.font = '100px OrbitronM'
-        maptest.textAlign = 'center'
-        maptest.fillStyle = "white"
-        maptest.fillText("Game Ended", this.mapx / 2, 320);
+        this.ctx.clearRect(0, 0, this.mapx, this.mapy);
+        this.ctx.shadowColor = "grey"
+        this.ctx.shadowBlur = 20
+        this.ctx.shadowOffsetY = 25
+        this.ctx.shadowOffsetX = 25
+        this.ctx.font = '100px OrbitronM'
+        this.ctx.textAlign = 'center'
+        this.ctx.fillStyle = "white"
+        this.ctx.fillText("Game Ended", this.mapx / 2, 320);
       })
     })
 
@@ -184,49 +178,44 @@ export default Vue.extend({
     })
 
     socket_game.on('matchSetup', (info) => {
-      var m = <HTMLCanvasElement> document.getElementById("map")
-      var maptest = <CanvasRenderingContext2D> m.getContext("2d");
       var color = ""
 
-      maptest.clearRect(0, 0, this.mapx, this.mapy);
+      this.ctx.clearRect(0, 0, this.mapx, this.mapy);
       if (info['gameStart'] == 3)
         color = this.player0.paddleColor
       else if (info['gameStart'] == 2)
         color = this.player1.paddleColor
       else
         color = 'white'
-      maptest.fillStyle = color
+      this.ctx.fillStyle = color
       if (color == 'purple')
-		  	maptest.shadowColor = 'rebeccapurple'
+		  	this.ctx.shadowColor = 'rebeccapurple'
       else if (color == 'yellow')
-        maptest.shadowColor = 'goldenrod'
+        this.ctx.shadowColor = 'goldenrod'
       else if (color == 'pink')
-        maptest.shadowColor = 'darkviolet'
+        this.ctx.shadowColor = 'darkviolet'
       else if (color == 'white')
-        maptest.shadowColor = 'grey'
+        this.ctx.shadowColor = 'grey'
       else
-		  	maptest.shadowColor = 'dark' + color
-      maptest.shadowBlur = 20
-      maptest.shadowOffsetY = 25
-      maptest.shadowOffsetX = 25
-      maptest.font = '150px OrbitronM'
-      maptest.textAlign = 'center'
+		  	this.ctx.shadowColor = 'dark' + color
+      this.ctx.shadowBlur = 20
+      this.ctx.shadowOffsetY = 25
+      this.ctx.shadowOffsetX = 25
+      this.ctx.font = '150px OrbitronM'
+      this.ctx.textAlign = 'center'
       if (info['gameStart'] == 0)
-        maptest.fillText("GO!", this.mapx / 2, 320);
+        this.ctx.fillText("GO!", this.mapx / 2, 320);
       else
-        maptest.fillText(info['gameStart'], this.mapx / 2, 320);
+        this.ctx.fillText(info['gameStart'], this.mapx / 2, 320);
     })
 
     socket_game.on('gameInfo', (info) => {
-      this.m = <HTMLCanvasElement> document.getElementById("map")
-      this.maptest = <CanvasRenderingContext2D> this.m.getContext("2d");
-
-      this.maptest.shadowOffsetY = 0
-      this.maptest.shadowOffsetX = 0
-      this.maptest.shadowColor = 'black'
-      this.maptest.shadowBlur = 0;
-      this.maptest.fillStyle = 'rgba(0, 0, 0, 0.25)'
-      this.maptest.fillRect(0, 0, this.mapx, this.mapy);
+      this.ctx.shadowOffsetY = 0
+      this.ctx.shadowOffsetX = 0
+      this.ctx.shadowColor = 'black'
+      this.ctx.shadowBlur = 0;
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.25)'
+      this.ctx.fillRect(0, 0, this.mapx, this.mapy);
       for (let i = 0; i < info.length; ++i) {
         if (this.balls.get(info[i].id) == undefined && info[i].status == "normal") { // create a new ball
           this.balls.set(info[i].id, new Ball(info[i]['ball_info'][0], info[i]['ball_info'][1], info[i]['ball_info'][2], info[i]['ball_info'][3]))
@@ -253,7 +242,7 @@ export default Vue.extend({
                 this.particles.push(new Particle(p_x, p_y, 2, c_ball.color))
               }
             }
-            c_ball.draw(this.maptest)
+            c_ball.draw(this.ctx)
           }
         }
         else if (info[i].status == "erased"){
@@ -261,13 +250,13 @@ export default Vue.extend({
         }
       }
       //draw player left
-      this.paddle0.draw(this.maptest)
+      this.paddle0.draw(this.ctx)
       
       //draw player right
-      this.paddle1.draw(this.maptest)
+      this.paddle1.draw(this.ctx)
 
       this.particles.forEach((particle : Particle, index : number) => {
-        particle.update(this.maptest)
+        particle.update(this.ctx)
         if (particle.ttl == 0){
           this.particles.splice(index, 1)
         }
