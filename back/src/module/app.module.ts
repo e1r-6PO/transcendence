@@ -33,12 +33,14 @@ import { AchievementsService } from 'src/service/achievements.service';
 import { Achievements } from 'src/entity/achievements.entity';
 import { LeaderboardService } from 'src/service/leaderboard.service';
 import { StatsModule } from './stats.module';
+import { FriendsService } from 'src/service/friends.service';
+import { Relationship } from 'src/entity/relationship.entity';
 
 @Module({
   imports: [ DbConnectModule, UsersModule, ProfileModule, AuthModule, AllMiddleware, CustomJwtModule, ChannelModule,
-    TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage, Match, Achievements]), FriendsModule, PrivateMessagesModule, MatchsModule,
+    TypeOrmModule.forFeature([User, Channel, ChannelParticipant, Messages, PrivateMessage, Match, Achievements, Relationship]), FriendsModule, PrivateMessagesModule, MatchsModule,
     LeaderboardModule, AchievementsModule, StatsModule ],
   controllers: [ AppController ],
-  providers: [ AppService, ChatGateway, GameGateway, ActiveGateway, GameService, ChatService, AchievementsService, LeaderboardService ],
+  providers: [ AppService, ChatGateway, GameGateway, ActiveGateway, GameService, ChatService, AchievementsService, LeaderboardService, FriendsService ],
 })
 export class AppModule {}

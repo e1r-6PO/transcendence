@@ -98,7 +98,7 @@
       <v-card
         color="#181818"
         flat
-        class="pt-4"
+        class="pt-10"
       >
         <div v-for="(msg, i) in messagesArray"
           :key="i"
@@ -115,34 +115,21 @@
           />
 
           <!-- if the message is a normal message -->
-          <OtherBubbleMsg v-if="!isYourMsg(msg) && msg.type != 'game'" :msg="msg"/>
-          <MyBubbleMsg v-else-if="msg.type != 'game'" :msg="msg" />
-          <GameMessage v-if="msg.type == 'game'" :msg="msg" :meId="me.id" :ownerMsg="isYourMsg(msg)" />
-
-          <!-- if the message is a game -->
-          <!-- <v-card
-            v-if="msg.type == 'game'"
-            v-on:click="redirectToGame(msg.game_id, msg.game_state)"
-            class="bubble"
-            :color="getGameColor(msg)"
-            style="margin-top: 20px; float: center !important"
-          >
-            <div v-if="msg.type == 'game'">
-              <BasicBtn v-if="msg.game_state == 'pending' && !isYourMsg(msg)" content="mdi-check" v-on:click="acceptGame(msg)"></BasicBtn>
-              <BasicBtn v-if="msg.game_state == 'pending'" content="mdi-close" v-on:click="denyGame(msg)"></BasicBtn>
-            </div>
-            <v-card-text
-              style="padding-bottom: 0px; padding-right: 55px; color: white"
-              v-text="msg.message"
-            />
-            <v-card-subtitle
-              style="padding-bottom: 5px; padding-top: 0px; color: white"
-              v-text="formateTime(msg.time)"
-              class="text-right"
-            > -->
-            <!-- no clue why tf its msg.time and not msg.date but okay i guess -->
-            <!-- </v-card-subtitle>
-          </v-card> -->
+          <OtherBubbleMsg v-if="!isYourMsg(msg) && isNormaMsg(msg)" :msg="msg"/>
+          <MyBubbleMsg v-else-if="isYourMsg(msg) && isNormaMsg(msg)" :msg="msg" />
+          <GameMessage v-if="isGameMsg(msg)" :msg="msg" :meId="me.id" :ownerMsg="isYourMsg(msg)" />
+          <div v-if="!isYourMsg(msg) && isServerMsg(msg)" align="center">
+            <v-card class="bubble_server" align="center" justify="center" height="45">
+                <v-card-text
+                  class="white--text pt-2 pb-0"
+                  v-text="msg.message"
+                />
+                <v-card-subtitle
+                  class="text-right white--text mt-n7 font-italic"
+                  v-text="formateTime(msg.time)"
+                />
+            </v-card>
+          </div>
 
         </div>
       </v-card>
@@ -151,7 +138,7 @@
   </v-row>
   
   <v-footer app inset color="#181818">
-    <TextField @enterPress="sendMessage" v-model="message" :append_outer_icon="message.length > 180 ? '' : 'mdi-send'" placeholder="Message" class="mb-2" />
+    <TextField @enterPress="sendMessage" v-model="message" :disable="disableInput()"  :append_outer_icon="disableInput() ? '' : 'mdi-send'" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
 </template>
@@ -172,10 +159,12 @@ import { ChannelUserStatus } from '../../assets/Classes-ts/ChannelUser';
 import ChannelSettings from '../../components/channel/ChannelSettings.vue';
 
 import copyLightUser from '../../plugins/copyUser'
+import formateTime from '../../plugins/formateTime'
 
 import socket_chat from '../../plugins/chat.io';
 import socket_active from '../../plugins/active.io';
 import socket_game from '../../plugins/game.io';
+import { Friendship, FriendshipStatus } from '../../assets/Classes-ts/Friendship';
 
 export default Vue.extend({
   components: { CreateChannelBtn, ChannelList, ChannelUserList, BasicBtn,
@@ -202,6 +191,7 @@ export default Vue.extend({
       updateActive: false,
       userPreview: false,
       userPreviewFocus: false,
+      relation: Friendship,
     }
   },
 
@@ -217,7 +207,11 @@ export default Vue.extend({
     this.user = await this.$axios.$get('/api/users/' + this.$route.params.slug)
     socket_chat.connect();
     this.me = await this.$axios.$get('/api/profile/me')
-    this.messagesArray = await this.$axios.$get('/api/mp/' + this.$route.params.slug + '/messages')
+    this.relation = await this.$axios.$get('/api/friends/' + this.user.id)
+    var ret = await this.$axios.get('/api/mp/' + this.$route.params.slug + '/messages')
+    
+    console.log(this.relation)
+    this.messagesArray = ret.data
     this.nbMsg = this.messagesArray.length
     
     socket_chat.on("privateMessage", (msg: PrivateMessages) => {
@@ -262,8 +256,8 @@ export default Vue.extend({
       newMsg.target = new User()
       newMsg.type = "message"
       socket_chat.emit('privateMessageToServer', this.$route.params.slug, this.me.nickName, this.message)
-      socket_chat.on('MuteError', (msg: string) => {
-        this.activeAlert(msg, 'error')
+      socket_chat.on('blocked', (msg: string) => {
+        this.activeAlert(msg, 'warning')
       })
       this.message = ''
     },
@@ -356,6 +350,26 @@ export default Vue.extend({
     switchFocusCard() {
       if (this.userPreviewFocus == false)
         this.userPreviewFocus = true
+    },
+
+    isServerMsg(msg: PrivateMessages) {
+      return (msg.type == "server")
+    },
+    
+    isGameMsg(msg: PrivateMessages) {
+      return (msg.type == "game")
+    },
+
+    isNormaMsg(msg: PrivateMessages) {
+      return (msg.type == "message")
+    },
+
+    disableInput(): boolean {
+      if (this.message.length > 180)
+        return true
+      if (this.relation.status == FriendshipStatus.BLOCKED)
+        return true
+      return false
     }
   }
 })
