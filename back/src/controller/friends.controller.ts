@@ -118,7 +118,7 @@ export class FriendsController {
       this.relationShipRepository.delete(receiver);
 
     this.friendsService.create_block(req.cookies['user_id'], id);
-    this.privateMessagesService.createServMp("You has been blocked", req.cookies['user_id'], id)
+    this.privateMessagesService.createServMp("You have been blocked", req.cookies['user_id'], id)
     this.privateMessagesService.createServMp("You blocked this user", id, req.cookies['user_id'])
     return { message: "success" }
   }

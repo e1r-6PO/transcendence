@@ -27,7 +27,7 @@
       <p class="mb-1" style="font-size: 110%">{{ msg.sender.id == meId ? msg.sender.nickName: 'you' }} denied the challenge.</p>
     </v-list-item-title>
     <v-list-item-title v-else-if="msg.game_state == 'finish'" class="white--text">
-      <p class="mb-1" style="font-size: 110%">You {{ msg.winner.id == meId ? 'won' : 'loose' }} the game.</p>
+      <p class="mb-1" style="font-size: 110%">You {{ msg.winner.id == meId ? 'won' : 'lost' }} the game.</p>
     </v-list-item-title>
     
     <!-- <BasicBtn v-if="msg.game_state == 'pending' && !isYourMsg(msg)" content="mdi-check" v-on:click="acceptGame(msg)"></BasicBtn> -->
@@ -85,7 +85,6 @@ export default class GameMessage extends Vue {
   getClasse(): string {
     if (this.ownerMsg)
     {
-      if(this.msg.game_state == 'finish')
       if (this.msg.game_state == 'finish' && this.msg.winner.id == this.meId)
         return 'bubble bubble_right-game-win'
       else if (this.msg.game_state == 'finish' && this.msg.winner.id != this.meId)

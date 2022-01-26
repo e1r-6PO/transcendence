@@ -191,7 +191,7 @@ export default Vue.extend({
       updateActive: false,
       userPreview: false,
       userPreviewFocus: false,
-      relation: Friendship,
+      relation: new Friendship,
     }
   },
 
