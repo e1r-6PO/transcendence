@@ -35,12 +35,11 @@
 					width="50"
 					height="50"
 				/>
-				<v-icon v-if="user.provider === 'google'"
-						color="black"
-						x-large
-				>
-					mdi-google
-				</v-icon>
+				<icon-google v-if="user.provider === 'google'"
+					color="black"
+					width="50"
+					height="50"
+				/>
 			</v-card-text>
 		</v-card>
 		<div class="flex-container-row mt-10" style="margin-bottom: 1%">

@@ -30,12 +30,10 @@
                   href="/api/auth/google"
                   class="foreground_element button_auth white"
                 >
-                  <v-icon
-                    color="black"
-                    x-large
-                  >
-                  mdi-google
-                  </v-icon>
+                  <icon-google
+                    width="75"
+                    height="75"
+                  />
                 </v-btn>
               </v-col>
               <v-col align="center">
@@ -62,10 +60,12 @@
 import Vue from 'vue'
 
 import Component from 'vue-class-component'
+import Icon_google from '../components/Icon_google.vue'
 
 import no2login from '../middleware/no2login'
 
 @Component({
+  components: { Icon_google },
   middleware: no2login,
   layout: 'empty'
 })
