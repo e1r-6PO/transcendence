@@ -10,6 +10,7 @@
       v-on:bind="leaderboard"
     >
       <v-card
+        v-if="user.nickName != ''"
         class="foreground_element card_profile"
         height="60"
         max-width="1000"

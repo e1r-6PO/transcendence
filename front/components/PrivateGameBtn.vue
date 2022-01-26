@@ -78,10 +78,10 @@ export default class PrivateGameBtn extends Vue{
   initiatePongRequest() {
     if (socket_game.connected == false)
       socket_game.connect()
-    socket_game.emit('newPrivate', {user: this.user, ballNumber: this.ballNumber, pointsToWin: this.pointsToWin, paddleSize: this.paddleSize})
     this.dialogPrivateGameSetup = false
     if (window.location.pathname != '/privateMessage/' + this.user.nickName)
       this.$router.push('/privateMessage/' + this.user.nickName)
+    socket_game.emit('newPrivate', {user: this.user, ballNumber: this.ballNumber, pointsToWin: this.pointsToWin, paddleSize: this.paddleSize})
   }
 }
 </script>

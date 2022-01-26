@@ -9,7 +9,6 @@
       style="z-index: 7"
       clipped
       temporary
-      stateless
     >
       <div style="display: flex ; flex-direction: column; margin-top: 10px">
         <v-btn

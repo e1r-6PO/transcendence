@@ -13,10 +13,11 @@ import { Messages } from 'src/entity/messages.entity';
 import { Channel } from 'src/entity/channel.entity';
 import { AchievementsService } from 'src/service/achievements.service';
 import { Achievements } from 'src/entity/achievements.entity';
+import { ActiveGateway } from 'src/webSocket/active.gateway';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Relationship, ChannelParticipant, Channel, Messages, Achievements]), CustomJwtModule ],
   controllers: [ ProfileController ],
-  providers: [ ProfileService, UsersService, ChannelService, AchievementsService ]
+  providers: [ ProfileService, UsersService, ChannelService, AchievementsService, ActiveGateway ]
 })
 export class ProfileModule {}

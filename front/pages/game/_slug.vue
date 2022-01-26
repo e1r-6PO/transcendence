@@ -295,11 +295,11 @@ export default Vue.extend({
     })
 
     socket_game.on('score_p0', (info) => {
-      this.score_p0++
+      this.score_p0 = info
     })
 
     socket_game.on('score_p1', (info) => {
-      this.score_p1++
+      this.score_p1 = info
     })
   },
 
