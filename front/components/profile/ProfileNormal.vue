@@ -29,7 +29,6 @@
 				<icon-github v-if="user.provider === 'github'"
 					width="50"
 					height="50"
-					class="pb-5"
 				/>
 				<icon-42 v-if="user.provider === '42'"
 					width="50"

@@ -3,8 +3,8 @@
   <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
   <v-row justify="center">
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 100px">
-      <p v-if="winner.nickName == player0.nickName" class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> WINNER </p>
-      <p v-else class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> LOSER </p>
+      <p v-if="winner.nickName == player0.nickName" class="text-h5 pl-3 pb-10" style="color: goldenrod; font-family: OrbitronM !important" color="goldenrod"> WINNER </p>
+      <p v-else class="text-h5 pl-3 pb-10" style="color: red; font-family: OrbitronM !important" color="red"> LOSER </p>
       <ProfilePicture :src="player0.picture" :neonColor="player0.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player0.nickName}}</p>
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p0 }}</p>
@@ -18,8 +18,8 @@
     </v-col>
 
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 100px">
-      <p v-if="winner.nickName == player1.nickName" class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> WINNER </p>
-      <p v-else class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> LOSER </p>
+      <p v-if="winner.nickName == player1.nickName" class="text-h5 pl-3 pb-10" style="color: goldenrod; font-family: OrbitronM !important"> WINNER </p>
+      <p v-else class="text-h5 pl-3 pb-10" style="color: red; font-family: OrbitronM !important" color="red"> LOSER </p>
       <ProfilePicture :src="player1.picture" disble :neonColor="player1.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player1.nickName}}</p>
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p1 }}</p>
@@ -37,6 +37,7 @@ import { Ball } from '../../assets/Classes-ts/Ball'
 import { Paddle } from '../../assets/Classes-ts/Paddle'
 import { Particle } from '../../assets/Classes-ts/Particle'
 import { Match } from '../../assets/Classes-ts/Match'
+import Render  from '../../assets/Classes-ts/Render'
 import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
@@ -139,15 +140,7 @@ export default Vue.extend({
         this.player0 = match_res.player0
         this.player1 = match_res.player1
         this.winner = match_res.winner
-        this.ctx.clearRect(0, 0, this.mapx, this.mapy);
-        this.ctx.shadowColor = "grey"
-        this.ctx.shadowBlur = 20
-        this.ctx.shadowOffsetY = 25
-        this.ctx.shadowOffsetX = 25
-        this.ctx.font = '100px OrbitronM'
-        this.ctx.textAlign = 'center'
-        this.ctx.fillStyle = "white"
-        this.ctx.fillText("Game Ended", this.mapx / 2, 320);
+        Render.drawGameEnded(this.ctx, this.mapx, this.mapy)
       })
     })
 
@@ -178,44 +171,11 @@ export default Vue.extend({
     })
 
     socket_game.on('matchSetup', (info) => {
-      var color = ""
-
-      this.ctx.clearRect(0, 0, this.mapx, this.mapy);
-      if (info['gameStart'] == 3)
-        color = this.player0.paddleColor
-      else if (info['gameStart'] == 2)
-        color = this.player1.paddleColor
-      else
-        color = 'white'
-      this.ctx.fillStyle = color
-      if (color == 'purple')
-		  	this.ctx.shadowColor = 'rebeccapurple'
-      else if (color == 'yellow')
-        this.ctx.shadowColor = 'goldenrod'
-      else if (color == 'pink')
-        this.ctx.shadowColor = 'darkviolet'
-      else if (color == 'white')
-        this.ctx.shadowColor = 'grey'
-      else
-		  	this.ctx.shadowColor = 'dark' + color
-      this.ctx.shadowBlur = 20
-      this.ctx.shadowOffsetY = 25
-      this.ctx.shadowOffsetX = 25
-      this.ctx.font = '150px OrbitronM'
-      this.ctx.textAlign = 'center'
-      if (info['gameStart'] == 0)
-        this.ctx.fillText("GO!", this.mapx / 2, 320);
-      else
-        this.ctx.fillText(info['gameStart'], this.mapx / 2, 320);
+      Render.drawCountdown(this.ctx, this.mapx, this.mapy, info, this.player0, this.player1)
     })
 
     socket_game.on('gameInfo', (info) => {
-      this.ctx.shadowOffsetY = 0
-      this.ctx.shadowOffsetX = 0
-      this.ctx.shadowColor = 'black'
-      this.ctx.shadowBlur = 0;
-      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.25)'
-      this.ctx.fillRect(0, 0, this.mapx, this.mapy);
+      Render.clear_canvas(this.ctx, this.mapx, this.mapy)
       for (let i = 0; i < info.length; ++i) {
         if (this.balls.get(info[i].id) == undefined && info[i].status == "normal") { // create a new ball
           this.balls.set(info[i].id, new Ball(info[i]['ball_info'][0], info[i]['ball_info'][1], info[i]['ball_info'][2], info[i]['ball_info'][3]))
