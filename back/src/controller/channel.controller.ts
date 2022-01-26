@@ -113,7 +113,7 @@ export class ChannelController {
         return null
       })
     if (channel)
-      throw new ConflictException('Channel already exist')
+      throw new ConflictException('Channel already exists')
       
     var owner = await this.channelService.findUserById(req.cookies['user_id'])
     if (query['type'] == ChannAccess.PROTECTED && query['pass'].length < 5)
