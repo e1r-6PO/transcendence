@@ -21,6 +21,8 @@ import { PrivateMessage } from "src/entity/privateMessage.entity";
 import { ChatService } from "src/service/chat.service";
 import { AchievementsService } from "src/service/achievements.service";
 import { LightUser } from "src/entity/lightuser.entity";
+import { Friend_Status, Relationship } from "src/entity/relationship.entity";
+import { FriendsService } from "src/service/friends.service";
 
 @WebSocketGateway({
     cors: {
@@ -33,6 +35,7 @@ import { LightUser } from "src/entity/lightuser.entity";
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
     constructor(
         private jwtService: JwtService,
+        private friendsService: FriendsService,
         private achievementService: AchievementsService,
         private chatService: ChatService,
         @InjectRepository(User)
@@ -74,6 +77,15 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         var userTarget = await this.usersRepository.findOne({
             where: { nickName: dest }
         })
+        
+        var relation1 = await this.friendsService.find_receiver(jwt_decoded['id'], userTarget.id)
+        var relation2 = await this.friendsService.find_sender(jwt_decoded['id'], userTarget.id)
+        
+        if (relation1.status == Friend_Status.blocked || relation2.status == Friend_Status.blocked)
+        {
+            client.emit("blocked", relation1.status == Friend_Status.blocked ? "This user blocked you" : "You have block this user")
+            return ;
+        }
         if (!userTarget)
             return
         newMsg.sender = await this.usersRepository.findOne({
