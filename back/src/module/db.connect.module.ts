@@ -11,6 +11,7 @@ import { Achievements } from 'src/entity/achievements.entity';
 
 @Module({
   imports: [
+    // POSTGRES
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
