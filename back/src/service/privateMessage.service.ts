@@ -33,23 +33,14 @@ export class PrivateMessageService {
     return user
   }
 
-  // async getAllMessageInChannel(name: string, blocked: Array<number>): Promise<Array<Messages>>
-  // {
-  //   var messagesArray: Array<PrivateMessage> = [];
+  async createServMp(msg: string, sender: User, target: User)
+  {
+    var message = new PrivateMessage()
 
-  //   messagesArray = await this.messagesRepository.find({
-  //       where: { channel: cha }
-  //   })
-  //   for (var i = 0; i < messagesArray.length; i++)
-  //   {
-  //     if (blocked.includes(messagesArray[i].sender.id))
-  //     {
-  //       messagesArray.splice(i, 1)
-  //       i = i > 0 ? i - 1 : 0;
-  //     }
-  //   }
-  //   for (var i = 0; i < messagesArray.length; i++)
-  //       messagesArray[i].senderNick = messagesArray[i].sender.nickName
-  //   return (messagesArray)
-  // }
+    message.message = msg
+    message.sender = sender
+    message.target = target
+    message.type = "server"
+    this.messagesRepository.save(message)
+  }
 }

@@ -2,7 +2,9 @@
 <div>
   <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
   <v-row justify="center">
-    <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 200px">
+    <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 100px">
+      <p v-if="winner.nickName == player0.nickName" class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> WINNER </p>
+      <p v-else class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> LOSER </p>
       <ProfilePicture :src="player0.picture" :neonColor="player0.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player0.nickName}}</p>
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p0 }}</p>
@@ -15,7 +17,9 @@
       <canvas id="map" width="840" height="600"></canvas>
     </v-col>
 
-    <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 200px">
+    <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 100px">
+      <p v-if="winner.nickName == player1.nickName" class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> WINNER </p>
+      <p v-else class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> LOSER </p>
       <ProfilePicture :src="player1.picture" disble :neonColor="player1.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player1.nickName}}</p>
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p1 }}</p>
@@ -48,6 +52,7 @@ export default Vue.extend({
       me: User,
       player0: new LightUser(),
       player1: new LightUser(),
+      winner: new LightUser(),
       mapx: 840,
       mapy: 600,
       balls: new Map<number, Ball>(),
@@ -58,7 +63,9 @@ export default Vue.extend({
       particles: [Object()],
       updatePage: false,
       score_p0: 0,
-      score_p1: 0
+      score_p1: 0,
+      keyUp: false,
+      keyDown: false
     }
   },
 
@@ -87,37 +94,28 @@ export default Vue.extend({
     socket_game.emit('join', { id: this.game_id })
     //Keydown listener
     window.addEventListener('keydown', (event) => {
-      if (event.key == 'W')
-        console.log('KeyDown: W');
-      else if (event.key == "S")
-        console.log('KeyDown: S')
-      else if (event.key == 'ArrowUp')
+      if (event.key == 'W' || event.key == 'ArrowUp')
       {
-        console.log('KeyDown: ArrowUp');
-        socket_game.emit('updatePaddle', { id: this.game_id, direction: 1 })
+        this.keyUp = true
       }
-      else if (event.key == 'ArrowDown')
+      else if (event.key == "S" || event.key == 'ArrowDown')
       {
-        console.log('KeyDown: ArrowDown');
-        socket_game.emit('updatePaddle', { id: this.game_id, direction: -1 })
+        console.log('KeyDown: S')
+        this.keyDown = true
       }
     })
+
     //Keyup listener
     window.addEventListener('keyup', (event) => {
-      if (event.key == 'W')
+      if (event.key == 'W' || event.key == 'ArrowUp')
+      {
         console.log('KeyUp: W');
-      else if (event.key == "S")
-        console.log('KeyUP: S')
-      else if (event.key == 'ArrowUp')
-      {
-        console.log('KeyUp: ArrowUp');
-        socket_game.emit('updatePaddle', { id: this.game_id, direction: 0 })
+        this.keyUp = false
       }
-      else if (event.key == 'ArrowDown')
+      else if (event.key == "S" || event.key == 'ArrowDown')
       {
-        console.log('KeyUp: ArrowDown');
-        socket_game.emit('updatePaddle', { id: this.game_id, direction: 0 })
-
+        console.log('KeyUP: S')
+        this.keyDown = false
       }
     })
   },
@@ -136,13 +134,26 @@ export default Vue.extend({
 
   async created() {
     socket_game.on('oldGame', async (info: null) => {
-      this.matchStatus = 'finished'
-      this.$axios.$get('/api/games/' + this.game_id).then(match_res => {
+        var m = <HTMLCanvasElement> document.getElementById("map")
+        var maptest = <CanvasRenderingContext2D> m.getContext("2d");
+
+        this.matchStatus = 'finished'
+        this.$axios.$get('/api/games/' + this.game_id).then(match_res => {
         this.match_res = match_res
         this.score_p0 = match_res.scorep0
         this.score_p1 = match_res.scorep1
         this.player0 = match_res.player0
         this.player1 = match_res.player1
+        this.winner = match_res.winner
+        maptest.clearRect(0, 0, this.mapx, this.mapy);
+        maptest.shadowColor = "grey"
+        maptest.shadowBlur = 20
+        maptest.shadowOffsetY = 25
+        maptest.shadowOffsetX = 25
+        maptest.font = '100px OrbitronM'
+        maptest.textAlign = 'center'
+        maptest.fillStyle = "white"
+        maptest.fillText("Game Ended", this.mapx / 2, 320);
       })
     })
 
@@ -250,7 +261,7 @@ export default Vue.extend({
         }
       }
       //draw player left
-      this.paddle0.draw(this.maptest) 
+      this.paddle0.draw(this.maptest)
       
       //draw player right
       this.paddle1.draw(this.maptest)
@@ -261,6 +272,12 @@ export default Vue.extend({
           this.particles.splice(index, 1)
         }
       });
+      if (this.keyUp == true)
+        socket_game.emit('updatePaddle', { id: this.game_id, direction: 1 })
+      else if (this.keyDown == true)
+        socket_game.emit('updatePaddle', { id: this.game_id, direction: -1 })
+      else if (this.keyDown == false && this.keyDown == false)
+        socket_game.emit('updatePaddle', { id: this.game_id, direction: 0 })
     })
 
     socket_game.on('paddle0Info', (info) => {
