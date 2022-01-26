@@ -200,7 +200,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('joinQueue') // to join the queue if he is in the queue, kick him
 	async joinQueue(client: Socket) {
-			console.log(this.gameService.games.size)
 			if (this.queue.findIndex(clients => clients.id === client.id) != -1 || client['game'] != null)
 					return // dont add him to the queu if he his already inside or if he is in a game
 			this.queue.push(client)
@@ -309,7 +308,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async handleDisconnect(client: Socket){
 			var index: number
 
-			// console.log(client['info'])
 			if (client['info'] != undefined && client['info'].id != undefined)
 				this.id_to_user.delete(client['info'].id)
 			index = this.queue.findIndex(clients => clients.id === client.id)
@@ -317,6 +315,5 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				this.queue.splice(index, 1)
 			}
 			this.gameService.disconnect(client)
-			// console.log("disconnected: " + client.id)
 	}
 }

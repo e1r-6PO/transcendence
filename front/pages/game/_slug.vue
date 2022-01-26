@@ -95,26 +95,17 @@ export default Vue.extend({
     //Keydown listener
     window.addEventListener('keydown', (event) => {
       if (event.key == 'w' || event.key == 'W' || event.key == 'ArrowUp')
-      {
         this.keyUp = true
-      }
       else if (event.key == "s" || event.key == 'S' || event.key == 'ArrowDown')
-      {
-        console.log('KeyDown: S')
         this.keyDown = true
-      }
     })
 
     //Keyup listener
     window.addEventListener('keyup', (event) => {
       if (event.key == 'w' || event.key == 'W' || event.key == 'ArrowUp')
-      {
         this.keyUp = false
-      }
       else if (event.key == "s" || event.key == 'S' || event.key == 'ArrowDown')
-      {
         this.keyDown = false
-      }
     })
   },
 

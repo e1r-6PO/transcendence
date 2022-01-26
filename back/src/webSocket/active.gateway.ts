@@ -28,17 +28,8 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       private jwtService : JwtService,
       @InjectRepository(User)
       private readonly usersRepository : Repository<User>,
-      // @InjectRepository(Messages)
-      // private readonly messagesRepository : Repository<Messages>,
-      // @InjectRepository(PrivateMessage)
-      // private readonly privateMessagesRepository : Repository<PrivateMessage>,
-      // @InjectRepository(Channel)
-      // private readonly ChannelsRepository : Repository<Channel>,
-      // @InjectRepository(ChannelParticipant)
-      // private readonly ChannelsParticipantsRepository : Repository<ChannelParticipant>,
     ) {}
     ClientConnected: Map<number, Socket> = new Map()
-    // ClientConnected: Map<number, Socket> = new Map()
     
     @WebSocketServer() server: Server;
     private logger: Logger = new Logger('ActiveGateway');
@@ -46,8 +37,6 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleDisconnect(client: Socket){
     client['info'].isActive = false
     this.server.emit("stateChanged", plainToClass(User, client['info']).toLightuser())
-    // this.server.emit("inactive", client['info'])
-    console.log("disconnect Active HERE")
     this.logger.log(`Client disconnected: ${client.id}`)
     if (client['info'] != undefined && client['info'].id != undefined) {
       this.usersRepository.update({
@@ -79,7 +68,6 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       await this.jwtService.verifyAsync(jwt)
     }
     catch (e) { client.disconnect(); return }
-    console.log('Socket Namespace: ' + client.nsp.name);
     // parse cookies
     const jwt_decoded = this.jwtService.decode(jwt)
 
@@ -94,6 +82,5 @@ export class ActiveGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       id: user_data.id } , {
         isActive: true
     })
-    // console.log(client['info'])
 }
 }

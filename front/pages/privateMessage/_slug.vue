@@ -210,7 +210,6 @@ export default Vue.extend({
     this.relation = await this.$axios.$get('/api/friends/' + this.user.id)
     var ret = await this.$axios.get('/api/mp/' + this.$route.params.slug + '/messages')
     
-    console.log(this.relation)
     this.messagesArray = ret.data
     this.nbMsg = this.messagesArray.length
     

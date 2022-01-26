@@ -204,8 +204,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             this.messagesRepository.save(servMsg)
         }
         this.server.to(av[0]).emit("refreshUser")
-        console.log(client.rooms)
-        // this.server.emit('ConnectedToChannel', "You are in room " + client.adapter)
     }
 
     @SubscribeMessage('userLeaveChannel')
@@ -321,7 +319,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.ClientConnected.delete(client['info'].id)
         this.count--;
         this.logger.log(`Client disconnected: ${client.id}`)
-        console.log('User disconnected, users count: ' + this.count );
     }
 
     async handleConnection(client: Socket, ...args: any[]){
@@ -331,8 +328,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             return
         const jwt_decoded = this.jwtService.decode(jwt)
         this.count++;
-        console.log('New connection, users count: ' + this.count + ' Socket id: ' + client.id);
-        console.log('Socket Namespace: ' + client.nsp.name);
 
         let user_data = await this.usersRepository.findOne({
             where: {id: jwt_decoded['id']}

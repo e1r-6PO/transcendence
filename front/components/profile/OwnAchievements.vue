@@ -46,8 +46,6 @@ export default class OwnAchievement extends Vue {
     var ret = await this.$axios.get('/api/users/' + this.user.id + '/achievements' + this.isCompletedOnly())
     this.achievementsList = ret.data
     this.achievementsPage = this.achievementsList.slice(0, this.numberAchievementByPage)
-    console.log(this.achievementsList.length)
-    console.log(this.numberAchievementByPage)
     this.totalPage = Math.ceil(this.achievementsList.length / this.numberAchievementByPage)
     this.myEventHandler(window.innerWidth)
   }
