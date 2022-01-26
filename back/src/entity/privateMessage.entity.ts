@@ -57,16 +57,11 @@ export class PrivateMessage {
   toJSON() {
     return {
         id: this.id,
-        sender: {
-            id: this.sender.id,
-            picture: 'http://localhost:8000/api/users/' + this.sender.id + '/picture',
-            nickName: this.sender.nickName,
-            isActive: this.sender.isActive
-        },
+        sender: this.sender.toLightuser(),
         senderNick: this.sender.nickName,
         message: this.message,
         time: this.date,
-        picture: 'http://localhost:8000/api/users/' + this.sender.id + '/picture',
+        picture: this.sender.toLightuser().picture,
         target: this.target,
         type: this.type,
         game_id: this.game_id,

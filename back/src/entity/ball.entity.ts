@@ -35,6 +35,7 @@ export class Ball extends Rect {
 
 	tickWrapper(n: number) {
 		var ret: string
+		this.collision = 0
 		for (var i = 0; i < n; ++i) {
 			ret = this.tick()
 			if (ret != '')
@@ -46,7 +47,6 @@ export class Ball extends Rect {
 	tick() { // 0 = p0 lost a point, 1 = p1 lost a point -1 = nothing happned
 		this.pos.x += this.speed.x
 		this.pos.y += this.speed.y
-		this.collision = 0
 		if (this.left < 0 + this.size.x / 2) {
 			return 'p1+1'
 			// player 0 lost

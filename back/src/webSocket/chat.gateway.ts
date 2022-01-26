@@ -26,7 +26,7 @@ import { FriendsService } from "src/service/friends.service";
 
 @WebSocketGateway({
     cors: {
-        origin: "http://localhost:8000",
+        origin: "http://" + process.env.HOST,
         credentials: true
     },
     middlewares: [ AddUserIdMiddleware ],
@@ -93,7 +93,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         })
         newMsg.target = userTarget
         newMsg.message = msg
-        newMsg.picture = 'http://localhost:8000/api/users/' + newMsg.sender.id + '/picture'
+        newMsg.picture = newMsg.sender.picture
         newMsg.date = new Date()
         
         newMsg = await this.privateMessagesRepository.save(newMsg)

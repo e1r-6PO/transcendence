@@ -3,8 +3,8 @@
   <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
   <v-row justify="center">
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 100px">
-      <p v-if="winner.nickName == player0.nickName" class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> WINNER </p>
-      <p v-else class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> LOSER </p>
+      <p v-if="winner.nickName == player0.nickName" class="text-h5 pl-3 pb-10" style="color: goldenrod; font-family: OrbitronM !important" color="goldenrod"> WINNER </p>
+      <p v-else class="text-h5 pl-3 pb-10" style="color: red; font-family: OrbitronM !important" color="red"> LOSER </p>
       <ProfilePicture :src="player0.picture" :neonColor="player0.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player0.nickName}}</p>
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p0 }}</p>
@@ -18,8 +18,8 @@
     </v-col>
 
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 100px">
-      <p v-if="winner.nickName == player1.nickName" class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> WINNER </p>
-      <p v-else class="text-h5 pl-3 pb-10" style="color: #ffffff; font-family: OrbitronM !important"> LOSER </p>
+      <p v-if="winner.nickName == player1.nickName" class="text-h5 pl-3 pb-10" style="color: goldenrod; font-family: OrbitronM !important"> WINNER </p>
+      <p v-else class="text-h5 pl-3 pb-10" style="color: red; font-family: OrbitronM !important" color="red"> LOSER </p>
       <ProfilePicture :src="player1.picture" disble :neonColor="player1.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player1.nickName}}</p>
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p1 }}</p>
@@ -37,7 +37,7 @@ import { Ball } from '../../assets/Classes-ts/Ball'
 import { Paddle } from '../../assets/Classes-ts/Paddle'
 import { Particle } from '../../assets/Classes-ts/Particle'
 import { Match } from '../../assets/Classes-ts/Match'
-// import { gsap } from 'gsap'
+import Render  from '../../assets/Classes-ts/Render'
 import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
@@ -58,8 +58,8 @@ export default Vue.extend({
       balls: new Map<number, Ball>(),
       paddle0: Object(),
       paddle1: Object(),
-      m : Object(),
-      maptest : Object(),
+      canvas : Object(),
+      ctx : Object(),
       particles: [Object()],
       updatePage: false,
       score_p0: 0,
@@ -87,18 +87,18 @@ export default Vue.extend({
       
       }
     }
-    this.m = document.getElementById("map")
-    this.maptest = this.m.getContext("2d")
+    this.canvas = document.getElementById("map")
+    this.ctx = this.canvas.getContext("2d")
     this.particles = new Array
     
     socket_game.emit('join', { id: this.game_id })
     //Keydown listener
     window.addEventListener('keydown', (event) => {
-      if (event.key == 'W' || event.key == 'ArrowUp')
+      if (event.key == 'w' || event.key == 'W' || event.key == 'ArrowUp')
       {
         this.keyUp = true
       }
-      else if (event.key == "S" || event.key == 'ArrowDown')
+      else if (event.key == "s" || event.key == 'S' || event.key == 'ArrowDown')
       {
         console.log('KeyDown: S')
         this.keyDown = true
@@ -107,14 +107,12 @@ export default Vue.extend({
 
     //Keyup listener
     window.addEventListener('keyup', (event) => {
-      if (event.key == 'W' || event.key == 'ArrowUp')
+      if (event.key == 'w' || event.key == 'W' || event.key == 'ArrowUp')
       {
-        console.log('KeyUp: W');
         this.keyUp = false
       }
-      else if (event.key == "S" || event.key == 'ArrowDown')
+      else if (event.key == "s" || event.key == 'S' || event.key == 'ArrowDown')
       {
-        console.log('KeyUP: S')
         this.keyDown = false
       }
     })
@@ -134,9 +132,6 @@ export default Vue.extend({
 
   async created() {
     socket_game.on('oldGame', async (info: null) => {
-        var m = <HTMLCanvasElement> document.getElementById("map")
-        var maptest = <CanvasRenderingContext2D> m.getContext("2d");
-
         this.matchStatus = 'finished'
         this.$axios.$get('/api/games/' + this.game_id).then(match_res => {
         this.match_res = match_res
@@ -145,15 +140,7 @@ export default Vue.extend({
         this.player0 = match_res.player0
         this.player1 = match_res.player1
         this.winner = match_res.winner
-        maptest.clearRect(0, 0, this.mapx, this.mapy);
-        maptest.shadowColor = "grey"
-        maptest.shadowBlur = 20
-        maptest.shadowOffsetY = 25
-        maptest.shadowOffsetX = 25
-        maptest.font = '100px OrbitronM'
-        maptest.textAlign = 'center'
-        maptest.fillStyle = "white"
-        maptest.fillText("Game Ended", this.mapx / 2, 320);
+        Render.drawGameEnded(this.ctx, this.mapx, this.mapy)
       })
     })
 
@@ -184,49 +171,11 @@ export default Vue.extend({
     })
 
     socket_game.on('matchSetup', (info) => {
-      var m = <HTMLCanvasElement> document.getElementById("map")
-      var maptest = <CanvasRenderingContext2D> m.getContext("2d");
-      var color = ""
-
-      maptest.clearRect(0, 0, this.mapx, this.mapy);
-      if (info['gameStart'] == 3)
-        color = this.player0.paddleColor
-      else if (info['gameStart'] == 2)
-        color = this.player1.paddleColor
-      else
-        color = 'white'
-      maptest.fillStyle = color
-      if (color == 'purple')
-		  	maptest.shadowColor = 'rebeccapurple'
-      else if (color == 'yellow')
-        maptest.shadowColor = 'goldenrod'
-      else if (color == 'pink')
-        maptest.shadowColor = 'darkviolet'
-      else if (color == 'white')
-        maptest.shadowColor = 'grey'
-      else
-		  	maptest.shadowColor = 'dark' + color
-      maptest.shadowBlur = 20
-      maptest.shadowOffsetY = 25
-      maptest.shadowOffsetX = 25
-      maptest.font = '150px OrbitronM'
-      maptest.textAlign = 'center'
-      if (info['gameStart'] == 0)
-        maptest.fillText("GO!", this.mapx / 2, 320);
-      else
-        maptest.fillText(info['gameStart'], this.mapx / 2, 320);
+      Render.drawCountdown(this.ctx, this.mapx, this.mapy, info, this.player0, this.player1)
     })
 
     socket_game.on('gameInfo', (info) => {
-      this.m = <HTMLCanvasElement> document.getElementById("map")
-      this.maptest = <CanvasRenderingContext2D> this.m.getContext("2d");
-
-      this.maptest.shadowOffsetY = 0
-      this.maptest.shadowOffsetX = 0
-      this.maptest.shadowColor = 'black'
-      this.maptest.shadowBlur = 0;
-      this.maptest.fillStyle = 'rgba(0, 0, 0, 0.25)'
-      this.maptest.fillRect(0, 0, this.mapx, this.mapy);
+      Render.clear_canvas(this.ctx, this.mapx, this.mapy)
       for (let i = 0; i < info.length; ++i) {
         if (this.balls.get(info[i].id) == undefined && info[i].status == "normal") { // create a new ball
           this.balls.set(info[i].id, new Ball(info[i]['ball_info'][0], info[i]['ball_info'][1], info[i]['ball_info'][2], info[i]['ball_info'][3]))
@@ -253,7 +202,7 @@ export default Vue.extend({
                 this.particles.push(new Particle(p_x, p_y, 2, c_ball.color))
               }
             }
-            c_ball.draw(this.maptest)
+            c_ball.draw(this.ctx)
           }
         }
         else if (info[i].status == "erased"){
@@ -261,13 +210,13 @@ export default Vue.extend({
         }
       }
       //draw player left
-      this.paddle0.draw(this.maptest)
+      this.paddle0.draw(this.ctx)
       
       //draw player right
-      this.paddle1.draw(this.maptest)
+      this.paddle1.draw(this.ctx)
 
       this.particles.forEach((particle : Particle, index : number) => {
-        particle.update(this.maptest)
+        particle.update(this.ctx)
         if (particle.ttl == 0){
           this.particles.splice(index, 1)
         }

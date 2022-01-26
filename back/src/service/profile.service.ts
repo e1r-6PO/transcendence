@@ -23,8 +23,6 @@ export class ProfileService {
           { id: request.cookies['user_id'] }
       }
     );
-    if (existsSync('../data/users/' + request.cookies['user_id'] + '.png'))
-      user.picture = 'http://localhost:8000/api/profile/me/picture'
     return user;
   }
 

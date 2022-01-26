@@ -27,8 +27,12 @@ export class Channel {
     @PrimaryGeneratedColumn()
     id : number;
 
-    @Column({ default: "", collation: "utf8mb4_bin",
-    charset: "utf8mb4"})
+    @Column({
+        default: "",
+        // POSTGRES
+        // collation: "utf8mb4_bin",
+        // charset: "utf8mb4"
+    })
     channName: string;
     
     @Column({ default: '' })

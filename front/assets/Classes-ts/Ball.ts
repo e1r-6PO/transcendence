@@ -15,10 +15,10 @@ class Ball {
         this.shadowColor = "darkcyan"
     }
 
-    draw(maptest: CanvasRenderingContext2D){
+    draw(ctx: CanvasRenderingContext2D){
         //ball color
-        maptest.beginPath()
-        maptest.fillStyle = this.color
+        ctx.beginPath()
+        ctx.fillStyle = this.color
         if (this.color == 'purple')
             this.shadowColor = 'rebeccapurple'
         else if (this.color == 'yellow')
@@ -27,17 +27,17 @@ class Ball {
             this.shadowColor = 'darkviolet'
         else
             this.shadowColor = 'dark' + this.color
-        maptest.shadowColor = this.shadowColor
-        maptest.arc(this.x + this.width / 2, this.y + this.height / 2, this.width / 2, 0, Math.PI * 2)
-        maptest.fill()
-        maptest.closePath()
+        ctx.shadowColor = this.shadowColor
+        ctx.arc(this.x + this.width / 2, this.y + this.height / 2, this.width / 2, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.closePath()
         //disk effect
-        maptest.beginPath()
-        maptest.fillStyle = '#000000'
-        maptest.shadowColor = '#000000';
-        maptest.arc(this.x + this.width / 2, this.y + this.height / 2, this.width / 4, 0, Math.PI * 2)
-        maptest.fill()
-        maptest.closePath()
+        ctx.beginPath()
+        ctx.fillStyle = '#000000'
+        ctx.shadowColor = '#000000';
+        ctx.arc(this.x + this.width / 2, this.y + this.height / 2, this.width / 4, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.closePath()
     }
 }
 export { Ball }

@@ -24,7 +24,7 @@ import { PrivateMessage } from "src/entity/privateMessage.entity";
 
 @WebSocketGateway({
 	cors: {
-			origin: "http://localhost:8000",
+			origin: "http://" + process.env.HOST,
 			credentials: true
 	},
 	middlewares: [ AddUserIdMiddleware ],
@@ -125,7 +125,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			newMsg.sender = client['info']
 			newMsg.target = remote['info']
 			newMsg.message = game.mod
-			newMsg.picture = 'http://localhost:8000/api/users/' + newMsg.sender.id + '/picture'
+			newMsg.picture = newMsg.sender.picture
 			newMsg.date = new Date()
 			newMsg.type = "game"
 			newMsg.game_id = game.id
