@@ -5,6 +5,7 @@
   fluid 
   fill-height
 >
+  <AlertError style="margin-top: 0px" @end="onEnd" :textError="alertText" :type="alertType" :time="alertTime" :state="alert"> {{ alertText }} </AlertError>
   <v-app-bar
     color="#181818"
     height="130"
@@ -12,7 +13,6 @@
     fixed
     clipped-left
   >
-    <AlertError style="margin-top: 100px" @end="onEnd" :textError="alertText" :type="alertType" :time="alertTime" :state="alert"> {{ alertText }} </AlertError>
     <BasicBtn
       style="margin-top: 80px"
       content="mdi-forum"
