@@ -99,6 +99,10 @@ export default class ProfileEditing extends Vue {
 		this.nick = this.user.nickName
 	}
 
+	desactiveAlert() {
+		this.$emit('desactiveAlert')
+	}
+
 	activeAlert(text: string, type: string) {
 		this.$emit('activeAlert', text, type)
   }
@@ -129,7 +133,7 @@ export default class ProfileEditing extends Vue {
 		}
 		this.selectedFile = e.target.files[0]
 		this.url = URL.createObjectURL(e.target.files[0])
-		this.$emit('updatePicture')
+		this.pictureEdited != this.pictureEdited
 	}
 
 	async saveChange() {
@@ -142,12 +146,17 @@ export default class ProfileEditing extends Vue {
 		}
 		if (this.user.nickName != this.nick && this.nick != "") {
 			const ret = await this.$axios.post('api/profile/me/nickname?nickname=' + this.nick)
-				.catch(function (error) {
-						return error.response
+				.catch((error) => {
+					return error.response
 				});
 			if (ret.status == 409)
 			{
-				this.activeAlert("Nick is alredy taken", "error")
+				new Promise((resolve) => {
+					this.activeAlert("Nick is alredy taken", "error")
+					setTimeout(resolve, 3000)
+				}).then((resolve) => {
+					this.desactiveAlert()
+				})
 				return
 			}
 			else
@@ -159,12 +168,22 @@ export default class ProfileEditing extends Vue {
 		if (this.selectedFile != null) {
 			var formData = new FormData();
 			formData.append("image", this.selectedFile);
-			this.$emit('updatePicture')
-			await this.$axios.$post('api/profile/me/picture', formData, {
+			const ret = await this.$axios.post('api/profile/me/picture', formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				}
-			})
+			}).catch((error) => {
+				new Promise((resolve) => {
+					this.activeAlert("Nick is alredy taken", "error")
+					setTimeout(resolve, 3000)
+				}).then((resolve) => {
+					this.desactiveAlert()
+				})
+				return error.response
+			});
+			if (ret.status != 201)
+				return
+			this.$emit('updatePicture', this.url)
 			this.$emit('updateState')
 			this.selectedFile = null
 			this.url = ""
