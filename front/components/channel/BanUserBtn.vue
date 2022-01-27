@@ -15,7 +15,7 @@
   </template>
     <v-card class="dialog_card">
       <v-card-title class="white--text">
-        <span class="text-h5" style="font-family: OrbitronM !important">ban time</span>
+        <span class="text-h5" style="font-family: OrbitronM !important">Ban time</span>
         <v-spacer />
         <BasicBtn v-on:click="dialog = false" content="mdi-close" neonColor="red" />
       </v-card-title>
