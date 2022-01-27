@@ -14,7 +14,7 @@
     </template>
     <v-card class="dialog_card">
       <v-card-title class="white--text">
-        <p class="mt-4 text-h5">Choose the new Owner of the channel</p>
+        <p class="mt-4 text-h5" style="font-family: OrbitronM !important">Choose the new Owner of the channel</p>
         <v-spacer />
         <BasicBtn v-on:click="dialog = false" content="mdi-close" neonColor="red" />
       </v-card-title>
