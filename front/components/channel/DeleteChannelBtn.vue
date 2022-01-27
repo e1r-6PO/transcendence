@@ -1,14 +1,14 @@
 <template>
 <div>
-  <BasicBtn neonColor="red" isText content="Delete" @click="dialog = true" />
+  <BasicBtn neonColor="red" isText content="Delete" @click="dialog = true" style="padding-top: 3px; font-family: OrbitronM; font-size: 70%"/>
   <v-dialog
     v-model="dialog"
     max-width="290"
     content-class="custom-dialog-card-shadow"
   >
     <v-card class="dialog_card">
-      <v-card-title class="text-h5 white--text">
-        Are you sure you want delete the channel ?
+      <v-card-title class="text-h5 white--text" style="font-family: OrbitronM !important; font-size: 150% !important">
+        Are you sure you want to delete the channel ?
       </v-card-title>
 
       <v-card-text class="white--text">
@@ -17,8 +17,8 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <BasicBtn @click="dialog = false" isText content="Cancel"/>
-        <BasicBtn @click="eraseChannel()" neonColor="red" isText content="Confirm"/>
+        <BasicBtn @click="dialog = false" isText content="Cancel" style="padding-top: 3px; font-family: OrbitronM; font-size: 70%"/>
+        <BasicBtn @click="eraseChannel()" neonColor="red" isText content="Confirm" style="padding-top: 3px; font-family: OrbitronM; font-size: 70%"/>
       </v-card-actions>
     </v-card>
   </v-dialog>

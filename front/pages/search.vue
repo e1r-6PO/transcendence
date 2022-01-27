@@ -2,18 +2,19 @@
 <v-container>
   <v-row style="padding-top: 2.5%">
     <v-col justify="center" align="center">
-      <p v-if="users == null">LOADING...</p>
+      <p v-if="users == null" style="font-family: OrbitronM; font-size: 30px">LOADING...</p>
       <div v-else>
-      <p class="resultMatch" style="padding-bottom: 1%; font-size:30px">{{ users.length }} result matched "{{ query }}"</p>
+      <p class="resultMatch" style="padding-bottom: 1%; font-family: OrbitronM; font-size:30px">{{ users.length }} results matched "{{ query }}"</p>
         <div>
           <v-btn
-            class="foreground_element neon-button"
+            class="foreground_element neon-button mr-5 ml-5"
             rounded
             text
             color="#ffffff"
             @click="toToProfile(user)"
             v-for="user of users"
             :key="user"
+            style="padding-top: 3px; font-family: OrbitronM; font-size: 80%"
           >
             {{ user }}
           </v-btn>

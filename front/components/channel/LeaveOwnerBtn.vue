@@ -6,6 +6,7 @@
   >
     <template v-slot:activator="{ }">
       <BasicBtn
+        style="padding-top: 3px; font-family: OrbitronM; font-size: 70%"
         v-on:click="dialog = true"
         content="Leave"
         :isText="true"
@@ -31,6 +32,7 @@
           :disable="userName == ''"
           content="Leave"
           neonColor="red"
+          style="padding-top: 3px; font-family: OrbitronM; font-size: 70%"
         />
       </v-card-actions>
     </v-card>
