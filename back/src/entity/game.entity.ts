@@ -37,8 +37,8 @@ export class Game {
 	ball_amount: number
 	paddleSize: number
 	room: BroadcastOperator<DefaultEventsMap>
-	tickSpeed = 1000 / 42
-	tickPerTick = 3
+	tickSpeed = 1000 / 32
+	tickPerTick = 4
 
 	mod: string
 
