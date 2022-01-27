@@ -122,13 +122,23 @@ export default class ProfileEditing extends Vue {
 	onFileChanged(e: any) {
 		if (!e.target.files[0]) {
 			e.preventDefault();
-			this.activeAlert("No file chosen", "error")
+			new Promise((resolve) => {
+				this.activeAlert("No file chosen", "error")
+				setTimeout(resolve, 3000)
+			}).then((resolve) => {
+				this.desactiveAlert()
+			})
 			return;
 		}
 			
 		if (e.target.files[0].size > 1000000) {
 			e.preventDefault();
-			this.activeAlert("File too big (> 1MB)", "error")
+			new Promise((resolve) => {
+				this.activeAlert("File too big (> 1MB)", "error")
+				setTimeout(resolve, 3000)
+			}).then((resolve) => {
+				this.desactiveAlert()
+			})
 			return;
 		}
 		this.selectedFile = e.target.files[0]
