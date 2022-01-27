@@ -13,6 +13,7 @@
     :user="this.user"
     :pictureEdited="pictureEdited"
     @activeAlert="activeAlert"
+    @desactiveAlert="desactiveAlert"
     @updateState="switchEditing"
     @updateNick="changeNick"
     @updatePicture="changePicture"
@@ -77,6 +78,10 @@ export default class extends Vue {
     this.alert = true
   }
 
+  desactiveAlert() {
+    this.alert = false
+  }
+
   switchEditing() {
     this.isEditing = !this.isEditing;
   }
@@ -85,7 +90,8 @@ export default class extends Vue {
     this.user.nickName = newNick
   }
 
-  changePicture(){
+  changePicture(url: string){
+    this.user.picture = url
     this.pictureEdited = !this.pictureEdited
   }
 

@@ -52,10 +52,10 @@
 			</v-card>
 		</div>
   <v-row class="pt-4 d-flex flex-row">
-    	<v-col xs="12" sm="12" md="6">
-    		<GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user"/>
+		<v-col xs="12" sm="12" md="6">
+			<GameHistory justify="center" align="center" :matchHistory="matchHistory" :user="user"/>
 			</v-col>
-    	<v-col xs="12" sm="12" md="6">
+		<v-col xs="12" sm="12" md="6">
 				<OwnAchievements v-if="user.id != 0"  align="center" :user="user" class=""/>
 			</v-col>
 		</v-row>
@@ -97,45 +97,45 @@ export default class ProfileNormal extends Vue {
 	}
 
   goToGame(match: Match) {
-    this.$router.push('/game/' + match.id)
+	this.$router.push('/game/' + match.id)
   }
 
   goToProfile(user: LightUser) {
-    this.$router.push('/users/' + user.nickName)
+	this.$router.push('/users/' + user.nickName)
   }
 
   getSelf(match: Match) {
-    if (match.player0.id == this.user.id)
-      return match.player0
-    return match.player1
+	if (match.player0.id == this.user.id)
+	  return match.player0
+	return match.player1
   }
 
   getOpenent(match: Match) {
-    if (match.player0.id == this.user.id)
-      return match.player1
-    return match.player0
+	if (match.player0.id == this.user.id)
+	  return match.player1
+	return match.player0
   }
 
   getSelfScore(match: Match) {
-    if (match.player0.id == this.user.id)
-      return match.scorep0
-    return match.scorep1
+	if (match.player0.id == this.user.id)
+	  return match.scorep0
+	return match.scorep1
   }
 
   getOpenentScore(match: Match) {
-    if (match.player0.id == this.user.id)
-      return match.scorep1
-    return match.scorep0
+	if (match.player0.id == this.user.id)
+	  return match.scorep1
+	return match.scorep0
   }
 
   isProfileWinner(match: Match) {
-    if (match.winner.id == this.user.id)
-      return true
-    return false
+	if (match.winner.id == this.user.id)
+	  return true
+	return false
   }
 
   thistimeSince(date:string ) {
-    return timeSince(new Date(date))
+	return timeSince(new Date(date))
   }
 }
 
