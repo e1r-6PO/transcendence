@@ -197,7 +197,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
             servMsg.sender = client['info']
             servMsg.type = Messages_type.server
-            servMsg.message = "User <" + client['info'].nickName + "> has join the channel."
+            servMsg.message = "User <" + client['info'].nickName + "> has joined the channel."
             servMsg.channel = chan
             this.server.to(av[0]).emit("serverMsg", servMsg)
             this.server.to(av[0]).emit("newUser", client['info'])
@@ -240,7 +240,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       var servMsg = new Messages()
       servMsg.sender = client['info']
       servMsg.type = Messages_type.server
-      servMsg.message = client['info'].nickName + " has add <" + av[1] + "> in the channel."
+      servMsg.message = client['info'].nickName + " has added <" + av[1] + ">"
       servMsg.channel = chan
       this.server.to(av[0]).emit("serverMsg", servMsg)
       this.server.to(av[0]).emit("newUser", user_data.toLightuser())
@@ -293,7 +293,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         var servMsg = new Messages()
         servMsg.sender = client['info']
         servMsg.type = Messages_type.server
-        servMsg.message = client['info'].nickName + " has kick <" + av[1] + "> of the channel."
+        servMsg.message = client['info'].nickName + " has kicked <" + av[1] + ">"
         servMsg.channel = chan
         this.server.to(av[0]).emit("serverMsg", servMsg)
         this.server.to(av[0]).emit("removeUser", user_data.toLightuser())
