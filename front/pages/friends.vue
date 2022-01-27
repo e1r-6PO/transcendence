@@ -302,7 +302,7 @@ export default Vue.extend({
       else if (relationship.status == FriendshipStatus.BLOCKED)
         return '#ece3e3cc'
       else if (relationship.status == FriendshipStatus.SENT)
-        return '#d61c1c99'
+        return '#d61c1cee'
       else if (relationship.status == FriendshipStatus.INCOMMING)
         return '#32c44a'
       return 'black'
