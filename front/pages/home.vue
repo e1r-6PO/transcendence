@@ -36,7 +36,7 @@ export default Vue.extend({
   },
 
   async mounted() {
-    let stats = this.$axios.$get('/api/stats', { progress: false }).then((res) => {
+    let stats = this.$axios.$get('/api/stats', { progress: false }).then((res: any) => {
       this.playerOnline = res['playerOnline']
     })
     this.watchPlayerCount = setInterval(() => this.getPlayerOnline(), 1000)
@@ -49,7 +49,7 @@ export default Vue.extend({
   methods: {
 
     async getPlayerOnline() {
-      this.$axios.$get('/api/stats', { progress: false }).then((res) => {
+      this.$axios.$get('/api/stats', { progress: false }).then((res: any) => {
         this.playerOnline = res['playerOnline']
       })
     },
