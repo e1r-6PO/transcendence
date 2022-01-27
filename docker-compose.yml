@@ -2,6 +2,15 @@ version: '3'
 
 services:
 
+  # database:
+  #   image: postgre
+  #   expose:
+  #     - 5432
+  #   environment:
+  #     POSTGRES_USER: root
+  #     POSTGRES_PASSWORD: my-secret-pw
+  #     POSTGRES_DB: transcendence
+
   database:
     image: mariadb:latest
     expose:
@@ -15,7 +24,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./back:/back
+      - ./data:/data
     links:
       - database:transcendence-database
 
@@ -23,7 +32,15 @@ services:
     build: ./front
     ports:
       - 8000:8000
-    volumes:
-      - ./front:/front
     links:
+      - back:transcendence-back
+
+  reverse-proxy:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+    links:
+      - front:transcendence-front
       - back:transcendence-back
