@@ -184,7 +184,7 @@ export default class ProfileEditing extends Vue {
 				}
 			}).catch((error) => {
 				new Promise((resolve) => {
-					this.activeAlert("Nick is alredy taken", "error")
+					this.activeAlert("Only image file < 1mb are alowed", "error")
 					setTimeout(resolve, 3000)
 				}).then((resolve) => {
 					this.desactiveAlert()
