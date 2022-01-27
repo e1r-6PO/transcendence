@@ -140,7 +140,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         var tmp = new Date()
         if (participant.isMute && participant.muteTime.getTime() > tmp.getTime())
         {
-            this.server.to(client.id).emit('MuteError', 'You re mute until ' + participant.banTime.toString().slice(0,21).replace(/-/g,'/'))
+            this.server.to(client.id).emit('MuteError', 'You re mute until ' + participant.muteTime.toString().slice(0,21).replace(/-/g,'/'))
+            return
+        }
+        else if (participant.isBan && participant.banTime.getTime() > tmp.getTime())
+        {
+            this.server.to(client.id).emit('MuteError', 'You re ban until ' + participant.banTime.toString().slice(0,21).replace(/-/g,'/'))
             return
         }
         else
@@ -266,6 +271,26 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         })
         setTimeout(() => {
             this.server.to(av[0]).emit("newOwner", user_data.id)
+        }, 200)
+    }
+
+    @SubscribeMessage('muteUser')
+    async userMute(client: Socket, av: string): Promise<void> {
+        let user_data = await this.usersRepository.findOne({
+            where: {nickName: av[1]}
+        })
+        setTimeout(() => {
+            this.server.to(av[0]).emit("muteUser", user_data.id)
+        }, 200)
+    }
+
+    @SubscribeMessage('banUser')
+    async userBan(client: Socket, av: string): Promise<void> {
+        let user_data = await this.usersRepository.findOne({
+            where: {nickName: av[1]}
+        })
+        setTimeout(() => {
+            this.server.to(av[0]).emit("banUser", user_data.id)
         }, 200)
     }
 

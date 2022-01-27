@@ -70,7 +70,7 @@ export default class AlertError extends Vue{
     if (this.colorType == "blue")
       color = "#adbbf8"
     else if (this.colorType == "orange")
-      color = "#ffeddb"
+      color = "#f1d8c6"
     else if (this.colorType == "red")
       color = "#ffeddb"
 
@@ -114,7 +114,7 @@ export default class AlertError extends Vue{
 .custom-alert-orange {
   border: 2px solid #ffa768 !important;
   box-shadow: inset 0px 0px 20px 0px #fc6500, 0px 0px 20px 0px #fc6500 !important;
-  background-color: #ffa76899 !important;
+  background-color: #fc6500cc !important;
 }
 
 .custom-alert-warning {
@@ -160,7 +160,7 @@ export default class AlertError extends Vue{
 }
 
 .custom-alert-text-warning {
-  color: #ffeddb;
+  color: #faf1e9;
   text-shadow:
       0 0 7px #CD7F32,
       0 0 8px #CD7F32,
@@ -168,7 +168,7 @@ export default class AlertError extends Vue{
 }
 
 .custom-alert-text-orange {
-  color: #ffeddb;
+  color: #faf5f1;
   text-shadow:
       0 0 7px #CD7F32,
       0 0 8px #CD7F32,
