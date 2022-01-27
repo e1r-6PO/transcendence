@@ -46,7 +46,7 @@ import socket_game from '../../plugins/game.io'
 @Component
 export default class ProfilePreview extends Vue {
   
-  @Prop({ type: Object, default: new User() })
+  @Prop({ default: new LightUser() })
   user!: LightUser
 
   @Prop({ type: Number, default: -1 })

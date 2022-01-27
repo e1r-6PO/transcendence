@@ -5,7 +5,6 @@
   fluid 
   fill-height
 >
-  <AlertError style="margin-top: 0px" @end="onEnd" :textError="alertText" :type="alertType" :time="alertTime" :state="alert"> {{ alertText }} </AlertError>
   <v-app-bar
     color="#181818"
     height="130"
@@ -13,6 +12,7 @@
     fixed
     clipped-left
   >
+    <AlertError style="margin-top: 100px" @end="onEnd" :textError="alertText" :type="alertType" :time="alertTime" :state="alert"> {{ alertText }} </AlertError>
     <BasicBtn
       style="margin-top: 80px"
       content="mdi-forum"
@@ -80,7 +80,7 @@
         align="center"
         justify="center"
       >
-      <v-icon
+      <v-icon v-if="user.id != 0"
         @click="!userPreview"
         @focus="switchFocusCard"
         :color="userPreviewFocus? '#9142c7' : 'white'"
@@ -89,7 +89,7 @@
         {{ userPreview ? 'mdi-menu-up' : 'mdi-menu-down' }}
       </v-icon>
       </div>
-      <ProfilePreview v-if="userPreview" />
+      <ProfilePreview v-if="userPreview && user.id != 0"  :user="user" />
       </div>
     </v-navigation-drawer>
 
@@ -138,7 +138,7 @@
   </v-row>
   
   <v-footer app inset color="#181818">
-    <TextField @enterPress="sendMessage" v-model="message" :disable="disableInput()"  :append_outer_icon="disableInput() ? '' : 'mdi-send'" placeholder="Message" class="mb-2" />
+    <TextField @enterPress="sendMessage" v-model="message" :disable="relation != undefined && relation.status == 'blocked'"  :append_outer_icon="disableInput() ? '' : 'mdi-send'" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
 </template>
@@ -238,8 +238,11 @@ export default Vue.extend({
         copyLightUser(this.user, user)
     })
     socket_game.on('notificationPrivateGameInviteFailed', (arg: any) => {
+      this.alert = false
       if (arg['user'].nickName && arg['user'].id == this.user.id)
         this.activeAlert("The user is offline.", 'info')
+      console.log(arg['user'].nickName && arg['user'].id == this.user.id)
+      console.log(arg['user'])
     })
   },
 
@@ -256,6 +259,7 @@ export default Vue.extend({
       newMsg.type = "message"
       socket_chat.emit('privateMessageToServer', this.$route.params.slug, this.me.nickName, this.message)
       socket_chat.on('blocked', (msg: string) => {
+        this.alert = false
         this.activeAlert(msg, 'warning')
       })
       this.message = ''
@@ -327,6 +331,7 @@ export default Vue.extend({
     },
 
     checkMsg(): boolean {
+      this.alert = false
       this.message = this.message.trim()
       if (this.message.length > 180)
       {

@@ -1,6 +1,6 @@
 <template>
   <div class="foreground_elemen flex-container pt-8">
-    <AlertError @end="alert = false" :textError="alertText" :type="alertType" :state="alert"> {{ alertText }} </AlertError>
+    <AlertError @end="alert = false" :textError="alertText" :type="alertType" :time="5" :state="alert"> {{ alertText }} </AlertError>
     <v-row justify="end" class="mr-6 pb-4">
 			<BasicBtn @click="returnToProfile()" content="mdi-close" neonColor="red" />
 		</v-row>
@@ -102,6 +102,7 @@ export default class extends Vue {
 
   async turn_on() {
 
+    this.alert = false
     this.tfa_code = "";
     for (let i = 0; i < 6; i++)
     {
