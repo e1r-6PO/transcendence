@@ -5,7 +5,13 @@ export default {
   ssr: false,
 
   server: {
+    host: '0',
     port: 8000
+  },
+
+  env: {
+    HOST: process.env.HOST,
+    BACKHOST: process.env.BACKHOST
   },
 
   // router: {
@@ -74,7 +80,9 @@ export default {
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  axios: {
+    baseURL: 'http://' + process.env.HOST,
+  },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {

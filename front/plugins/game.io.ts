@@ -9,7 +9,7 @@ import VueSocketIOExt from 'vue-socket.io-extended';
 // export default ({ store }) => {
 //     Vue.use(VueSocketIOExt, socket, { store })
 // }
-const socket_game = io("http://localhost:3000/game", { withCredentials: true, autoConnect: false });
+const socket_game = io("http://" + process.env.BACKHOST + "/game", { withCredentials: true, autoConnect: false });
 
 export default socket_game
 
