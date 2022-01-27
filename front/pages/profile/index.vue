@@ -31,6 +31,9 @@ import { Match } from '../../assets/Classes-ts/Match';
 
 @Component({
   middleware: login,
+  head: {
+    title: 'Profile'
+  }
 })
 export default class extends Vue {
 

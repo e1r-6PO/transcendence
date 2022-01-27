@@ -52,7 +52,10 @@ import Component from 'vue-class-component'
 import Vue from 'vue'
 
 @Component({
-  middleware: login
+  middleware: login,
+  head: {
+    title: '2fa Settings',
+  }
 })
 export default class extends Vue {
 

@@ -29,6 +29,12 @@ export default Vue.extend({
     }
   },
 
+  head() {
+    return {
+      title: "Home"
+    };
+  },
+
   async mounted() {
     let stats = this.$axios.$get('/api/stats', { progress: false }).then((res) => {
       this.playerOnline = res['playerOnline']

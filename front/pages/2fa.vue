@@ -57,7 +57,10 @@ import axios from '@nuxtjs/axios'
 
 @Component({
   middleware: no22fa,
-  layout: 'empty'
+  layout: 'empty',
+  head: {
+    title: '2fa'
+  },
 })
 export default class extends Vue {
 

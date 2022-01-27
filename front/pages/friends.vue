@@ -76,6 +76,12 @@ export default Vue.extend({
 
   middleware: 'login',
 
+  head() {
+    return {
+      title: 'Friends'
+    }
+  },
+
   data() {
     return {
       search_string: "",

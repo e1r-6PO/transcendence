@@ -67,7 +67,8 @@ import no2login from '../middleware/no2login'
 @Component({
   components: { Icon_google },
   middleware: no2login,
-  layout: 'empty'
+  layout: 'empty',
+  head: { title: 'Tronscendence', titleTemplate: '%s'}
 })
 export default class extends Vue {
 

@@ -37,7 +37,8 @@ import { Watch } from 'vue-property-decorator'
 import { Route } from 'vue-router'
 
 @Component({
-  middleware: login
+  middleware: login,
+  head: { title: 'User research' }
 })
 export default class extends Vue {
 

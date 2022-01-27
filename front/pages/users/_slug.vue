@@ -120,6 +120,12 @@ const All_Friend_Status = {
 export default Vue.extend({
     
   middleware: login,
+
+  head() {
+    return {
+      title: this.$route.params.slug
+    }
+  },
   
   data() {
 

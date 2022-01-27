@@ -41,6 +41,13 @@ import Render  from '../../assets/Classes-ts/Render'
 import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
+
+  head() {
+    return {
+      title: 'VS' + this.$route.params.slug
+    }
+  },
+
   data() {
     return {
       match_res: Match,

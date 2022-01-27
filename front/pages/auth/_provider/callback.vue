@@ -25,6 +25,12 @@ import Component from 'vue-class-component'
 export default Vue.extend({
   layout: 'empty',
 
+  head() {
+    return {
+      title: 'Redirect'
+    }
+  },
+
   async mounted() {
     const { params: { provider } } = this.$route
 
