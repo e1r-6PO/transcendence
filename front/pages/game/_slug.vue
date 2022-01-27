@@ -44,7 +44,7 @@ export default Vue.extend({
 
   head() {
     return {
-      title: 'VS' + this.$route.params.slug
+      title: 'Pong Game'
     }
   },
 
