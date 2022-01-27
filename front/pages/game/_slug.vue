@@ -3,8 +3,8 @@
   <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
   <v-row justify="center">
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 100px">
-      <p v-if="matchStatus == 'finished' && winner.nickName == player0.nickName" class="text-h5 pl-3 pb-10" style="color: goldenrod; font-family: OrbitronM !important" color="goldenrod"> WINNER </p>
-      <p v-else-if="matchStatus == 'finished'" class="text-h5 pl-3 pb-10" style="color: red; font-family: OrbitronM !important" color="red"> LOSER </p>
+      <p v-if="matchStatus == 'finished' && winner.nickName == player0.nickName" class="text-h5 pl-3 pb-5" style="color: goldenrod; font-family: OrbitronM !important" color="goldenrod"> WINNER </p>
+      <p v-else-if="matchStatus == 'finished'" class="text-h5 pl-3 pb-5" style="color: red; font-family: OrbitronM !important" color="red"> LOSER </p>
       <ProfilePicture :disable="matchStatus != 'finished'" @click="redirectToUserProfile(player0.nickName)" :src="player0.picture" :neonColor="player0.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player0.nickName}}</p>
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p0 }}</p>
@@ -18,8 +18,8 @@
     </v-col>
 
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 100px">
-      <p v-if="matchStatus == 'finished' && winner.nickName == player1.nickName" class="text-h5 pl-3 pb-10" style="color: goldenrod; font-family: OrbitronM !important"> WINNER </p>
-      <p v-else-if="matchStatus == 'finished'" class="text-h5 pl-3 pb-10" style="color: red; font-family: OrbitronM !important" color="red"> LOSER </p>
+      <p v-if="matchStatus == 'finished' && winner.nickName == player1.nickName" class="text-h5 pl-3 pb-5" style="color: goldenrod; font-family: OrbitronM !important"> WINNER </p>
+      <p v-else-if="matchStatus == 'finished'" class="text-h5 pl-3 pb-5" style="color: red; font-family: OrbitronM !important" color="red"> LOSER </p>
       <ProfilePicture :disable="matchStatus != 'finished'" @click="redirectToUserProfile(player1.nickName)" :src="player1.picture" disble :neonColor="player1.paddleColor" size="100" />
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{player1.nickName}}</p>
       <p class="text-h5 pt-10 pl-3" style="color: #ffffff; font-family: OrbitronM !important">{{ score_p1 }}</p>

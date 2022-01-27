@@ -2,6 +2,7 @@
   <v-btn
     @click="sendClick()"
     :width="size"
+    :height="size"
     :disabled="disable"
     icon
     class="ml-3"
