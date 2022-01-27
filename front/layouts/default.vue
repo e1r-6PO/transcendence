@@ -9,6 +9,7 @@
       style="z-index: 7"
       clipped
       temporary
+      stateless
     >
       <div style="display: flex ; flex-direction: column; margin-top: 10px">
         <v-btn
@@ -167,6 +168,7 @@ export default Vue.extend({
   @import '../assets/Classes-scss/main_page.scss';
   @import '../assets/Classes-scss/neon_effects.scss';
   @import '../assets/Classes-scss/neonText_colors.scss';
+
 .v-application{
     background: #181818 !important;
   }
