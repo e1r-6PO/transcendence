@@ -15,7 +15,7 @@
   </template>
     <v-card class="dialog_card">
       <v-card-title class="white--text">
-        <span class="text-h5">ban time</span>
+        <span class="text-h5" style="font-family: OrbitronM !important">ban time</span>
         <v-spacer />
         <BasicBtn v-on:click="dialog = false" content="mdi-close" neonColor="red" />
       </v-card-title>
@@ -65,8 +65,9 @@ export default class BanUserBtn extends Vue{
       this.$router.push('/chat?error=' + ret.data.message)
     else
     {
-      this.$emit('refreshUser')
-    }this.dialog = false
+      this.$emit('userBan', this.userName)
+    }
+    this.dialog = false
     this.timeChoose = ""
   }
 

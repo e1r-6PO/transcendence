@@ -15,7 +15,7 @@
   </template>
     <v-card class="dialog_card">
       <v-card-title class="white--text">
-        <span class="text-h5">Mute time</span>
+        <span class="text-h5" style="font-family: OrbitronM !important">Mute time</span>
         <v-spacer />
         <BasicBtn v-on:click="closeMuteDialog()" content="mdi-close" neonColor="red" />
       </v-card-title>
@@ -53,6 +53,7 @@ export default class MuteUserBtn extends Vue{
   timeList: Array<string> = ['1 minute', '10 minutes', '1 hours', '6 hours', '12 hours', '1 day', '3 day', '1 week', '1 month', '6 month', '1 year']
   
   mounted() {
+    console.log(this.mute)
   }
 
   async switchMute() {
@@ -68,7 +69,7 @@ export default class MuteUserBtn extends Vue{
     else if (ret.status == 404)
       this.$router.push('/chat?error=' + ret.data.message)
     else
-      this.$emit('refreshUser')
+      this.$emit('muteUser', this.userName)
     this.dialog = false
     this.timeChoose = ""
   }

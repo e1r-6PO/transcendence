@@ -14,10 +14,16 @@
         @clicked="openPreview"
         @focus="focusCard"
         @leave="leaveCard"
+        @muteUser="emitMuteUser"
+        @banUser="emitBanUser"
         :ownerAction="ownerAction"
         :status="status"
         :userStatus="user.channelStatus"
         :user="user.user"
+        :isBan="user.isBan"
+        :isMute="user.isMute"
+        :muteTime="user.muteTime"
+        :banTime="user.banTime"
         style="font-family: OrbitronM"
       />
       <div
@@ -96,6 +102,26 @@ export default class ChannelUserList extends Vue {
       socket_chat.on('removeUser', (user: LightUser) => {
         this.removeUser(user)
       })
+      socket_chat.on('muteUser', (userId: number) => {
+        var ret = this.userList.findIndex(el => el.user.id == userId)
+
+        if (ret != -1)
+        {
+          console.log("here : " + ret)
+          this.userList[ret].isMute = !this.userList[ret].isMute
+        }
+      })
+      socket_chat.on('banUser', (userId: number) => {
+        var ret = this.userList.findIndex(el => el.user.id == userId)
+
+        console.log("this.meId")
+        console.log(this.meId)
+        console.log(userId)
+        if (ret != -1)
+          this.userList[ret].isBan = !this.userList[ret].isBan
+        if (userId == this.meId)
+          this.$router.push('/chat?event=' + 'you have been ban of the channel ' + this.$route.params.slug + '.')
+      })
       socket_chat.on('switchGrade', (userId: number) => {
         var ret = this.userList.findIndex(el => el.user.id == userId)
         this.userList[ret].channelStatus
@@ -149,6 +175,15 @@ export default class ChannelUserList extends Vue {
 
   leaveCard(id: number) {
     this.userFocus = -1
+  }
+
+  emitMuteUser(username: string) {
+    socket_chat.emit('muteUser', this.$route.params.slug, username)
+  }
+
+  
+  emitBanUser(username: string) {
+    socket_chat.emit('banUser', this.$route.params.slug, username)
   }
 
   // refreshUser() {
