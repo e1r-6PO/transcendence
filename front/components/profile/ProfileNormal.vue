@@ -161,7 +161,7 @@ export default class ProfileNormal extends Vue {
 	box-shadow: inset 0px 0px 150px 20px #0affff, 0px 0px 25px 0px #0affff !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	min-width: 400px;
+	min-width: 500px;
 	height: 250px;
 	width: 33%;
 }
@@ -171,7 +171,7 @@ export default class ProfileNormal extends Vue {
 	box-shadow: inset 0px 0px 150px 20px #a200ff, 0px 0px 25px 0px #a200ff !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	min-width: 400px;
+	min-width: 500px;
 	height: 250px;
 	width: 33%;
 }
@@ -181,7 +181,7 @@ export default class ProfileNormal extends Vue {
 	box-shadow: inset 0px 0px 150px 20px #b8a435, 0px 0px 25px 0px #b8a435 !important;
 	border-radius: 15px !important;
 	background-color: #181818 !important;
-	min-width: 400px;
+	min-width: 500px;
 	height: 250px;
 	width: 33%;
 }

@@ -114,4 +114,6 @@ export default Vue.extend({
 
 <style scoped>
 @import '../assets/Classes-scss/main_page.scss';
+@import '../assets/Classes-scss/neon_effects.scss';
+@import '../assets/Classes-scss/neonText_colors.scss';
 </style>
