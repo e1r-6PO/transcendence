@@ -49,7 +49,7 @@ export class ProfileController {
   @UseGuards(HasNickGuard)
   @UseInterceptors(FileInterceptor('image', {
     storage: diskStorage({
-      destination: '../data/image_tmp',
+      destination: process.env.DATADIR + '/image_tmp',
       filename: new ImageUpload().editFileName
     }),
     fileFilter: new ImageUpload().imageFileFilter
@@ -62,7 +62,7 @@ export class ProfileController {
     await sharp(file.path)
       .resize({width: 750, height: 750})
       .png()
-      .toFile('../data/users/' + request.cookies['user_id'] + '.png')
+      .toFile(process.env.DATADIR + '/users/' + request.cookies['user_id'] + '.png')
     fs.unlinkSync(file.path)
     return true
   }
@@ -80,7 +80,7 @@ export class ProfileController {
   @Get('me/picture')
   @UseGuards(HasNickGuard)
   seeUploadedFile(@Req() req: Request, @Res() res) {
-    return res.sendFile(req.cookies['user_id'] + '.png', { root: '../data/users' });
+    return res.sendFile(req.cookies['user_id'] + '.png', { root: process.env.DATADIR + '/users' });
   }
 
   @Get('me/friends')

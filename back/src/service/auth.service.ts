@@ -45,7 +45,7 @@ export class AuthService {
         }
       })
       .png()
-      .toFile('../data/users/' + user.id + '.png')
+      .toFile(process.env.DATADIR + '/users/' + user.id + '.png')
     }
 
     //create the token

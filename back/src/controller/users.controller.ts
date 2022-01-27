@@ -31,7 +31,7 @@ export class UsersController {
 
   @Get(':id/picture')
   seeUploadedFile(@Param('id') id: number, @Req() req: Request, @Res() res) {
-    return res.sendFile(id + '.png', { root: '../data/users' });
+    return res.sendFile(id + '.png', { root: process.env.DATADIR + '/users' });
   }
 
   @Get(':id/matchs')
