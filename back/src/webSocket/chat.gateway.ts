@@ -81,7 +81,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         var relation1 = await this.friendsService.find_receiver(jwt_decoded['id'], userTarget.id)
         var relation2 = await this.friendsService.find_sender(jwt_decoded['id'], userTarget.id)
         
-        if (relation1.status == Friend_Status.blocked || relation2.status == Friend_Status.blocked)
+        if ((relation1 && relation1.status == Friend_Status.blocked) || (relation2 && relation2.status == Friend_Status.blocked))
         {
             client.emit("blocked", relation1.status == Friend_Status.blocked ? "This user blocked you" : "You have block this user")
             return ;
