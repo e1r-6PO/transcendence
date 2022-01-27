@@ -124,7 +124,7 @@ export class GameService {
     async endgame(game: Game) {
         if (game.status != "idle") {
             game.stop()
-            if (game.player0socket == null || game.status == "forfeitp0" ||  game.scorep1 > game.scorep0) { // player0 dc or p1 won
+            if (game.player0socket == null || game.status == "forfeitp0" || (game.scorep1 > game.scorep0 && game.status != "forfeitp1")) { // player0 dc or p1 won
                 game.room.emit('matchEnd', { winner: game.player1.toLightuser(), looser: game.player0.toLightuser() })
                 await this.save_game(game, game.player1)
                 if (game.type == "private") {
@@ -136,7 +136,7 @@ export class GameService {
 						this.achievementService.firstRankAchievement(game.player1)
 				})
 			}
-            else if (game.player1socket == null || game.status == "forfeitp1" || game.scorep0 > game.scorep1) { //player1 dc or p0 won
+            else if (game.player1socket == null || game.status == "forfeitp1" || (game.scorep0 > game.scorep1 && game.status != "forfeitp0")) { //player1 dc or p0 won
                 game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser })
                 await this.save_game(game, game.player0)
                 if (game.type == "private") {
