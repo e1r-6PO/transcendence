@@ -1,15 +1,15 @@
 FROM debian:latest
 
-WORKDIR /back
+WORKDIR /front
 
 RUN apt update && apt install -y npm
 
-COPY . /back
+COPY . /front
 
 RUN npm i
 
-RUN mkdir /data /data/image_tmp /data/users
+RUN npm run build
 
-EXPOSE 3000
+EXPOSE 8000
 
 CMD ["npm", "run", "start"]
