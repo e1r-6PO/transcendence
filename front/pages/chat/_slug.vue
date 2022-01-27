@@ -91,7 +91,7 @@
         <div v-for="(msg, i) in messagesArray"
           :key="i"
           class="overflow-y-auto"
-          style="margin-top: 0px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
+          style="margin-top: 10px; position: relative; padding-right: 45px; padding-left: 45px; padding-bottom: 15px"
         >
         <div v-if="isMsgDefault(msg)">
           <ProfilePicture

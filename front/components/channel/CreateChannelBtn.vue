@@ -12,7 +12,7 @@
       </template>
       <v-card class="dialog_card">
         <v-card-title class="white--text justify-center">
-          <span class="text-h5">Channel settings</span>
+          <span class="text-h5" style="font-family: OrbitronM !important">Channel settings</span>
           <v-spacer />
           <BasicBtn @click="dialog = false" content="mdi-close" neonColor="red" />
         </v-card-title>

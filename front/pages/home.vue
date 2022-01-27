@@ -1,7 +1,7 @@
 <template>
 <v-container fill-height fluid>
-  <AlertError :state="alert" :type="alertType" :textError="alertText" />
-  <number-connected-user :amount="playerOnline" />
+  <AlertError @end="closeAlert" :state="alert" :type="alertType" :textError="alertText" />
+  <number-connected-user style="position: absolute; right: 0px; bottom: 91%;" :amount="playerOnline" />
   <v-row align="center" justify="center">
     <v-col align="center">
       <join-queue-btn @click="switchQueueState()" :inQueue="in_queue" :msg="in_queue ? 'CANCEL' : 'PLAY'"/>
@@ -87,8 +87,14 @@ export default Vue.extend({
       this.alertText = text
       this.alertType = type
       this.alert = true
-    }
+    },
+
+    closeAlert() {
+      this.alert = false
+    },
   },
+
+
 
   async created() {
     if (!socket_game.hasListeners('matchFound')) {

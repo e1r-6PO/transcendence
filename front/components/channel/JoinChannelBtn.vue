@@ -13,7 +13,7 @@
       </template>
       <v-card class="dialog_card">
         <v-card-title class="white--text justify-center">
-          <span class="text-h5">Channel name</span>
+          <span class="text-h5" style="font-family: OrbitronM !important">Channel name</span>
           <v-spacer />
           <BasicBtn @click="dialogJoin = false" content="mdi-close" neonColor="red" />
         </v-card-title>
@@ -35,7 +35,7 @@
     >
       <v-card class="dialog_card">
         <v-card-title>
-          <span class="text-h5 white--text">Channel password</span>
+          <span class="text-h5 white--text" style="font-family: OrbitronM !important">Channel password</span>
           <v-spacer />
           <BasicBtn @click="dialogPass = false" content="mdi-close" neonColor="red" />
         </v-card-title>
