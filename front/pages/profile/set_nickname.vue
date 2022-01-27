@@ -30,7 +30,10 @@ import Component from 'vue-class-component'
 import { Ref } from 'nuxt-property-decorator';
 
 @Component({
-  middleware: login
+  middleware: login,
+  head: {
+    title: 'Nickname selection'
+  }
 })
 export default class extends Vue {
 

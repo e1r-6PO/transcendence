@@ -163,6 +163,12 @@ export default Vue.extend({
     }
   },
 
+  head() {
+    return {
+      title: "Channel"
+    }
+  },
+
   updated() {
     if (this.nbMsg == this.messagesArray.length || this.nbMsg == -1)
     {
@@ -243,27 +249,27 @@ export default Vue.extend({
       return (false)
     },
 
-    isMsgDefault(msg: Messages) {
+    isMsgDefault(msg: Messages): boolean {
       return msg.type == MessagesType.DEFAULT
     },
 
-    isMsgServer(msg: Messages) {
+    isMsgServer(msg: Messages): boolean {
       return msg.type == MessagesType.SERVER
     },
 
-    redirectToUserProfile(userNick: string) {
+    redirectToUserProfile(userNick: string): void {
       this.$router.push("/users/" + userNick)
     },
 
-    scrollToEnd() {    	
+    scrollToEnd(): void {    	
       window.scrollTo(0, document.body.scrollHeight);
     },
 
-    redirectToChannel(channName: string) {
+    redirectToChannel(channName: string): void {
       this.$router.push('/chat/' + channName)
     },
 
-    clearMessage() {
+    clearMessage(): void {
       this.message = ""
     },
 
@@ -275,21 +281,21 @@ export default Vue.extend({
       return this.me.channelStatus == ChannelUserStatus.OWNER || this.me.channelStatus == ChannelUserStatus.ADMINISTRATOR
     },
 
-    activeAlert(error: any)
+    activeAlert(error: any): void
     {
         this.alertText = error
         this.alert = true
     },
 
-    newOwner(userName: string) {
+    newOwner(userName: string): void {
       socket_chat.emit('newOwner', this.$route.params.slug, userName)
     },
 
-    onEnd() {
+    onEnd(): void {
       this.alert = false
     },
 
-    updateToken() {
+    updateToken(): void {
       this.tokenUser = -this.tokenUser
       socket_chat.emit('refreshUser', this.$route.params.slug)
     },
@@ -300,7 +306,7 @@ export default Vue.extend({
       return "mdi-send"
     },
 
-    disableInput() {
+    disableInput(): boolean {
       if (this.me.id == 0)
         return true
       return false

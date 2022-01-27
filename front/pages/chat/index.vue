@@ -43,6 +43,7 @@ import { Component } from 'nuxt-property-decorator';
 @Component({
   // components: { CreateChannelBtn, JoinChannelBtn, ChannelList },
   middleware: 'login',
+  head: { title: 'Chat'}
 })
 export default class extends Vue {
 

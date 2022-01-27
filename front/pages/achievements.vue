@@ -21,6 +21,12 @@ export default Vue.extend({
   
   middleware: 'login',
 
+  head() {
+    return {
+      title: 'Achievements' 
+    }
+  },
+
   data() {
     return {
       achievementsList: new Object(),

@@ -41,6 +41,13 @@ import Render  from '../../assets/Classes-ts/Render'
 import socket_game from '../../plugins/game.io'
 
 export default Vue.extend({
+
+  head() {
+    return {
+      title: 'VS' + this.$route.params.slug
+    }
+  },
+
   data() {
     return {
       match_res: Match,
@@ -70,7 +77,7 @@ export default Vue.extend({
   },
 
   async mounted() {
-    this.$axios.$get('/api/profile/me').then(data => this.me = data)
+    this.$axios.$get('/api/profile/me').then((data: any) => this.me = data)
     this.matchStatus = "running"
     if (socket_game.connected == false) {
       // check if game has ended
@@ -128,7 +135,7 @@ export default Vue.extend({
   async created() {
     socket_game.on('oldGame', async (info: null) => {
         this.matchStatus = 'finished'
-        this.$axios.$get('/api/games/' + this.game_id).then(match_res => {
+        this.$axios.$get('/api/games/' + this.game_id).then((match_res: any) => {
         this.match_res = match_res
         this.score_p0 = match_res.scorep0
         this.score_p1 = match_res.scorep1

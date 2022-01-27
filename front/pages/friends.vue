@@ -37,7 +37,7 @@
                 @click="edit_friend(relationship, true)"
                 :width="40"
                 content="mdi-account-remove"
-                color="black"
+                color="#d61c1cee"
                 backgroundColor="#18124be0"
               />
               <BasicBtn
@@ -45,7 +45,7 @@
                 @click="edit_friend(relationship, false)"
                 :width="40"
                 :content="getStatusIcon(relationship)"
-                color="black"
+                :color="getColorBtn(relationship)"
                 backgroundColor="#18124be0"
               />
             </v-row>
@@ -67,6 +67,7 @@ const All_Friend_Status = {
 }
 
 import Vue from 'vue'
+import { Friendship, FriendshipStatus } from '../assets/Classes-ts/Friendship'
 import { LightUser } from '../assets/Classes-ts/User'
 import socket_active from '../plugins/active.io'
 
@@ -75,6 +76,12 @@ import copyLightUser from '../plugins/copyUser'
 export default Vue.extend({
 
   middleware: 'login',
+
+  head() {
+    return {
+      title: 'Friends'
+    }
+  },
 
   data() {
     return {
@@ -287,6 +294,18 @@ export default Vue.extend({
             this.changeSelectedStatus(this.selectedStatus)
           }
         }
+    },
+
+    getColorBtn(relationship: any): string {
+      if (relationship.status == FriendshipStatus.COMPLETED)
+        return '#d61c1cee'
+      else if (relationship.status == FriendshipStatus.BLOCKED)
+        return '#ece3e3cc'
+      else if (relationship.status == FriendshipStatus.SENT)
+        return '#d61c1c99'
+      else if (relationship.status == FriendshipStatus.INCOMMING)
+        return '#32c44a'
+      return 'black'
     },
   }
 })

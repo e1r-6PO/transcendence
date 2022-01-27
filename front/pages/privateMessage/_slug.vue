@@ -169,7 +169,14 @@ import { Friendship, FriendshipStatus } from '../../assets/Classes-ts/Friendship
 export default Vue.extend({
   components: { CreateChannelBtn, ChannelList, ChannelUserList, BasicBtn,
       ChannelLeaveBtn, ChannelSettings, AlertError },
+  
   middleware: 'login',
+
+  head() {
+    return {
+      title: "Mp "
+    }
+  },
 
   data() {
     return {

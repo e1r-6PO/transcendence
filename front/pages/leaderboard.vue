@@ -38,12 +38,16 @@
 import { Component } from 'nuxt-property-decorator'
 import Vue from 'vue'
 import { LightUser } from '../assets/Classes-ts/User'
+import login from '../middleware/login'
 
 import socket_active from '../plugins/active.io'
 
 import copyLightUser from '../plugins/copyUser'
 
-@Component({})
+@Component({
+  middleware: login,
+  head: { title: 'Leaderboard' }
+})
 export default class extends Vue {
 
   leaderboard: Array<LightUser> = new Array<LightUser>()
