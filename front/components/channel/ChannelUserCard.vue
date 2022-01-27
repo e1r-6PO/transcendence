@@ -12,12 +12,12 @@
         <v-list-item-subtitle v-if="!isMp" v-text="userStatus" align="right" style="font-size: 12px; position: absolute; bottom: -15px; right: 20px" :style="'color:' + getUserTextColor()" />
       </v-list-item-content>
       <v-list-item-icon v-if="ownerAction && isUserOwner() && userStatus != isOwner()" class="mt-3">
-        <DeleteUserBtn style="margin-right: 5px" :small="small" @refreshUser="refreshUser" :userName="user.nickName" />
-        <ChangeGradeUserBtn style="margin-right: 5px" :small="small" :grade="userStatus" @refreshUser="refreshUser" :userName="user.nickName" />
+        <DeleteUserBtn style="margin-right: 5px" :small="small" :userName="user.nickName" />
+        <ChangeGradeUserBtn style="margin-right: 5px" :small="small" :grade="userStatus" :userName="user.nickName" />
       </v-list-item-icon>
       <v-list-item-icon v-if="ownerAction && isUserOwnerOrAdmin() && userStatus != isOwner()" class="mt-3">
-        <MuteUserBtn style="margin-right: 0px" :userName="user.nickName" @refreshUser="refreshUser" :mute="user.isMute" />
-        <BanUserBtn :userName="user.nickName" @refreshUser="refreshUser" :ban="user.isBan" />
+        <MuteUserBtn style="margin-right: 0px" :userName="user.nickName" @muteUser="refreshMuteUser" :mute="isMute" />
+        <BanUserBtn :userName="user.nickName" @userBan="refreshBanUser" :ban="isBan" />
       </v-list-item-icon>
     </v-list-item>
 </template>
@@ -39,6 +39,17 @@ export default class ChannelUserCard extends Vue{
   @Prop({ type: Boolean, default: false })
   isMp!: Boolean
 
+  @Prop({ type: Boolean, default: false })
+  isBan!: Boolean
+
+  @Prop({ type: Boolean, default: false })
+  isMute!: Boolean
+
+  @Prop({ type: String, default: "" })
+  muteTime!: string
+
+  @Prop({ type: String, default: "" })
+  banTime!: string
 
   @Prop({ type: String, default: ChannelUserStatus.DEFAULT})
   status!: ChannelUserStatus
@@ -97,8 +108,12 @@ export default class ChannelUserCard extends Vue{
     this.$emit("leave", this.user.id)
   }
 
-  refreshUser() {
-    this.$emit('refreshUser')
+  refreshMuteUser(username: string) {
+    this.$emit('muteUser', username)
+  }
+
+  refreshBanUser(username: string) {
+    this.$emit('banUser', username)
   }
 }
 </script>

@@ -264,7 +264,8 @@ export default Vue.extend({
 
 .color_win {
   z-index: 6;
-  color: #b8a435; 
+  /* color: #b8a435; */
+  color: #0affff;
 }
 
 .color_text { 

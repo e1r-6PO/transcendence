@@ -45,6 +45,8 @@ export default class AlertError extends Vue{
       this.colorType = "red"
     else if (this.type == "warning")
       this.colorType = "orange"
+    else if (this.type == "success")
+      this.colorType = "green"
     else
       this.colorType = this.type
   }
@@ -70,9 +72,11 @@ export default class AlertError extends Vue{
     if (this.colorType == "blue")
       color = "#adbbf8"
     else if (this.colorType == "orange")
-      color = "#ffeddb"
+      color = "#f1d8c6"
     else if (this.colorType == "red")
       color = "#ffeddb"
+      else if (this.colorType == "green")
+      color = "#32c44a"
 
     return color
   }
@@ -114,7 +118,7 @@ export default class AlertError extends Vue{
 .custom-alert-orange {
   border: 2px solid #ffa768 !important;
   box-shadow: inset 0px 0px 20px 0px #fc6500, 0px 0px 20px 0px #fc6500 !important;
-  background-color: #ffa76899 !important;
+  background-color: #fc6500cc !important;
 }
 
 .custom-alert-warning {
@@ -133,6 +137,18 @@ export default class AlertError extends Vue{
   border: 2px solid #3c58d3 !important;
   box-shadow: inset 0px 0px 20px 0px #1b019b, 0px 0px 20px 0px #1b019b !important;
   background-color: #3c58d399 !important;
+}
+
+.custom-alert-green {
+  border: 2px solid #82e492 !important;
+  box-shadow: inset 0px 0px 20px 0px #32c44a, 0px 0px 20px 0px #32c44a !important;
+  background-color: #6cbb7999 !important;
+}
+
+.custom-alert-success {
+  border: 2px solid #82e492 !important;
+  box-shadow: inset 0px 0px 20px 0px #32c44a, 0px 0px 20px 0px #32c44a !important;
+  background-color: #82e49299 !important;
 }
 
 .custom-alert-text-purple {
@@ -160,7 +176,7 @@ export default class AlertError extends Vue{
 }
 
 .custom-alert-text-warning {
-  color: #ffeddb;
+  color: #faf1e9;
   text-shadow:
       0 0 7px #CD7F32,
       0 0 8px #CD7F32,
@@ -168,12 +184,13 @@ export default class AlertError extends Vue{
 }
 
 .custom-alert-text-orange {
-  color: #ffeddb;
+  color: #faf5f1;
   text-shadow:
       0 0 7px #CD7F32,
       0 0 8px #CD7F32,
       0 0 9px #CD7F32 !important;
 }
+
 .custom-alert-text-info {
   color: #c3cdfa;
   text-shadow:
@@ -188,5 +205,20 @@ export default class AlertError extends Vue{
       0 0 7px #3c58d3,
       0 0 8px #3c58d3,
       0 0 9px #3c58d3 !important;
+}
+
+.custom-alert-text-success {
+  color: #ffffff;
+  text-shadow:
+      0 0 5px #82e49299,
+      0 0 6px #82e49299 !important;
+}
+
+.custom-alert-text-green {
+  color: #c3cdfa;
+  text-shadow:
+      0 0 7px #82e49299,
+      0 0 8px #82e49299,
+      0 0 9px #82e49299 !important;
 }
 </style>

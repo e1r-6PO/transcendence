@@ -119,7 +119,7 @@
   </v-row>
   
   <v-footer app inset color="#181818">
-    <TextField @enterPress="sendMessage" v-model="message" :append_outer_icon="msgIsValid()" placeholder="Message" class="mb-2" />
+    <TextField @enterPress="sendMessage" v-model="message" :disable="disableInput()" :append_outer_icon="msgIsValid()" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
 </template>
@@ -289,9 +289,6 @@ export default Vue.extend({
       this.alert = false
     },
 
-    updateUser() {
-    },
-
     updateToken() {
       this.tokenUser = -this.tokenUser
       socket_chat.emit('refreshUser', this.$route.params.slug)
@@ -301,6 +298,12 @@ export default Vue.extend({
       if (this.message.length > 180)
         return ''
       return "mdi-send"
+    },
+
+    disableInput() {
+      if (this.me.id == 0)
+        return true
+      return false
     }
   }
 })
