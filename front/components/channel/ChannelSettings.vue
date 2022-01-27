@@ -36,7 +36,7 @@
         <LeaveOwnerBtn v-if="totalUser > 1" @error="activeAlert" />
         <DeleteChannelBtn class="ml-2"/>
         <v-spacer></v-spacer>
-        <BasicBtn :disable="disableSave()" @click="saveSettings()" isText content="Save" />
+        <BasicBtn :disable="disableSave()" @click="saveSettings()" isText content="Save" style="padding-top: 3px; font-family: OrbitronM; font-size: 70%"/>
       </v-card-actions>
       <v-divider v-if="status == isOwner()" class="mt-4 mb-4 divider" style="border-color: #f27719;"> </v-divider>
         <v-row class="justify-center">
