@@ -215,6 +215,17 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 					this.queue.splice(index, 1)
 			}
 	}
+	
+	@SubscribeMessage('getQueueStatus')
+	async getQueueStatus(client: Socket) {
+			var index = this.queue.findIndex(clients => clients.id === client.id)
+			if (index != -1) {
+				client.emit('queueStatus', true)
+			}
+			else {
+				client.emit('queueStatus', false)
+			}
+		}
 
 	@SubscribeMessage('forfeit')
 	async forfeit(client: Socket, info: []) {
