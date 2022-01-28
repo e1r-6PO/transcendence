@@ -150,8 +150,9 @@ export default Vue.extend({
       // or
       // socket_game.emit('acceptGame', { id: info })
     })
-    socket_game.on('privateGameStarting', (info) => {
+    socket_game.on('gameStarting', (info) => {
       // the other personne accepted the invitation
+      this.closeAlert()
       this.$router.push('/game/' + info + '?next=' + window.location.pathname)
     })
     socket_game.on('notificationPrivateGameInviteSent', (info) => {

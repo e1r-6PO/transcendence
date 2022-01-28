@@ -167,11 +167,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 			this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "running"})
 
-			// client.emit('privateGameStarting', arg['id'])
+			// client.emit('gameStarting', arg['id'])
 			game.player1socket = client
 			game.player1socket.join(game.id.toString())
-			game.player0socket.emit('privateGameStarting', arg['id'])
-			game.player1socket.emit('privateGameStarting', arg['id'])
+			game.player0socket.emit('gameStarting', arg['id'])
+			game.player1socket.emit('gameStarting', arg['id'])
 			this.gameService.startGame(game)
 		}
 	}
