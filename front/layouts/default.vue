@@ -9,7 +9,6 @@
       style="z-index: 7"
       clipped
       temporary
-      stateless
     >
       <div style="display: flex ; flex-direction: column; margin-top: 10px">
         <v-btn
@@ -20,8 +19,7 @@
           x-large
           v-for="(item, i) in items"
           :key="i"
-          :to="item.to"
-          @click="drawer = !drawer"
+          @click="redirect(item.to)"
           router
           exact
           plain
@@ -160,6 +158,11 @@ export default Vue.extend({
     searchbar() {
       this.$router.push({path: '/search', query: { nick: this.search }})
     },
+
+    redirect(url: string) {
+      this.$router.push(url)
+      this.drawer = !this.drawer
+    }
   }
 });
 </script>
