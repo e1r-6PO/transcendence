@@ -118,7 +118,7 @@
     <v-spacer />
   </v-row>
   
-  <v-footer app inset color="#181818">
+  <v-footer app inset color="#181818" v-if="mounted == true">
     <TextField @enterPress="sendMessage" v-model="message" :disable="disableInput()" :append_outer_icon="msgIsValid()" placeholder="Message" class="mb-2" />
   </v-footer>
 </v-container>
@@ -160,6 +160,7 @@ export default Vue.extend({
       alert: false,
       alertText: "",
       tokenUser: 1,
+      mounted: false
     }
   },
 
@@ -222,6 +223,8 @@ export default Vue.extend({
         this.tokenUser = -this.tokenUser
       })
     }
+    this.mounted = true
+    new Promise((resolve) => { setTimeout(resolve, 300)}).then(() => { window.scrollTo(0, document.body.scrollHeight) });
   },
 
   methods: {
