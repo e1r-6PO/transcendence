@@ -109,7 +109,7 @@
             @click="redirectToUserProfile"
             size="30"
             :src="msg.picture"
-            v-if="msg.type == 'default'"
+            v-if="msg.type == 'message'"
             :style="isYourMsg(msg) ? 'float: right; margin-left: 20px !important; right: 0px' : 'float: left; margin-right: 20px !important; left: -10px'"
             style="margin-top: 0px; border-radius: 30px; position: absolute; bottom: 0px;"
           />
@@ -248,9 +248,8 @@ export default Vue.extend({
       this.alert = false
       if (arg['user'].nickName && arg['user'].id == this.user.id)
         this.activeAlert("The user is offline.", 'info')
-      console.log(arg['user'].nickName && arg['user'].id == this.user.id)
-      console.log(arg['user'])
     })
+    this.scrollToEnd();
   },
 
   methods: {
