@@ -170,8 +170,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			// client.emit('gameStarting', arg['id'])
 			game.player1socket = client
 			game.player1socket.join(game.id.toString())
-			game.player0socket.emit('gameStarting', arg['id'])
-			game.player1socket.emit('gameStarting', arg['id'])
+			// game.player0socket.emit('gameStarting', arg['id'])
+			// game.player1socket.emit('gameStarting', arg['id'])
 			this.gameService.startGame(game)
 		}
 	}

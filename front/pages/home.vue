@@ -43,10 +43,10 @@ export default Vue.extend({
   },
 
   async created() {
-    if (!socket_game.hasListeners('matchFound')) {
-    socket_game.on('matchFound', (info) => {
-      this.$router.push('/game/' + info['id'])
-    })}
+    // if (!socket_game.hasListeners('matchFound')) {
+    // socket_game.on('matchFound', (info) => {
+    //   this.$router.push('/game/' + info['id'])
+    // })}
     socket_game.on('queueStatus', (status) => {
       if (status == true) {
         this.in_queue = true
@@ -97,6 +97,7 @@ export default Vue.extend({
       // socket_game.disconnect()
       socket_game.emit('leaveQueue')
       this.in_queue = false
+      this.$nuxt.$emit("leaveQueue")
     },
   },
 })

@@ -143,6 +143,7 @@ export default Vue.extend({
 
   async created() {
     this.$nuxt.$on('inQueue', () => this.activeAlert())
+    this.$nuxt.$on('leaveQueue', () => this.closeAlert())
     socket_game.on('notificationPrivateGameInvite', (info) => {
       // you received an invitation to play a private game, accept or deny it
 
@@ -152,8 +153,8 @@ export default Vue.extend({
     })
     socket_game.on('gameStarting', (info) => {
       // the other personne accepted the invitation
-      this.closeAlert()
       this.$router.push('/game/' + info + '?next=' + window.location.pathname)
+      this.closeAlert()
     })
     socket_game.on('notificationPrivateGameInviteSent', (info) => {
       // you invited someone to a game and it was successfully sent

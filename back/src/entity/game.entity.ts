@@ -142,7 +142,7 @@ export class Game {
 		// formatted string to store modifiers
 		this.status = "setup"
 		if (this.type == 'ranked')
-			this.room.emit('matchFound', { id: this.id})
+			this.room.emit('gameStarting', this.id)
 		// this.players[1].emit('matchFound', { id: this.id})
 		await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side, rly ?
 		this.matchinfo()
