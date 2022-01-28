@@ -137,7 +137,7 @@ export default class ChannelUserList extends Vue {
       if (user.id == this.userList[i].user.id)
       {
         this.userList[i].user.nickName = user.nickName
-        this.userList[i].user.picture = 'http://localhost:8000/api/users/' + user.id + '/picture'
+        this.userList[i].user.picture = 'http://' + process.env.HOST + '/api/users/' + user.id + '/picture'
         this.userList[i].user.isActive = user.isActive;
         this.userList[i].user.currentGame = user.currentGame
         return
