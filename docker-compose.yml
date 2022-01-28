@@ -2,23 +2,24 @@ version: '3'
 
 services:
 
-  # database:
-  #   image: postgre
-  #   expose:
-  #     - 5432
-  #   environment:
-  #     POSTGRES_USER: root
-  #     POSTGRES_PASSWORD: my-secret-pw
-  #     POSTGRES_DB: transcendence
-
   database:
-    image: mariadb:latest
+    image: postgres
     container_name: transcendence_database
     expose:
-      - 3306
+      - 5432
     environment:
-      MARIADB_ROOT_PASSWORD: my-secret-pw
-      MYSQL_DATABASE: transcendence
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: my-secret-pw
+      POSTGRES_DB: transcendence
+
+  # database:
+  #  image: mariadb:latest
+  #  container_name: transcendence_database
+  #  expose:
+  #    - 3306
+  #  environment:
+  #    MARIADB_ROOT_PASSWORD: my-secret-pw
+  #    MYSQL_DATABASE: transcendence
 
   back:
     build: ./back

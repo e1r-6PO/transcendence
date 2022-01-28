@@ -63,11 +63,11 @@ export class UsersService {
     .getRepository(Match)
     .createQueryBuilder('matchs')
     // DELETE
-    .where('player0Id = :id', { id })
-    .orWhere('player1Id = :id', { id })
+	// .where('player0Id = :id', { id })
+	// .orWhere('player1Id = :id', { id })
     // POSTGRES
-    // .where('matchs.player0 = :id', { id })
-    // .orWhere('matchs.player1 = :id', { id })
+    .where('matchs.player0 = :id', { id })
+    .orWhere('matchs.player1 = :id', { id })
     .leftJoinAndSelect('matchs.player0', 'player0')
     .leftJoinAndSelect('matchs.player1', 'player1')
     .leftJoinAndSelect('matchs.winner', 'winner')
