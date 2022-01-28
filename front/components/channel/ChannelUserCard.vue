@@ -48,8 +48,8 @@ export default class ChannelUserCard extends Vue{
   @Prop({ default: "" })
   muteTime!: string | Date
 
-  @Prop({ type: String, default: "" })
-  banTime!: string
+  @Prop({ default: "" })
+  banTime!: string | Date
 
   @Prop({ type: String, default: ChannelUserStatus.DEFAULT})
   status!: ChannelUserStatus
