@@ -8,6 +8,7 @@
     </client-only>
     <v-btn
       icon
+      x-large
       href="/api/auth/logout"
       class="logout-btn foreground_element"
       style="margin-left: auto; margin-right: 20px; margin-top: 20px"

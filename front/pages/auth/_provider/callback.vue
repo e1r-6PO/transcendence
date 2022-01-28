@@ -7,9 +7,11 @@
       />
     </client-only>
     <v-container fill-height fluid>
-      <v-card-text class="text-center main_title_test foreground_element">
-        Logging you in...
-      </v-card-text>
+      <v-row align="center" justify="center">
+        <p class="text-center main_title_test foreground_element">
+          Logging you in...
+        </p>
+      </v-row>
     </v-container>
   </v-app>
 </template>
@@ -67,7 +69,7 @@ export default Vue.extend({
 <style lang="scss">
   @import '../../../assets/Classes-scss/main_page.scss';
   @import '../../../assets/Classes-scss/particles.scss';
-  
+
   .v-application{
     background-color: #181818 !important;
   }
