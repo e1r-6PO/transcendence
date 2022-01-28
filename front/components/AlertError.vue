@@ -4,10 +4,10 @@
     class="font-weight-bold custom-alert pt-3"
     :class="getClasse()"
     :color="getColor()"
+    :width="width > 0 ? width: '80%'"
+    :height="height > 0 ? height: '60'"
     style="position: absolute; right: 10%; top: 30px; z-index: 12; border-radius: 15px;"
     align="center"
-    width="80%"
-    height="60"
   >
     <template v-slot:close="{}">
       <BasicBtn @click="closeAlert()" :neonColor="colorType" width="30" :iconSize="18" content="mdi-close" />
@@ -33,6 +33,13 @@ export default class AlertError extends Vue{
 
   @Prop({type: Number, default: 2 })
   time!: number
+  
+  @Prop({type: Number, default: 0 })
+  width!: number
+
+  @Prop({type: Number, default: 0 })
+  height!: number
+
 
   alertCode: boolean = true
   alert: boolean = false
