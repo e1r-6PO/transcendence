@@ -23,7 +23,7 @@
           <span class="grey--text pt-1 text-right mr-5" style="font-family: OrbitronM; font-size: 165%">rating: </span>
           <span class="white--text pt-1 text-right mr-5" style="min-width: 75px; font-family: OrbitronM; font-size: 165%">{{ user.elo }}</span>
           <v-card-subtitle class="white--text text-left pr-10 font-italic" style="min-width: 150px">
-            <span class=" font-weight-regular" style="color: #b8a435">W: {{ user.gameWin }} /</span>
+            <span class="font-weight-regular" style="color: #b8a435">W: {{ user.gameWin }} /</span>
             <span style="color: #c7401e">L: {{ user.gameLose }}</span>
           </v-card-subtitle>
         </v-row>
@@ -87,6 +87,8 @@ export default class extends Vue {
 <style scoped>
 @import '../assets/Classes-scss/neon_effects.scss';
 @import '../assets/Classes-scss/main_page.scss';
+@import '../assets/Classes-scss/neonText_colors.scss';
+
 .card_profile {
   border: 3px solid #a5fafa !important;
 	box-shadow: inset 0px 0px 20px 0px #0affff, 0px 0px 20px 0px #0affff !important;
