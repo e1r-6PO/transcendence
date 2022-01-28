@@ -45,8 +45,8 @@ export default class ChannelUserCard extends Vue{
   @Prop({ type: Boolean, default: false })
   isMute!: Boolean
 
-  @Prop({ type: String, default: "" })
-  muteTime!: string
+  @Prop({ default: "" })
+  muteTime!: string | Date
 
   @Prop({ type: String, default: "" })
   banTime!: string
