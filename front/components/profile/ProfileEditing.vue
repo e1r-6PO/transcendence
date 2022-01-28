@@ -193,7 +193,7 @@ export default class ProfileEditing extends Vue {
 			});
 			if (ret.status != 201)
 				return
-			this.$emit('updatePicture', this.url)
+			this.$emit('updatePicture', 'http://' + process.env.HOST + '/api/users/' + this.user.id + '/picture?' + new Date().getTime())
 			this.$emit('updateState')
 			this.selectedFile = null
 			this.url = ""
