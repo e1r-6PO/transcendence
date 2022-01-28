@@ -13,9 +13,9 @@ import { Achievements } from 'src/entity/achievements.entity';
   imports: [
     // POSTGRES
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: 'postgres',
       host: process.env.DBHOST,
-      port: 3306,
+      port: 5432,
       username: process.env.DBUSER,
       password: process.env.DBPSWD,
       database: 'transcendence',
