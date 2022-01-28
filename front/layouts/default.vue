@@ -32,6 +32,7 @@
         </v-btn>
       </div>
     </v-navigation-drawer>
+    <AlertError @end="closeAlert" :state="alert" :type="alertType" :textError="alertText" :width="250" :height="100" class="mt-11" style="position: absolute !important; right: 4px" />
 
     <v-app-bar
       fixed
@@ -71,7 +72,7 @@
       </v-btn>
     </v-app-bar>
     <v-main>
-      <Nuxt />
+      <Nuxt @inQueue="activeAlert" />
     </v-main>
   </v-app>
 </template>
@@ -91,6 +92,9 @@ export default Vue.extend({
       fixed: false,
       exitFocus: false,
       channMenu: false,
+      alert: false,
+      alertType: "warning",
+      alertText: "",
       items: [
         {
           icon: 'mdi-home',
@@ -138,6 +142,7 @@ export default Vue.extend({
   },
 
   async created() {
+    this.$nuxt.$on('inQueue', () => this.activeAlert())
     socket_game.on('notificationPrivateGameInvite', (info) => {
       // you received an invitation to play a private game, accept or deny it
 
@@ -162,7 +167,19 @@ export default Vue.extend({
     redirect(url: string) {
       this.$router.push(url)
       this.drawer = !this.drawer
-    }
+    },
+
+    activeAlert() {
+      if (this.alert == true)
+        return
+      this.alertText = "Do not refresh the page, we are looking for a match"
+      this.alertType = 'warning'
+      this.alert = true
+    },
+
+    closeAlert() {
+      this.alert = false
+    },
   }
 });
 </script>

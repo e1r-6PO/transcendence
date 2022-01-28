@@ -1,7 +1,6 @@
 <template>
 <v-container fill-height fluid>
-  <AlertError @end="closeAlert" :state="alert" :type="alertType" :textError="alertText" />
-  <number-connected-user style="position: absolute; right: 0px; bottom: 91%;" :amount="playerOnline" />
+  <number-connected-user style="position: absolute; left: 12px; top: 30px;" :amount="playerOnline" />
   <v-row align="center" justify="center">
     <v-col align="center">
       <join-queue-btn @click="switchQueueState()" :inQueue="in_queue" :msg="in_queue ? 'CANCEL' : 'PLAY'"/>
@@ -21,9 +20,6 @@ export default Vue.extend({
   data() {
     return {
       in_queue: false,
-      alertText: "Do not refresh the page, we are looking for a match",
-      alertType: "warning",
-      alert: false,
       playerOnline: 0,
       watchPlayerCount: null as unknown as ReturnType<typeof setTimeout>
     }
@@ -40,6 +36,23 @@ export default Vue.extend({
       this.playerOnline = res['playerOnline']
     })
     this.watchPlayerCount = setInterval(() => this.getPlayerOnline(), 1000)
+    if (socket_game.connected)
+    {
+      socket_game.emit('getQueueStatus')
+    }
+  },
+
+  async created() {
+    if (!socket_game.hasListeners('matchFound')) {
+    socket_game.on('matchFound', (info) => {
+      this.$router.push('/game/' + info['id'])
+    })}
+    socket_game.on('queueStatus', (status) => {
+      if (status == true) {
+        this.in_queue = true
+        this.$nuxt.$emit("inQueue")
+      }
+    })
   },
 
   destroyed() {
@@ -62,52 +75,30 @@ export default Vue.extend({
     },
 
     async joinMatchmaking() {
-      this.alert = false
       if (socket_game.connected == false) {
         socket_game.connect()
 
         var s1 = new Date().getTime() / 1000;
         while (socket_game.connected == false) {
           if ((new Date().getTime() / 1000) - s1 > 2) {
-            this.activeAlert("error: could not reach the server", "error")
+            this.$nuxt.$emit("inQueue")
             return
           }
           await new Promise(f => setTimeout(f, 50));
         }
       }
 
-      socket_game.emit('joinQueue')
-      this.activeAlert("Do not refresh the page, we are looking for a match", "warning")
-
       this.in_queue = true
+      socket_game.emit('joinQueue')
+      this.$nuxt.$emit("inQueue")
     },
 
     async leaveQueue() {
       // socket_game.disconnect()
       socket_game.emit('leaveQueue')
       this.in_queue = false
-      this.alert = false
-    },
-
-    activeAlert(text: string, type: string) {
-      this.alertText = text
-      this.alertType = type
-      this.alert = true
-    },
-
-    closeAlert() {
-      this.alert = false
     },
   },
-
-
-
-  async created() {
-    if (!socket_game.hasListeners('matchFound')) {
-    socket_game.on('matchFound', (info) => {
-      this.$router.push('/game/' + info['id'])
-    })}
-  }
 })
 
 </script>

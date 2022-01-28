@@ -314,6 +314,7 @@ export default Vue.extend({
 <style scoped>
 @import '../assets/Classes-scss/neon_effects.scss';
 @import '../assets/Classes-scss/main_page.scss';
+
 .card_profile {
   border: 3px solid #a5fafa !important;
 	box-shadow: inset 0px 0px 20px 0px #0affff, 0px 0px 20px 0px #0affff !important;
