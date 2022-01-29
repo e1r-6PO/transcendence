@@ -174,7 +174,7 @@ export default Vue.extend({
 
   head() {
     return {
-      title: "Mp "
+      title: "PM "
     }
   },
 
