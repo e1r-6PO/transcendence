@@ -141,8 +141,8 @@ export class Game {
 		this.player1socket['game'] = this.id //
 		// formatted string to store modifiers
 		this.status = "setup"
-		if (this.type == 'ranked')
-			this.room.emit('gameStarting', this.id)
+		// if (this.type == 'ranked') // useless since now both use this to notify user that game has started
+		this.room.emit('gameStarting', this.id)
 		// this.players[1].emit('matchFound', { id: this.id})
 		await new Promise(f => setTimeout(f, 250)); // awaiting client switching page client side, rly ?
 		this.matchinfo()
