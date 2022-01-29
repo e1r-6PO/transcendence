@@ -1,6 +1,5 @@
 <template>
 <div>
-  <AlertError :textError="alertText" :state="alert" :type="alertType"></AlertError>
   <v-row justify="center">
     <v-col cols="3" class="d-flex flex-column justify-center align-center" style="padding-top: 100px">
       <p v-if="matchStatus == 'finished' && winner.nickName == player0.nickName" class="text-h5 pl-3 pb-5 neonText-gold" style="font-family: OrbitronM !important" color="goldenrod"> WINNER </p>
@@ -12,8 +11,10 @@
 
     <v-col cols="6">
       <div justify="center" align="center" class="pt-10 pb-10">
-        <BasicBtn v-if="matchStatus == 'running' && (me.id == player0.id || me.id == player1.id) && alert == false" content="forfeit" @click="forfeit" :isText="true" color="#ffffff" class="foreground_element"/>
+        <BasicBtn v-if="matchStatus == 'running' && (me.id == player0.id || me.id == player1.id)" content="forfeit" @click="forfeit" :isText="true" color="#ffffff" class="foreground_element"/>
+        <BasicBtn v-else content="LEAVE" @click="redirectToNext" :isText="true" color="#ffffff" class="foreground_element"/>
       </div>
+      <end-game-dialog :next="next" :endDialog="endDialog" @closeEndGameDialog="endDialog = false" :winner="winner" />
       <canvas id="map" width="840" height="600"></canvas>
     </v-col>
 
@@ -72,7 +73,13 @@ export default Vue.extend({
       score_p0: 0,
       score_p1: 0,
       keyUp: false,
-      keyDown: false
+      keyDown: false,
+      audio3: new Audio(require('@/assets/sounds/3.mp3').default),
+      audio2: new Audio(require('@/assets/sounds/2.mp3').default),
+      audio1: new Audio(require('@/assets/sounds/1.mp3').default),
+      audioGO: new Audio(require('@/assets/sounds/GO.mp3').default),
+      next: (new URLSearchParams(window.location.search).get('next') != null ? new URLSearchParams(window.location.search).get('next') : '/home'),
+      endDialog: false,
     }
   },
 
@@ -119,16 +126,38 @@ export default Vue.extend({
   methods: {
     forfeit() {
       socket_game.emit('forfeit', { id: this.game_id })
-      const urlParams = new URLSearchParams(window.location.search);
-      const myParam = urlParams.get('next');
-      if (myParam != null)
-        this.$router.push(myParam)
-      else
-        this.$router.push('/home')
     },
 
     redirectToUserProfile(playerNick: string) {
       this.$router.push("/users/" + playerNick)
+    },
+
+    redirectToNext() {
+      this.$router.push(this.next)
+    },
+
+    playStartSound(info: any) {
+      if (this.isSoundEnabled) {
+        // console.log(info.gameStart)
+        switch (info.gameStart) {
+          case 3: {
+            this.audio3.play()
+            break
+          }
+          case 2: {
+            this.audio2.play()
+            break
+          }
+          case 1: {
+            this.audio1.play()
+            break
+          }
+          case 0: {
+            this.audioGO.play()
+            break
+          }
+        }
+      }
     }
   },
 
@@ -158,21 +187,14 @@ export default Vue.extend({
         socket_game.off('matchEnd')
         socket_game.off('matchSetup')
         socket_game.off('gameInfo')
-        const urlParams = new URLSearchParams(window.location.search);
-        const myParam = urlParams.get('next');
-        if (myParam != null)
-          var next = myParam
-        else
-          var next = '/home'
-        this.alert = true
-        for (let i: number = 3; i >= 0; --i) {
-          this.alertText = "Returning to " + next + ' in ' + i
-          await new Promise(f => setTimeout(f, 1000))  // countdown
-        }
-        this.$router.push(next)
+        this.matchStatus = 'finished'
+        this.winner = info.winner
+        this.looser = info.looser
+        this.endDialog = true
     })
 
     socket_game.on('matchSetup', (info) => {
+      this.playStartSound(info)
       Render.drawCountdown(this.ctx, this.mapx, this.mapy, info, this.player0, this.player1)
     })
 
@@ -261,6 +283,15 @@ export default Vue.extend({
     socket_game.off('gameInfo')
     socket_game.emit('leave')
     next()
+  },
+
+  computed: {
+    isSoundEnabled() {
+      return this.$store.state.isSoundEnabled;
+    },
+    isMusicEnabled() {
+      return this.$store.state.isMusicEnabled;
+    }
   }
 })
 </script>
