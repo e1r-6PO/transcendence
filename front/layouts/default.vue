@@ -44,7 +44,14 @@
     >
       <v-app-bar-nav-icon class="open-menu" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 220%; text-overflow: clip; overflow: visible; margin-top: 9px" v-text="title" />
-      <v-spacer /> 
+      <v-spacer />
+      <div style="padding-right: 10px">
+        <basic-btn @click="toggleMusic" :content="isMusicEnabled ? 'mdi-volume-high' : 'mdi-volume-off'" />
+      </div>
+      <div style="padding-right: 10px">
+        <basic-btn @click="toggleSound" :content="isSoundEnabled ? 'mdi-music-note-eighth' : 'mdi-music-note-off'" />
+      </div>
+ 
       <div style="padding-right: 20px">
         <v-row align="center" justify="center">
           <v-col align="right" justify="right">
@@ -130,15 +137,25 @@ export default Vue.extend({
       ],
       right: true,
       rightDrawer: false,
-      title: 'Tronscendence'
+      title: 'Tronscendence',
+      audio: new Audio(require("@/assets/sounds/Derezzed.mp3").default),
+      hover: false
     }
   },
 
   async mounted() {
+    this.$store.commit('initializeSound');
+    this.$store.commit('initializeMusic');
     if (!socket_active.connected)
       socket_active.connect()
     if (!socket_game.connected)
       socket_game.connect()
+
+    if(this.isMusicEnabled) {
+        // in current configuration, it should never get here because music is false by default
+        this.audio.play().catch(error => { })
+        this.audio.loop = true
+    }
   },
 
   async created() {
@@ -182,6 +199,32 @@ export default Vue.extend({
     closeAlert() {
       this.alert = false
     },
+
+    toggleSound() {
+      this.$store.commit('toggleSound');
+    },
+    toggleMusic() {
+      if (this.isMusicEnabled == false && this.audio.paused == true) {
+        this.audio.play()
+        this.audio.loop = true
+      }
+      else if (this.isMusicEnabled == false && this.audio != null) {
+        this.audio.volume = 1
+      }
+      else if (this.isMusicEnabled == true && this.audio != null) {
+        this.audio.volume = 0
+      }
+      this.$store.commit('toggleMusic');
+    },
+  },
+
+  computed: {
+    isSoundEnabled() {
+      return this.$store.state.isSoundEnabled;
+    },
+    isMusicEnabled() {
+      return this.$store.state.isMusicEnabled;
+    }
   }
 });
 </script>

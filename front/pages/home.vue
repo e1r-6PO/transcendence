@@ -1,6 +1,7 @@
 <template>
 <v-container fill-height fluid>
   <number-connected-user style="position: absolute; left: 12px; top: 30px;" :amount="playerOnline" />
+  <AlertError @end="alert = !alert" :state="alert" :type="alertType" :textError="alertText" />
   <v-row align="center" justify="center">
     <v-col align="center">
       <join-queue-btn @click="switchQueueState()" :inQueue="in_queue" :msg="in_queue ? 'CANCEL' : 'PLAY'"/>
@@ -21,7 +22,11 @@ export default Vue.extend({
     return {
       in_queue: false,
       playerOnline: 0,
-      watchPlayerCount: null as unknown as ReturnType<typeof setTimeout>
+      watchPlayerCount: null as unknown as ReturnType<typeof setTimeout>,
+      alert: false,
+      alertType: "error",
+      alertText: "",
+      gettingInQueueSound: new Audio(require("@/assets/sounds/loggingIn.mp3").default)
     }
   },
 
@@ -43,10 +48,6 @@ export default Vue.extend({
   },
 
   async created() {
-    // if (!socket_game.hasListeners('matchFound')) {
-    // socket_game.on('matchFound', (info) => {
-    //   this.$router.push('/game/' + info['id'])
-    // })}
     socket_game.on('queueStatus', (status) => {
       if (status == true) {
         this.in_queue = true
@@ -81,16 +82,26 @@ export default Vue.extend({
         var s1 = new Date().getTime() / 1000;
         while (socket_game.connected == false) {
           if ((new Date().getTime() / 1000) - s1 > 2) {
-            this.$nuxt.$emit("inQueue")
+            this.activateAlert('error: could not connect to the game server, try to relog into the website', "error")
             return
           }
           await new Promise(f => setTimeout(f, 50));
         }
       }
 
+      if(this.isSoundEnabled) {
+        this.gettingInQueueSound.play()
+      }
+
       this.in_queue = true
       socket_game.emit('joinQueue')
       this.$nuxt.$emit("inQueue")
+    },
+
+    async activateAlert(msg: string, type: string) {
+      this.alertText = msg
+      this.alertType = type
+      this.alert = true
     },
 
     async leaveQueue() {
@@ -100,6 +111,12 @@ export default Vue.extend({
       this.$nuxt.$emit("leaveQueue")
     },
   },
+
+  computed: {
+    isSoundEnabled() {
+      return this.$store.state.isSoundEnabled;
+    }
+  }
 })
 
 </script>
