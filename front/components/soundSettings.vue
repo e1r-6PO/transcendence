@@ -3,19 +3,17 @@
   <v-menu
     v-model="menu"
     :close-on-content-click="false"
-    :nudge-width="200"
+    :nudge-width="220"
     offset-y
     content-class="elevation-0"
-    :nudge-left="95"
+    :nudge-left="122"
   >
     <template v-slot:activator="{ }">
       <BasicBtn content="mdi-volume-medium" @click="menu = !menu" width="48" iconSize="30" class="mr-5" neonColor="orange">
       </BasicBtn>
     </template>
 
-    <div style="height: 225px; margin-top: 15px;">
-      <v-card outlined color="transparent" class="sound-setting-box" >
-        <v-list>
+      <v-card outlined class="sound-setting-box mt-4">
           <v-item-group active-class="list-group-none">
             <v-list-item>
               <v-list-item-action>
@@ -31,9 +29,7 @@
               <v-slider :min="0" :max="10" style="padding-top: 23px" color="#0affff" track-color="#f27719" ticks="always"/>
             </v-list-item>
           </v-item-group>
-        </v-list>
       </v-card>
-    </div>
     
   </v-menu>
 </div>
@@ -45,7 +41,7 @@
 import { Watch, Component, Prop, Vue } from 'nuxt-property-decorator'
 
 @Component
-export default class AlertError extends Vue{
+export default class SoundSettings extends Vue{
 
   menu = false
 
@@ -68,18 +64,18 @@ export default class AlertError extends Vue{
 <style scoped>
 
 .sound-setting-box {
-  border: 3px solid #ffffff !important;
-  box-shadow: inset 0px 0px 110px 0px #0affff!important;
+  border: 3px solid #f0b185 !important;
   border-radius: 15px !important;
-  background-color: #181818 !important;
+  background-color: #181818;
+  box-shadow: inset 0px 0px 10px 1px #f27719 !important;
 }
 
 .sound-setting-box:after {
   content: '';
   border: 10px solid transparent !important;
-  border-bottom-color: #ffffff !important; /* arrow color */
+  border-bottom-color: #f0b185 !important; /* arrow color */
   top: -22px !important;
-  left: calc(50% - 10px);
+  left: 134px;
 
   position: absolute;
 }
