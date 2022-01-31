@@ -38,7 +38,7 @@ import { Ref } from 'nuxt-property-decorator';
 export default class extends Vue {
 
   nickname = "";
-  alertText = "This nick is already register";
+  alertText = "This nick is already registered";
   alert = false;
 
   @Ref() readonly nickname_field!: HTMLInputElement
@@ -65,11 +65,14 @@ export default class extends Vue {
     if (ret.status == 201)
       this.$router.push('/home')
     else
-      this.activeAlert()
+    {
+      this.activeAlert(ret.data.message)
+    }
   }
 
-  activeAlert() {
+  activeAlert(alertMssg: string) {
     this.alert = true
+    this.alertText = alertMssg
   }
 }
 </script>
