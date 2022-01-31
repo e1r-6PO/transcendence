@@ -201,7 +201,6 @@ export default Vue.extend({
         this.matchStatus = 'finished'
         this.winner = info.winner
         this.looser = info.looser
-        console.log(info)
         this.endDialog = true
         this.playEndSound()
     })
