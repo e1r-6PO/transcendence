@@ -8,17 +8,9 @@
     content-class="elevation-0"
     :nudge-left="95"
   >
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        color="indigo"
-        dark
-        v-bind="attrs"
-        v-on="on"
-      >
-        <v-icon>
-          mdi-volume-medium
-        </v-icon>
-      </v-btn>
+    <template v-slot:activator="{ }">
+      <BasicBtn content="mdi-volume-medium" @click="menu = !menu" width="48" iconSize="30" class="mr-5" neonColor="orange">
+      </BasicBtn>
     </template>
 
     <div style="height: 225px; margin-top: 15px;">
