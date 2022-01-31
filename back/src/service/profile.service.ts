@@ -42,14 +42,14 @@ export class ProfileService {
 
   async set_nickname(request, nick : string) {
     if (nick == null || nick.length == 0 || nick.length > 20)
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      throw new HttpException('The nick you entered is too long or empty', HttpStatus.FORBIDDEN);
     var user = await this.usersRepository.findOne(
       { where:
         { nickName: nick }
       }
     );
     if (user)
-      throw new HttpException('Nick already exist', HttpStatus.CONFLICT)
+      throw new HttpException('Nick already exists', HttpStatus.CONFLICT)
     user = await this.usersRepository.findOne(
       { where:
           { id: request.cookies['user_id'] }

@@ -107,16 +107,12 @@ export default class ChannelUserList extends Vue {
 
         if (ret != -1)
         {
-          console.log("here : " + ret)
           this.userList[ret].isMute = !this.userList[ret].isMute
         }
       })
       socket_chat.on('banUser', (userId: number) => {
         var ret = this.userList.findIndex(el => el.user.id == userId)
 
-        console.log("this.meId")
-        console.log(this.meId)
-        console.log(userId)
         if (ret != -1)
           this.userList[ret].isBan = !this.userList[ret].isBan
         if (userId == this.meId)

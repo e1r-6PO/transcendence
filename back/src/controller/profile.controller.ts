@@ -79,7 +79,7 @@ export class ProfileController {
   async changepaddlecolor(@Req() request: Request, @Query('color') color: string) {
     var colorlist = [ ['red'], 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink' ]
 
-    var achievement = await this.achievementService.getOneByTitle('God of Pong')
+    var achievement = await this.achievementService.getOneByTitle('God of Pong', request.cookies['user_id'])
     if (achievement && achievement.count >= achievement.goal)
       colorlist.push("white")
 

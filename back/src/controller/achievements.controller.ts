@@ -26,6 +26,6 @@ export class AchievementsController {
   @Get(':title')
   async getOne(@Param('title') title, @Req() req: Request) {
 
-    return this.achievementsService.getOneByTitle(title)
+    return this.achievementsService.getOneByTitle(title, req.cookies['user_id'])
   }
 }
