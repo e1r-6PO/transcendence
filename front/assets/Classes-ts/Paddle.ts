@@ -24,6 +24,8 @@ class Paddle {
 			this.shadowColor = 'goldenrod'
 		else if (this.color == 'pink')
 			this.shadowColor = 'darkviolet'
+		else if (this.color == 'white')
+			this.shadowColor = 'grey'
 		else
 			this.shadowColor = 'dark' + this.color
 		ctx.shadowColor = this.shadowColor

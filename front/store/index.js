@@ -1,9 +1,41 @@
 export const state = () => ({
-  isSoundEnabled: Boolean, // these are not 
+  isSoundEnabled: Boolean,
   isMusicEnabled: Boolean,
+  soundVolume: (localStorage.getItem('soundVolume') == null ? 7 : localStorage.getItem('soundVolume')),
+  musicVolume: (localStorage.getItem('musicVolume') == null ? 7 : localStorage.getItem('musicVolume')),
+  sounds: {
+    'inQueue': new Audio(require("@/assets/sounds/inQueue.mp3").default),
+    'offQueue': new Audio(require("@/assets/sounds/offQueue.mp3").default),
+    'audio3': new Audio(require('@/assets/sounds/3c.mp3').default),
+    'audio2': new Audio(require('@/assets/sounds/2c.mp3').default),
+    'audio1': new Audio(require('@/assets/sounds/1c.mp3').default),
+    'audioGO': new Audio(require('@/assets/sounds/GOc.mp3').default),
+  },
+  music: new Audio(require("@/assets/sounds/Derezzed.mp3").default),
 })
 
 export const mutations = {
+  changeSoundVolume(state, n) {
+    state.soundVolume = n
+    localStorage.setItem('soundVolume', n)
+
+    for (const [key, value] of Object.entries(state.sounds)) {
+      value.volume = n / 10
+    }
+  },
+
+  changeMusicVolume(state, n) {
+    state.musicVolume = n
+    localStorage.setItem('musicVolume', n)
+    state.music.volume = n / 10
+    if (state.isMusicEnabled == false) {
+      state.isMusicEnabled = !state.isMusicEnabled;
+      localStorage.setItem('isMusicEnabled', state.isMusicEnabled);
+      state.music.play()
+      state.music.loop = true
+    }
+  },
+
   toggleSound(state) {
     state.isSoundEnabled = !state.isSoundEnabled;
     localStorage.setItem('isSoundEnabled', state.isSoundEnabled);

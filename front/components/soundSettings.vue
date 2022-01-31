@@ -9,11 +9,10 @@
     :nudge-left="122"
   >
     <template v-slot:activator="{ }">
-      <BasicBtn content="mdi-volume-medium" @click="menu = !menu" width="48" :iconSize="30" class="mr-5" neonColor="orange" style="margin-top: 2px">
-      </BasicBtn>
+      <BasicBtn content="mdi-volume-medium" @click="menu = !menu" width="48" :iconSize="30" class="mr-5" neonColor="orange" style="margin-top: 2px" />
     </template>
 
-      <v-card outlined class="sound-setting-box mt-4">
+      <v-card outlined class="sound-setting-box mt-4" style="background-color: #181818 !important">
           <v-item-group active-class="list-group-none">
             <v-list-item>
               <v-list-item-action>

@@ -25,7 +25,7 @@
                 :color="color"
                 class="mr-3 mb-3"
                 @click="set_color(color)"
-                :content="color"
+                :content="color == 'white' ? 'OG' : color"
                 isText
                 :neonColor="color"
                 :width="color == selectedColor ? '500px' : '90px'"
@@ -54,6 +54,13 @@ export default class ChangePaddleBtn extends Vue{
   dialogPaddleColor: boolean = false
   selectedColor: string = this.neonColor
   colors: Array<string> = [ 'red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink' ]
+
+  async mounted() {
+    var ret = await this.$axios.$get('api/achievements/God of Pong')
+
+    if (ret && ret.count >= ret.goal)
+      this.colors.push("white")
+  }
 
   async set_color(color: string) {
     this.selectedColor = color

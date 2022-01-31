@@ -16,4 +16,10 @@ export class AchievementsList {
     10: new AchievementModel("Active 2fa", "Cyber protector", 1, "mdi-incognito"),
     11: new AchievementModel("Be the 1 in the ladder", "God of Pong", 1, "mdi-podium-gold"),
   }
+
+  secretList = {
+    1: new AchievementModel("Love Arthur so much", "Arthur's fan", 1, "mdi-police-badge"),
+    2: new AchievementModel("Be cool, be like Eudald", "Eudald's fan", 1, "mdi-glass-mug-variant"),
+    3: new AchievementModel("Please Lucas teach me english", "Lucas's fan", 1, "mdi-human-male-board"),
+  }
 }

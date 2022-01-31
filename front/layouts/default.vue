@@ -46,7 +46,7 @@
       <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 220%; text-overflow: clip; overflow: visible; margin-top: 9px" v-text="title" />
       <v-spacer />
 
-      <Sound-settings
+      <SoundSettings
         :isSoundEnabled="isSoundEnabled"
         :isMusicEnabled="isMusicEnabled"
         @toggleSound="toggleSound"
@@ -153,7 +153,7 @@ export default Vue.extend({
 
     if(this.isMusicEnabled) {
         // in current configuration, it should never get here because music is false by default
-        this.$store.state.music.play().catch(error => { })
+        this.$store.state.music.play().catch((error: any) => { })
         this.$store.state.music.loop = true
     }
   },
