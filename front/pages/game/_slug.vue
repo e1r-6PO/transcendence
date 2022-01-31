@@ -193,7 +193,7 @@ export default Vue.extend({
         this.paddle1 = new Paddle(this.player1.paddleColor)
     })
 
-    socket_game.on('matchEnd', async (info) => {
+    socket_game.on('matchEnd', (info) => {
         socket_game.off('matchInfo')
         socket_game.off('matchEnd')
         socket_game.off('matchSetup')
@@ -201,6 +201,7 @@ export default Vue.extend({
         this.matchStatus = 'finished'
         this.winner = info.winner
         this.looser = info.looser
+        console.log(info)
         this.endDialog = true
         this.playEndSound()
     })
@@ -231,10 +232,16 @@ export default Vue.extend({
             //if coll in ball
             if (info[i].ball_info[4] > 0)
             {
-              if (info[i].ball_info[4] == 2)
-                console.log("SoundL")
-              if (info[i].ball_info[4] == 3)
-                console.log("SoundR")
+              if (info[i].ball_info[4] == 1 && this.$store.state.isSoundEnabled == true) {
+                var tmp = this.$store.state.sounds.wallCollision.cloneNode()
+                tmp.volume = this.$store.state.soundVolume / 10
+                tmp.play()
+              }
+              if (info[i].ball_info[4] == 2 && this.$store.state.isSoundEnabled == true) {
+                var tmp = this.$store.state.sounds.paddleCollision.cloneNode()
+                tmp.volume = this.$store.state.soundVolume / 10
+                tmp.play()
+              }
               for(let i = 0; i < 10; i++)
               {
                 let p_x = (c_ball.x > this.mapx - 50) ? c_ball.x + c_ball.width / 2 : c_ball.x

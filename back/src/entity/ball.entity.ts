@@ -104,7 +104,7 @@ export class Ball extends Rect {
 
 			this.s *= 1.05
 
-			this.collision = 3
+			this.collision = 2
 			this.color = p.color
 			this.lastPaddleHit = 1 // p1 is last to have hit it
 			this.lastWallHit = -1 // reset lastwallit to let the ball touche the same wall it went from

@@ -13,6 +13,8 @@ export const state = () => ({
     'loserSound': new Audio(require("@/assets/sounds/loserSound.mp3").default),
     'winnerSound': new Audio(require("@/assets/sounds/winnerSound.mp3").default),
     'spectatorSound': new Audio(require("@/assets/sounds/spectatorEndSound.mp3").default),
+    'wallCollision': new Audio(require("@/assets/sounds/wallCollision.mp3").default),
+    'paddleCollision': new Audio(require("@/assets/sounds/paddleCollision.mp3").default),
   },
   music: new Audio(require("@/assets/sounds/Derezzed.mp3").default),
 })
