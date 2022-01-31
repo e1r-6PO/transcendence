@@ -1,7 +1,8 @@
 <template>
   <div>
     <v-dialog
-      v-model="endDialog"
+      @click:outside="closeEndGameDialog()"
+      v-model="value"
       max-width="600px"
       content-class="custom-dialog-card-shadow"
     >
@@ -49,7 +50,7 @@ export default class EndGameDialog extends Vue{
   winner!: LightUser
 
   @Prop({ type: Boolean })
-  endDialog!: boolean
+  value!: boolean
 
   dialogEndgame: boolean = false
 

@@ -14,7 +14,7 @@
         <BasicBtn v-if="matchStatus == 'running' && (me.id == player0.id || me.id == player1.id)" content="forfeit" @click="forfeit" :isText="true" color="#ffffff" class="foreground_element"/>
         <BasicBtn v-else content="LEAVE" @click="redirectToNext" :isText="true" color="#ffffff" class="foreground_element"/>
       </div>
-      <end-game-dialog :next="next" :endDialog="endDialog" @closeEndGameDialog="endDialog = false" :winner="winner" />
+      <end-game-dialog :next="next" v-model="endDialog" @closeEndGameDialog="endDialog = false" :winner="winner" />
       <canvas id="map" width="840" height="600"></canvas>
     </v-col>
 
@@ -57,7 +57,7 @@ export default Vue.extend({
       alert: false,
       alertType: "error",
       game_id: this.$route.params.slug,
-      me: User,
+      me: new User(),
       player0: new LightUser(),
       player1: new LightUser(),
       winner: new LightUser(),
@@ -155,7 +155,21 @@ export default Vue.extend({
           }
         }
       }
-    }
+    },
+
+    playEndSound() {
+      if (this.isSoundEnabled) {
+        if (this.me.id == this.winner.id) {
+          this.$store.state.sounds.winnerSound.play()
+        }
+        else if (this.me.id == this.looser.id) {
+          this.$store.state.sounds.loserSound.play()
+        }
+        else {
+          this.$store.state.sounds.spectatorSound.play()
+        }
+      }
+    },
   },
 
   async created() {
@@ -188,6 +202,7 @@ export default Vue.extend({
         this.winner = info.winner
         this.looser = info.looser
         this.endDialog = true
+        this.playEndSound()
     })
 
     socket_game.on('matchSetup', (info) => {
