@@ -15,6 +15,7 @@ import { AchievementsService } from 'src/service/achievements.service';
 import { ChannelService } from 'src/service/channel.service';
 import { ProfileService } from 'src/service/profile.service';
 import { UsersService } from 'src/service/users.service';
+import { ActiveGateway } from 'src/webSocket/active.gateway';
 import { Repository } from 'typeorm';
 
 
@@ -26,7 +27,10 @@ export class ProfileController {
     private readonly achievementService: AchievementsService,
     private readonly channelService: ChannelService,
     @InjectRepository(Relationship)
-    private readonly relationShipRepository : Repository<Relationship>
+    private readonly relationShipRepository : Repository<Relationship>,
+    private readonly activeGateway: ActiveGateway,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>
   ) {}
 
   @Get('me')
@@ -64,6 +68,9 @@ export class ProfileController {
       .png()
       .toFile(process.env.DATADIR + '/users/' + request.cookies['user_id'] + '.png')
     fs.unlinkSync(file.path)
+
+    var user: User = await this.userRepository.findOne({where: { id: request.cookies['user_id'] }})
+    this.activeGateway.server.emit('stateChanged', user.toLightuser())
     return true
   }
 
