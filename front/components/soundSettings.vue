@@ -19,14 +19,14 @@
               <v-list-item-action>
                 <basic-btn neonColor="orange" @click="toggleMusic" :content="isMusicEnabled ? 'mdi-volume-high' : 'mdi-volume-off'" />
               </v-list-item-action>
-              <v-slider :min="0" :max="10" style="padding-top: 23px" color="#0affff" track-color="#f27719" ticks="always"/>
+              <v-slider :min="0" :max="10" :value="musicVolume" @change="changeMusicVolume" style="padding-top: 23px" color="#0affff" track-color="#f27719" ticks="always"/>
             </v-list-item>
 
             <v-list-item>
               <v-list-item-action>
                 <basic-btn neonColor="orange" @click="toggleSound" :content="isSoundEnabled ? 'mdi-music-note-eighth' : 'mdi-music-note-off'" />
               </v-list-item-action>
-              <v-slider :min="0" :max="10" style="padding-top: 23px" color="#0affff" track-color="#f27719" ticks="always"/>
+              <v-slider :min="0" :max="10" v-model="soundVolume" @input="changeSoundVolume" style="padding-top: 23px" color="#0affff" track-color="#f27719" ticks="always"/>
             </v-list-item>
           </v-item-group>
       </v-card>
@@ -35,10 +35,8 @@
 </div>
 </template>
 
-
-
 <script lang="ts">
-import { Watch, Component, Prop, Vue } from 'nuxt-property-decorator'
+import { Watch, Component, Prop, Vue, InjectReactive } from 'nuxt-property-decorator'
 
 @Component
 export default class SoundSettings extends Vue{
@@ -51,11 +49,24 @@ export default class SoundSettings extends Vue{
   @Prop()
   isMusicEnabled!: boolean
 
+  soundVolume = this.$store.state.soundVolume
+
+  musicVolume = this.$store.state.musicVolume
+
   toggleSound() {
     this.$emit('toggleSound');
   }
+
   toggleMusic() {
     this.$emit('toggleMusic')
+  }
+
+  changeSoundVolume() {
+    this.$store.commit('changeSoundVolume', this.soundVolume)
+  }
+
+  changeMusicVolume(n: number) {
+    this.$store.commit('changeMusicVolume', n)
   }
 
 }

@@ -74,10 +74,6 @@ export default Vue.extend({
       score_p1: 0,
       keyUp: false,
       keyDown: false,
-      audio3: new Audio(require('@/assets/sounds/3c.mp3').default),
-      audio2: new Audio(require('@/assets/sounds/2c.mp3').default),
-      audio1: new Audio(require('@/assets/sounds/1c.mp3').default),
-      audioGO: new Audio(require('@/assets/sounds/GOc.mp3').default),
       next: (new URLSearchParams(window.location.search).get('next') != null ? new URLSearchParams(window.location.search).get('next') : '/home'),
       endDialog: false,
     }
@@ -141,19 +137,19 @@ export default Vue.extend({
         // console.log(info.gameStart)
         switch (info.gameStart) {
           case 3: {
-            this.audio3.play()
+            this.$store.state.sounds.audio3.play()
             break
           }
           case 2: {
-            this.audio2.play()
+            this.$store.state.sounds.audio2.play()
             break
           }
           case 1: {
-            this.audio1.play()
+            this.$store.state.sounds.audio1.play()
             break
           }
           case 0: {
-            this.audioGO.play()
+            this.$store.state.sounds.audioGO.play()
             break
           }
         }
