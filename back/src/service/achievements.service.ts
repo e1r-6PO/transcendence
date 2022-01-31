@@ -29,6 +29,13 @@ export class AchievementsService {
     return new AchievementsList().list
   }
 
+  async getOneByTitle(title: string) {
+    var achievement = await this.achievementsRepository.findOne({
+      where: { title: title }
+    })
+    return achievement
+  }
+
   async getAchievements(id: number, filter: string) {
     var list = await this.achievementsRepository.find({
       where: { user: id }
@@ -148,6 +155,13 @@ export class AchievementsService {
     return achievement
   }
 
+  async getOneSecretAchievement(user: User, id: number): Promise<Achievements> {
+    var achievement = await this.achievementsRepository.findOne({
+      where : { action: this.achievements.secretList[id].action, user: user }
+    })
+    return achievement
+  }
+
   updateAchievement(user: User, achievement: Achievements, id: number) {
     var model = this.achievements.list[id]
     achievement.count += 1
@@ -162,5 +176,38 @@ export class AchievementsService {
     var model = this.achievements.list[id]
     var newAchievement = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
     this.achievementsRepository.save(newAchievement)
+  }
+
+  async arthurSecretAchievement(user: User) {
+    var achievement = await this.getOneSecretAchievement(user, 1)
+
+    var model = this.achievements.secretList[1]
+    if (!achievement)
+    {
+      var newAchievement = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
+      this.achievementsRepository.save(newAchievement)
+    }
+  }
+
+  async eudaldSecretAchievement(user: User) {
+    var achievement = await this.getOneSecretAchievement(user, 2)
+
+    var model = this.achievements.secretList[2]
+    if (!achievement)
+    {
+      var newAchievement = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
+      this.achievementsRepository.save(newAchievement)
+    }
+  }
+
+  async lucasSecretAchievement(user: User) {
+    var achievement = await this.getOneSecretAchievement(user, 3)
+
+    var model = this.achievements.secretList[3]
+    if (!achievement)
+    {
+      var newAchievement = new Achievements(user, model.action, model.title, 1, model.goal, model.icon)
+      this.achievementsRepository.save(newAchievement)
+    }
   }
 }
