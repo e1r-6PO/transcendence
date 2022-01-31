@@ -45,12 +45,13 @@
       <v-app-bar-nav-icon class="open-menu" @click.stop="drawer = !drawer" />
       <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 220%; text-overflow: clip; overflow: visible; margin-top: 9px" v-text="title" />
       <v-spacer />
-      <div style="padding-right: 10px">
-        <basic-btn @click="toggleMusic" :content="isMusicEnabled ? 'mdi-volume-high' : 'mdi-volume-off'" />
-      </div>
-      <div style="padding-right: 10px">
-        <basic-btn @click="toggleSound" :content="isSoundEnabled ? 'mdi-music-note-eighth' : 'mdi-music-note-off'" />
-      </div>
+
+      <sound-settings
+        :isSoundEnabled="isSoundEnabled"
+        :isMusicEnabled="isMusicEnabled"
+        @toggleSound="toggleSound"
+        @toggleMusic="toggleMusic"
+      />
  
       <div style="padding-right: 20px">
         <v-row align="center" justify="center">

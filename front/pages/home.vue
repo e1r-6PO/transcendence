@@ -26,7 +26,8 @@ export default Vue.extend({
       alert: false,
       alertType: "error",
       alertText: "",
-      gettingInQueueSound: new Audio(require("@/assets/sounds/loggingIn.mp3").default)
+      gettingInQueueSound: new Audio(require("@/assets/sounds/inQueue.mp3").default),
+      gettingOutQueueSound: new Audio(require("@/assets/sounds/offQueue.mp3").default),
     }
   },
 
@@ -105,7 +106,10 @@ export default Vue.extend({
     },
 
     async leaveQueue() {
-      // socket_game.disconnect()
+      // socket_game.disconnect()\
+      if(this.isSoundEnabled) {
+        this.gettingOutQueueSound.play()
+      }
       socket_game.emit('leaveQueue')
       this.in_queue = false
       this.$nuxt.$emit("leaveQueue")
