@@ -7,7 +7,7 @@
     >
       <v-card class="dialog_card">
         <v-card-title class="white--text justify-center">
-          <span class="text-h5">Game ended</span>
+          <span class="text-h5 pb-3" style="font-family: OrbitronM !important">Game ended</span>
           <v-spacer />
           <BasicBtn @click="closeEndGameDialog()" content="mdi-close" neonColor="red" />
         </v-card-title>
