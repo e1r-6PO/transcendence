@@ -26,8 +26,6 @@ export default Vue.extend({
       alert: false,
       alertType: "error",
       alertText: "",
-      gettingInQueueSound: new Audio(require("@/assets/sounds/inQueue.mp3").default),
-      gettingOutQueueSound: new Audio(require("@/assets/sounds/offQueue.mp3").default),
     }
   },
 
@@ -91,7 +89,7 @@ export default Vue.extend({
       }
 
       if(this.isSoundEnabled) {
-        this.gettingInQueueSound.play()
+        this.$store.state.sounds.inQueue.play()
       }
 
       this.in_queue = true
@@ -108,7 +106,7 @@ export default Vue.extend({
     async leaveQueue() {
       // socket_game.disconnect()\
       if(this.isSoundEnabled) {
-        this.gettingOutQueueSound.play()
+        this.$store.state.sounds.offQueue.play()
       }
       socket_game.emit('leaveQueue')
       this.in_queue = false

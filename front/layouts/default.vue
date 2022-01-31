@@ -46,7 +46,7 @@
       <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 220%; text-overflow: clip; overflow: visible; margin-top: 9px" v-text="title" />
       <v-spacer />
 
-      <sound-settings
+      <Sound-settings
         :isSoundEnabled="isSoundEnabled"
         :isMusicEnabled="isMusicEnabled"
         @toggleSound="toggleSound"
@@ -139,8 +139,7 @@ export default Vue.extend({
       right: true,
       rightDrawer: false,
       title: 'Tronscendence',
-      audio: new Audio(require("@/assets/sounds/Derezzed.mp3").default),
-      hover: false
+      hover: false,
     }
   },
 
@@ -154,8 +153,8 @@ export default Vue.extend({
 
     if(this.isMusicEnabled) {
         // in current configuration, it should never get here because music is false by default
-        this.audio.play().catch(error => { })
-        this.audio.loop = true
+        this.$store.state.music.play().catch(error => { })
+        this.$store.state.music.loop = true
     }
   },
 
@@ -205,15 +204,15 @@ export default Vue.extend({
       this.$store.commit('toggleSound');
     },
     toggleMusic() {
-      if (this.isMusicEnabled == false && this.audio.paused == true) {
-        this.audio.play()
-        this.audio.loop = true
+      if (this.isMusicEnabled == false && this.$store.state.music.paused == true) {
+        this.$store.state.music.play()
+        this.$store.state.music.loop = true
       }
-      else if (this.isMusicEnabled == false && this.audio != null) {
-        this.audio.volume = 1
+      else if (this.isMusicEnabled == false && this.$store.state.music != null) {
+        this.$store.state.music.volume = this.$store.state.musicVolume / 10
       }
-      else if (this.isMusicEnabled == true && this.audio != null) {
-        this.audio.volume = 0
+      else if (this.isMusicEnabled == true && this.$store.state.music != null) {
+        this.$store.state.music.volume = 0
       }
       this.$store.commit('toggleMusic');
     },
