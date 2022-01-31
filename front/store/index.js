@@ -10,6 +10,11 @@ export const state = () => ({
     'audio2': new Audio(require('@/assets/sounds/2c.mp3').default),
     'audio1': new Audio(require('@/assets/sounds/1c.mp3').default),
     'audioGO': new Audio(require('@/assets/sounds/GOc.mp3').default),
+    'loserSound': new Audio(require("@/assets/sounds/loserSound.mp3").default),
+    'winnerSound': new Audio(require("@/assets/sounds/winnerSound.mp3").default),
+    'spectatorSound': new Audio(require("@/assets/sounds/spectatorEndSound.mp3").default),
+    'wallCollision': new Audio(require("@/assets/sounds/wallCollision.mp3").default),
+    'paddleCollision': new Audio(require("@/assets/sounds/paddleCollision.mp3").default),
   },
   music: new Audio(require("@/assets/sounds/Derezzed.mp3").default),
 })
@@ -21,6 +26,10 @@ export const mutations = {
 
     for (const [key, value] of Object.entries(state.sounds)) {
       value.volume = n / 10
+    }
+    if (state.isSoundEnabled == false) {
+      state.isSoundEnabled = !state.isSoundEnabled;
+      localStorage.setItem('isSoundEnabled', state.isSoundEnabled);
     }
   },
 

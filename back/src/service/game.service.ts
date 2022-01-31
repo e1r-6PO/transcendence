@@ -137,7 +137,7 @@ export class GameService {
 				})
 			}
             else if (game.player1socket == null || game.status == "forfeitp1" || (game.scorep0 > game.scorep1 && game.status != "forfeitp0")) { //player1 dc or p0 won
-                game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser })
+                game.room.emit('matchEnd', { winner: game.player0.toLightuser(), looser: game.player1.toLightuser() })
                 await this.save_game(game, game.player0)
                 if (game.type == "private") {
                   this.privateMessageRepository.update({ sender: game.player0, target: game.player1, game_id: game.id }, {game_state: "finish", winner: game.player0})
