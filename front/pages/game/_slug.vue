@@ -61,6 +61,7 @@ export default Vue.extend({
       player0: new LightUser(),
       player1: new LightUser(),
       winner: new LightUser(),
+      looser: new LightUser(),
       mapx: 840,
       mapy: 600,
       balls: new Map<number, Ball>(),

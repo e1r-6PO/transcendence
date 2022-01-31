@@ -153,7 +153,7 @@ export default Vue.extend({
 
     if(this.isMusicEnabled) {
         // in current configuration, it should never get here because music is false by default
-        this.$store.state.music.play().catch(error => { })
+        this.$store.state.music.play().catch((error: any) => { })
         this.$store.state.music.loop = true
     }
   },
