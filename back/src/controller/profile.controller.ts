@@ -69,8 +69,12 @@ export class ProfileController {
 
   @Post('me/paddleColor')
   @UseGuards(HasNickGuard)
-  changepaddlecolor(@Req() request: Request, @Query('color') color: string) {
+  async changepaddlecolor(@Req() request: Request, @Query('color') color: string) {
     var colorlist = [ ['red'], 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink' ]
+
+    var achievement = await this.achievementService.getOneByTitle('God of Pong')
+    if (achievement && achievement.count >= achievement.goal)
+      colorlist.push("white")
 
     if (!colorlist.find(acolor => acolor == color))
       throw new ForbiddenException()

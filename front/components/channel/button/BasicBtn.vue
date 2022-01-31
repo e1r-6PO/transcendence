@@ -55,8 +55,8 @@ export default class CloseBtn extends Vue {
   @Prop({ type: String, default: "" })
   neonColor!: String
 
-  @Prop({type: Number, default: 25 })
-  iconSize!: Number
+  @Prop({ default: 25 })
+  iconSize!: Number | String
 
   btnFocus: boolean = false
 

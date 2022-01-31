@@ -165,6 +165,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         this.messagesRepository.save(newMsg)
         this.achievementService.sendMsgAchievement(newMsg.sender)
+        if (newMsg.message == "Arthur is a bad boss")
+            this.achievementService.arthurSecretAchievement(newMsg.sender)
+        else if (newMsg.message == "me encanta la cerveza y la siesta")
+            this.achievementService.eudaldSecretAchievement(newMsg.sender)
+        else if (newMsg.message == "Lucas speak english very well !")
+            this.achievementService.lucasSecretAchievement(newMsg.sender)
         this.server.to(av[1]).emit('msgToClient', newMsg);
     }
 

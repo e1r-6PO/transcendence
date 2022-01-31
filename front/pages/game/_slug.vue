@@ -231,6 +231,10 @@ export default Vue.extend({
             //if coll in ball
             if (info[i].ball_info[4] > 0)
             {
+              if (info[i].ball_info[4] == 2)
+                console.log("SoundL")
+              if (info[i].ball_info[4] == 3)
+                console.log("SoundR")
               for(let i = 0; i < 10; i++)
               {
                 let p_x = (c_ball.x > this.mapx - 50) ? c_ball.x + c_ball.width / 2 : c_ball.x

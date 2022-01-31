@@ -46,7 +46,7 @@
       <v-toolbar-title class="neonText" style="font-family: Tr2n; font-size: 220%; text-overflow: clip; overflow: visible; margin-top: 9px" v-text="title" />
       <v-spacer />
 
-      <Sound-settings
+      <SoundSettings
         :isSoundEnabled="isSoundEnabled"
         :isMusicEnabled="isMusicEnabled"
         @toggleSound="toggleSound"
