@@ -29,9 +29,9 @@ export class AchievementsService {
     return new AchievementsList().list
   }
 
-  async getOneByTitle(title: string) {
+  async getOneByTitle(title: string, user: User) {
     var achievement = await this.achievementsRepository.findOne({
-      where: { title: title }
+      where: { title: title, user: user }
     })
     return achievement
   }
