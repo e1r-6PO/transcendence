@@ -180,7 +180,8 @@ export default Vue.extend({
 
   methods: {
     searchbar() {
-      this.$router.push({path: '/search', query: { nick: this.search }})
+      if (this.search.trim() != '')
+        this.$router.push({path: '/search', query: { nick: this.search.trim() }})
     },
 
     redirect(url: string) {
