@@ -140,6 +140,7 @@ import AlertError from '../../components/AlertError.vue';
 import ChannelSettings from '../../components/channel/ChannelSettings.vue'
 
 import socket_chat from '../../plugins/chat.io'
+import { Friendship } from '../../assets/Classes-ts/Friendship';
 
 export default Vue.extend({
   components: { CreateChannelBtn, ChannelList, ChannelUserList, BasicBtn,
@@ -150,6 +151,7 @@ export default Vue.extend({
     return {
       message: '',
       messagesArray: new Array<Messages>(),
+      blockedList: new Array<Friendship>(),
       me: new ChannelUser(),
       nbMsg: -1,
       userDrawer: false,
@@ -199,9 +201,12 @@ export default Vue.extend({
       else
         socket_chat.emit('joinChannel', this.$route.params.slug, "");
       this.me = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/me')
+      this.blockedList = await this.$axios.$get('/api/friends/blocked')
       this.messagesArray = await this.$axios.$get('/api/chat/' + this.$route.params.slug + '/messages')
       this.nbMsg = this.messagesArray.length
       socket_chat.on('msgToClient', (msg: Messages) => {
+        if (this.blockedList.find(el => el.peer.id == msg.sender.id) != undefined)
+          return
         this.messagesArray.push(msg)
         this.nbMsg = this.messagesArray.length
       })

@@ -22,6 +22,16 @@ export class FriendsController {
     private relationShipRepository : Repository<Relationship>
   ) {}
 
+
+
+  // Get blocked
+  @Get('blocked')
+  async getBlocked(@Req() req: Request) {
+    return await this.relationShipRepository.find({
+      where: { user: req.cookies['user_id'], status: Friend_Status.blocked }
+    })
+  }
+
   // Get friends
   @Get(':id')
   async getFriend(@Param('id') id, @Req() req: Request) {
@@ -33,13 +43,6 @@ export class FriendsController {
     return { status: relation.status }
   }
 
-  // Get blocked
-  @Get('blocked')
-  async getBlocked(@Req() req: Request) {
-    return await this.relationShipRepository.find({
-      where: { user: req.cookies['user_id'], status: Friend_Status.blocked }
-    })
-  }
 
   // Create a friend request
   @Post(':id')
