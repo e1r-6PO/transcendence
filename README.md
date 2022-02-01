@@ -34,6 +34,8 @@ HOST=<publicIP>:<port>      // should probably be the same as back HOST variable
 BACKHOST=<publicIP>:<port>  // same
 ```
 
+and run: `docker-compose up`
+
 ## In dev:
 
 Same as production but apply the following changes:
@@ -57,6 +59,10 @@ proxy: {
   /api': { target: 'http://localhost:    3000/api', pathRewrite:{'^/api': ''} }
 },
 ```
+
+and run:
+- in back: `npm run start:dev`
+- in front: `npm run dev`
 
 If you do not wish to use one of the provider leave it's variable blank and edit `back/src/module/auth.module.ts` and remove <provider>Strategy l21.  
   
