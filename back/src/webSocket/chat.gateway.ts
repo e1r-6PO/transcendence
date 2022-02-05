@@ -26,7 +26,7 @@ import { FriendsService } from "src/service/friends.service";
 
 @WebSocketGateway({
     cors: {
-        origin: "http://" + process.env.HOST,
+        origin: process.env.PROTOCOL + '://' + process.env.HOST,
         credentials: true
     },
     middlewares: [ AddUserIdMiddleware ],

@@ -24,7 +24,7 @@ import { PrivateMessage } from "src/entity/privateMessage.entity";
 
 @WebSocketGateway({
 	cors: {
-			origin: "http://" + process.env.HOST,
+			origin: process.env.PROTOCOL + '://' + process.env.HOST,
 			credentials: true
 	},
 	middlewares: [ AddUserIdMiddleware ],

@@ -13,7 +13,7 @@ export class qdStrategy extends PassportStrategy(Strategy, '42') {
     super({
       clientID: process.env.QD_USER_ID,
       clientSecret: process.env.QD_SECRET,
-      callbackURL: 'http://' + process.env.HOST + '/auth/42/callback',
+      callbackURL: process.env.PROTOCOL + '://' + process.env.HOST + '/auth/42/callback',
       scope: ['public'],
     });
   }

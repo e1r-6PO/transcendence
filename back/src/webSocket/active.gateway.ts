@@ -17,7 +17,7 @@ import { plainToClass } from "class-transformer";
 
 @WebSocketGateway({
   cors: {
-    origin: "http://" + process.env.HOST,
+    origin: process.env.PROTOCOL + '://' + process.env.HOST,
     credentials: true
   },
   middelwares: [ AddUserIdMiddleware ],

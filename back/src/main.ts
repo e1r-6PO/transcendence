@@ -7,7 +7,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.enableCors({ credentials: true, origin: 'http://' + process.env.HOST });
+  app.enableCors({ credentials: true, origin: process.env.PROTOCOL + '://' + process.env.HOST });
   app.use(cookieParser())
   // app.useGlobalFilters(new AllExceptionFilter())
   await app.listen(3000);

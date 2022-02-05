@@ -36,7 +36,7 @@ export class Game {
 	balls: Array<Ball>
 	ball_amount: number
 	paddleSize: number
-	room: BroadcastOperator<DefaultEventsMap, any>
+	room: BroadcastOperator<DefaultEventsMap>
 	tickSpeed = 1000 / 32
 	tickPerTick = 4
 

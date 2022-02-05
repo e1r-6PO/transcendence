@@ -64,7 +64,7 @@ export class User {
       id: this.id,
       email: this.email,
       displayName: this.displayName,
-      picture: 'http://' + process.env.HOST + '/api/users/' + this.id + '/picture',
+      picture: process.env.PROTOCOL + '://' + process.env.HOST + '/api/users/' + this.id + '/picture',
       nickName: this.nickName,
       provider: this.provider,
       provider_id: this.provider_id,
@@ -84,7 +84,7 @@ export class User {
   toLightuser() {
     return {
       id: this.id,
-      picture: 'http://' + process.env.HOST + '/api/users/' + this.id + '/picture',
+      picture: process.env.PROTOCOL + '://' + process.env.HOST + '/api/users/' + this.id + '/picture',
       nickName: this.nickName,
       elo: this.elo,
       gameWin: this.gameWin,
