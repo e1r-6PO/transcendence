@@ -25,6 +25,7 @@ DBPSWD=<docker-composeDatabasePassword>
 DBHOST=transcendence-database
 DATADIR=/data
 HOST=<publicIP>:<port>            // or domain name etc...
+PROTOCOL=<http/https>			  // need testing but works with http
 JWT_SECRET=<randomPassphrase>
 ```
 
