@@ -3,6 +3,14 @@
 Tronscendence is a website about playing pong based on a Tron theme it aimed to help us discover how modern web site are builded.  
 It uses a combination of nestJS (back) and nuxtJS (front) with a completly revamped vuetify to achieve a tron theme.
 
+# Showcase
+
+![landing page](img/landing.png)
+![home page](img/home.png)
+![profile page](img/profile.png)
+![chat page](img/chat.png)
+![game page](img/game.png)
+
 # Install
 ## In production:
 
